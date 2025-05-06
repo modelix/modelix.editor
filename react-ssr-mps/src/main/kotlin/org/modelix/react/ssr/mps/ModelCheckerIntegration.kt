@@ -7,6 +7,7 @@ import jetbrains.mps.errors.messageTargets.NodeMessageTarget
 import jetbrains.mps.errors.messageTargets.PropertyMessageTarget
 import jetbrains.mps.errors.messageTargets.ReferenceMessageTarget
 import jetbrains.mps.progress.EmptyProgressMonitor
+import jetbrains.mps.project.validation.StructureChecker
 import jetbrains.mps.smodel.MPSModuleRepository
 import jetbrains.mps.typesystemEngine.checker.NonTypesystemChecker
 import jetbrains.mps.typesystemEngine.checker.TypesystemChecker
@@ -79,7 +80,10 @@ object ModelCheckerIntegration {
         } else if (!featureName.isNullOrBlank()) {
             messages = messages.filter { featureName.equals(roleName(it.messageTarget)) }
         }
-        val str = messages.joinToString(" # ") { it.severity.toString() + ": " + it.message.split(":")[1] }
+        val str = messages.joinToString(" # ") {
+            val parts = it.message.split(":")
+            if (parts.size > 1) (it.severity.toString() + ":" + parts[1]) else (it.severity.toString() + ":" + it.message)
+        }
         return str
     }
 
@@ -102,6 +106,7 @@ object ModelCheckerIntegration {
 
         @Suppress("removal")
         val repository = MPSModuleRepository.getInstance()
+        StructureChecker().check(root, repository, consumer, EmptyProgressMonitor())
         TypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor())
         NonTypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor())
         ConstraintsChecker(null).asRootChecker().check(root, repository, consumer, EmptyProgressMonitor())
