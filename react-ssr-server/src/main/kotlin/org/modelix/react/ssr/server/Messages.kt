@@ -105,7 +105,7 @@ data class ComponentOrText(
     override fun flatten(): List<ComponentOrText> = listOf(this)
 
     fun findHandler(id: String): ICustomMessageHandler? {
-        return component?.findHandler(id)
+        return  component?.findHandler(id)
     }
 }
 
