@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
@@ -9,6 +10,9 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        apiVersion = KotlinVersion.KOTLIN_1_8
+    }
 }
 
 dependencies {
@@ -76,11 +80,6 @@ intellij {
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            apiVersion = "1.6"
-        }
-    }
     patchPluginXml {
         sinceBuild.set("232")
         untilBuild.set("233.*")

@@ -20,11 +20,8 @@ val generatorOutputDir = file("src/commonMain/kotlin_gen")
 val tsGeneratorOutputDir = file("../kernelf-angular-demo/src/gen")
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
+    jvmToolchain(17)
+    jvm()
     js(IR) {
         browser {
             testTask {
@@ -48,7 +45,7 @@ kotlin {
         all {
             languageSettings.optIn("kotlin.js.ExperimentalJsExport")
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.modelix.model.api.gen.runtime)
                 implementation(project(":projectional-editor"))
@@ -61,7 +58,7 @@ kotlin {
             }
             kotlin.srcDir(generatorOutputDir)
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(coreLibs.kotlin.coroutines.test)
                 implementation(kotlin("test-common"))
@@ -70,11 +67,11 @@ kotlin {
                 implementation(project(":parser"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(libs.modelix.model.api.gen.runtime)
                 implementation(kotlin("test"))
@@ -82,12 +79,12 @@ kotlin {
                 implementation(coreLibs.logback.classic)
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 api(libs.modelix.model.api)
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test-js"))
                 implementation(npm("jsdom", "20.0.1"))
