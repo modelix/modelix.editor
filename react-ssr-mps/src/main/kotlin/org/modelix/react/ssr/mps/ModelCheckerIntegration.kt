@@ -17,10 +17,11 @@ import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
-import org.modelix.model.mpsadapters.MPSNodeReference
+import org.modelix.model.mpsadapters.toModelix
 import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 import org.modelix.react.ssr.server.IRenderer
 
+@Suppress("unused")
 object ModelCheckerIntegration {
 
     private val fCheckRootNode = incrementalFunction<List<NodeReportItem>, INode>("checkRootNode") { context, node ->
@@ -85,7 +86,7 @@ object ModelCheckerIntegration {
 
     private fun checkRoot(rootNode: INode): Map<INodeReference, List<NodeReportItem>> {
         val messages: List<NodeReportItem> = fCheckRootNode(rootNode).bind(IRenderer.contextIncrementalEngine.getValue()).invoke()
-        return messages.groupBy { MPSNodeReference(it.node) }
+        return messages.groupBy { it.node.toModelix() }
     }
 
     private fun getRootNode(node: INode): INode {

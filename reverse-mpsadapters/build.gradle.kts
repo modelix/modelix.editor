@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.mpsHomeDir
 
 plugins {
@@ -6,6 +7,9 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        apiVersion = KotlinVersion.KOTLIN_1_8
+    }
 }
 
 dependencies {
@@ -15,14 +19,6 @@ dependencies {
             include("lib/*.jar")
         },
     )
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            apiVersion = "1.6"
-        }
-    }
 }
 
 group = "org.modelix.mps"

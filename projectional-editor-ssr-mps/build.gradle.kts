@@ -1,4 +1,5 @@
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.buildtools.KnownModuleIds
 import org.modelix.buildtools.ModuleId
 import org.modelix.buildtools.ModuleIdAndName
@@ -14,6 +15,9 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        apiVersion = KotlinVersion.KOTLIN_1_8
+    }
 }
 
 dependencies {
@@ -45,11 +49,6 @@ intellij {
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            apiVersion = "1.6"
-        }
-    }
     patchPluginXml {
         sinceBuild.set("232")
         untilBuild.set("233.*")

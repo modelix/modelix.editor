@@ -21,3 +21,7 @@ application {
     mainClass.set("io.ktor.server.netty.EngineMain")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=true")
 }
+
+kotlin {
+    jvmToolchain(17)
+}

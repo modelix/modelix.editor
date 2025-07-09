@@ -17,14 +17,13 @@ import org.modelix.metamodel.typed
 import org.modelix.metamodel.untypedConcept
 import org.modelix.model.ModelFacade
 import org.modelix.model.api.INode
-import org.modelix.model.api.getRootNode
 import org.modelix.model.client2.ModelClientV2
 import org.modelix.model.client2.ReplicatedModel
 import org.modelix.model.client2.getReplicatedModel
 import org.modelix.model.data.ModelData
 import org.modelix.model.lazy.RepositoryId
+import org.modelix.model.mutable.ModelixIdGenerator
 import org.modelix.model.repositoryconcepts.N_Module
-import org.modelix.model.withAutoTransactions
 import org.modelix.model.withIncrementalComputationSupport
 
 object KernelfAPI {
@@ -64,15 +63,16 @@ object KernelfAPI {
                     if (!repositoryExisted) {
                         client.initRepository(repositoryId)
                     }
-                    val model: ReplicatedModel = client.getReplicatedModel(repositoryId.getBranchReference())
+                    val model: ReplicatedModel = client.getReplicatedModel(repositoryId.getBranchReference(), { ModelixIdGenerator(client.getIdGenerator(), it) })
                     model.start()
-                    val branch = model.getBranch().withIncrementalComputationSupport()
-                    if (!repositoryExisted) {
-                        initialJsonData.forEach { ModelData.fromJson(it).load(branch) }
-                    }
-                    val rootNode = branch.withAutoTransactions().getRootNode()
-                    LOG.debug { "Connected to model server" }
-                    callback(rootNode)
+                    TODO("Migration of IncrementalBranch to IMutableModelTree is needed")
+//                    val branch = model.getVersionedModelTree().withIncrementalComputationSupport()
+//                    if (!repositoryExisted) {
+//                        initialJsonData.forEach { ModelData.fromJson(it).load(branch) }
+//                    }
+//                    val rootNode = branch.withAutoTransactions().getRootNode()
+//                    LOG.debug { "Connected to model server" }
+//                    callback(rootNode)
                 } else {
                     error("Unsupported URL: $url")
 //                    val builder = LightModelClient.builder().port(48305)
