@@ -842,5 +842,9 @@
       <ref role="PrY4T" node="7GLg2tFqfQG" resolve="IReactModuleContent" />
     </node>
   </node>
+  <node concept="PlHQZ" id="2vPZMAnZU0P">
+    <property role="EcuMT" value="2879488090882154549" />
+    <property role="TrG5h" value="IHasState" />
+  </node>
 </model>
 
