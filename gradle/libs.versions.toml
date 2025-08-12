@@ -24,6 +24,6 @@ modelix-model-datastructure = { group = "org.modelix", name = "model-datastructu
 modelix-mps-model-adapters = { group = "org.modelix.mps", name = "model-adapters", version.ref = "modelixCore" }
 kotlin-html = "org.jetbrains.kotlinx:kotlinx-html:0.12.0"
 modelix-build-tools-lib = { group = "org.modelix.mps", name = "build-tools-lib", version.ref = "modelixBuildtools" }
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.11" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.12" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.4.0" }
