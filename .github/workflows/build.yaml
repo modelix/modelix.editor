@@ -33,7 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build -PciBuild=true -Pgpr.token=${{ secrets.GITHUB_TOKEN }} -Pmps.version.major=2023.3
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: kernelf-angular-demo/dist/kernelf-angular-demo
       - name: Archive test report
