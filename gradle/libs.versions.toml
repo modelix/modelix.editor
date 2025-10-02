@@ -9,7 +9,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [versions]
-modelixCore = "15.5.1"
+modelixCore = "16.0.4-versions-prerelease.2"
 modelixBuildtools="1.9.0"
 kotlin = "2.2.10"
 
