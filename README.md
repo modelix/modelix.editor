@@ -1,4 +1,4 @@
-# modelix.text-editor
+# modelix.editor
 
 This project contains MPS plugins and languages for adding web based editors to your languages.
 

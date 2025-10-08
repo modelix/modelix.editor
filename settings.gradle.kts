@@ -24,7 +24,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "modelix.text-editor"
+rootProject.name = "modelix.editor"
 
 include("editor-common-mps")
 include("kernelf-angular-demo")
