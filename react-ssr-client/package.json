@@ -13,7 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@modelix/projectional-editor-ssr-client-lib": "file:../projectional-editor-ssr-client-lib/build/packages/js",
-    "@modelix/ts-model-api": "^8.15.0",
+    "@modelix/ts-model-api": "^16.2.1",
     "@mui/icons-material": "^5.15.20",
     "@mui/joy": "^5.0.0-beta.51",
     "@mui/material": "^5.15.20",
