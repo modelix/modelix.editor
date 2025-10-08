@@ -57,7 +57,7 @@ npmPublish {
                 homepage.set("https://modelix.org/")
                 repository {
                     type.set("git")
-                    url.set("https://github.com/modelix/modelix.text-editor.git")
+                    url.set("https://github.com/modelix/modelix.editor.git")
                     directory.set(project.name)
                 }
             }

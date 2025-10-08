@@ -144,7 +144,7 @@ tasks.named("packJsPackage") {
 
 // listOf("jsBrowserDevelopmentLibraryPrepare", "jsBrowserProductionLibraryPrepare", "jsNodeDevelopmentLibraryPrepare", "jsNodeProductionLibraryPrepare").forEach {
 //    tasks.named(it) {
-//        // because it uses build/js/packages/modelix.text-editor-kernelf-editor/kotlin
+//        // because it uses build/js/packages/modelix.editor-kernelf-editor/kotlin
 //        dependsOn("jsDevelopmentLibraryCompileSync")
 //        dependsOn("jsProductionLibraryCompileSync")
 //    }
@@ -172,7 +172,7 @@ val patchTypesScriptInProductionLibrary = tasks.register("patchTypesScriptInProd
 
         // Add correct TypeScript imports.
         val typescriptDeclaration =
-            preparedProductionLibraryOutputDirectory.get().file("modelix.text-editor-kernelf-editor.d.ts").asFile
+            preparedProductionLibraryOutputDirectory.get().file("modelix.editor-kernelf-editor.d.ts").asFile
         val originalTypescriptDeclarationContent = typescriptDeclaration.readText()
         typescriptDeclaration.writer().use {
             it.appendLine("""import { INodeJS } from "@modelix/ts-model-api";""").appendLine()

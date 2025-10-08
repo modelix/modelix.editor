@@ -2,7 +2,7 @@
   "name": "kernelf-angular-demo",
   "version": "0.0.0",
   "repository": {
-    "url": "git+https://github.com/modelix/modelix.text-editor.git"
+    "url": "git+https://github.com/modelix/modelix.editor.git"
   },
   "scripts": {
     "ng": "ng",
