@@ -61,7 +61,7 @@ fun computeVersion(): Any {
 }
 
 val tsModelApiPath = rootDir.parentFile.resolve("modelix.core").resolve("ts-model-api")
-val tsModelApiVersion = "3.16.0" // if (tsModelApiPath.exists()) "file:${tsModelApiPath.absolutePath}" else libs.versions.modelixCore.get()
+val tsModelApiVersion = libs.versions.modelixCore.get() // if (tsModelApiPath.exists()) "file:${tsModelApiPath.absolutePath}" else libs.versions.modelixCore.get()
 ext.set("ts-model-api.version", tsModelApiVersion)
 
 subprojects {
