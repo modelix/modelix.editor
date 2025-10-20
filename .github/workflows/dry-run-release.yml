@@ -25,7 +25,7 @@ jobs:
         # building releases because --dry-run still filters for configured
         # branches.
         run: git checkout -b main
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '22.2.0 '
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
