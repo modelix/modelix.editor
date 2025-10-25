@@ -1,4 +1,4 @@
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.buildtools.KnownModuleIds
 import org.modelix.buildtools.ModuleId
@@ -10,11 +10,17 @@ import org.modelix.mpsPluginsDir
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.intellij2)
+}
+
+repositories {
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     compilerOptions {
         apiVersion = KotlinVersion.KOTLIN_1_8
     }
@@ -26,6 +32,15 @@ dependencies {
     implementation(project(":projectional-editor"), excludeMPSLibraries)
     implementation(project(":projectional-editor-ssr-server"), excludeMPSLibraries)
     implementation(libs.slf4j.api, excludeMPSLibraries)
+    intellijPlatform {
+        local(mpsHomeDir)
+        localPlugin(project(":editor-common-mps"))
+    }
+    compileOnly(
+        fileTree(mpsHomeDir).matching {
+            include("lib/*.jar")
+        },
+    )
 }
 
 tasks.processResources {
@@ -40,28 +55,16 @@ sourceSets {
     }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    localPath = mpsHomeDir.map { it.asFile.absolutePath }
+intellijPlatform {
     instrumentCode = false
-    plugins.set(listOf(project(":editor-common-mps")))
+    buildSearchableOptions = false
+    pluginConfiguration {
+        id = "org.modelix.mps.editor"
+        name = "Modelix Projectional Text Editor for MPS"
+    }
 }
 
 tasks {
-    patchPluginXml {
-        sinceBuild.set("232")
-        untilBuild.set("233.*")
-    }
-
-    buildSearchableOptions {
-        enabled = false
-    }
-
-    runIde {
-        autoReloadPlugins.set(true)
-    }
-
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
         val installMpsPlugin = register<Sync>("installMpsPlugin") {
@@ -75,24 +78,24 @@ tasks {
     }
 
     withType(PrepareSandboxTask::class.java) {
-        intoChild(pluginName.map { "$it/META-INF" })
+        rootSpec.addChild().into(pluginName.map { "$it/META-INF" })
             .from(project.layout.projectDirectory.file("src/main/resources/META-INF"))
             .exclude("plugin.xml")
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(patchPluginXml.flatMap { it.outputFiles })
+        rootSpec.addChild().into(pluginName.map { "$it/META-INF" })
+            .from(patchPluginXml.flatMap { it.outputFile })
 
         doLast {
-            val jarsInBasePlugin = defaultDestinationDir.get().resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
-            defaultDestinationDir.get().resolve(project.name).resolve("lib").listFiles()?.forEach {
+            val jarsInBasePlugin = defaultDestinationDirectory.get().asFile.resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
+            defaultDestinationDirectory.get().asFile.resolve(project.name).resolve("lib").listFiles()?.forEach {
                 if (jarsInBasePlugin.contains(it.name)) it.delete()
             }
 
             val ownJar: File = pluginJar.get().asFile
-            val runtimeJars = configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME).resolvedConfiguration.files + ownJar
+            val runtimeJars = configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME).incoming.files + ownJar
             buildStubsSolutionJar {
                 solutionName("org.modelix.mps.editor.ssr.stubs")
                 solutionId("771cf896-ab1b-409b-93b4-48c3bbb6b23f")
-                outputFolder(defaultDestinationDir.get().resolve(project.name).resolve("languages"))
+                outputFolder(defaultDestinationDirectory.get().asFile.resolve(project.name).resolve("languages"))
                 runtimeJars.filterNot { jarsInBasePlugin.contains(it.name) }.forEach {
                     javaJar(it.name)
 //                    kotlinJar(it.name)

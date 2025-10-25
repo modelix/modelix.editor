@@ -20,7 +20,7 @@ val generatorOutputDir = file("src/commonMain/kotlin_gen")
 val tsGeneratorOutputDir = file("../kernelf-angular-demo/src/gen")
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     jvm()
     js(IR) {
         browser {
@@ -153,7 +153,7 @@ tasks.named("packJsPackage") {
 val productionLibraryByKotlinOutputDirectory = layout.buildDirectory.dir("compileSync/js/main/productionLibrary/kotlin")
 val preparedProductionLibraryOutputDirectory = layout.buildDirectory.dir("npmPublication")
 
-val patchTypesScriptInProductionLibrary = tasks.register("patchTypesScriptInProductionLibrary") {
+val patchTypesScriptInProductionLibrary = tasks.register<Task>("patchTypesScriptInProductionLibrary") {
     dependsOn("compileProductionLibraryKotlinJs")
     inputs.dir(productionLibraryByKotlinOutputDirectory)
     outputs.dir(preparedProductionLibraryOutputDirectory)

@@ -16,6 +16,8 @@
 
 package org.modelix
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.file.Directory
@@ -24,12 +26,13 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import java.io.File
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 val Project.mpsMajorVersion: String get() {
     if (project != rootProject) return rootProject.mpsMajorVersion
     return project.findProperty("mps.version.major")?.toString()?.takeIf { it.isNotEmpty() }
         ?: project.findProperty("mps.version")?.toString()?.takeIf { it.isNotEmpty() }?.replace(Regex("""(20\d\d\.\d+).*"""), "$1")
-        ?: "2023.2"
+        ?: "2025.2"
 }
 
 val Project.mpsVersion: String get() {
@@ -48,6 +51,8 @@ val Project.mpsVersion: String get() {
                     "2023.2" to "2023.2.2",
                     "2023.3" to "2023.3.2",
                     "2024.1" to "2024.1.1",
+                    "2025.1" to "2025.1.1",
+                    "2025.2" to "2025.2.1",
                 )[it],
             ) { "Unknown MPS version: $it" }
         }
@@ -134,6 +139,27 @@ fun Project.copyMps(): File {
     val prefix = "MPS-"
     if (!buildNumber.startsWith(prefix)) {
         buildTxt.writeText("$prefix$buildNumber")
+    }
+
+    // fix product-info.json
+    val productInfoFile = mpsHomeDir.get().asFile.resolve("product-info.json")
+    val productInfo = productInfoFile.takeIf { it.exists() }?.reader()?.use { reader ->
+        JsonParser.parseReader(reader)
+    }?.asJsonObject
+    if (productInfo != null) {
+        if (!productInfo.has("bundledPlugins")) productInfo.add("bundledPlugins", JsonArray())
+        if (!productInfo.has("modules")) productInfo.add("modules", JsonArray())
+        if (!productInfo.has("layout")) productInfo.add("layout", JsonArray())
+        productInfoFile.writeText(productInfo.toString())
+    }
+
+    // add missing module-descriptors.jar
+    val moduleDescriptorsFile = mpsHomeDir.get().asFile.resolve("modules").resolve("module-descriptors.jar")
+    if (!moduleDescriptorsFile.exists()) {
+        moduleDescriptorsFile.parentFile.mkdirs()
+        moduleDescriptorsFile.outputStream().use { fos ->
+            ZipOutputStream(fos).use {}
+        }
     }
 
     println("Extracting MPS done.")

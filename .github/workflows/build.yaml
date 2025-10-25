@@ -31,7 +31,7 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build -PciBuild=true -Pgpr.token=${{ secrets.GITHUB_TOKEN }} -Pmps.version.major=2023.3
+        run: ./gradlew build -PciBuild=true -Pgpr.token=${{ secrets.GITHUB_TOKEN }} -Pmps.version.major=2025.2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

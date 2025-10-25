@@ -1,4 +1,4 @@
-import org.jetbrains.intellij.tasks.BuildPluginTask
+import org.jetbrains.intellij.platform.gradle.tasks.BuildPluginTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
@@ -21,7 +21,8 @@ plugins {
     id("com.dorongold.task-tree") version "4.0.1"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    id("org.jetbrains.intellij") version "1.17.4" apply false
+    alias(libs.plugins.intellij2) apply false
+    alias(libs.plugins.intellij2.migration) apply false
     alias(libs.plugins.npm.publish) apply false
 }
 
@@ -116,7 +117,7 @@ subprojects {
 
     plugins.withType<KotlinPluginWrapper> {
         extensions.configure<KotlinJvmProjectExtension> {
-            jvmToolchain(17)
+            jvmToolchain(21)
             sourceSets.all {
                 if (!name.lowercase().contains("test")) {
                     languageSettings {
@@ -129,7 +130,7 @@ subprojects {
 
     plugins.withType<KotlinMultiplatformPluginWrapper> {
         extensions.configure<KotlinMultiplatformExtension> {
-            jvmToolchain(17)
+            jvmToolchain(21)
             sourceSets.all {
                 if (!name.lowercase().contains("test")) {
                     languageSettings {
@@ -151,7 +152,7 @@ rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlu
 copyMps()
 
 // make all 'packJsPackage' tasks depend on all 'kotlinNodeJsSetup' tasks, because gradle complained about this being missing
-tasks.register("setupNodeEverywhere") {
+tasks.register<Task>("setupNodeEverywhere") {
     dependsOn(":kernelf-apigen:kotlinNodeJsSetup")
     dependsOn(":kernelf-editor:kotlinNodeJsSetup")
     dependsOn(":parser:kotlinNodeJsSetup")
