@@ -17,7 +17,7 @@ buildscript {
 
 plugins {
     `maven-publish`
-    id("com.palantir.git-version") version "4.0.0"
+    id("com.palantir.git-version") version "4.1.0"
     id("com.dorongold.task-tree") version "4.0.1"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
