@@ -1,5 +1,5 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir

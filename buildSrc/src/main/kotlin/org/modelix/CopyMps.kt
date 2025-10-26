@@ -153,17 +153,19 @@ fun Project.copyMps(): File {
         if (!productInfo.has("layout")) productInfo.add("layout", JsonArray())
 
         val currentOS = org.gradle.internal.os.OperatingSystem.current()
-        val currentOSString = when  {
+        val currentOSString = when {
             currentOS.isMacOsX -> "macOS"
             currentOS.isWindows -> "Windows"
             else -> "Linux"
         }
         val launches = productInfo.getAsJsonArray("launch").asList()
         if (!launches.any { it.asJsonObject.get("os").asString == currentOSString && it.asJsonObject.get("arch").asString == System.getProperty("os.arch") }) {
-            launches.add(launches.first().deepCopy().also {
-                it.asJsonObject.addProperty("os", currentOSString)
-                it.asJsonObject.addProperty("arch", System.getProperty("os.arch"))
-            })
+            launches.add(
+                launches.first().deepCopy().also {
+                    it.asJsonObject.addProperty("os", currentOSString)
+                    it.asJsonObject.addProperty("arch", System.getProperty("os.arch"))
+                }
+            )
         }
 
         productInfoFile.writeText(productInfo.toString())
