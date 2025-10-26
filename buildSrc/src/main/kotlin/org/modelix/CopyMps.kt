@@ -182,7 +182,7 @@ fun Project.copyMps(): File {
 
     // fix bin/mps64.vmoptions
     val vmOptionsFile = mpsHome.resolve("bin").resolve("mps64.vmoptions")
-    vmOptionsFile.writeText(vmOptionsFile.readLines().filterNot { it.trim().startsWith("#") }.joinToString("n"))
+    vmOptionsFile.writeText(vmOptionsFile.readLines().filterNot { it.trim().startsWith("#") }.joinToString("\n"))
 
     println("Extracting MPS done.")
     return mpsHome
