@@ -70,7 +70,7 @@ tasks {
     if (pluginDir != null) {
         val installMpsPlugin = register<Sync>("installMpsPlugin") {
             dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/MPS-${project.mpsVersion}/plugins/${project.name}"))
+            from(prepareSandbox.map { it.pluginDirectory.get() })
             into(pluginDir.resolve(project.name))
         }
         register<Task>("installMpsDevPlugins") {
