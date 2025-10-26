@@ -11,7 +11,6 @@ import org.modelix.mpsPluginsDir
 plugins {
     kotlin("jvm")
     alias(libs.plugins.intellij2)
-    alias(libs.plugins.intellij2.migration)
     alias(libs.plugins.modelix.model.api.gen)
 }
 

@@ -22,7 +22,6 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.intellij2) apply false
-    alias(libs.plugins.intellij2.migration) apply false
     alias(libs.plugins.npm.publish) apply false
 }
 

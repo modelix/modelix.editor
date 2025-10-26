@@ -17,9 +17,9 @@ repositories {
 
 kotlin {
     jvmToolchain(21)
-    compilerOptions {
-        apiVersion = KotlinVersion.KOTLIN_1_8
-    }
+//    compilerOptions {
+//        apiVersion = KotlinVersion.KOTLIN_1_8
+//    }
 }
 
 dependencies {
@@ -32,8 +32,14 @@ dependencies {
 //        bundledPlugin("jetbrains.mps.kotlin")
         localPlugin(project(":editor-common-mps"))
         localPlugin(project(":projectional-editor-ssr-mps"))
+        testFramework(TestFrameworkType.Bundled)
     }
     compileOnly(
+        fileTree(mpsHomeDir).matching {
+            include("lib/*.jar")
+        },
+    )
+    testCompileOnly(
         fileTree(mpsHomeDir).matching {
             include("lib/*.jar")
         },

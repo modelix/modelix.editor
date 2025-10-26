@@ -50,7 +50,8 @@ val Project.mpsVersion: String get() {
                     "2022.3" to "2022.3.3",
                     "2023.2" to "2023.2.2",
                     "2023.3" to "2023.3.2",
-                    "2024.1" to "2024.1.1",
+                    "2024.1" to "2024.1.5",
+                    "2024.3" to "2024.3.2",
                     "2025.1" to "2025.1.1",
                     "2025.2" to "2025.2.1",
                 )[it],
@@ -150,6 +151,21 @@ fun Project.copyMps(): File {
         if (!productInfo.has("bundledPlugins")) productInfo.add("bundledPlugins", JsonArray())
         if (!productInfo.has("modules")) productInfo.add("modules", JsonArray())
         if (!productInfo.has("layout")) productInfo.add("layout", JsonArray())
+
+        val currentOS = org.gradle.internal.os.OperatingSystem.current()
+        val currentOSString = when  {
+            currentOS.isMacOsX -> "macOS"
+            currentOS.isWindows -> "Windows"
+            else -> "Linux"
+        }
+        val launches = productInfo.getAsJsonArray("launch").asList()
+        if (!launches.any { it.asJsonObject.get("os").asString == currentOSString && it.asJsonObject.get("arch").asString == System.getProperty("os.arch") }) {
+            launches.add(launches.first().deepCopy().also {
+                it.asJsonObject.addProperty("os", currentOSString)
+                it.asJsonObject.addProperty("arch", System.getProperty("os.arch"))
+            })
+        }
+
         productInfoFile.writeText(productInfo.toString())
     }
 

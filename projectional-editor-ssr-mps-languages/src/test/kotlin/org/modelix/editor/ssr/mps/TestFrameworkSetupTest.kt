@@ -2,7 +2,7 @@ package org.modelix.editor.ssr.mps
 
 import com.intellij.ide.plugins.PluginManager
 import jetbrains.mps.classloading.ModuleClassLoader
-import jetbrains.mps.module.ReloadableModuleBase
+import jetbrains.mps.module.ReloadableModule
 
 /**
  * Check that the environment is initialized properly and all plugins and modules are loaded properly.
@@ -28,7 +28,7 @@ class TestFrameworkSetupTest : TestBase("SimpleProject") {
 
     fun `test module is valid for classloading`() {
         readAction {
-            val module = mpsProject.repository.modules.filterIsInstance<ReloadableModuleBase>().first { it.moduleName == "org.modelix.mps.notation.impl.baseLanguage" }
+            val module = mpsProject.repository.modules.filterIsInstance<ReloadableModule>().first { it.moduleName == "org.modelix.mps.notation.impl.baseLanguage" }
             assertInstanceOf(module.classLoader, ModuleClassLoader::class.java)
         }
     }
