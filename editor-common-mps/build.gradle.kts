@@ -5,6 +5,7 @@ import org.modelix.buildtools.buildStubsSolutionJar
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
+import org.modelix.mpsVersion
 
 plugins {
     kotlin("jvm")
@@ -69,7 +70,7 @@ tasks {
     if (pluginDir != null) {
         val installMpsPlugin = register<Sync>("installMpsPlugin") {
             dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+            from(project.layout.buildDirectory.dir("idea-sandbox/MPS-${project.mpsVersion}/plugins/${project.name}"))
             into(pluginDir.resolve(project.name))
         }
         register<Task>("installMpsDevPlugins") {

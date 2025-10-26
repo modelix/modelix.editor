@@ -41,9 +41,9 @@ mpsBuild {
 tasks.all {
     if (name in setOf("assembleMpsModules")) {
         inputs.dir(project.layout.projectDirectory.dir("modules"))
-        inputs.dir(project(":editor-common-mps").layout.buildDirectory.dir("idea-sandbox/plugins/editor-common-mps"))
-        inputs.dir(project(":projectional-editor-ssr-mps").layout.buildDirectory.dir("idea-sandbox/plugins/projectional-editor-ssr-mps"))
-        inputs.dir(project(":react-ssr-mps").layout.buildDirectory.dir("idea-sandbox/plugins/react-ssr-mps"))
+        inputs.dir(project(":editor-common-mps").layout.buildDirectory.dir("idea-sandbox/MPS-${project.mpsVersion}/plugins/editor-common-mps"))
+        inputs.dir(project(":projectional-editor-ssr-mps").layout.buildDirectory.dir("idea-sandbox/MPS-${project.mpsVersion}/plugins/projectional-editor-ssr-mps"))
+        inputs.dir(project(":react-ssr-mps").layout.buildDirectory.dir("idea-sandbox/MPS-${project.mpsVersion}/plugins/react-ssr-mps"))
     }
     if (name == "assembleMpsModules") {
         outputs.dir(project.layout.buildDirectory.dir("mpsbuild/packaged-modules"))
