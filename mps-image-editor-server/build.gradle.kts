@@ -1,4 +1,4 @@
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
@@ -6,11 +6,17 @@ import org.modelix.mpsPluginsDir
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.intellij2)
+}
+
+repositories {
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     compilerOptions {
         apiVersion = KotlinVersion.KOTLIN_1_8
     }
@@ -20,62 +26,49 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(project(":editor-common-mps"))
     implementation(libs.slf4j.api, excludeMPSLibraries)
+    intellijPlatform {
+        local(mpsHomeDir)
+        localPlugin(project(":editor-common-mps"))
+    }
+    compileOnly(
+        fileTree(mpsHomeDir).matching {
+            include("lib/*.jar")
+        },
+    )
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    localPath = mpsHomeDir.map { it.asFile.absolutePath }
+intellijPlatform {
     instrumentCode = false
-    plugins.set(listOf(project(":editor-common-mps")))
+    buildSearchableOptions = false
+    pluginConfiguration {
+        id = "org.modelix.mps.editor.image"
+        name = "Image Based Web Editor for MPS"
+    }
 }
 
 tasks {
-    patchPluginXml {
-        sinceBuild.set("232")
-        untilBuild.set("233.*")
-    }
-
-    buildSearchableOptions {
-        enabled = false
-    }
-
-//    signPlugin {
-//        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-//        privateKey.set(System.getenv("PRIVATE_KEY"))
-//        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-//    }
-//
-//    publishPlugin {
-//        token.set(System.getenv("PUBLISH_TOKEN"))
-//    }
-
-    runIde {
-        autoReloadPlugins.set(true)
-    }
-
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
         val installMpsPlugin = register<Sync>("installMpsPlugin") {
             dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+            from(prepareSandbox.map { it.pluginDirectory.get() })
             into(pluginDir.resolve(project.name))
         }
-        register("installMpsDevPlugins") {
+        register<Task>("installMpsDevPlugins") {
             dependsOn(installMpsPlugin)
         }
     }
 
     withType(PrepareSandboxTask::class.java) {
-        intoChild(pluginName.map { "$it/META-INF" })
+        rootSpec.addChild().into(pluginName.map { "$it/META-INF" })
             .from(project.layout.projectDirectory.file("src/main/resources/META-INF"))
             .exclude("plugin.xml")
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(patchPluginXml.flatMap { it.outputFiles })
+        rootSpec.addChild().into(pluginName.map { "$it/META-INF" })
+            .from(patchPluginXml.flatMap { it.outputFile })
 
         doLast {
-            val jarsInBasePlugin = defaultDestinationDir.get().resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
-            defaultDestinationDir.get().resolve(project.name).resolve("lib").listFiles()?.forEach {
+            val jarsInBasePlugin = defaultDestinationDirectory.get().asFile.resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
+            defaultDestinationDirectory.get().asFile.resolve(project.name).resolve("lib").listFiles()?.forEach {
                 if (jarsInBasePlugin.contains(it.name)) it.delete()
             }
         }

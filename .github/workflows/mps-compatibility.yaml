@@ -16,9 +16,9 @@ jobs:
       matrix:
         version:
           # also adjust the compatibility version range of the MPS plugin
-          - "2023.2"
-          - "2023.3"
-#          - "2024.1"
+          - "2024.3"
+          - "2025.1"
+          - "2025.2"
     steps:
       - uses: actions/checkout@v5
 #      - uses: actions/setup-node@v3

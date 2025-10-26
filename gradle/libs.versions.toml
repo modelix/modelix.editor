@@ -7,11 +7,15 @@ modelix-mps-buildtools = { id = "org.modelix.mps.build-tools", version.ref = "mo
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+intellij1 = { id = "org.jetbrains.intellij", version = "1.17.4" }
+intellij2 = { id = "org.jetbrains.intellij.platform", version.ref = "intellijGradle" }
+intellij2-migration = { id = "org.jetbrains.intellij.platform.migration", version.ref = "intellijGradle" }
 
 [versions]
-modelixCore = "16.3.0"
+modelixCore = "16.4.0"
 modelixBuildtools="2.0.1"
 kotlin = "2.2.21"
+intellijGradle = "2.10.2"
 
 [libraries]
 modelix-model-api = { group = "org.modelix", name = "model-api", version.ref = "modelixCore" }
@@ -27,3 +31,5 @@ modelix-build-tools-lib = { group = "org.modelix.mps", name = "build-tools-lib",
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.13" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.4.0" }
+mps = { group = "com.jetbrains", name = "mps", version = "2025.2.1" }
+
