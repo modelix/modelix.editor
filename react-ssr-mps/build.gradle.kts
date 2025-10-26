@@ -7,7 +7,6 @@ import org.modelix.buildtools.buildStubsSolutionJar
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
-import org.modelix.mpsVersion
 
 plugins {
     kotlin("jvm")
