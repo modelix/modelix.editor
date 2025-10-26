@@ -18,9 +18,9 @@ mpsBuild {
     javaHome = Jvm.current().javaHome
     disableParentPublication()
 
-    search("../editor-common-mps/build/idea-sandbox/MPS-${mpsVersion}/plugins/editor-common-mps")
-    search("../projectional-editor-ssr-mps/build/idea-sandbox/MPS-${mpsVersion}/plugins/projectional-editor-ssr-mps")
-    search("../react-ssr-mps/build/idea-sandbox/MPS-${mpsVersion}/plugins/react-ssr-mps")
+    search("../editor-common-mps/build/idea-sandbox/MPS-${project.mpsVersion}/plugins/editor-common-mps")
+    search("../projectional-editor-ssr-mps/build/idea-sandbox/MPS-${project.mpsVersion}/plugins/projectional-editor-ssr-mps")
+    search("../react-ssr-mps/build/idea-sandbox/MPS-${project.mpsVersion}/plugins/react-ssr-mps")
     search("modules")
     publication("editor-languages") {
         module("org.modelix.mps.webaspect.devkit")
