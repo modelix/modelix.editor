@@ -29,7 +29,7 @@ val Project.mpsMajorVersion: String get() {
     if (project != rootProject) return rootProject.mpsMajorVersion
     return project.findProperty("mps.version.major")?.toString()?.takeIf { it.isNotEmpty() }
         ?: project.findProperty("mps.version")?.toString()?.takeIf { it.isNotEmpty() }?.replace(Regex("""(20\d\d\.\d+).*"""), "$1")
-        ?: "2023.2"
+        ?: "2024.1"
 }
 
 val Project.mpsVersion: String get() {
@@ -45,9 +45,9 @@ val Project.mpsVersion: String get() {
                     "2021.3" to "2021.3.5",
                     "2022.2" to "2022.2.4",
                     "2022.3" to "2022.3.3",
-                    "2023.2" to "2023.2.2",
+                    "2023.2" to "2023.2.3",
                     "2023.3" to "2023.3.2",
-                    "2024.1" to "2024.1.1",
+                    "2024.1" to "2024.1.5",
                 )[it],
             ) { "Unknown MPS version: $it" }
         }

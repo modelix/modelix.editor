@@ -26,7 +26,7 @@
       </concept>
       <concept id="8876946878573903262" name="org.modelix.mps.react.structure.ConceptRenderer" flags="ng" index="gmrQT">
         <reference id="8310867745953086698" name="concept" index="3JBHV4" />
-        <child id="8876946878573903455" name="component" index="gmrTS" />
+        <child id="8876946878573903455" name="components" index="gmrTS" />
       </concept>
       <concept id="5355184975888307501" name="org.modelix.mps.react.structure.StateVariable" flags="ng" index="2o1qlL">
         <child id="5355184975888310505" name="initializer" index="2o1p2P" />
@@ -55,7 +55,7 @@
       </concept>
       <concept id="5355184975881056557" name="org.modelix.mps.react.structure.NamedRendererBase" flags="ng" index="2rHO5L">
         <child id="5355184975881056561" name="parameters" index="2rHO5H" />
-        <child id="5355184975881056562" name="component" index="2rHO5I" />
+        <child id="5355184975881056562" name="components" index="2rHO5I" />
       </concept>
       <concept id="2833354970324905743" name="org.modelix.mps.react.structure.RenderNode" flags="ng" index="1nBVpq">
         <child id="2833354970324905746" name="nodeToRender" index="1nBVp7" />
@@ -1091,7 +1091,7 @@
             <property role="Xl_RC" value="Beispiel" />
           </node>
           <node concept="3z9kRR" id="G39ofCeJ1I" role="3z8GDl">
-            <ref role="3z9kRQ" node="G39ofCeJ0i" resolve="accTitll" />
+            <ref role="3z9kRQ" node="G39ofCeJ0i" resolve="accTitle" />
           </node>
         </node>
       </node>

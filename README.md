@@ -17,7 +17,7 @@ See also https://www.jetbrains.com/help/idea/directories-used-by-the-ide-to-stor
 
 You may have to create the plugins folder if it doesn't exist yet.
 
-Currently, these MPS versions are supported: 2023.2, 2023.3
+Currently, these MPS versions are supported: 2023.2, 2023.3, 2024.1
 
 # Usage
 

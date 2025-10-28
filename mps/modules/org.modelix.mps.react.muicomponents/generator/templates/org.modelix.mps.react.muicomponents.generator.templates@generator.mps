@@ -77,7 +77,7 @@
       </concept>
       <concept id="8876946878573903262" name="org.modelix.mps.react.structure.ConceptRenderer" flags="ng" index="gmrQT">
         <reference id="8310867745953086698" name="concept" index="3JBHV4" />
-        <child id="8876946878573903455" name="component" index="gmrTS" />
+        <child id="8876946878573903455" name="components" index="gmrTS" />
       </concept>
       <concept id="8876946878573903439" name="org.modelix.mps.react.structure.GenericReactComponent" flags="ng" index="gmrTC">
         <property id="8876946878573977569" name="componentType" index="gmPZ6" />
@@ -490,7 +490,7 @@
   <node concept="bUwia" id="2vPZMAmvnIA">
     <property role="TrG5h" value="main" />
     <node concept="3aamgX" id="af0_0CUx85" role="3acgRq">
-      <ref role="30HIoZ" to="zaxg:af0_0CR$4e" resolve="CreateDeleteEditChild" />
+      <ref role="30HIoZ" to="zaxg:af0_0CR$4e" resolve="CreateDeleteRenderChild" />
       <node concept="1Koe21" id="af0_0CUJep" role="1lVwrX">
         <node concept="gmrQT" id="af0_0CUJxl" role="1Koe22">
           <ref role="3JBHV4" to="tpee:fz12cDA" resolve="ClassConcept" />
@@ -622,7 +622,7 @@
       </node>
     </node>
     <node concept="3aamgX" id="7$1mkeArCYD" role="3acgRq">
-      <ref role="30HIoZ" to="zaxg:7$1mkeArAgt" resolve="ErrorBox" />
+      <ref role="30HIoZ" to="zaxg:7$1mkeArAgt" resolve="ErrorReporting" />
       <node concept="1Koe21" id="7$1mkeArIwS" role="1lVwrX">
         <node concept="gmrQT" id="7$1mkeArINu" role="1Koe22">
           <ref role="3JBHV4" to="tpee:fz12cDA" resolve="ClassConcept" />
@@ -665,7 +665,7 @@
                           <node concept="2OqwBi" id="3DPCGQwwvUW" role="3clFbG">
                             <node concept="30H73N" id="3DPCGQwwvpX" role="2Oq$k0" />
                             <node concept="3TrcHB" id="3DPCGQwwGUs" role="2OqNvi">
-                              <ref role="3TsBF5" to="zaxg:2CLPJ2uDwEt" resolve="onlyForFeature" />
+                              <ref role="3TsBF5" to="zaxg:2CLPJ2uDwEt" resolve="restrictToFeature" />
                             </node>
                           </node>
                         </node>
@@ -1477,7 +1477,7 @@
                                                       <node concept="2OqwBi" id="5KtU3pYoNpl" role="2Oq$k0">
                                                         <node concept="30H73N" id="5KtU3pYoN88" role="2Oq$k0" />
                                                         <node concept="3TrEf2" id="5KtU3pYoOld" role="2OqNvi">
-                                                          <ref role="3Tt5mk" to="zaxg:5KtU3pYn7YK" resolve="presentationFun" />
+                                                          <ref role="3Tt5mk" to="zaxg:5KtU3pYn7YK" resolve="labelFun" />
                                                         </node>
                                                       </node>
                                                       <node concept="1$rogu" id="5KtU3pYoPxX" role="2OqNvi" />
@@ -1502,7 +1502,7 @@
                                                 <node concept="2OqwBi" id="5KtU3pYomc0" role="2Oq$k0">
                                                   <node concept="30H73N" id="5KtU3pYolwM" role="2Oq$k0" />
                                                   <node concept="3TrEf2" id="5KtU3pYonm3" role="2OqNvi">
-                                                    <ref role="3Tt5mk" to="zaxg:5KtU3pYn7YK" resolve="presentationFun" />
+                                                    <ref role="3Tt5mk" to="zaxg:5KtU3pYn7YK" resolve="labelFun" />
                                                   </node>
                                                 </node>
                                                 <node concept="3x8VRR" id="5KtU3pYopD6" role="2OqNvi" />
@@ -1900,7 +1900,7 @@
                           <node concept="2OqwBi" id="2D6UMN62Z2n" role="3clFbG">
                             <node concept="1PxgMI" id="2D6UMN62TSO" role="2Oq$k0">
                               <node concept="chp4Y" id="2D6UMN62Udh" role="3oSUPX">
-                                <ref role="cht4Q" to="zaxg:2D6UMN62NpD" resolve="ChoiceSpecifierStatic" />
+                                <ref role="cht4Q" to="zaxg:2D6UMN62NpD" resolve="StringChoiceSpecifierStatic" />
                               </node>
                               <node concept="2OqwBi" id="2D6UMN62L3D" role="1m5AlR">
                                 <node concept="3TrEf2" id="2D6UMN62LYc" role="2OqNvi">
@@ -1932,7 +1932,7 @@
                         </node>
                         <node concept="1mIQ4w" id="6Z6l9RlxER3" role="2OqNvi">
                           <node concept="chp4Y" id="6Z6l9RlxER4" role="cj9EA">
-                            <ref role="cht4Q" to="zaxg:2D6UMN62NpD" resolve="ChoiceSpecifierStatic" />
+                            <ref role="cht4Q" to="zaxg:2D6UMN62NpD" resolve="StringChoiceSpecifierStatic" />
                           </node>
                         </node>
                       </node>
@@ -1965,7 +1965,7 @@
                                   <node concept="2OqwBi" id="gNsEGB7U$C" role="3clFbG">
                                     <node concept="1PxgMI" id="gNsEGB7TX7" role="2Oq$k0">
                                       <node concept="chp4Y" id="gNsEGB7UnD" role="3oSUPX">
-                                        <ref role="cht4Q" to="zaxg:gNsEGB5DCe" resolve="ChoiceSpecifierDynamic" />
+                                        <ref role="cht4Q" to="zaxg:gNsEGB5DCe" resolve="StringChoiceSpecifierDynamic" />
                                       </node>
                                       <node concept="2OqwBi" id="gNsEGB7EeS" role="1m5AlR">
                                         <node concept="3TrEf2" id="gNsEGB7EeV" role="2OqNvi">
@@ -2090,7 +2090,7 @@
                         </node>
                         <node concept="1mIQ4w" id="gNsEGBaVlY" role="2OqNvi">
                           <node concept="chp4Y" id="gNsEGBaVlZ" role="cj9EA">
-                            <ref role="cht4Q" to="zaxg:gNsEGB5DCe" resolve="ChoiceSpecifierDynamic" />
+                            <ref role="cht4Q" to="zaxg:gNsEGB5DCe" resolve="StringChoiceSpecifierDynamic" />
                           </node>
                         </node>
                       </node>
@@ -3933,7 +3933,7 @@
                             <node concept="2OqwBi" id="2iVdnDeSv38" role="3clFbG">
                               <node concept="2OqwBi" id="2iVdnDeSv39" role="2Oq$k0">
                                 <node concept="3TrEf2" id="2iVdnDeSv3a" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                                 <node concept="30H73N" id="2iVdnDeSv3b" role="2Oq$k0" />
                               </node>
@@ -3956,7 +3956,7 @@
                             <node concept="2OqwBi" id="2iVdnDeSv3i" role="2Oq$k0">
                               <node concept="30H73N" id="2iVdnDeSv3j" role="2Oq$k0" />
                               <node concept="3TrEf2" id="2iVdnDeSv3k" role="2OqNvi">
-                                <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                               </node>
                             </node>
                             <node concept="3TrEf2" id="2iVdnDeSv3l" role="2OqNvi">
@@ -3985,7 +3985,7 @@
                             <node concept="2OqwBi" id="2iVdnDeSv3v" role="3clFbG">
                               <node concept="2OqwBi" id="2iVdnDeSv3w" role="2Oq$k0">
                                 <node concept="3TrEf2" id="2iVdnDeSv3x" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                                 <node concept="30H73N" id="2iVdnDeSv3y" role="2Oq$k0" />
                               </node>
@@ -4010,7 +4010,7 @@
                               <node concept="2OqwBi" id="2iVdnDeSv3E" role="2Oq$k0">
                                 <node concept="30H73N" id="2iVdnDeSv3F" role="2Oq$k0" />
                                 <node concept="3TrEf2" id="2iVdnDeSv3G" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                               </node>
                               <node concept="3TrEf2" id="2iVdnDeSv3H" role="2OqNvi">
@@ -4031,7 +4031,7 @@
       </node>
     </node>
     <node concept="3aamgX" id="2vPZMAm$jBB" role="3acgRq">
-      <ref role="30HIoZ" to="zaxg:2vPZMAmvnIB" resolve="TextBox" />
+      <ref role="30HIoZ" to="zaxg:2vPZMAmvnIB" resolve="TextField" />
       <node concept="1Koe21" id="2vPZMAm$k04" role="1lVwrX">
         <node concept="gmrQT" id="2vPZMAm$k08" role="1Koe22">
           <ref role="3JBHV4" to="tpee:fz12cDA" resolve="ClassConcept" />
@@ -4053,7 +4053,7 @@
                             <node concept="2OqwBi" id="2vPZMAm$o8V" role="3clFbG">
                               <node concept="2OqwBi" id="2vPZMAm$nMQ" role="2Oq$k0">
                                 <node concept="3TrEf2" id="2vPZMAm$nMT" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                                 <node concept="30H73N" id="2vPZMAm$nMU" role="2Oq$k0" />
                               </node>
@@ -4076,7 +4076,7 @@
                             <node concept="2OqwBi" id="2vPZMAm$lFF" role="2Oq$k0">
                               <node concept="30H73N" id="2vPZMAm$lrf" role="2Oq$k0" />
                               <node concept="3TrEf2" id="2vPZMAm$mvK" role="2OqNvi">
-                                <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                               </node>
                             </node>
                             <node concept="3TrEf2" id="2vPZMAm$nJ2" role="2OqNvi">
@@ -4105,7 +4105,7 @@
                             <node concept="2OqwBi" id="2vPZMAm$pvN" role="3clFbG">
                               <node concept="2OqwBi" id="2vPZMAm$pbp" role="2Oq$k0">
                                 <node concept="3TrEf2" id="2vPZMAm$pbs" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                                 <node concept="30H73N" id="2vPZMAm$pbt" role="2Oq$k0" />
                               </node>
@@ -4130,7 +4130,7 @@
                               <node concept="2OqwBi" id="2vPZMAm$sfh" role="2Oq$k0">
                                 <node concept="30H73N" id="2vPZMAm$sfi" role="2Oq$k0" />
                                 <node concept="3TrEf2" id="2vPZMAm$sfj" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="context" />
+                                  <ref role="3Tt5mk" to="zaxg:2vPZMAmvsgs" resolve="data" />
                                 </node>
                               </node>
                               <node concept="3TrEf2" id="2vPZMAm$sfk" role="2OqNvi">
@@ -4533,7 +4533,7 @@
       </node>
     </node>
     <node concept="3aamgX" id="2vPZMAmF0VF" role="3acgRq">
-      <ref role="30HIoZ" to="zaxg:2vPZMAmEVPF" resolve="HorizontalLayout" />
+      <ref role="30HIoZ" to="zaxg:2vPZMAmEVPF" resolve="LayoutHorizontal" />
       <node concept="1Koe21" id="2vPZMAmF0VG" role="1lVwrX">
         <node concept="gmrQT" id="2vPZMAmF0VH" role="1Koe22">
           <ref role="3JBHV4" to="tpee:fz12cDA" resolve="ClassConcept" />
@@ -4706,7 +4706,7 @@
       </node>
     </node>
     <node concept="3aamgX" id="2vPZMAmGCt_" role="3acgRq">
-      <ref role="30HIoZ" to="zaxg:2vPZMAmGCtk" resolve="VerticalLayout" />
+      <ref role="30HIoZ" to="zaxg:2vPZMAmGCtk" resolve="LayoutVertical" />
       <node concept="1Koe21" id="2vPZMAmGCtA" role="1lVwrX">
         <node concept="gmrQT" id="2vPZMAmGCtB" role="1Koe22">
           <ref role="3JBHV4" to="tpee:fz12cDA" resolve="ClassConcept" />
@@ -5630,7 +5630,7 @@
                         <node concept="2OqwBi" id="2vPZMAmYMix" role="3clFbG">
                           <node concept="1PxgMI" id="2vPZMAmYM4N" role="2Oq$k0">
                             <node concept="chp4Y" id="2vPZMAmYM5F" role="3oSUPX">
-                              <ref role="cht4Q" to="zaxg:2vPZMAmYEOb" resolve="TextButtonLabel" />
+                              <ref role="cht4Q" to="zaxg:2vPZMAmYEOb" resolve="ButtonLabelText" />
                             </node>
                             <node concept="2OqwBi" id="2vPZMAmYKl8" role="1m5AlR">
                               <node concept="30H73N" id="2vPZMAmYJRj" role="2Oq$k0" />
@@ -5664,7 +5664,7 @@
               </node>
               <node concept="1mIQ4w" id="2vPZMAmYJxv" role="2OqNvi">
                 <node concept="chp4Y" id="2vPZMAmYJ$h" role="cj9EA">
-                  <ref role="cht4Q" to="zaxg:2vPZMAmYEOb" resolve="TextButtonLabel" />
+                  <ref role="cht4Q" to="zaxg:2vPZMAmYEOb" resolve="ButtonLabelText" />
                 </node>
               </node>
             </node>
@@ -5751,7 +5751,7 @@
               </node>
               <node concept="1mIQ4w" id="2vPZMAn9K87" role="2OqNvi">
                 <node concept="chp4Y" id="2vPZMAn9K88" role="cj9EA">
-                  <ref role="cht4Q" to="zaxg:2vPZMAn8wb$" resolve="IconButtonLabel" />
+                  <ref role="cht4Q" to="zaxg:2vPZMAn8wb$" resolve="ButtonLabelIcon" />
                 </node>
               </node>
             </node>
@@ -6092,7 +6092,7 @@
                         <node concept="2OqwBi" id="G39ofCgTe7" role="2Oq$k0">
                           <node concept="30H73N" id="G39ofCgS$x" role="2Oq$k0" />
                           <node concept="3TrEf2" id="G39ofCgUeR" role="2OqNvi">
-                            <ref role="3Tt5mk" to="zaxg:G39ofCeJi6" resolve="typo" />
+                            <ref role="3Tt5mk" to="zaxg:G39ofCeJi6" resolve="typography" />
                           </node>
                         </node>
                         <node concept="3x8VRR" id="G39ofCgWaK" role="2OqNvi" />
@@ -6200,7 +6200,7 @@
       </node>
     </node>
     <node concept="1puMqW" id="1Lliyam7_2i" role="1puA0r">
-      <ref role="1puQsG" node="1Lliyam7nYN" resolve="materialiseType" />
+      <ref role="1puQsG" node="1Lliyam7nYN" resolve="preprocess" />
     </node>
   </node>
   <node concept="1pmfR0" id="1Lliyam7nYN">
@@ -6324,7 +6324,7 @@
                     <ref role="3cqZAo" node="7HYB$0nu3BD" resolve="wrapper" />
                   </node>
                   <node concept="3TrcHB" id="7HYB$0nugsp" role="2OqNvi">
-                    <ref role="3TsBF5" to="zaxg:2xzaHpg1aM4" resolve="onlyNonFeatureSpecific" />
+                    <ref role="3TsBF5" to="zaxg:2xzaHpg1aM4" resolve="onlyGlobalErrors" />
                   </node>
                 </node>
                 <node concept="2OqwBi" id="7HYB$0nugsq" role="37vLTx">
@@ -6344,7 +6344,7 @@
                 </node>
                 <node concept="1P9Npp" id="2xzaHpfVzvW" role="2OqNvi">
                   <node concept="37vLTw" id="7HYB$0nu3BJ" role="1P9ThW">
-                    <ref role="3cqZAo" node="7HYB$0nu3BD" resolve="node" />
+                    <ref role="3cqZAo" node="7HYB$0nu3BD" resolve="wrapper" />
                   </node>
                 </node>
               </node>

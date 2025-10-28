@@ -42,7 +42,6 @@
     <module reference="2d3c70e9-aab2-4870-8d8d-6036800e4103(jetbrains.mps.kernel)" version="0" />
     <module reference="ceab5195-25ea-4f22-9b92-103b95ca8c0c(jetbrains.mps.lang.core)" version="0" />
     <module reference="9ded098b-ad6a-4657-bfd9-48636cfe8bc3(jetbrains.mps.lang.traceable)" version="0" />
-    <module reference="0a7577d1-d4e5-431d-98b1-fae38f9aee80(org.modelix.model.repositoryconcepts)" version="0" />
     <module reference="208eaf68-fd3a-497a-a4b6-4923ff457c3b(org.modelix.mps.editor.common.stubs)" version="0" />
     <module reference="472b2a37-8fd8-48c2-911a-4dd23131201d(org.modelix.mps.react.impl.baseLanguage)" version="0" />
     <module reference="83a7cbdc-dd9d-4dad-be97-957aa1b07375(org.modelix.mps.react.ssr.stubs)" version="0" />
