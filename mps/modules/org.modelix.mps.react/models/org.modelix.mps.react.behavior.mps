@@ -140,6 +140,7 @@
       <concept id="1138411891628" name="jetbrains.mps.lang.smodel.structure.SNodeOperation" flags="nn" index="eCIE_">
         <child id="1144104376918" name="parameter" index="1xVPHs" />
       </concept>
+      <concept id="1179409122411" name="jetbrains.mps.lang.smodel.structure.Node_ConceptMethodCall" flags="nn" index="2qgKlT" />
       <concept id="1145383075378" name="jetbrains.mps.lang.smodel.structure.SNodeListType" flags="in" index="2I9FWS">
         <reference id="1145383142433" name="elementConcept" index="2I9WkF" />
       </concept>
@@ -615,6 +616,55 @@
       </node>
       <node concept="3uibUv" id="6Ddb4_fOY0a" role="3clF45">
         <ref role="3uigEE" to="o8zo:3fifI_xCtN$" resolve="Scope" />
+      </node>
+    </node>
+  </node>
+  <node concept="13h7C7" id="fDKzOGEzgd">
+    <ref role="13h7C2" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+    <node concept="13i0hz" id="fDKzOGEzgw" role="13h7CS">
+      <property role="13i0it" value="true" />
+      <property role="TrG5h" value="getActualCustomHandlerBuilder" />
+      <node concept="3Tm1VV" id="fDKzOGEzgx" role="1B3o_S" />
+      <node concept="3Tqbb2" id="fDKzOGEzgO" role="3clF45">
+        <ref role="ehGHo" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+      </node>
+      <node concept="3clFbS" id="fDKzOGEzgz" role="3clF47">
+        <node concept="3cpWs6" id="fDKzOGEzjM" role="3cqZAp">
+          <node concept="13iPFW" id="fDKzOGEzjO" role="3cqZAk" />
+        </node>
+      </node>
+    </node>
+    <node concept="13hLZK" id="fDKzOGEzge" role="13h7CW">
+      <node concept="3clFbS" id="fDKzOGEzgf" role="2VODD2" />
+    </node>
+  </node>
+  <node concept="13h7C7" id="fDKzOGEzkg">
+    <property role="3GE5qa" value="incrementalFunction" />
+    <ref role="13h7C2" to="8xo1:1hCkroLrV87" resolve="IncrementalPolymorhpicFunctionOverload" />
+    <node concept="13hLZK" id="fDKzOGEzkh" role="13h7CW">
+      <node concept="3clFbS" id="fDKzOGEzki" role="2VODD2" />
+    </node>
+    <node concept="13i0hz" id="fDKzOGEzk_" role="13h7CS">
+      <property role="TrG5h" value="getActualCustomHandlerBuilder" />
+      <ref role="13i0hy" node="fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
+      <node concept="3Tm1VV" id="fDKzOGEzkA" role="1B3o_S" />
+      <node concept="3clFbS" id="fDKzOGEzkF" role="3clF47">
+        <node concept="3cpWs6" id="fDKzOGEzvF" role="3cqZAp">
+          <node concept="2OqwBi" id="fDKzOGEAad" role="3cqZAk">
+            <node concept="2OqwBi" id="fDKzOGEzJC" role="2Oq$k0">
+              <node concept="13iPFW" id="fDKzOGEzw6" role="2Oq$k0" />
+              <node concept="3TrEf2" id="fDKzOGE_CA" role="2OqNvi">
+                <ref role="3Tt5mk" to="8xo1:1hCkroLrV8C" resolve="overloaded" />
+              </node>
+            </node>
+            <node concept="2qgKlT" id="fDKzOGEAPA" role="2OqNvi">
+              <ref role="37wK5l" node="fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="3Tqbb2" id="fDKzOGEzkG" role="3clF45">
+        <ref role="ehGHo" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
       </node>
     </node>
   </node>
