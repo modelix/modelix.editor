@@ -134,6 +134,9 @@
     <node concept="PrWs8" id="6Ddb4_fOXV5" role="PzmwI">
       <ref role="PrY4T" to="tpck:3fifI_xCcJN" resolve="ScopeProvider" />
     </node>
+    <node concept="PrWs8" id="fDKzOGAxnW" role="PzmwI">
+      <ref role="PrY4T" node="fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+    </node>
   </node>
   <node concept="1TIwiD" id="7GLg2tFrlnd">
     <property role="EcuMT" value="8876946878574187981" />
@@ -737,6 +740,9 @@
     <node concept="PrWs8" id="1hCkroLrV8e" role="PzmwI">
       <ref role="PrY4T" node="7GLg2tFqfQG" resolve="IReactModuleContent" />
     </node>
+    <node concept="PrWs8" id="fDKzOGAvlL" role="PzmwI">
+      <ref role="PrY4T" node="fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+    </node>
   </node>
   <node concept="1TIwiD" id="1hCkroLrV8u">
     <property role="EcuMT" value="1470515121291768350" />
@@ -841,6 +847,10 @@
     <node concept="PrWs8" id="G39ofDwydI" role="PzmwI">
       <ref role="PrY4T" node="7GLg2tFqfQG" resolve="IReactModuleContent" />
     </node>
+  </node>
+  <node concept="PlHQZ" id="fDKzOGAvlK">
+    <property role="EcuMT" value="281970019684447600" />
+    <property role="TrG5h" value="IGeneratesCustomHandlerBuilder" />
   </node>
 </model>
 

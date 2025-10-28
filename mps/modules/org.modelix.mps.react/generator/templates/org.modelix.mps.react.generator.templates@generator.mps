@@ -367,10 +367,6 @@
         <child id="1199569916463" name="body" index="1bW5cT" />
         <child id="3329300704499081622" name="returnType" index="3s52Nf" />
       </concept>
-      <concept id="1176743162354" name="jetbrains.mps.baseLanguageInternal.structure.InternalVariableReference" flags="nn" index="3VmV3z">
-        <property id="1176743296073" name="name" index="3VnrPo" />
-        <child id="1176743202636" name="type" index="3Vn4Tt" />
-      </concept>
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
       <concept id="1204851882688" name="jetbrains.mps.lang.smodel.structure.LinkRefQualifier" flags="ng" index="26LbJo">
@@ -1249,14 +1245,19 @@
                                       <node concept="1iwH7S" id="39MS3mR2mx$" role="2Oq$k0" />
                                       <node concept="1iwH70" id="39MS3mR2mx_" role="2OqNvi">
                                         <ref role="1iwH77" node="39MS3mQZj$7" resolve="componentBuilder" />
-                                        <node concept="2OqwBi" id="39MS3mR2mxA" role="1iwH7V">
-                                          <node concept="30H73N" id="39MS3mR2mxB" role="2Oq$k0" />
-                                          <node concept="2Xjw5R" id="39MS3mR2mxC" role="2OqNvi">
-                                            <node concept="1xMEDy" id="39MS3mR2mxD" role="1xVPHs">
-                                              <node concept="chp4Y" id="39MS3mR2mxE" role="ri$Ld">
-                                                <ref role="cht4Q" to="8xo1:7GLg2tFqfTf" resolve="GenericReactComponent" />
+                                        <node concept="2OqwBi" id="fDKzOGEP42" role="1iwH7V">
+                                          <node concept="2OqwBi" id="39MS3mR2mxA" role="2Oq$k0">
+                                            <node concept="30H73N" id="39MS3mR2mxB" role="2Oq$k0" />
+                                            <node concept="2Xjw5R" id="39MS3mR2mxC" role="2OqNvi">
+                                              <node concept="1xMEDy" id="39MS3mR2mxD" role="1xVPHs">
+                                                <node concept="chp4Y" id="39MS3mR2mxE" role="ri$Ld">
+                                                  <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+                                                </node>
                                               </node>
                                             </node>
+                                          </node>
+                                          <node concept="2qgKlT" id="fDKzOGEPss" role="2OqNvi">
+                                            <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
                                           </node>
                                         </node>
                                       </node>
@@ -1689,14 +1690,19 @@
                                       <node concept="1iwH7S" id="39MS3mR2npo" role="2Oq$k0" />
                                       <node concept="1iwH70" id="39MS3mR2npp" role="2OqNvi">
                                         <ref role="1iwH77" node="39MS3mQZj$7" resolve="componentBuilder" />
-                                        <node concept="2OqwBi" id="39MS3mR2npq" role="1iwH7V">
-                                          <node concept="30H73N" id="39MS3mR2npr" role="2Oq$k0" />
-                                          <node concept="2Xjw5R" id="39MS3mR2nps" role="2OqNvi">
-                                            <node concept="1xMEDy" id="39MS3mR2npt" role="1xVPHs">
-                                              <node concept="chp4Y" id="39MS3mR2npu" role="ri$Ld">
-                                                <ref role="cht4Q" to="8xo1:7GLg2tFqfTf" resolve="GenericReactComponent" />
+                                        <node concept="2OqwBi" id="fDKzOGEPK$" role="1iwH7V">
+                                          <node concept="2OqwBi" id="39MS3mR2npq" role="2Oq$k0">
+                                            <node concept="30H73N" id="39MS3mR2npr" role="2Oq$k0" />
+                                            <node concept="2Xjw5R" id="39MS3mR2nps" role="2OqNvi">
+                                              <node concept="1xMEDy" id="39MS3mR2npt" role="1xVPHs">
+                                                <node concept="chp4Y" id="39MS3mR2npu" role="ri$Ld">
+                                                  <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+                                                </node>
                                               </node>
                                             </node>
+                                          </node>
+                                          <node concept="2qgKlT" id="fDKzOGEQ8X" role="2OqNvi">
+                                            <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
                                           </node>
                                         </node>
                                       </node>
@@ -2090,14 +2096,19 @@
                                       <node concept="1iwH7S" id="39MS3mR2pjv" role="2Oq$k0" />
                                       <node concept="1iwH70" id="39MS3mR2pjw" role="2OqNvi">
                                         <ref role="1iwH77" node="39MS3mQZj$7" resolve="componentBuilder" />
-                                        <node concept="2OqwBi" id="39MS3mR2pjx" role="1iwH7V">
-                                          <node concept="30H73N" id="39MS3mR2pjy" role="2Oq$k0" />
-                                          <node concept="2Xjw5R" id="39MS3mR2pjz" role="2OqNvi">
-                                            <node concept="1xMEDy" id="39MS3mR2pj$" role="1xVPHs">
-                                              <node concept="chp4Y" id="39MS3mR2pj_" role="ri$Ld">
-                                                <ref role="cht4Q" to="8xo1:7GLg2tFqfTf" resolve="GenericReactComponent" />
+                                        <node concept="2OqwBi" id="fDKzOGEQrT" role="1iwH7V">
+                                          <node concept="2OqwBi" id="39MS3mR2pjx" role="2Oq$k0">
+                                            <node concept="30H73N" id="39MS3mR2pjy" role="2Oq$k0" />
+                                            <node concept="2Xjw5R" id="39MS3mR2pjz" role="2OqNvi">
+                                              <node concept="1xMEDy" id="39MS3mR2pj$" role="1xVPHs">
+                                                <node concept="chp4Y" id="39MS3mR2pj_" role="ri$Ld">
+                                                  <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+                                                </node>
                                               </node>
                                             </node>
+                                          </node>
+                                          <node concept="2qgKlT" id="fDKzOGEQOi" role="2OqNvi">
+                                            <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
                                           </node>
                                         </node>
                                       </node>
@@ -3303,14 +3314,19 @@
                               <node concept="1iwH7S" id="39MS3mReKQB" role="2Oq$k0" />
                               <node concept="1iwH70" id="39MS3mReLkG" role="2OqNvi">
                                 <ref role="1iwH77" node="39MS3mQZj$7" resolve="componentBuilder" />
-                                <node concept="2OqwBi" id="39MS3mReLSq" role="1iwH7V">
-                                  <node concept="30H73N" id="39MS3mReLD9" role="2Oq$k0" />
-                                  <node concept="2Xjw5R" id="39MS3mReMaJ" role="2OqNvi">
-                                    <node concept="1xMEDy" id="39MS3mReMaL" role="1xVPHs">
-                                      <node concept="chp4Y" id="39MS3mReMie" role="ri$Ld">
-                                        <ref role="cht4Q" to="8xo1:7GLg2tFqfTf" resolve="GenericReactComponent" />
+                                <node concept="2OqwBi" id="fDKzOGER6E" role="1iwH7V">
+                                  <node concept="2OqwBi" id="39MS3mReLSq" role="2Oq$k0">
+                                    <node concept="30H73N" id="39MS3mReLD9" role="2Oq$k0" />
+                                    <node concept="2Xjw5R" id="39MS3mReMaJ" role="2OqNvi">
+                                      <node concept="1xMEDy" id="39MS3mReMaL" role="1xVPHs">
+                                        <node concept="chp4Y" id="39MS3mReMie" role="ri$Ld">
+                                          <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+                                        </node>
                                       </node>
                                     </node>
+                                  </node>
+                                  <node concept="2qgKlT" id="fDKzOGERl3" role="2OqNvi">
+                                    <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
                                   </node>
                                 </node>
                               </node>
@@ -3493,123 +3509,161 @@
     </node>
     <node concept="3aamgX" id="425sFRq4Z7c" role="3acgRq">
       <ref role="30HIoZ" to="8xo1:425sFRq4c48" resolve="CustomAction" />
-      <node concept="gft3U" id="425sFRq58J2" role="1lVwrX">
-        <node concept="2YIFZM" id="425sFRq5jr2" role="gfFT$">
-          <ref role="37wK5l" to="r9la:~ComponentBuilderKt.buildJsonObject(kotlin.jvm.functions.Function1)" resolve="buildJsonObject" />
-          <ref role="1Pybhc" to="r9la:~ComponentBuilderKt" resolve="ComponentBuilderKt" />
-          <node concept="1bVj0M" id="425sFRpJIrx" role="37wK5m">
-            <node concept="gl6BB" id="425sFRpJIry" role="1bW2Oz">
-              <property role="TrG5h" value="actionObjectBuilder" />
-              <property role="3TUv4t" value="true" />
-              <node concept="2jxLKc" id="425sFRpJIrz" role="1tU5fm" />
-            </node>
-            <node concept="3clFbS" id="425sFRpJIr$" role="1bW5cS">
-              <node concept="3clFbF" id="425sFRpJIr_" role="3cqZAp">
-                <node concept="2OqwBi" id="425sFRpJIrA" role="3clFbG">
-                  <node concept="37vLTw" id="425sFRpJIrB" role="2Oq$k0">
-                    <ref role="3cqZAo" node="425sFRpJIry" resolve="actionObjectBuilder" />
-                  </node>
-                  <node concept="liA8E" id="425sFRpJIrC" role="2OqNvi">
-                    <ref role="37wK5l" to="r9la:~JsonObjectBuilder.property(java.lang.String,java.lang.String)" resolve="property" />
-                    <node concept="Xl_RD" id="425sFRpJIrD" role="37wK5m">
-                      <property role="Xl_RC" value="label" />
-                    </node>
-                    <node concept="Xl_RD" id="425sFRpJIrE" role="37wK5m">
-                      <node concept="29HgVG" id="425sFRq5ouH" role="lGtFl">
-                        <node concept="3NFfHV" id="425sFRq5ouI" role="3NFExx">
-                          <node concept="3clFbS" id="425sFRq5ouJ" role="2VODD2">
-                            <node concept="3clFbF" id="425sFRq5ouP" role="3cqZAp">
-                              <node concept="2OqwBi" id="425sFRq5ouK" role="3clFbG">
-                                <node concept="3TrEf2" id="425sFRq5ouN" role="2OqNvi">
-                                  <ref role="3Tt5mk" to="8xo1:425sFRq4c49" resolve="label" />
-                                </node>
-                                <node concept="30H73N" id="425sFRq5ouO" role="2Oq$k0" />
-                              </node>
-                            </node>
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
+      <node concept="1Koe21" id="fDKzOGMSZU" role="1lVwrX">
+        <node concept="3clFbS" id="fDKzOGMSZY" role="1Koe22">
+          <node concept="3cpWs8" id="fDKzOGMZ6r" role="3cqZAp">
+            <node concept="3cpWsn" id="fDKzOGMZ6s" role="3cpWs9">
+              <property role="TrG5h" value="customHandlerBuilder" />
+              <node concept="3uibUv" id="fDKzOGMZ6t" role="1tU5fm">
+                <ref role="3uigEE" to="r9la:~ICustomHandlerBuilder" resolve="ICustomHandlerBuilder" />
               </node>
-              <node concept="3cpWs8" id="425sFRpJIrG" role="3cqZAp">
-                <node concept="3cpWsn" id="425sFRpJIrH" role="3cpWs9">
-                  <property role="TrG5h" value="handler" />
-                  <node concept="3uibUv" id="425sFRpJIrI" role="1tU5fm">
-                    <ref role="3uigEE" to="r9la:~JsCode" resolve="JsCode" />
-                  </node>
-                  <node concept="2OqwBi" id="425sFRpJIrJ" role="33vP2m">
-                    <node concept="1eOMI4" id="425sFRpJIrK" role="2Oq$k0">
-                      <node concept="3VmV3z" id="425sFRpNG72" role="1eOMHV">
-                        <property role="3VnrPo" value="customHandlerBuilder" />
-                        <node concept="3uibUv" id="425sFRpNG73" role="3Vn4Tt">
-                          <ref role="3uigEE" to="r9la:~ICustomHandlerBuilder" resolve="ICustomHandlerBuilder" />
-                        </node>
+            </node>
+          </node>
+          <node concept="3clFbF" id="fDKzOGMT01" role="3cqZAp">
+            <node concept="2YIFZM" id="425sFRq5jr2" role="3clFbG">
+              <ref role="37wK5l" to="r9la:~ComponentBuilderKt.buildJsonObject(kotlin.jvm.functions.Function1)" resolve="buildJsonObject" />
+              <ref role="1Pybhc" to="r9la:~ComponentBuilderKt" resolve="ComponentBuilderKt" />
+              <node concept="1bVj0M" id="425sFRpJIrx" role="37wK5m">
+                <node concept="gl6BB" id="425sFRpJIry" role="1bW2Oz">
+                  <property role="TrG5h" value="actionObjectBuilder" />
+                  <property role="3TUv4t" value="true" />
+                  <node concept="2jxLKc" id="425sFRpJIrz" role="1tU5fm" />
+                </node>
+                <node concept="3clFbS" id="425sFRpJIr$" role="1bW5cS">
+                  <node concept="3clFbF" id="425sFRpJIr_" role="3cqZAp">
+                    <node concept="2OqwBi" id="425sFRpJIrA" role="3clFbG">
+                      <node concept="37vLTw" id="425sFRpJIrB" role="2Oq$k0">
+                        <ref role="3cqZAo" node="425sFRpJIry" resolve="actionObjectBuilder" />
                       </node>
-                    </node>
-                    <node concept="liA8E" id="425sFRpJIrN" role="2OqNvi">
-                      <ref role="37wK5l" to="r9la:~ICustomHandlerBuilder.buildCustomHandler(kotlin.jvm.functions.Function1,org.modelix.react.ssr.server.ICustomMessageHandler)" resolve="buildCustomHandler" />
-                      <node concept="1bVj0M" id="425sFRpJIrO" role="37wK5m">
-                        <node concept="gl6BB" id="425sFRpJIrP" role="1bW2Oz">
-                          <property role="TrG5h" value="_this5" />
-                          <node concept="2jxLKc" id="425sFRpJIrQ" role="1tU5fm" />
+                      <node concept="liA8E" id="425sFRpJIrC" role="2OqNvi">
+                        <ref role="37wK5l" to="r9la:~JsonObjectBuilder.property(java.lang.String,java.lang.String)" resolve="property" />
+                        <node concept="Xl_RD" id="425sFRpJIrD" role="37wK5m">
+                          <property role="Xl_RC" value="label" />
                         </node>
-                        <node concept="3clFbS" id="425sFRpJIrR" role="1bW5cS">
-                          <node concept="3cpWs6" id="425sFRpJIrS" role="3cqZAp">
-                            <node concept="10M0yZ" id="425sFRpJIrT" role="3cqZAk">
-                              <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
-                              <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                        <node concept="Xl_RD" id="425sFRpJIrE" role="37wK5m">
+                          <node concept="29HgVG" id="425sFRq5ouH" role="lGtFl">
+                            <node concept="3NFfHV" id="425sFRq5ouI" role="3NFExx">
+                              <node concept="3clFbS" id="425sFRq5ouJ" role="2VODD2">
+                                <node concept="3clFbF" id="425sFRq5ouP" role="3cqZAp">
+                                  <node concept="2OqwBi" id="425sFRq5ouK" role="3clFbG">
+                                    <node concept="3TrEf2" id="425sFRq5ouN" role="2OqNvi">
+                                      <ref role="3Tt5mk" to="8xo1:425sFRq4c49" resolve="label" />
+                                    </node>
+                                    <node concept="30H73N" id="425sFRq5ouO" role="2Oq$k0" />
+                                  </node>
+                                </node>
+                              </node>
                             </node>
                           </node>
                         </node>
                       </node>
-                      <node concept="2ShNRf" id="425sFRpJIrU" role="37wK5m">
-                        <node concept="YeOm9" id="425sFRpJIrV" role="2ShVmc">
-                          <node concept="1Y3b0j" id="425sFRpJIrW" role="YeSDq">
-                            <property role="2bfB8j" value="true" />
-                            <property role="373rjd" value="true" />
-                            <ref role="1Y3XeK" to="r9la:~ICustomMessageHandler" resolve="ICustomMessageHandler" />
-                            <ref role="37wK5l" to="wyt6:~Object.&lt;init&gt;()" resolve="Object" />
-                            <node concept="3Tm1VV" id="425sFRpJIrX" role="1B3o_S" />
-                            <node concept="3clFb_" id="425sFRpJIrY" role="jymVt">
-                              <property role="TrG5h" value="handle" />
-                              <node concept="3Tm1VV" id="425sFRpJIrZ" role="1B3o_S" />
-                              <node concept="3cqZAl" id="425sFRpJIs0" role="3clF45" />
-                              <node concept="37vLTG" id="425sFRpJIs1" role="3clF46">
-                                <property role="TrG5h" value="params" />
-                                <node concept="3uibUv" id="425sFRpJIs2" role="1tU5fm">
-                                  <ref role="3uigEE" to="r9la:~ICustomMessageHandlerParameters" resolve="ICustomMessageHandlerParameters" />
-                                </node>
-                                <node concept="2AHcQZ" id="425sFRpJIs3" role="2AJF6D">
-                                  <ref role="2AI5Lk" to="mhfm:~NotNull" resolve="NotNull" />
-                                </node>
-                              </node>
-                              <node concept="3clFbS" id="425sFRpJIs4" role="3clF47">
-                                <node concept="3clFbH" id="425sFRq5qoi" role="3cqZAp">
-                                  <node concept="2b32R4" id="425sFRq5qxo" role="lGtFl">
-                                    <node concept="3JmXsc" id="425sFRq5qxr" role="2P8S$">
-                                      <node concept="3clFbS" id="425sFRq5qxs" role="2VODD2">
-                                        <node concept="3clFbF" id="425sFRq5qUK" role="3cqZAp">
-                                          <node concept="2OqwBi" id="425sFRq5ssV" role="3clFbG">
-                                            <node concept="2OqwBi" id="425sFRq5rot" role="2Oq$k0">
-                                              <node concept="30H73N" id="425sFRq5qUJ" role="2Oq$k0" />
-                                              <node concept="3TrEf2" id="425sFRq5rYC" role="2OqNvi">
-                                                <ref role="3Tt5mk" to="8xo1:425sFRq4c4b" resolve="body" />
+                    </node>
+                  </node>
+                  <node concept="3cpWs8" id="425sFRpJIrG" role="3cqZAp">
+                    <node concept="3cpWsn" id="425sFRpJIrH" role="3cpWs9">
+                      <property role="TrG5h" value="handler" />
+                      <node concept="3uibUv" id="425sFRpJIrI" role="1tU5fm">
+                        <ref role="3uigEE" to="r9la:~JsCode" resolve="JsCode" />
+                      </node>
+                      <node concept="2OqwBi" id="425sFRpJIrJ" role="33vP2m">
+                        <node concept="37vLTw" id="fDKzOGN9ZU" role="2Oq$k0">
+                          <ref role="3cqZAo" node="fDKzOGMZ6s" resolve="customHandlerBuilder" />
+                          <node concept="1ZhdrF" id="fDKzOGNby$" role="lGtFl">
+                            <property role="2qtEX8" value="variableDeclaration" />
+                            <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                            <node concept="3$xsQk" id="fDKzOGNby_" role="3$ytzL">
+                              <node concept="3clFbS" id="fDKzOGNbyA" role="2VODD2">
+                                <node concept="3clFbF" id="fDKzOGNbKr" role="3cqZAp">
+                                  <node concept="2OqwBi" id="fDKzOGNcdp" role="3clFbG">
+                                    <node concept="1iwH7S" id="fDKzOGNbKq" role="2Oq$k0" />
+                                    <node concept="1iwH70" id="fDKzOGNcyo" role="2OqNvi">
+                                      <ref role="1iwH77" node="39MS3mQZj$7" resolve="componentBuilder" />
+                                      <node concept="2OqwBi" id="fDKzOGNgkw" role="1iwH7V">
+                                        <node concept="2OqwBi" id="fDKzOGNdD1" role="2Oq$k0">
+                                          <node concept="30H73N" id="fDKzOGNd6g" role="2Oq$k0" />
+                                          <node concept="2Xjw5R" id="fDKzOGNfzS" role="2OqNvi">
+                                            <node concept="1xMEDy" id="fDKzOGNfzU" role="1xVPHs">
+                                              <node concept="chp4Y" id="fDKzOGNfOr" role="ri$Ld">
+                                                <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
                                               </node>
                                             </node>
-                                            <node concept="3Tsc0h" id="425sFRq5t3w" role="2OqNvi">
-                                              <ref role="3TtcxE" to="tpee:fzcqZ_x" resolve="statement" />
-                                            </node>
                                           </node>
+                                        </node>
+                                        <node concept="2qgKlT" id="fDKzOGNibA" role="2OqNvi">
+                                          <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
                                         </node>
                                       </node>
                                     </node>
                                   </node>
                                 </node>
                               </node>
-                              <node concept="2AHcQZ" id="425sFRpJIs9" role="2AJF6D">
-                                <ref role="2AI5Lk" to="wyt6:~Override" resolve="Override" />
+                            </node>
+                          </node>
+                        </node>
+                        <node concept="liA8E" id="425sFRpJIrN" role="2OqNvi">
+                          <ref role="37wK5l" to="r9la:~ICustomHandlerBuilder.buildCustomHandler(kotlin.jvm.functions.Function1,org.modelix.react.ssr.server.ICustomMessageHandler)" resolve="buildCustomHandler" />
+                          <node concept="1bVj0M" id="425sFRpJIrO" role="37wK5m">
+                            <node concept="gl6BB" id="425sFRpJIrP" role="1bW2Oz">
+                              <property role="TrG5h" value="_this5" />
+                              <node concept="2jxLKc" id="425sFRpJIrQ" role="1tU5fm" />
+                            </node>
+                            <node concept="3clFbS" id="425sFRpJIrR" role="1bW5cS">
+                              <node concept="3cpWs6" id="425sFRpJIrS" role="3cqZAp">
+                                <node concept="10M0yZ" id="425sFRpJIrT" role="3cqZAk">
+                                  <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                                  <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                          <node concept="2ShNRf" id="425sFRpJIrU" role="37wK5m">
+                            <node concept="YeOm9" id="425sFRpJIrV" role="2ShVmc">
+                              <node concept="1Y3b0j" id="425sFRpJIrW" role="YeSDq">
+                                <property role="2bfB8j" value="true" />
+                                <property role="373rjd" value="true" />
+                                <ref role="1Y3XeK" to="r9la:~ICustomMessageHandler" resolve="ICustomMessageHandler" />
+                                <ref role="37wK5l" to="wyt6:~Object.&lt;init&gt;()" resolve="Object" />
+                                <node concept="3Tm1VV" id="425sFRpJIrX" role="1B3o_S" />
+                                <node concept="3clFb_" id="425sFRpJIrY" role="jymVt">
+                                  <property role="TrG5h" value="handle" />
+                                  <node concept="3Tm1VV" id="425sFRpJIrZ" role="1B3o_S" />
+                                  <node concept="3cqZAl" id="425sFRpJIs0" role="3clF45" />
+                                  <node concept="37vLTG" id="425sFRpJIs1" role="3clF46">
+                                    <property role="TrG5h" value="params" />
+                                    <node concept="3uibUv" id="425sFRpJIs2" role="1tU5fm">
+                                      <ref role="3uigEE" to="r9la:~ICustomMessageHandlerParameters" resolve="ICustomMessageHandlerParameters" />
+                                    </node>
+                                    <node concept="2AHcQZ" id="425sFRpJIs3" role="2AJF6D">
+                                      <ref role="2AI5Lk" to="mhfm:~NotNull" resolve="NotNull" />
+                                    </node>
+                                  </node>
+                                  <node concept="3clFbS" id="425sFRpJIs4" role="3clF47">
+                                    <node concept="3clFbH" id="425sFRq5qoi" role="3cqZAp">
+                                      <node concept="2b32R4" id="425sFRq5qxo" role="lGtFl">
+                                        <node concept="3JmXsc" id="425sFRq5qxr" role="2P8S$">
+                                          <node concept="3clFbS" id="425sFRq5qxs" role="2VODD2">
+                                            <node concept="3clFbF" id="425sFRq5qUK" role="3cqZAp">
+                                              <node concept="2OqwBi" id="425sFRq5ssV" role="3clFbG">
+                                                <node concept="2OqwBi" id="425sFRq5rot" role="2Oq$k0">
+                                                  <node concept="30H73N" id="425sFRq5qUJ" role="2Oq$k0" />
+                                                  <node concept="3TrEf2" id="425sFRq5rYC" role="2OqNvi">
+                                                    <ref role="3Tt5mk" to="8xo1:425sFRq4c4b" resolve="body" />
+                                                  </node>
+                                                </node>
+                                                <node concept="3Tsc0h" id="425sFRq5t3w" role="2OqNvi">
+                                                  <ref role="3TtcxE" to="tpee:fzcqZ_x" resolve="statement" />
+                                                </node>
+                                              </node>
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                  <node concept="2AHcQZ" id="425sFRpJIs9" role="2AJF6D">
+                                    <ref role="2AI5Lk" to="wyt6:~Override" resolve="Override" />
+                                  </node>
+                                </node>
                               </node>
                             </node>
                           </node>
@@ -3617,32 +3671,34 @@
                       </node>
                     </node>
                   </node>
-                </node>
-              </node>
-              <node concept="3clFbF" id="425sFRpJIsa" role="3cqZAp">
-                <node concept="2OqwBi" id="425sFRpJIsb" role="3clFbG">
-                  <node concept="37vLTw" id="425sFRpJIsc" role="2Oq$k0">
-                    <ref role="3cqZAo" node="425sFRpJIry" resolve="actionObjectBuilder" />
-                  </node>
-                  <node concept="liA8E" id="425sFRpJIsd" role="2OqNvi">
-                    <ref role="37wK5l" to="r9la:~JsonObjectBuilder.property(java.lang.String,org.modelix.react.ssr.server.JsCode)" resolve="property" />
-                    <node concept="Xl_RD" id="425sFRpJIse" role="37wK5m">
-                      <property role="Xl_RC" value="action" />
+                  <node concept="3clFbF" id="425sFRpJIsa" role="3cqZAp">
+                    <node concept="2OqwBi" id="425sFRpJIsb" role="3clFbG">
+                      <node concept="37vLTw" id="425sFRpJIsc" role="2Oq$k0">
+                        <ref role="3cqZAo" node="425sFRpJIry" resolve="actionObjectBuilder" />
+                      </node>
+                      <node concept="liA8E" id="425sFRpJIsd" role="2OqNvi">
+                        <ref role="37wK5l" to="r9la:~JsonObjectBuilder.property(java.lang.String,org.modelix.react.ssr.server.JsCode)" resolve="property" />
+                        <node concept="Xl_RD" id="425sFRpJIse" role="37wK5m">
+                          <property role="Xl_RC" value="action" />
+                        </node>
+                        <node concept="37vLTw" id="425sFRpJIsf" role="37wK5m">
+                          <ref role="3cqZAo" node="425sFRpJIrH" resolve="handler" />
+                        </node>
+                      </node>
                     </node>
-                    <node concept="37vLTw" id="425sFRpJIsf" role="37wK5m">
-                      <ref role="3cqZAo" node="425sFRpJIrH" resolve="handler" />
+                  </node>
+                  <node concept="3cpWs6" id="425sFRpJIsi" role="3cqZAp">
+                    <node concept="10M0yZ" id="425sFRpJIsj" role="3cqZAk">
+                      <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                      <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
                     </node>
                   </node>
                 </node>
               </node>
-              <node concept="3cpWs6" id="425sFRpJIsi" role="3cqZAp">
-                <node concept="10M0yZ" id="425sFRpJIsj" role="3cqZAk">
-                  <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
-                  <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
-                </node>
-              </node>
+              <node concept="raruj" id="fDKzOGN_ea" role="lGtFl" />
             </node>
           </node>
+          <node concept="3clFbH" id="fDKzOGMT00" role="3cqZAp" />
         </node>
       </node>
     </node>
@@ -3715,7 +3771,7 @@
     </node>
     <node concept="2rT7sh" id="39MS3mQZj$7" role="2rTMjI">
       <property role="TrG5h" value="componentBuilder" />
-      <ref role="2rTdP9" to="8xo1:7GLg2tFqfTf" resolve="GenericReactComponent" />
+      <ref role="2rTdP9" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
       <ref role="2rZz_L" to="tpee:fz3uBXI" resolve="VariableDeclaration" />
     </node>
     <node concept="3lhOvk" id="39MS3mQn5PW" role="3lj3bC">
@@ -4304,6 +4360,9 @@
                           <property role="TrG5h" value="customHandlerBuilder" />
                           <property role="3TUv4t" value="true" />
                           <node concept="2jxLKc" id="2B4$FFbE$yr" role="1tU5fm" />
+                          <node concept="2ZBi8u" id="fDKzOGBf4j" role="lGtFl">
+                            <ref role="2rW$FS" node="39MS3mQZj$7" resolve="componentBuilder" />
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2B4$FFbE$ys" role="1bW5cS">
                           <node concept="3clFbJ" id="2B4$FFbE$yu" role="3cqZAp">
