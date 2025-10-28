@@ -13,7 +13,6 @@
   <dependencies>
     <dependency reexport="false">f3061a53-9226-4cc5-a443-f952ceaf5816(jetbrains.mps.baseLanguage)</dependency>
     <dependency reexport="false">83a7cbdc-dd9d-4dad-be97-957aa1b07375(org.modelix.mps.react.ssr.stubs)</dependency>
-    <dependency reexport="false">dce965c2-af99-4a0c-9895-485700f46864(ReactDemoLanguage)</dependency>
   </dependencies>
   <languageVersions>
     <language slang="l:f3061a53-9226-4cc5-a443-f952ceaf5816:jetbrains.mps.baseLanguage" version="12" />
