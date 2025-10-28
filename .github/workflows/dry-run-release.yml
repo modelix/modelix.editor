@@ -27,7 +27,7 @@ jobs:
         run: git checkout -b main
       - uses: actions/setup-node@v6
         with:
-          node-version: '22.2.0 '
+          node-version-file: '.nvmrc'
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
           scope: '<@modelix>'
       - name: Cache Node packages
