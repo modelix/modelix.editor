@@ -424,7 +424,7 @@
         <node concept="3clFbF" id="2vPZMAnt2i1" role="3cqZAp">
           <node concept="3cpWs3" id="2vPZMAnt5xq" role="3clFbG">
             <node concept="37vLTw" id="af0_0D4cM0" role="3uHU7w">
-              <ref role="3cqZAo" node="af0_0D4cLW" resolve="string" />
+              <ref role="3cqZAo" node="af0_0D4cLW" resolve="l" />
             </node>
             <node concept="Xl_RD" id="2vPZMAnt2i0" role="3uHU7B">
               <property role="Xl_RC" value="Wrap with " />

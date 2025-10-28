@@ -532,7 +532,7 @@
       <node concept="3clFbJ" id="1LliyakXGga" role="3cqZAp">
         <node concept="2OqwBi" id="1LliyakXJcO" role="3clFbw">
           <node concept="37vLTw" id="1LliyakY5Kc" role="2Oq$k0">
-            <ref role="3cqZAo" node="1LliyakY5K8" resolve="valueConverter" />
+            <ref role="3cqZAo" node="1LliyakY5K8" resolve="vcr" />
           </node>
           <node concept="3w_OXm" id="1LliyakXJG7" role="2OqNvi" />
         </node>
@@ -590,7 +590,7 @@
               <node concept="mw_s8" id="1LliyakXY6P" role="1ZfhK$">
                 <node concept="2OqwBi" id="1LliyakXUYT" role="mwGJk">
                   <node concept="37vLTw" id="1LliyakY6oP" role="2Oq$k0">
-                    <ref role="3cqZAo" node="1LliyakY6oL" resolve="valueConverter" />
+                    <ref role="3cqZAo" node="1LliyakY6oL" resolve="vc" />
                   </node>
                   <node concept="3TrEf2" id="1LliyakXVyA" role="2OqNvi">
                     <ref role="3Tt5mk" to="zaxg:1Lliyak$O3t" resolve="widgetType" />
@@ -603,7 +603,7 @@
               <node concept="mw_s8" id="1LliyakY1BP" role="1ZfhKB">
                 <node concept="2OqwBi" id="1LliyakY4x5" role="mwGJk">
                   <node concept="37vLTw" id="1LliyakY6oQ" role="2Oq$k0">
-                    <ref role="3cqZAo" node="1LliyakY6oL" resolve="valueConverter" />
+                    <ref role="3cqZAo" node="1LliyakY6oL" resolve="vc" />
                   </node>
                   <node concept="3TrEf2" id="1LliyakY575" role="2OqNvi">
                     <ref role="3Tt5mk" to="zaxg:1Lliyak$Nuo" resolve="modelType" />
@@ -663,8 +663,8 @@
       <node concept="3clFbF" id="1LliyalaVzX" role="3cqZAp">
         <node concept="2OqwBi" id="1LliyalaVzU" role="3clFbG">
           <node concept="10M0yZ" id="1LliyalaVzV" role="2Oq$k0">
-            <ref role="1PxDUh" to="wyt6:~System" />
-            <ref role="3cqZAo" to="wyt6:~System.err" />
+            <ref role="1PxDUh" to="wyt6:~System" resolve="System" />
+            <ref role="3cqZAo" to="wyt6:~System.err" resolve="err" />
           </node>
           <node concept="liA8E" id="1LliyalaVzW" role="2OqNvi">
             <ref role="37wK5l" to="guwi:~PrintStream.println(java.lang.String)" resolve="println" />

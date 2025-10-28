@@ -1597,7 +1597,7 @@
                     <property role="Xl_RC" value="reports only errors for feature '" />
                   </node>
                   <node concept="BsUDl" id="7HYB$0ntChI" role="3uHU7w">
-                    <ref role="37wK5l" node="7HYB$0ntsoi" resolve="onlyForFeature" />
+                    <ref role="37wK5l" node="7HYB$0ntsoi" resolve="restrictToFeature" />
                   </node>
                 </node>
               </node>
@@ -1606,7 +1606,7 @@
           <node concept="3y3z36" id="7HYB$0nt$Ry" role="3clFbw">
             <node concept="10Nm6u" id="7HYB$0nt_bm" role="3uHU7w" />
             <node concept="BsUDl" id="7HYB$0ntzkS" role="3uHU7B">
-              <ref role="37wK5l" node="7HYB$0ntsoi" resolve="onlyForFeature" />
+              <ref role="37wK5l" node="7HYB$0ntsoi" resolve="restrictToFeature" />
             </node>
           </node>
         </node>

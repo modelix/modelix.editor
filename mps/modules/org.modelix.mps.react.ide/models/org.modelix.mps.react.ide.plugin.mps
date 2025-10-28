@@ -247,7 +247,7 @@
             <node concept="liA8E" id="2vPZMAmtTPa" role="2OqNvi">
               <ref role="37wK5l" to="kt01:~Clipboard.setContents(java.awt.datatransfer.Transferable,java.awt.datatransfer.ClipboardOwner)" resolve="setContents" />
               <node concept="37vLTw" id="2vPZMAmtTPb" role="37wK5m">
-                <ref role="3cqZAo" node="2vPZMAmtRxJ" resolve="stringSelection" />
+                <ref role="3cqZAo" node="2vPZMAmtRxJ" resolve="s" />
               </node>
               <node concept="10Nm6u" id="2vPZMAmtTPc" role="37wK5m" />
             </node>

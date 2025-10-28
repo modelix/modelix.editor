@@ -51,7 +51,7 @@ kotlin {
 tasks {
     patchPluginXml {
         sinceBuild.set("232")
-        untilBuild.set("233.*")
+        untilBuild.set("241.*")
     }
 
     buildSearchableOptions {

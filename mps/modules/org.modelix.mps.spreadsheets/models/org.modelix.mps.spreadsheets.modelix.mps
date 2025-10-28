@@ -60,7 +60,7 @@
       </concept>
       <concept id="8876946878573903262" name="org.modelix.mps.react.structure.ConceptRenderer" flags="ng" index="gmrQT">
         <reference id="8310867745953086698" name="concept" index="3JBHV4" />
-        <child id="8876946878573903455" name="component" index="gmrTS" />
+        <child id="8876946878573903455" name="components" index="gmrTS" />
       </concept>
       <concept id="8876946878573903439" name="org.modelix.mps.react.structure.GenericReactComponent" flags="ng" index="gmrTC">
         <property id="8876946878573977569" name="componentType" index="gmPZ6" />
