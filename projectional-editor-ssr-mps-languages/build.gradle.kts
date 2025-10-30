@@ -15,10 +15,16 @@ kotlin {
     }
 }
 
+val modelAdaptersPlugin by configurations.registering
+
 dependencies {
+    compileOnly(kotlin("stdlib"))
+    compileOnly(project(":editor-common-mps"))
     testImplementation(project(":projectional-editor-ssr-mps"), excludeMPSLibraries)
     testImplementation(project(":projectional-editor"), excludeMPSLibraries)
     testImplementation(libs.modelix.mps.model.adapters, excludeMPSLibraries)
+    testImplementation(libs.playwright, excludeMPSLibraries)
+    modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
 }
 
 intellij {
@@ -27,6 +33,7 @@ intellij {
     plugins = listOf(
         project(":projectional-editor-ssr-mps"),
         project(":editor-common-mps"),
+        project(":react-ssr-mps"),
     ) + listOf(
 //        "Git4Idea",
 //        "Subversion",
@@ -120,13 +127,18 @@ tasks {
             .exclude("plugin.xml")
         intoChild(pluginName.map { "$it/META-INF" })
             .from(patchPluginXml.flatMap { it.outputFiles })
+        intoChild(pluginName.map { "$it/plugins" })
+            .from(modelAdaptersPlugin)
 
-        listOf("editor-languages", "baseLanguage-notation", "react").forEach { publicationName ->
-            intoChild(pluginName.map { "$it/languages" })
-                .from(zipTree({ project(":mps").layout.buildDirectory.file("mpsbuild/publications/$publicationName.zip") }))
-                .eachFile {
-                    path = path.replaceFirst("packaged-modules/", "")
-                }
+        intoChild(pluginName.map { "$it/languages" }).let { languagesFolder ->
+            listOf("editor-devkit", "baseLanguage-notation").forEach { publicationName ->
+                languagesFolder
+                    .from(zipTree({ project(":mps").layout.buildDirectory.file("mpsbuild/publications/$publicationName.zip") }))
+                    .eachFile {
+                        path = path.replaceFirst("packaged-modules/", "")
+                    }
+            }
+            languagesFolder.from(project(":mps").layout.buildDirectory.dir("repositoryConcepts/packaged-modules"))
         }
     }
 }

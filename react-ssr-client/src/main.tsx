@@ -97,4 +97,14 @@ export function getWebsocketBaseUrl() {
     return url;
 }
 
+export function getWebsocketUrl() {
+    const path = window.location.pathname;
+    let url: string;
+    if(window.location.protocol == "https:") {
+        url = "wss://" + window.location.host + path;
+    } else  {
+        url = "ws://" + window.location.host + path;
+    }
+    return url;
+}
 

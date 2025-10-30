@@ -17,6 +17,7 @@ import org.modelix.model.api.IChildLink
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
 import org.modelix.model.api.IProperty
+import org.modelix.model.api.IReadableNode
 import org.modelix.model.api.IReferenceLink
 import org.modelix.model.api.NullChildLink
 import org.modelix.model.api.isSubConceptOf
@@ -41,6 +42,11 @@ data class ModelixNodeAsMPSNode(val node: INode) : SNode {
         @JvmStatic
         fun toMPSNode(node: INode): SNode {
             return ModelixNodeAsMPSNode(node)
+        }
+
+        @JvmStatic
+        fun toMPSNode(node: IReadableNode): SNode {
+            return ModelixNodeAsMPSNode(node.asLegacyNode())
         }
 
         private fun unwrapMPSNode(node: SNode): SNode {

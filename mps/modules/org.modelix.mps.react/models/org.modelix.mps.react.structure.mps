@@ -11,6 +11,12 @@
   </imports>
   <registry>
     <language id="c72da2b9-7cce-4447-8389-f407dc1158b7" name="jetbrains.mps.lang.structure">
+      <concept id="1082978164218" name="jetbrains.mps.lang.structure.structure.DataTypeDeclaration" flags="ng" index="AxPO6">
+        <property id="7791109065626895363" name="datatypeId" index="3F6X1D" />
+      </concept>
+      <concept id="1082978499127" name="jetbrains.mps.lang.structure.structure.ConstrainedDataTypeDeclaration" flags="ng" index="Az7Fb">
+        <property id="1083066089218" name="constraint" index="FLfZY" />
+      </concept>
       <concept id="1169125787135" name="jetbrains.mps.lang.structure.structure.AbstractConceptDeclaration" flags="ig" index="PkWjJ">
         <property id="6714410169261853888" name="conceptId" index="EcuMT" />
         <property id="4628067390765956802" name="abstract" index="R5$K7" />
@@ -851,6 +857,116 @@
   <node concept="PlHQZ" id="fDKzOGAvlK">
     <property role="EcuMT" value="281970019684447600" />
     <property role="TrG5h" value="IGeneratesCustomHandlerBuilder" />
+  </node>
+  <node concept="1TIwiD" id="6eUjE42h0Dj">
+    <property role="EcuMT" value="7186142608857762387" />
+    <property role="TrG5h" value="Page" />
+    <property role="19KtqR" value="true" />
+    <property role="3GE5qa" value="pages" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="6eUjE42iNFO" role="1TKVEi">
+      <property role="IQ2ns" value="7186142608858233588" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="path" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="6eUjE42hlnc" resolve="PagePath" />
+    </node>
+    <node concept="1TJgyj" id="6eUjE42h0Dp" role="1TKVEi">
+      <property role="IQ2ns" value="7186142608857762393" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="parameters" />
+      <ref role="20lvS9" node="6eUjE42h0Dn" resolve="PageParameter" />
+    </node>
+    <node concept="1TJgyj" id="6eUjE42h4bI" role="1TKVEi">
+      <property role="IQ2ns" value="7186142608857776878" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="content" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="4Dhs5NhX4ak" resolve="CallNamedRenderer" />
+    </node>
+    <node concept="PrWs8" id="6eUjE42oUvM" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFqfQG" resolve="IReactModuleContent" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="6eUjE42h0Dn">
+    <property role="EcuMT" value="7186142608857762391" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="PageParameter" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="6eUjE42h0Dr" role="1TKVEi">
+      <property role="IQ2ns" value="7186142608857762395" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="type" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="6eUjE42h0Dq" resolve="IPageParameterType" />
+    </node>
+    <node concept="PrWs8" id="6eUjE42h0Do" role="PzmwI">
+      <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+  </node>
+  <node concept="PlHQZ" id="6eUjE42h0Dq">
+    <property role="EcuMT" value="7186142608857762394" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="IPageParameterType" />
+  </node>
+  <node concept="1TIwiD" id="6eUjE42h5St">
+    <property role="EcuMT" value="7186142608857783837" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="ContextRepositoryExpression" />
+    <property role="34LRSv" value="repository" />
+    <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
+  </node>
+  <node concept="1TIwiD" id="6eUjE42hlnc">
+    <property role="EcuMT" value="7186142608857847244" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="PagePath" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="6eUjE42hnWE" role="1TKVEi">
+      <property role="IQ2ns" value="7186142608857857834" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="parts" />
+      <property role="20lbJX" value="fLJekj6/_1__n" />
+      <ref role="20lvS9" node="6eUjE42hlne" resolve="IPagePathPart" />
+    </node>
+  </node>
+  <node concept="PlHQZ" id="6eUjE42hlne">
+    <property role="TrG5h" value="IPagePathPart" />
+    <property role="3GE5qa" value="pages" />
+    <property role="EcuMT" value="7186142608857847245" />
+  </node>
+  <node concept="1TIwiD" id="6eUjE42hnW_">
+    <property role="EcuMT" value="7186142608857857829" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="StaticPagePathPart" />
+    <property role="34LRSv" value="&quot;" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyi" id="6eUjE42hnWA" role="1TKVEl">
+      <property role="IQ2nx" value="7186142608857857830" />
+      <property role="TrG5h" value="value" />
+      <ref role="AX2Wp" node="6eUjE42j1Hl" resolve="URLCharacters" />
+    </node>
+    <node concept="PrWs8" id="6eUjE42iPwy" role="PzmwI">
+      <ref role="PrY4T" node="6eUjE42hlne" resolve="IPagePathPart" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="6eUjE42hnWB">
+    <property role="EcuMT" value="7186142608857857831" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="VariablePagePathPart" />
+    <property role="34LRSv" value="{" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="PrWs8" id="6eUjE42hnWD" role="PzmwI">
+      <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+    <node concept="PrWs8" id="6eUjE42iPwx" role="PzmwI">
+      <ref role="PrY4T" node="6eUjE42hlne" resolve="IPagePathPart" />
+    </node>
+  </node>
+  <node concept="Az7Fb" id="6eUjE42j1Hl">
+    <property role="3F6X1D" value="7186142608858291029" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="URLCharacters" />
+    <property role="FLfZY" value="[a-z][a-z\\-0-9]*" />
   </node>
 </model>
 

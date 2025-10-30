@@ -28,6 +28,8 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
           scope: '<@modelix>'
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,6 +46,13 @@ jobs:
           path: |
             */build/test-results
             */build/reports
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@3a74b2957438d0b6e2e61d67b05318aa25c9e6c6 # v2
+        # Also report in case the build failed
+        if: always()
+        with:
+          files: |
+            **/test-results/**/*.xml
 
 # Disabled because the repository is private and they need payment
 #  # Deploy job

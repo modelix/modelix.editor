@@ -3,7 +3,7 @@ import './App.css'
 import {IViewModel} from "./ViewModel.ts";
 import {IComponent, IComponentOrText, renderViewModel} from "./components/Base.tsx";
 import {registerDefaultComponents} from "./components/DefaultComponents.ts";
-import {getWebsocketBaseUrl} from "./main.tsx";
+import {getWebsocketUrl} from "./main.tsx";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 registerDefaultComponents();
@@ -45,10 +45,7 @@ class App extends Component<{}, { model: IViewModel }> {
     }
 
     componentDidMount() {
-        const url = window.location.port == "43595"
-            ? getWebsocketBaseUrl() + "../ws"
-            : "ws://localhost:43595/nodes/mps:r%3A0504f20b-ce68-45b3-9a7e-3b50c057323a%28org.modelix.mps.react.sandbox%29%2F1470515121291200936/ws"
-        this.websocket = new ReconnectingWebSocket(url, [], {
+        this.websocket = new ReconnectingWebSocket(getWebsocketUrl(), [], {
             maxReconnectionDelay: 5000,
             minReconnectionDelay: 100,
             maxEnqueuedMessages: 0

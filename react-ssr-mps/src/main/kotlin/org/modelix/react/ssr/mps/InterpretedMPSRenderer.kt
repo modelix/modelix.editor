@@ -48,6 +48,8 @@ import org.modelix.react.ssr.server.ComponentOrText
 import org.modelix.react.ssr.server.GenericNodeRenderer
 import org.modelix.react.ssr.server.IComponentOrList
 import org.modelix.react.ssr.server.JsCode
+import org.modelix.react.ssr.server.NodeRendererCall
+import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.ViewModel
 import org.modelix.react.ssr.server.buildComponent
 import org.modelix.react.ssr.server.buildJsonObject
@@ -56,9 +58,9 @@ import org.modelix.react.ssr.server.buildViewModel
 class InterpretedMPSRenderer(
     incrementalEngine: IIncrementalEngine,
     val repository: () -> SRepository,
-    nodeRef: String,
+    nodeRef: RendererCall,
     coroutineScope: CoroutineScope,
-) : GenericNodeRenderer(incrementalEngine, NodeReference(nodeRef), coroutineScope) {
+) : GenericNodeRenderer(incrementalEngine, nodeRef, coroutineScope) {
     override fun resolveNode(nodeRef: NodeReference): INode? {
         return MPSArea(repository()).resolveNode(nodeRef)
     }
@@ -79,7 +81,7 @@ class InterpretedMPSRenderer(
         }
     }
 
-    override fun renderNodeEditor(node: INode): ViewModel {
+    override fun renderNodeEditor(node: RendererCall): ViewModel {
         return buildViewModel {
             child(renderMPSNode(node))
         }
@@ -87,7 +89,6 @@ class InterpretedMPSRenderer(
 
     private val findConceptComponents: () -> Map<ConceptReference, N_ConceptRenderer> = incremenentalEngine.incrementalFunction("findConceptComponents") { _ ->
         repository().modules.asSequence()
-            .filter { it.moduleName == "org.modelix.mps.react.impl.baseLanguage" }
             .flatMap { it.models }
             .flatMap { it.rootNodes }
             .map { ModelixNodeAsMPSNode.toModelixNode(it).typed<N_BaseConcept>() }
@@ -97,15 +98,16 @@ class InterpretedMPSRenderer(
             .associateBy { it.concept.asConceptReference() }
     }
 
-    private fun renderMPSNode(node: INode): IComponentOrList = renderMPSNodeIncremental(node)
-    private val renderMPSNodeIncremental: (INode) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, node: INode ->
+    private fun renderMPSNode(node: RendererCall): IComponentOrList = renderMPSNodeIncremental(node)
+    private val renderMPSNodeIncremental: (RendererCall) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, call: RendererCall ->
+        val node = (call as NodeRendererCall).node.asLegacyNode()
         val allComponents = findConceptComponents()
 
         val renderers = node.concept!!.getAllConcepts().asSequence().mapNotNull {
             allComponents[it.getReference() as ConceptReference]
         }
         val renderer = renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
-            ?: return@incrementalFunction renderNode(node)
+            ?: return@incrementalFunction renderNode(call)
 
         val rootComponents = checkNotNull(renderer.components) { "No root component found" }
         IComponentOrList.fromSequence(rootComponents.asSequence().map { renderComponent(node, it) })
@@ -117,7 +119,7 @@ class InterpretedMPSRenderer(
             when (component) {
                 is N_ChildrenComponent -> {
                     val link = MPSChildLink(MetaAdapterByDeclaration.getContainmentLink((component.link.untyped().asWritableNode() as MPSWritableNode).node))
-                    node.getChildren(link).map(::renderMPSNode)
+                    node.getChildren(link).map { renderMPSNode(NodeRendererCall(it.asReadableNode())) }
                 }
                 is N_TextComponent -> {
                     listOf(ComponentOrText(text = evaluateExpression(node, component.value.get())?.toString()))

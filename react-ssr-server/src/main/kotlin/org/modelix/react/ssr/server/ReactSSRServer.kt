@@ -1,13 +1,14 @@
 package org.modelix.react.ssr.server
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.server.application.call
+import io.ktor.http.ContentType
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.request.receiveStream
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -28,14 +29,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.modelix.incremental.IIncrementalEngine
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.incremental.incrementalFunction
 import org.modelix.kotlin.utils.ContextValue
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 import java.util.Collections
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -46,7 +44,8 @@ fun main() {
 }
 
 interface IRendererFactory {
-    fun createRenderer(incrementalEngine: IIncrementalEngine, nodeRef: String, parameters: Map<String, List<String>>, coroutineScope: CoroutineScope): IRenderer
+    fun createRenderer(incrementalEngine: IIncrementalEngine, nodeRef: RendererCall, parameters: Map<String, List<String>>, coroutineScope: CoroutineScope): IRenderer
+    fun createPageRenderer(incrementalEngine: IIncrementalEngine, pathParts: List<String>, parameters: Map<String, List<String>>, coroutineScope: CoroutineScope): IRenderer
 }
 
 interface IRenderer {
@@ -63,14 +62,25 @@ class DefaultRendererFactory : IRendererFactory {
 
     override fun createRenderer(
         incrementalEngine: IIncrementalEngine,
-        nodeRef: String,
+        nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
     ): IRenderer {
         return Renderer(nodeRef)
     }
 
-    class Renderer(val nodeRef: String) : IRenderer {
+    override fun createPageRenderer(
+        incrementalEngine: IIncrementalEngine,
+        pathParts: List<String>,
+        parameters: Map<String, List<String>>,
+        coroutineScope: CoroutineScope,
+    ): IRenderer {
+        require(pathParts.size == 2)
+        require(pathParts[0] == "nodes")
+        return createRenderer(incrementalEngine, NodeRefRendererCall(pathParts[1]), parameters, coroutineScope)
+    }
+
+    class Renderer(val nodeRef: RendererCall) : IRenderer {
         override fun render(): ViewModel {
             return ViewModel(
                 children = listOf(
@@ -122,18 +132,30 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
                 call.respond("OK")
             }
         }
-        route("/nodes/{nodeRef}") {
-            staticResources("client/", basePackage = "org.modelix.react.ssr.client")
-            webSocket("ws") {
+        route("assets") {
+            staticResources("/", basePackage = "org.modelix.react.ssr.client.assets")
+        }
+
+        route("pages/{parts...}") {
+            get {
+                val parts: List<String> = call.parameters.getAll("parts").orEmpty()
+                val rootPath = parts.joinToString("/") { ".." }.ifEmpty { "." }
+                val indexHtml = ReactSSRServer::class.java.classLoader.getResourceAsStream("org/modelix/react/ssr/client/index.html")
+                    .use { it.reader().readText() }
+                    .replace("<head>", "<head>\n    <base href=\"$rootPath\">")
+                call.respondText(text = indexHtml, contentType = ContentType.Text.Html)
+            }
+
+            webSocket {
+                val parts: List<String> = call.parameters.getAll("parts").orEmpty().filter { it.isNotEmpty() }
                 val incrementalEngine = IncrementalEngine()
                 lateinit var updateFunction: () -> Unit
                 try {
-                    val nodeRef = URLDecoder.decode(call.parameters["nodeRef"]!!, StandardCharsets.UTF_8)
                     val queryParameters = call.request.queryParameters.toMap()
-                    val createRenderer = incrementalEngine.incrementalFunction("createRenderer") { _ ->
-                        rendererFactory.createRenderer(
+                    val createRenderer = incrementalEngine.incrementalFunction("createPageRenderer") { _ ->
+                        rendererFactory.createPageRenderer(
                             incrementalEngine,
-                            nodeRef,
+                            parts,
                             queryParameters,
                             this
                         )
