@@ -19,6 +19,9 @@ abstract class RendererBase : IRenderer {
                 handler.handle(JsonObjectAsCustomMessageHandlerParameters(parameters))
             }
         }
+        registerMessageHandler("changeState") { message ->
+            allStates[message.getStringProperty("key")!!] = message.parameters!!["value"]!!
+        }
     }
 
     abstract suspend fun <R> runWrite(body: () -> R): R

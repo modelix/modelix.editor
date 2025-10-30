@@ -22,6 +22,7 @@
     <depends>com.intellij.modules.mps</depends>
     <depends>jetbrains.mps.core</depends>
     <depends>org.modelix.mps.editor</depends>
+    <depends>org.modelix.mps.react</depends>
     <extensions defaultExtensionNs="com.intellij">
         <mps.LanguageLibrary dir="/languages" />
     </extensions>

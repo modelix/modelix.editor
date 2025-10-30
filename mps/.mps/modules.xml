@@ -5,11 +5,11 @@
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation.impl.baseLanguage/org.modelix.mps.notation.impl.baseLanguage.msd" folder="text" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation/org.modelix.mps.notation.mpl" folder="text" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react.ide/org.modelix.mps.react.ide.msd" folder="react" />
-      <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react.impl.baseLanguage/org.modelix.mps.react.impl.baseLanguage.msd" folder="react" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react/org.modelix.mps.react.mpl" folder="react" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.webaspect.devkit/org.modelix.mps.webaspect.devkit.devkit" folder="aspect" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.webaspect.genplan/org.modelix.mps.webaspect.genplan.msd" folder="aspect" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.webaspect.runtime/org.modelix.mps.webaspect.runtime.msd" folder="aspect" />
+      <modulePath path="$PROJECT_DIR$/modules/test.org.modelix.webaspect/test.org.modelix.webaspect.msd" folder="test" />
     </projectModules>
   </component>
 </project>
