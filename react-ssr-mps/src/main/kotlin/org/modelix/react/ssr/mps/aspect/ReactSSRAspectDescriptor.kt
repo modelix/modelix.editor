@@ -6,7 +6,11 @@ import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.incremental.IIncrementalEngine
 import org.modelix.model.api.ConceptReference
 import org.modelix.model.api.INode
+import org.modelix.model.mpsadapters.computeRead
+import org.modelix.react.ssr.server.ConceptRendererSignature
 import org.modelix.react.ssr.server.IComponentOrList
+import org.modelix.react.ssr.server.RendererCall
+import org.modelix.react.ssr.server.RendererSignature
 
 class ReactSSRAspectDescriptors : Disposable {
     private val descriptorCache: DescriptorCache<IReactSSRAspectDescriptor> = DescriptorCache(IReactSSRAspectDescriptor::class.java).also { Disposer.register(this, it) }
@@ -14,7 +18,7 @@ class ReactSSRAspectDescriptors : Disposable {
     override fun dispose() {}
 
     fun findDescriptors(repository: SRepository): List<IReactSSRAspectDescriptor> {
-        return repository.modules.mapNotNull { descriptorCache.getDescriptor(it, "modelix.ReactDescriptor") }
+        return repository.computeRead { repository.modules.mapNotNull { descriptorCache.getDescriptor(it, "modelix.ReactDescriptor") } }
     }
 }
 
@@ -22,6 +26,12 @@ data class CompositeReactSSRAspectDescriptor(val descriptors: Set<IReactSSRAspec
     override fun getRenderersForConcept(concept: ConceptReference): List<IReactNodeRenderer> {
         return descriptors.flatMap { it.getRenderersForConcept(concept) }
     }
+
+    override fun getRenderers(signature: RendererSignature): List<IReactNodeRenderer> {
+        return descriptors.flatMap { it.getRenderers(signature) }
+    }
+
+    override fun getPages(): List<IReactPageDescriptor> = descriptors.flatMap { it.getPages() }
 }
 
 interface IReactSSRAspectDescriptor {
@@ -29,22 +39,42 @@ interface IReactSSRAspectDescriptor {
      * Only for the exact concept, not for super concepts.
      */
     fun getRenderersForConcept(concept: ConceptReference): List<IReactNodeRenderer>
+    fun getRenderers(signature: RendererSignature): List<IReactNodeRenderer>
+
+    fun getPages(): List<IReactPageDescriptor>
 }
 
 abstract class ReactSSRAspectDescriptorBase : IReactSSRAspectDescriptor {
-    private val renderers: MutableMap<ConceptReference, List<IReactNodeRenderer>> = HashMap()
+    private val renderers: MutableMap<RendererSignature, List<IReactNodeRenderer>> = HashMap()
+    private val pages: MutableList<IReactPageDescriptor> = ArrayList()
     override fun getRenderersForConcept(concept: ConceptReference): List<IReactNodeRenderer> {
-        return renderers[concept] ?: emptyList()
+        return getRenderers(ConceptRendererSignature(concept))
+    }
+    override fun getRenderers(signature: RendererSignature): List<IReactNodeRenderer> {
+        return renderers[signature] ?: emptyList()
     }
 
     protected fun addRenderer(concept: ConceptReference, renderer: IReactNodeRenderer) {
-        renderers[concept] = (renderers[concept] ?: emptyList()) + renderer
+        addRenderer(ConceptRendererSignature(concept), renderer)
+    }
+
+    protected fun addRenderer(signature: RendererSignature, renderer: IReactNodeRenderer) {
+        renderers[signature] = (renderers[signature] ?: emptyList()) + renderer
+    }
+
+    override fun getPages(): List<IReactPageDescriptor> {
+        return pages
+    }
+
+    protected fun addPage(page: IReactPageDescriptor) {
+        pages.add(page)
     }
 }
 
 interface IReactNodeRenderer {
     fun isApplicable(node: INode): Boolean
     fun render(node: INode, context: IRenderContext): IComponentOrList
+    fun render(call: RendererCall, context: IRenderContext): IComponentOrList
 }
 
 interface IRenderContext {

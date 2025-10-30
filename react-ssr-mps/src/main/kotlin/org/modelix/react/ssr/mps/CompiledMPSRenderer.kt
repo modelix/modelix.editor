@@ -17,7 +17,9 @@ import org.modelix.model.api.INode
 import org.modelix.model.api.NodeReference
 import org.modelix.model.api.getAllConcepts
 import org.modelix.model.mpsadapters.MPSArea
+import org.modelix.model.mpsadapters.MPSRepositoryAsNode
 import org.modelix.react.ssr.mps.aspect.CompositeReactSSRAspectDescriptor
+import org.modelix.react.ssr.mps.aspect.IReactNodeRenderer
 import org.modelix.react.ssr.mps.aspect.IReactSSRAspectDescriptor
 import org.modelix.react.ssr.mps.aspect.IRenderContext
 import org.modelix.react.ssr.mps.aspect.ReactSSRAspectDescriptors
@@ -25,6 +27,12 @@ import org.modelix.react.ssr.server.GenericNodeRenderer
 import org.modelix.react.ssr.server.IComponentOrList
 import org.modelix.react.ssr.server.IRenderer
 import org.modelix.react.ssr.server.IRendererFactory
+import org.modelix.react.ssr.server.MessageFromClient
+import org.modelix.react.ssr.server.NamedRendererCall
+import org.modelix.react.ssr.server.NamedRendererSignature
+import org.modelix.react.ssr.server.NodeRefRendererCall
+import org.modelix.react.ssr.server.NodeRendererCall
+import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.ViewModel
 import org.modelix.react.ssr.server.buildViewModel
 
@@ -36,25 +44,43 @@ class MPSRendererFactory(val repository: () -> SRepository) : IRendererFactory, 
 
     override fun createRenderer(
         incrementalEngine: IIncrementalEngine,
-        nodeRef: String,
+        nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
-    ): IRenderer {
+    ): GenericNodeRenderer {
         return if (useInterpreter.getValue()) {
             InterpretedMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope)
         } else {
             CompiledMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope, descriptors)
         }
     }
+
+    override fun createPageRenderer(
+        incrementalEngine: IIncrementalEngine,
+        pathParts: List<String>,
+        parameters: Map<String, List<String>>,
+        coroutineScope: CoroutineScope,
+    ): IRenderer {
+        val pages = descriptors.findDescriptors(repository()).flatMap { it.getPages() }
+        for (page in pages) {
+            val match = page.getPath().match(pathParts) ?: continue
+            return createRenderer(incrementalEngine, page.getRoot(MPSRepositoryAsNode(repository()), match), parameters, coroutineScope)
+        }
+        return object : IRenderer {
+            override fun <R> runRead(body: () -> R): R = body()
+            override fun render(): ViewModel = buildViewModel { text("Page not found: $pathParts") }
+            override suspend fun messageReceived(message: MessageFromClient) {}
+        }
+    }
 }
 
 class CompiledMPSRenderer(
-    incrementalEngine: IIncrementalEngine,
+    val incrementalEngine: IIncrementalEngine,
     val repository: () -> SRepository,
-    nodeRef: String,
+    root: RendererCall,
     coroutineScope: CoroutineScope,
     val descriptors: ReactSSRAspectDescriptors,
-) : GenericNodeRenderer(incrementalEngine, NodeReference(nodeRef), coroutineScope) {
+) : GenericNodeRenderer(incrementalEngine, root, coroutineScope) {
     override fun resolveNode(nodeRef: NodeReference): INode? {
         return MPSArea(repository()).resolveNode(nodeRef)
     }
@@ -77,50 +103,65 @@ class CompiledMPSRenderer(
 
     fun getDescriptor() = CompositeReactSSRAspectDescriptor(descriptors.findDescriptors(repository()).toSet())
 
-    override fun renderNodeEditor(node: INode): ViewModel {
+    override fun renderNodeEditor(node: RendererCall): ViewModel {
         return buildViewModel {
             child(renderMPSNode(node, getDescriptor()))
         }
     }
 
-    fun renderMPSNode(node: INode, descriptor: IReactSSRAspectDescriptor): IComponentOrList = renderMPSNodeIncremental(node, descriptor)
-    private val renderMPSNodeIncremental: (INode, IReactSSRAspectDescriptor) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, node: INode, descriptor: IReactSSRAspectDescriptor ->
-        val renderers = node.concept!!.getAllConcepts().asSequence().flatMap {
-            descriptor.getRenderersForConcept(it.getReference() as ConceptReference).filter { it.isApplicable(node) }
-        }
-        val renderer = renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
-            ?: return@incrementalFunction renderNode(node)
-        renderer.render(
-            node,
-            object : IRenderContext {
-                override fun getIncrementalEngine(): IIncrementalEngine = incrementalEngine
-
-                override fun renderNode(node: INode): IComponentOrList {
-                    return renderMPSNode(node, descriptor)
-                }
-
-                override fun getState(id: String, defaultValue: Boolean): Boolean {
-                    return (allStates[id] as? JsonPrimitive)?.booleanOrNull ?: defaultValue
-                }
-
-                override fun getState(id: String, defaultValue: String?): String? {
-                    return (allStates[id] as? JsonPrimitive)?.content ?: defaultValue
-                }
-
-                override fun setState(id: String, value: String?): String? {
-                    if (value == null) {
-                        allStates.remove(id)
-                    } else {
-                        allStates[id] = JsonPrimitive(value)
-                    }
-                    return value
-                }
-
-                override fun setState(id: String, value: Boolean): Boolean {
-                    allStates[id] = JsonPrimitive(value)
-                    return value
-                }
+    private fun resolveRenderers(call: RendererCall, descriptor: IReactSSRAspectDescriptor): List<IReactNodeRenderer> = when (call) {
+        is NodeRendererCall -> {
+            call.node.getConcept().getAllConcepts().flatMap {
+                descriptor.getRenderersForConcept(it.getReference() as ConceptReference).filter { it.isApplicable(call.node.asLegacyNode()) }
             }
-        )
+        }
+        is NamedRendererCall -> {
+            descriptor.getRenderers(NamedRendererSignature(call.id))
+        }
+        is NodeRefRendererCall -> {
+            val node = MPSArea(repository()).asModel().resolveNode(call.node)
+            resolveRenderers(NodeRendererCall(node), descriptor)
+        }
+    }
+
+    fun renderMPSNode(call: RendererCall, descriptor: IReactSSRAspectDescriptor): IComponentOrList = renderMPSNodeIncremental(call, descriptor)
+    private val renderMPSNodeIncremental: (RendererCall, IReactSSRAspectDescriptor) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, call: RendererCall, descriptor: IReactSSRAspectDescriptor ->
+        if (call is NodeRefRendererCall) {
+            val node = MPSArea(repository()).asModel().resolveNode(call.node)
+            return@incrementalFunction renderMPSNode(NodeRendererCall(node), descriptor)
+        }
+        val renderers = resolveRenderers(call, descriptor)
+        val renderer = renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
+            ?: return@incrementalFunction renderNode(call)
+        val context = object : IRenderContext {
+            override fun getIncrementalEngine(): IIncrementalEngine = incrementalEngine
+
+            override fun renderNode(node: INode): IComponentOrList {
+                return renderMPSNode(NodeRendererCall(node.asReadableNode()), descriptor)
+            }
+
+            override fun getState(id: String, defaultValue: Boolean): Boolean {
+                return (allStates[id] as? JsonPrimitive)?.booleanOrNull ?: defaultValue
+            }
+
+            override fun getState(id: String, defaultValue: String?): String? {
+                return (allStates[id] as? JsonPrimitive)?.content ?: defaultValue
+            }
+
+            override fun setState(id: String, value: String?): String? {
+                if (value == null) {
+                    allStates.remove(id)
+                } else {
+                    allStates[id] = JsonPrimitive(value)
+                }
+                return value
+            }
+
+            override fun setState(id: String, value: Boolean): Boolean {
+                allStates[id] = JsonPrimitive(value)
+                return value
+            }
+        }
+        renderer.render(call, context)
     }
 }

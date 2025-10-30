@@ -9,7 +9,20 @@ plugins {
 
 group = "org.modelix.mps.modules"
 
+val repositoryConcepts by configurations.creating
+
+dependencies {
+    repositoryConcepts(libs.modelix.mps.repository.concepts)
+}
+
+val repositoryConceptsFolder = layout.buildDirectory.dir("repositoryConcepts")
+val extractRepositoryConcepts = tasks.register("extractRepositoryConcepts", Sync::class) {
+    from(zipTree({ repositoryConcepts.singleFile }))
+    into(repositoryConceptsFolder)
+}
+
 mpsBuild {
+    dependsOn(extractRepositoryConcepts)
     dependsOn(":editor-common-mps:buildPlugin")
     dependsOn(":projectional-editor-ssr-mps:buildPlugin")
     dependsOn(":react-ssr-mps:buildPlugin")
@@ -20,18 +33,20 @@ mpsBuild {
     search("../editor-common-mps/build/idea-sandbox/plugins/editor-common-mps")
     search("../projectional-editor-ssr-mps/build/idea-sandbox/plugins/projectional-editor-ssr-mps")
     search("../react-ssr-mps/build/idea-sandbox/plugins/react-ssr-mps")
+    search(repositoryConceptsFolder.get().asFile.absolutePath)
     search("modules")
-    publication("editor-languages") {
-        module("org.modelix.mps.webaspect.devkit")
-        module("org.modelix.mps.webaspect.genplan")
-        module("org.modelix.mps.notation")
-    }
     publication("baseLanguage-notation") {
         module("org.modelix.mps.notation.impl.baseLanguage")
     }
-    publication("react") {
+    publication("editor-devkit") {
+        module("org.modelix.mps.notation")
         module("org.modelix.mps.react")
         module("org.modelix.mps.react.ide")
+        module("org.modelix.mps.webaspect.devkit")
+        module("org.modelix.mps.webaspect.genplan")
+    }
+    publication("tests") {
+        module("test.org.modelix.webaspect")
     }
 }
 
