@@ -10,13 +10,11 @@ import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.INode
 import org.modelix.model.api.IProperty
 import org.modelix.model.api.NodeReference
+import org.modelix.model.api.toSerialized
 
-abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, private val nodeRef: NodeReference, val coroutineScope: CoroutineScope) : RendererBase() {
+abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, private val nodeRef: RendererCall, val coroutineScope: CoroutineScope) : RendererBase() {
 
     init {
-        registerMessageHandler("changeState") { message ->
-            allStates[message.getStringProperty("key")!!] = message.parameters!!["value"]!!
-        }
         registerMessageHandler("changeProperty") { message ->
             val serializedNodeRef = message.getStringProperty("node")!!
             val propertyRef = message.getStringProperty("property")!!
@@ -35,8 +33,13 @@ abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, 
     override fun doRender(): ViewModel {
         return try {
             runRead {
-                val node = requireNotNull(resolveNode(nodeRef)) { "Node not found: $nodeRef" }
-                renderNodeEditor(node)
+                when (nodeRef) {
+                    is NodeRefRendererCall -> {
+                        val node = requireNotNull(resolveNode(nodeRef.node.toSerialized())) { "Node not found: $nodeRef" }
+                        renderNodeEditor(NodeRendererCall(node.asReadableNode()))
+                    }
+                    else -> renderNodeEditor(nodeRef)
+                }
             }
         } catch (ex: Exception) {
             renderError("Failed to load $nodeRef: " + ex.message + "\n" + ex.stackTraceToString())
@@ -52,14 +55,16 @@ abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, 
         }
     }
 
-    open fun renderNodeEditor(node: INode): ViewModel {
+    open fun renderNodeEditor(node: RendererCall): ViewModel {
         return buildViewModel {
             child(renderNode(node))
         }
     }
 
-    fun renderNode(node: INode): ComponentOrText = renderNodeIncremental(node)
-    private val renderNodeIncremental = incremenentalEngine.incrementalFunction("renderNode") { _, node: INode ->
+    fun renderNode(node: RendererCall): ComponentOrText = renderNodeIncremental(node)
+    private val renderNodeIncremental = incremenentalEngine.incrementalFunction("renderNode") { _, call: RendererCall ->
+        if (call !is NodeRendererCall) return@incrementalFunction ComponentOrText(text = "renderer not found for $call")
+        val node = call.node.asLegacyNode()
         val text = (node.concept?.getShortName().toString()) +
             " [" +
             node.getAllProperties().joinToString(", ") { "${it.first.getSimpleName()}=${it.second}" } +
@@ -105,7 +110,7 @@ abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, 
                     }
 
                     for (child in node.allChildren) {
-                        child(renderNode(child))
+                        child(renderNode(NodeRendererCall(child.asReadableNode())))
                     }
                 } else {
                     component("mui.Stack") {
