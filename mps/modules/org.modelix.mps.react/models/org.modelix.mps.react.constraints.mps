@@ -18,7 +18,7 @@
     <import index="o8zo" ref="r:314576fc-3aee-4386-a0a5-a38348ac317d(jetbrains.mps.scope)" />
     <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
     <import index="tpcn" ref="r:00000000-0000-4000-0000-011c8959028b(jetbrains.mps.lang.structure.behavior)" />
-    <import index="8xo1" ref="r:41b64586-29ed-47f5-b907-44be07261bbc(org.modelix.mps.react.structure)" implicit="true" />
+    <import index="8xo1" ref="r:41b64586-29ed-47f5-b907-44be07261bbc(org.modelix.mps.react.structure)" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
     <import index="tp25" ref="r:00000000-0000-4000-0000-011c89590301(jetbrains.mps.lang.smodel.structure)" implicit="true" />
   </imports>
@@ -130,6 +130,9 @@
       <concept id="1179409122411" name="jetbrains.mps.lang.smodel.structure.Node_ConceptMethodCall" flags="nn" index="2qgKlT" />
       <concept id="7400021826774799413" name="jetbrains.mps.lang.smodel.structure.NodePointerExpression" flags="ng" index="2tJFMh">
         <child id="7400021826774799510" name="ref" index="2tJFKM" />
+      </concept>
+      <concept id="4693937538533521280" name="jetbrains.mps.lang.smodel.structure.OfConceptOperation" flags="ng" index="v3k3i">
+        <child id="4693937538533538124" name="requestedConcept" index="v3oSu" />
       </concept>
       <concept id="1173122760281" name="jetbrains.mps.lang.smodel.structure.Node_GetAncestorsOperation" flags="nn" index="z$bX8" />
       <concept id="2396822768958367367" name="jetbrains.mps.lang.smodel.structure.AbstractTypeCastExpression" flags="nn" index="$5XWr">
@@ -600,6 +603,51 @@
               </node>
             </node>
             <node concept="3x8VRR" id="6eUjE42hbGd" role="2OqNvi" />
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="1M2fIO" id="2UuChTN9p$K">
+    <property role="3GE5qa" value="pages" />
+    <ref role="1M2myG" to="8xo1:2UuChTN9p$I" resolve="PagePathVariableReference" />
+    <node concept="1N5Pfh" id="2UuChTN9p$L" role="1Mr941">
+      <ref role="1N5Vy1" to="8xo1:2UuChTN9p$J" />
+      <node concept="3dgokm" id="2UuChTN9pH6" role="1N6uqs">
+        <node concept="3clFbS" id="2UuChTN9pH7" role="2VODD2">
+          <node concept="3clFbF" id="2UuChTN9yDp" role="3cqZAp">
+            <node concept="2YIFZM" id="2UuChTN9_S0" role="3clFbG">
+              <ref role="37wK5l" to="o8zo:4IP40Bi3eAf" resolve="forNamedElements" />
+              <ref role="1Pybhc" to="o8zo:4IP40Bi3e_R" resolve="ListScope" />
+              <node concept="2OqwBi" id="2UuChTN9_S1" role="37wK5m">
+                <node concept="2OqwBi" id="2UuChTN9_S2" role="2Oq$k0">
+                  <node concept="2OqwBi" id="2UuChTN9_S3" role="2Oq$k0">
+                    <node concept="2OqwBi" id="2UuChTN9_S4" role="2Oq$k0">
+                      <node concept="2rP1CM" id="2UuChTN9_S5" role="2Oq$k0" />
+                      <node concept="2Xjw5R" id="2UuChTN9_S6" role="2OqNvi">
+                        <node concept="1xMEDy" id="2UuChTN9_S7" role="1xVPHs">
+                          <node concept="chp4Y" id="2UuChTN9_S8" role="ri$Ld">
+                            <ref role="cht4Q" to="8xo1:6eUjE42h0Dj" resolve="Page" />
+                          </node>
+                        </node>
+                        <node concept="1xIGOp" id="2UuChTN9_S9" role="1xVPHs" />
+                      </node>
+                    </node>
+                    <node concept="3TrEf2" id="2UuChTN9_Sa" role="2OqNvi">
+                      <ref role="3Tt5mk" to="8xo1:6eUjE42iNFO" resolve="path" />
+                    </node>
+                  </node>
+                  <node concept="3Tsc0h" id="2UuChTN9_Sb" role="2OqNvi">
+                    <ref role="3TtcxE" to="8xo1:6eUjE42hnWE" resolve="parts" />
+                  </node>
+                </node>
+                <node concept="v3k3i" id="2UuChTN9_Sc" role="2OqNvi">
+                  <node concept="chp4Y" id="2UuChTN9_Sd" role="v3oSu">
+                    <ref role="cht4Q" to="8xo1:6eUjE42hnWB" resolve="VariablePagePathPart" />
+                  </node>
+                </node>
+              </node>
+            </node>
           </node>
         </node>
       </node>

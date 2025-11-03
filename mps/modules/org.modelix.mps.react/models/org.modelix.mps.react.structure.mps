@@ -863,7 +863,7 @@
     <property role="TrG5h" value="Page" />
     <property role="19KtqR" value="true" />
     <property role="3GE5qa" value="pages" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="6eUjE42iNFO" role="1TKVEi">
       <property role="IQ2ns" value="7186142608858233588" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
@@ -892,7 +892,7 @@
     <property role="EcuMT" value="7186142608857762391" />
     <property role="3GE5qa" value="pages" />
     <property role="TrG5h" value="PageParameter" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="6eUjE42h0Dr" role="1TKVEi">
       <property role="IQ2ns" value="7186142608857762395" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
@@ -920,7 +920,7 @@
     <property role="EcuMT" value="7186142608857847244" />
     <property role="3GE5qa" value="pages" />
     <property role="TrG5h" value="PagePath" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="6eUjE42hnWE" role="1TKVEi">
       <property role="IQ2ns" value="7186142608857857834" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
@@ -939,7 +939,7 @@
     <property role="3GE5qa" value="pages" />
     <property role="TrG5h" value="StaticPagePathPart" />
     <property role="34LRSv" value="&quot;" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyi" id="6eUjE42hnWA" role="1TKVEl">
       <property role="IQ2nx" value="7186142608857857830" />
       <property role="TrG5h" value="value" />
@@ -954,12 +954,15 @@
     <property role="3GE5qa" value="pages" />
     <property role="TrG5h" value="VariablePagePathPart" />
     <property role="34LRSv" value="{" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="PrWs8" id="6eUjE42hnWD" role="PzmwI">
       <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
     </node>
     <node concept="PrWs8" id="6eUjE42iPwx" role="PzmwI">
       <ref role="PrY4T" node="6eUjE42hlne" resolve="IPagePathPart" />
+    </node>
+    <node concept="PrWs8" id="2GUWbr7Jp3D" role="PzmwI">
+      <ref role="PrY4T" to="tpck:69Qfsw3InJo" resolve="ISmartReferent" />
     </node>
   </node>
   <node concept="Az7Fb" id="6eUjE42j1Hl">
@@ -967,6 +970,18 @@
     <property role="3GE5qa" value="pages" />
     <property role="TrG5h" value="URLCharacters" />
     <property role="FLfZY" value="[a-z][a-z\\-0-9]*" />
+  </node>
+  <node concept="1TIwiD" id="2UuChTN9p$I">
+    <property role="EcuMT" value="3359299524217903406" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="PagePathVariableReference" />
+    <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
+    <node concept="1TJgyj" id="2UuChTN9p$J" role="1TKVEi">
+      <property role="IQ2ns" value="3359299524217903407" />
+      <property role="20kJfa" value="decl" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="6eUjE42hnWB" resolve="VariablePagePathPart" />
+    </node>
   </node>
 </model>
 
