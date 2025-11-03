@@ -10,6 +10,7 @@
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" />
     <import index="f2e5" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:kotlinx.serialization.json(org.modelix.mps.editor.common.stubs/)" />
     <import index="8xo1" ref="r:41b64586-29ed-47f5-b907-44be07261bbc(org.modelix.mps.react.structure)" />
+    <import index="jh6v" ref="r:f2f39a18-fd23-4090-b7f2-ba8da340eec2(org.modelix.model.repositoryconcepts.structure)" />
     <import index="tpee" ref="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" implicit="true" />
     <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" implicit="true" />
     <import index="mhbf" ref="8865b7a8-5271-43d3-884c-6fd1d9cfdd34/java:org.jetbrains.mps.openapi.model(MPS.OpenAPI/)" implicit="true" />
@@ -1058,6 +1059,58 @@
     <node concept="1YaCAy" id="1XYAF4M7x2u" role="1YuTPh">
       <property role="TrG5h" value="reactModule" />
       <ref role="1YaFvo" to="8xo1:7GLg2tFptr5" resolve="ReactModule" />
+    </node>
+  </node>
+  <node concept="1YbPZF" id="2UuChTNb28E">
+    <property role="TrG5h" value="typeof_VariablePagePathPart" />
+    <property role="3GE5qa" value="pages" />
+    <node concept="3clFbS" id="2UuChTNb28F" role="18ibNy">
+      <node concept="1Z5TYs" id="2UuChTNb3ni" role="3cqZAp">
+        <node concept="mw_s8" id="2UuChTNb3nu" role="1ZfhKB">
+          <node concept="2pJPEk" id="2UuChTNb3nq" role="mwGJk">
+            <node concept="2pJPED" id="2UuChTNb3ns" role="2pJPEn">
+              <ref role="2pJxaS" to="tpee:hP7QB7G" resolve="StringType" />
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="2UuChTNb3nl" role="1ZfhK$">
+          <node concept="1Z2H0r" id="2UuChTNb38t" role="mwGJk">
+            <node concept="1YBJjd" id="2UuChTNb38K" role="1Z2MuG">
+              <ref role="1YBMHb" node="2UuChTNb28H" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="2UuChTNb28H" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="8xo1:6eUjE42hnWB" resolve="VariablePagePathPart" />
+    </node>
+  </node>
+  <node concept="1YbPZF" id="2UuChTNb3nP">
+    <property role="TrG5h" value="typeof_ContextRepositoryExpression" />
+    <property role="3GE5qa" value="pages" />
+    <node concept="3clFbS" id="2UuChTNb3nQ" role="18ibNy">
+      <node concept="1Z5TYs" id="2UuChTNb3y6" role="3cqZAp">
+        <node concept="mw_s8" id="2UuChTNb3yi" role="1ZfhKB">
+          <node concept="2c44tf" id="2UuChTNb3zo" role="mwGJk">
+            <node concept="3Tqbb2" id="2UuChTNb3zI" role="2c44tc">
+              <ref role="ehGHo" to="jh6v:qmkA5fOskm" resolve="Repository" />
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="2UuChTNb3y9" role="1ZfhK$">
+          <node concept="1Z2H0r" id="2UuChTNb3oz" role="mwGJk">
+            <node concept="1YBJjd" id="2UuChTNb3oK" role="1Z2MuG">
+              <ref role="1YBMHb" node="2UuChTNb3nS" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="2UuChTNb3nS" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="8xo1:6eUjE42h5St" resolve="ContextRepositoryExpression" />
     </node>
   </node>
 </model>
