@@ -168,7 +168,12 @@ class ReactSSRServerForMPS : Disposable {
             if (ktorServer == null) return
             println("stopping modelix SSR server")
             MPSModuleRepository.getInstance().modelAccess.removeCommandListener(commandLister)
-            ktorServer?.stop()
+            ktorServer?.let { server ->
+                ApplicationManager.getApplication().executeOnPooledThread {
+                    // The stop call often blocks forever and MPS can't shut down if called synchronously.
+                    server.stop()
+                }
+            }
             ktorServer = null
             ssrServer?.dispose()
             ssrServer = null

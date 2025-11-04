@@ -42,7 +42,7 @@ abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, 
                 }
             }
         } catch (ex: Exception) {
-            renderError("Failed to load $nodeRef: " + ex.message + "\n" + ex.stackTraceToString())
+            renderError("Failed loading $nodeRef: " + ex.message + "\n" + ex.stackTraceToString())
         }
     }
 
@@ -50,7 +50,9 @@ abstract class GenericNodeRenderer(val incremenentalEngine: IIncrementalEngine, 
         return buildViewModel {
             component("mui.Alert") {
                 property("severity", "error")
-                text(message)
+                component("html.pre") {
+                    text(message)
+                }
             }
         }
     }

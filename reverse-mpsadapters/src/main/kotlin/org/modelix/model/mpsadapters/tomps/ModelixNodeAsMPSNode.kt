@@ -39,12 +39,36 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         }
 
         @JvmStatic
+        @JvmName("toModelixNodeNullable")
+        fun toModelixNode(node: SNode?): INode? {
+            return when (node) {
+                null -> null
+                is ModelixNodeAsMPSNode -> node.node.asLegacyNode()
+                else -> MPSNode(node)
+            }
+        }
+
+        @JvmStatic
         fun toMPSNode(node: INode): SNode {
             return ModelixNodeAsMPSNode(node.asWritableNode())
         }
 
         @JvmStatic
+        @JvmName("toMPSNodeNullable")
+        fun toMPSNode(node: INode?): SNode? {
+            if (node == null) return null
+            return ModelixNodeAsMPSNode(node.asWritableNode())
+        }
+
+        @JvmStatic
         fun toMPSNode(node: IReadableNode): SNode {
+            return ModelixNodeAsMPSNode(node)
+        }
+
+        @JvmStatic
+        @JvmName("toMPSNodeNullable")
+        fun toMPSNode(node: IReadableNode?): SNode? {
+            if (node == null) return null
             return ModelixNodeAsMPSNode(node)
         }
 

@@ -186,11 +186,19 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
                     }
                     suspend fun sendUpdate() {
                         if (!isActive) return
-                        val viewModel = createRenderer().runRead {
-                            if (!isActive) return@runRead null
-                            synchronized(incrementalEngine) {
-                                if (incrementalEngine.isDisposed()) return@runRead null
-                                createViewModel()
+                        val viewModel = try {
+                            createRenderer().runRead {
+                                if (!isActive) return@runRead null
+                                synchronized(incrementalEngine) {
+                                    if (incrementalEngine.isDisposed()) return@runRead null
+                                    createViewModel()
+                                }
+                            }
+                        } catch (ex: Exception) {
+                            buildViewModel {
+                                component("html.pre") {
+                                    text(ex.stackTraceToString())
+                                }
                             }
                         } ?: return
                         sendUpdate(viewModel)
