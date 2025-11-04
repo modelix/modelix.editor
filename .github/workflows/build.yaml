@@ -9,6 +9,10 @@ on:
 
 jobs:
   build:
+    permissions:
+      # https://github.com/marketplace/actions/publish-test-results#permissions
+      checks: write
+      pull-requests: write
 
     runs-on: ubuntu-latest
 
