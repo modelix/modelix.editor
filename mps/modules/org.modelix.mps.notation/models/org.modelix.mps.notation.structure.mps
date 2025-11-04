@@ -243,7 +243,7 @@
   </node>
   <node concept="1TIwiD" id="CUW2QYOmUP">
     <property role="EcuMT" value="737165568294088373" />
-    <property role="TrG5h" value="WithIdentCell" />
+    <property role="TrG5h" value="WithIndentCell" />
     <property role="34LRSv" value="indented" />
     <ref role="1TJDcQ" node="7dm8yUsMxww" resolve="Cell" />
     <node concept="1TJgyj" id="CUW2QYOnl8" role="1TKVEi">

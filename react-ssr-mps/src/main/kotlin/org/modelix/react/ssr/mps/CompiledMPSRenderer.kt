@@ -14,10 +14,12 @@ import org.modelix.incremental.TrackableValue
 import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.ConceptReference
 import org.modelix.model.api.INode
+import org.modelix.model.api.INodeResolutionScope
 import org.modelix.model.api.NodeReference
 import org.modelix.model.api.getAllConcepts
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSRepositoryAsNode
+import org.modelix.model.mpsadapters.computeRead
 import org.modelix.react.ssr.mps.aspect.CompositeReactSSRAspectDescriptor
 import org.modelix.react.ssr.mps.aspect.IReactNodeRenderer
 import org.modelix.react.ssr.mps.aspect.IReactSSRAspectDescriptor
@@ -61,15 +63,45 @@ class MPSRendererFactory(val repository: () -> SRepository) : IRendererFactory, 
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
     ): IRenderer {
-        val pages = descriptors.findDescriptors(repository()).flatMap { it.getPages() }
-        for (page in pages) {
-            val match = page.getPath().match(pathParts) ?: continue
-            return createRenderer(incrementalEngine, page.getRoot(MPSRepositoryAsNode(repository()), match), parameters, coroutineScope)
+        // Don't do any model access here because it will result in deadlocks.
+        return PageRenderer(incrementalEngine, pathParts, parameters, coroutineScope)
+    }
+
+    inner class PageRenderer(
+        val incrementalEngine: IIncrementalEngine,
+        val pathParts: List<String>,
+        val parameters: Map<String, List<String>>,
+        val coroutineScope: CoroutineScope,
+    ) : IRenderer {
+        override fun <R> runRead(body: () -> R): R {
+            return repository().computeRead(body)
         }
-        return object : IRenderer {
-            override fun <R> runRead(body: () -> R): R = body()
-            override fun render(): ViewModel = buildViewModel { text("Page not found: $pathParts") }
-            override suspend fun messageReceived(message: MessageFromClient) {}
+
+        fun createRootRenderer(): IRenderer? {
+            val repository = repository()
+            val pages = descriptors.findDescriptors(repository).flatMap { it.getPages() }
+            for (page in pages) {
+                val match = page.getPath().match(pathParts) ?: continue
+                return repository.modelAccess.computeRead {
+                    INodeResolutionScope.runWithAdditionalScope(MPSArea(repository)) {
+                        createRenderer(incrementalEngine, page.getRoot(MPSRepositoryAsNode(repository), match), parameters, coroutineScope)
+                    }
+                }
+            }
+            return null
+        }
+
+        override fun render(): ViewModel {
+            val renderer = createRootRenderer()
+            return if (renderer == null) {
+                buildViewModel { text("Page not found: $pathParts") }
+            } else {
+                renderer.render()
+            }
+        }
+
+        override suspend fun messageReceived(message: MessageFromClient) {
+            createRootRenderer()?.messageReceived(message)
         }
     }
 }

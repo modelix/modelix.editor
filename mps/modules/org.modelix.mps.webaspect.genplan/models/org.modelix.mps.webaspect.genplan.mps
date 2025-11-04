@@ -76,6 +76,12 @@
     </node>
     <node concept="2VgMA2" id="1edLqv8PKEM" role="2VgMA7">
       <property role="1s431M" value="true" />
+      <node concept="2Qf6Nf" id="5MaUe7C0H$E" role="2Qf7GQ">
+        <node concept="2V$Bhx" id="5MaUe7C0H$G" role="2Qf6Ng">
+          <property role="2V$B1T" value="774bf8a0-62e5-41e1-af63-f4812e60e48b" />
+          <property role="2V$B1Q" value="jetbrains.mps.baseLanguage.checkedDots" />
+        </node>
+      </node>
       <node concept="2Qf6Nf" id="1edLqv8PKF5" role="2Qf7GQ">
         <node concept="2V$Bhx" id="1edLqv8PKF9" role="2Qf6Ng">
           <property role="2V$B1T" value="7866978e-a0f0-4cc7-81bc-4d213d9375e1" />
