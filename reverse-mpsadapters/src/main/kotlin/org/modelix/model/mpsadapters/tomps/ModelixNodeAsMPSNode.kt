@@ -72,6 +72,20 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
             return ModelixNodeAsMPSNode(node)
         }
 
+        @JvmStatic
+        fun ensureIsTracked(node: SNode): SNode {
+            return when (node) {
+                is ModelixNodeAsMPSNode -> node
+                else -> ModelixNodeAsMPSNode(MPSWritableNode(node))
+            }
+        }
+
+        @JvmStatic
+        @JvmName("ensureIsTrackedNullable")
+        fun ensureIsTracked(node: SNode?): SNode? {
+            return if (node == null) null else ensureIsTracked(node)
+        }
+
         private fun unwrapMPSNode(node: SNode): SNode {
             return ((node as? ModelixNodeAsMPSNode)?.node as? MPSWritableNode)?.node
                 ?: node
