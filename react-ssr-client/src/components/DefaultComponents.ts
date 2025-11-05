@@ -100,7 +100,7 @@ export function registerDefaultComponents() {
     registerComponentConstructor("modelix.ImageBasedEditor", ModelixImageBasedEditor)
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", window.location.origin + window.location.pathname + "../../../known-components", true);
+    xhr.open("POST", "known-components", true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.send(Array.from(componentConstructors.keys()).join("\n"));
 }

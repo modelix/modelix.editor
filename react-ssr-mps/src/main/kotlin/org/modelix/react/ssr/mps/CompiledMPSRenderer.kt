@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
+import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.incremental.IIncrementalEngine
 import org.modelix.incremental.TrackableValue
@@ -20,6 +21,7 @@ import org.modelix.model.api.getAllConcepts
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSRepositoryAsNode
 import org.modelix.model.mpsadapters.computeRead
+import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 import org.modelix.react.ssr.mps.aspect.CompositeReactSSRAspectDescriptor
 import org.modelix.react.ssr.mps.aspect.IReactNodeRenderer
 import org.modelix.react.ssr.mps.aspect.IReactSSRAspectDescriptor
@@ -156,20 +158,33 @@ class CompiledMPSRenderer(
         }
     }
 
+    private fun <T> ensureIsTracked(obj: T): T {
+        return when (obj) {
+            is NodeRendererCall -> obj.copy(node = ensureIsTracked(obj.node))
+            is NamedRendererCall -> obj.copy(parameterValues = ensureIsTracked(obj.parameterValues))
+            is SNode -> ModelixNodeAsMPSNode.ensureIsTracked(obj)
+            is List<*> -> obj.map { ensureIsTracked(it) }
+            else -> obj
+        } as T
+    }
+
     fun renderMPSNode(call: RendererCall, descriptor: IReactSSRAspectDescriptor): IComponentOrList = renderMPSNodeIncremental(call, descriptor)
     private val renderMPSNodeIncremental: (RendererCall, IReactSSRAspectDescriptor) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, call: RendererCall, descriptor: IReactSSRAspectDescriptor ->
         if (call is NodeRefRendererCall) {
             val node = MPSArea(repository()).asModel().resolveNode(call.node)
             return@incrementalFunction renderMPSNode(NodeRendererCall(node), descriptor)
         }
+
+        val call = ensureIsTracked(call)
+
         val renderers = resolveRenderers(call, descriptor)
         val renderer = renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
             ?: return@incrementalFunction renderNode(call)
         val context = object : IRenderContext {
             override fun getIncrementalEngine(): IIncrementalEngine = incrementalEngine
 
-            override fun renderNode(node: INode): IComponentOrList {
-                return renderMPSNode(NodeRendererCall(node.asReadableNode()), descriptor)
+            override fun callRenderer(call: RendererCall): IComponentOrList {
+                return renderMPSNode(call, descriptor)
             }
 
             override fun getState(id: String, defaultValue: Boolean): Boolean {

@@ -9,6 +9,7 @@ import org.modelix.model.api.INode
 import org.modelix.model.mpsadapters.computeRead
 import org.modelix.react.ssr.server.ConceptRendererSignature
 import org.modelix.react.ssr.server.IComponentOrList
+import org.modelix.react.ssr.server.NodeRendererCall
 import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.RendererSignature
 
@@ -79,7 +80,8 @@ interface IReactNodeRenderer {
 
 interface IRenderContext {
     fun getIncrementalEngine(): IIncrementalEngine
-    fun renderNode(node: INode): IComponentOrList
+    fun renderNode(node: INode): IComponentOrList = callRenderer(NodeRendererCall(node.asReadableNode()))
+    fun callRenderer(call: RendererCall): IComponentOrList
     fun getState(id: String, defaultValue: String?): String?
     fun setState(id: String, value: String?): String?
     fun getState(id: String, defaultValue: Boolean): Boolean
