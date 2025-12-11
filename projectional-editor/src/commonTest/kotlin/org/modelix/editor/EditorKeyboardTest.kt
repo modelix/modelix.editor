@@ -1,17 +1,24 @@
 package org.modelix.editor
 
+import kotlinx.coroutines.test.runTest
+import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.shared.NullTextEditorService
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class EditorKeyboardTest {
     @Test
-    fun arrowLeft() {
-        val rootCell = EditorTestUtils.buildCells(listOf(listOf("111"), listOf(EditorTestUtils.indentChildren, "222", listOf(EditorTestUtils.newLine, listOf("333")), listOf(listOf("444"), "555")), EditorTestUtils.newLine, "666", "777", "888"))
-        val editor = EditorComponent(engine = null) { rootCell }
-        val findByText: (String) -> LayoutableCell = { text -> rootCell.descendants().find { it.getVisibleText() == text }!!.layoutable()!! }
+    fun arrowLeft() = runTest {
+        val editor = FrontendEditorComponent(NullTextEditorService())
+        val rootCell = EditorTestUtils.buildCells(listOf(listOf("111"), listOf(EditorTestUtils.indentChildren, "222", listOf(EditorTestUtils.newLine, listOf("333")), listOf(listOf("444"), "555")), EditorTestUtils.newLine, "666", "777", "888"), editor.cellTree)
+        rootCell.moveCell(editor.cellTree.getRoot(), 0)
+        val findByText: (String) -> LayoutableCell = { text ->
+            val cell = rootCell.descendants().find { it.getVisibleText() == text }!!
+            cell.layoutable()!!
+        }
         val layoutable444 = findByText("444")
-        editor.changeSelection(CaretSelection(layoutable444, 2))
-        assertEquals(CaretSelection(layoutable444, 2), editor.getSelection())
+        editor.changeSelection(CaretSelection(editor, layoutable444, 2))
+        assertEquals(CaretSelection(editor, layoutable444, 2), editor.getSelection())
 
         testCaretChange(editor, KnownKeys.ArrowLeft, "444", 1)
         testCaretChange(editor, KnownKeys.ArrowLeft, "444", 0)
@@ -31,13 +38,17 @@ class EditorKeyboardTest {
     }
 
     @Test
-    fun arrowRight() {
-        val rootCell = EditorTestUtils.buildCells(listOf("111", "222", EditorTestUtils.newLine, "333", "444", "555", EditorTestUtils.newLine, "666", "777", "888"))
-        val editor = EditorComponent(engine = null) { rootCell }
-        val findByText: (String) -> LayoutableCell = { text -> rootCell.descendants().find { it.getVisibleText() == text }!!.layoutable()!! }
+    fun arrowRight() = runTest {
+        val editor = FrontendEditorComponent(NullTextEditorService())
+        val rootCell = EditorTestUtils.buildCells(listOf("111", "222", EditorTestUtils.newLine, "333", "444", "555", EditorTestUtils.newLine, "666", "777", "888"), editor.cellTree)
+        rootCell.moveCell(editor.cellTree.getRoot(), 0)
+        val findByText: (String) -> LayoutableCell = { text ->
+            val cell = rootCell.descendants().find { it.getVisibleText() == text }!!
+            cell.layoutable()!!
+        }
         val layoutable444 = findByText("444")
-        editor.changeSelection(CaretSelection(layoutable444, 2))
-        assertEquals(CaretSelection(layoutable444, 2), editor.getSelection())
+        editor.changeSelection(CaretSelection(editor, layoutable444, 2))
+        assertEquals(CaretSelection(editor, layoutable444, 2), editor.getSelection())
 
         testCaretChange(editor, KnownKeys.ArrowRight, "444", 3)
         testCaretChange(editor, KnownKeys.ArrowRight, "555", 0)
@@ -59,9 +70,9 @@ class EditorKeyboardTest {
         testCaretChange(editor, KnownKeys.ArrowRight, "888", 3) // don't move at the end
     }
 
-    private fun testCaretChange(editor: EditorComponent, key: KnownKeys, expectedCellText: String, expectedPosition: Int) {
+    private suspend fun testCaretChange(editor: FrontendEditorComponent, key: KnownKeys, expectedCellText: String, expectedPosition: Int) {
         editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key))
         val layoutable = editor.getRootCell().descendants().find { it.getVisibleText() == expectedCellText }!!.layoutable()!!
-        assertEquals(CaretSelection(layoutable, expectedPosition), editor.getSelection())
+        assertEquals(CaretSelection(editor, layoutable, expectedPosition), editor.getSelection())
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    alias(libs.plugins.kotlin.rpc)
     `maven-publish`
 }
 
@@ -29,6 +30,7 @@ kotlin {
                 implementation(coreLibs.kotlin.serialization.json)
                 api(coreLibs.modelix.incremental)
                 api(libs.kotlin.html)
+                api(libs.kotlinx.rpc.core)
                 api(project(":parser"))
             }
         }

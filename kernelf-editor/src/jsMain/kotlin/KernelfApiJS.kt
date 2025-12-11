@@ -2,15 +2,17 @@ import kotlinx.atomicfu.atomic
 import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.html.dom.createTree
-import org.modelix.editor.EditorState
+import org.modelix.editor.CellTreeState
 import org.modelix.editor.GeneratedHtmlMap
 import org.modelix.editor.IncrementalVirtualDOMBuilder
 import org.modelix.editor.JSDom
 import org.modelix.editor.JsEditorComponent
 import org.modelix.editor.kernelf.KernelfAPI
+import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.editor.unwrap
 import org.modelix.model.ModelFacade
 import org.modelix.model.api.IBranchListener
@@ -18,6 +20,7 @@ import org.modelix.model.api.INode
 import org.modelix.model.api.ITree
 import org.modelix.model.api.JSNodeConverter
 import org.modelix.model.api.deepUnwrap
+import org.modelix.model.api.toSerialized
 import org.modelix.model.area.IAreaChangeList
 import org.modelix.model.area.IAreaListener
 import org.w3c.dom.HTMLElement
@@ -41,17 +44,17 @@ object KernelfApiJS {
 
     fun getNodeConverter() = JSNodeConverter
 
-    private fun renderNodeAsDom(editorState: EditorState, rootNode: INode): HTMLElement {
+    private fun renderNodeAsDom(cellTreeState: CellTreeState, rootNode: INode): HTMLElement {
         val tagConsumer = document.createTree()
-        KernelfAPI.renderNode(editorState, rootNode, tagConsumer)
+        KernelfAPI.renderNode(cellTreeState, rootNode, tagConsumer)
         return tagConsumer.finalize()
     }
 
-    fun updateNodeAsDom(editorState: EditorState, rootNode: INode, parentElement: HTMLElement) {
+    fun updateNodeAsDom(cellTreeState: CellTreeState, rootNode: INode, parentElement: HTMLElement) {
         val existing = parentElement.firstElementChild as? HTMLElement
         val virtualDom = JSDom(parentElement.ownerDocument!!)
         val consumer = IncrementalVirtualDOMBuilder(virtualDom, existing?.let { virtualDom.wrap(it) }, generatedHtmlMap)
-        KernelfAPI.renderNode(editorState, rootNode, consumer)
+        KernelfAPI.renderNode(cellTreeState, rootNode, consumer)
         val newHtml = consumer.finalize()
         if (newHtml != existing) {
             if (existing != null) parentElement.removeChild(existing)
@@ -60,8 +63,10 @@ object KernelfApiJS {
     }
 
     fun renderAndUpdateNodeAsDom(rootNode: INode): HTMLElement {
-        val editor = JsEditorComponent(KernelfAPI.editorEngine, rootNode.getArea()) { state ->
-            KernelfAPI.editorEngine.createCell(state, rootNode)
+        val service = TextEditorServiceImpl(KernelfAPI.editorEngine, rootNode.getArea().asModel(), GlobalScope)
+        val editor = JsEditorComponent(service)
+        GlobalScope.launch {
+            editor.editNode(rootNode.reference.toSerialized())
         }
         val branch = ModelFacade.getBranch(rootNode)?.deepUnwrap()
         if (branch != null) {
@@ -73,7 +78,7 @@ object KernelfApiJS {
                         if (!updateScheduled.getAndSet(true)) {
                             coroutinesScope.launch {
                                 updateScheduled.getAndSet(false)
-                                editor.update()
+                                editor.updateNow()
                             }
                         }
                     } else {
@@ -93,7 +98,7 @@ object KernelfApiJS {
                         if (!updateScheduled.getAndSet(true)) {
                             coroutinesScope.launch {
                                 updateScheduled.getAndSet(false)
-                                editor.update()
+                                editor.updateNow()
                             }
                         }
                     } else {

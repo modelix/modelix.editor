@@ -5,56 +5,55 @@ import kotlinx.html.div
 import kotlinx.html.table
 import kotlinx.html.td
 import kotlinx.html.tr
+import org.modelix.editor.text.backend.BackendEditorComponent
+import org.modelix.editor.text.shared.CompletionMenuEntryData
 
 class CodeCompletionMenu(
-    val editor: EditorComponent,
+    val editor: FrontendEditorComponent,
     val anchor: LayoutableCell,
     val completionPosition: CompletionPosition,
-    val providers: List<ICodeCompletionActionProvider>,
+    initialEntries: List<CompletionMenuEntryData>,
     initialPattern: String = "",
     initialCaretPosition: Int? = null,
 ) : IProducesHtml, IKeyboardHandler {
     val patternEditor = PatternEditor(initialPattern, initialCaretPosition)
-    private val actionsCache = CachedCodeCompletionActions(providers)
     private var selectedIndex: Int = 0
-    private var entries: List<ICodeCompletionAction> = emptyList()
+    private var allEntries: List<CompletionMenuEntryData> = initialEntries
+    private var filteredEntries: List<CompletionMenuEntryData> = allEntries
+
+    init {
+        applyFilter()
+    }
 
     override fun isHtmlOutputValid(): Boolean = false
 
-    fun updateActions() {
-        entries = computeActions(patternEditor.getTextBeforeCaret())
+    fun loadEntries(newActions: List<CompletionMenuEntryData>) {
+        allEntries = newActions
+        applyFilter()
     }
 
-    fun getEntries(): List<ICodeCompletionAction> = entries
-
-    private fun computeActions(pattern: String): List<ICodeCompletionAction> {
-        return editor.runRead {
-            val parameters = CodeCompletionParameters(editor, pattern)
-            actionsCache.update(parameters)
-                .filter {
-                    val matchingText = it.getCompletionPattern()
-                    matchingText.isNotEmpty() && matchingText.startsWith(parameters.pattern)
-                }
-                .applyShadowing()
-                .sortedBy { it.getCompletionPattern().lowercase() }
-        }
+    fun applyFilter() {
+        val pattern = patternEditor.pattern
+        filteredEntries = allEntries.filter { it.matches(pattern) }
     }
 
-    private fun parameters() = CodeCompletionParameters(editor, patternEditor.getTextBeforeCaret())
+    suspend fun updateActions() {
+        editor.serviceCall { this.updateCodeCompletionActions(editor.editorId, anchor.cell.getId(), patternEditor.pattern) }
+    }
 
     fun selectNext() {
         selectedIndex++
-        if (selectedIndex >= entries.size) selectedIndex = 0
+        if (selectedIndex >= filteredEntries.size) selectedIndex = 0
     }
 
     fun selectPrevious() {
         selectedIndex--
-        if (selectedIndex < 0) selectedIndex = (entries.size - 1).coerceAtLeast(0)
+        if (selectedIndex < 0) selectedIndex = (filteredEntries.size - 1).coerceAtLeast(0)
     }
 
-    fun getSelectedEntry(): ICodeCompletionAction? = entries.getOrNull(selectedIndex)
+    fun getSelectedEntry(): CompletionMenuEntryData? = filteredEntries.getOrNull(selectedIndex)
 
-    override fun processKeyDown(event: JSKeyboardEvent): Boolean {
+    override suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
         when (event.knownKey) {
             KnownKeys.ArrowUp -> selectPrevious()
             KnownKeys.ArrowDown -> selectNext()
@@ -62,13 +61,7 @@ class CodeCompletionMenu(
             KnownKeys.ArrowRight -> patternEditor.moveCaret(1)
             KnownKeys.Escape -> editor.closeCodeCompletionMenu()
             KnownKeys.Enter -> {
-                getSelectedEntry()?.let { entry ->
-                    editor.runWrite {
-                        entry.executeAndUpdateSelection(editor)
-                        editor.state.clearTextReplacement(anchor)
-                    }
-                }
-                editor.closeCodeCompletionMenu()
+                getSelectedEntry()?.execute()
             }
             KnownKeys.Backspace -> patternEditor.deleteText(true)
             KnownKeys.Delete -> patternEditor.deleteText(false)
@@ -80,8 +73,14 @@ class CodeCompletionMenu(
                 }
             }
         }
-        editor.update()
+        editor.flushLocal()
         return true
+    }
+
+    private suspend fun CompletionMenuEntryData.execute() {
+        val entry = this
+        editor.serviceCall { executeCodeCompletionAction(editor.editorId, entry.id) }
+        editor.closeCodeCompletionMenu()
     }
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
@@ -89,18 +88,17 @@ class CodeCompletionMenu(
             produceChild(patternEditor)
             div("ccmenu") {
                 table {
-                    val parameters = parameters()
-                    entries.forEachIndexed { index, action ->
+                    filteredEntries.forEachIndexed { index, action ->
                         tr("ccSelectedEntry".takeIf { index == selectedIndex }) {
                             td("matchingText") {
-                                +action.getCompletionPattern()
+                                +action.matchingText
                             }
                             td("description") {
-                                +action.getDescription()
+                                +action.description
                             }
                         }
                     }
-                    if (entries.isEmpty()) {
+                    if (filteredEntries.isEmpty()) {
                         tr {
                             td {
                                 +"No matches found"
@@ -112,10 +110,10 @@ class CodeCompletionMenu(
         }
     }
 
-    fun executeIfSingleAction() {
-        if (entries.size == 1 && entries.first().getMatchingText() == patternEditor.pattern) {
-            entries.first().executeAndUpdateSelection(editor)
-            editor.closeCodeCompletionMenu()
+    suspend fun executeIfSingleAction() {
+        val singleEntry = filteredEntries.singleOrNull() ?: return
+        if (singleEntry.matchesExactly(patternEditor.pattern)) {
+            singleEntry.execute()
         }
     }
 
@@ -128,7 +126,7 @@ class CodeCompletionMenu(
 
         fun getTextBeforeCaret() = pattern.substring(0, caretPos)
 
-        fun deleteText(before: Boolean): Boolean {
+        suspend fun deleteText(before: Boolean): Boolean {
             if (before) {
                 if (caretPos == 0) return false
                 pattern = pattern.removeRange((caretPos - 1) until caretPos)
@@ -142,20 +140,20 @@ class CodeCompletionMenu(
             return true
         }
 
-        fun insertText(text: String) {
+        suspend fun insertText(text: String) {
             val oldTextBeforeCaret = pattern.substring(0, caretPos)
             pattern = pattern.replaceRange(caretPos until caretPos, text)
             val remainingText = pattern.substring(caretPos)
             caretPos += text.length
             val newTextBeforeCaret = pattern.substring(0, caretPos)
 
-            val exactMatches = entries.filter { it.getMatchingText() == oldTextBeforeCaret }
-            if (exactMatches.size == 1 && computeActions(newTextBeforeCaret).isEmpty()) {
-                editor.runWrite {
-                    editor.insertTextAfterUpdate(remainingText)
-                    exactMatches.single().executeAndUpdateSelection(editor)
-                    editor.closeCodeCompletionMenu()
-                    editor.update()
+            val exactMatches = allEntries.filter { it.matchesExactly(oldTextBeforeCaret) }
+            if (exactMatches.size == 1 && !editor.serviceCall { hasCodeCompletionActions(editor.editorId, anchor.cell.getId(), newTextBeforeCaret) }) {
+                exactMatches.single().execute()
+                editor.closeCodeCompletionMenu()
+                if (remainingText.isNotEmpty()) {
+                    editor.flushLocal()
+                    (editor.getSelection() as? CaretSelection)?.processTypedText(remainingText)
                 }
             } else {
                 updateActions()
@@ -163,7 +161,7 @@ class CodeCompletionMenu(
             }
         }
 
-        fun moveCaret(delta: Int) {
+        suspend fun moveCaret(delta: Int) {
             caretPos = (caretPos + delta).coerceIn(0..pattern.length)
             updateActions()
         }
@@ -241,28 +239,14 @@ interface ICodeCompletionAction : IActionOrProvider {
     fun getMatchingText(): String
     fun getTokens(): ICompletionTokenOrList = ConstantCompletionToken(getMatchingText())
     fun getDescription(): String
-    fun execute(editor: EditorComponent): ICaretPositionPolicy?
+    fun execute(editor: BackendEditorComponent): ICaretPositionPolicy?
     fun shadows(shadowed: ICodeCompletionAction) = false
     fun shadowedBy(shadowing: ICodeCompletionAction) = false
 }
 
 fun ICodeCompletionAction.getCompletionPattern(): String = getTokens().toString()
 
-fun ICodeCompletionAction.executeAndUpdateSelection(editor: EditorComponent) {
-    val policy = execute(editor)
-    if (policy != null) {
-        editor.selectAfterUpdate { policy.getBestSelection(editor) }
-    }
-}
-
-fun ICellAction.executeAndUpdateSelection(editor: EditorComponent) {
-    val policy = execute(editor)
-    if (policy != null) {
-        editor.selectAfterUpdate { policy.getBestSelection(editor) }
-    }
-}
-
-class CodeCompletionParameters(val editor: EditorComponent, pattern: String) {
+class CodeCompletionParameters(val editor: BackendEditorComponent, pattern: String) {
     val pattern: String = pattern
         get() {
             patternAccessed = true

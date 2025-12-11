@@ -136,7 +136,7 @@ class ModelixSSRServerForMPS : Disposable {
 
             println("starting modelix SSR server")
 
-            val ssrServer = ModelixSSRServer((getRootNode() ?: return).getArea())
+            val ssrServer = ModelixSSRServer((getRootNode() ?: return).getArea().asModel())
             this.ssrServer = ssrServer
             mpsIntegration = EditorIntegrationForMPS(ssrServer.editorEngine)
             mpsIntegration!!.init(getMPSProjects().first().repository)

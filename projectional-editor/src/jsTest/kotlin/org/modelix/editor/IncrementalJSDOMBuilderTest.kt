@@ -1,11 +1,15 @@
 package org.modelix.editor
 
 import kotlinx.html.TagConsumer
+import org.modelix.editor.text.frontend.FrontendCellTree
+import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.frontend.layout
+import org.modelix.editor.text.frontend.text
+import org.modelix.editor.text.shared.celltree.IMutableCellTree
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class IncrementalJSDOMBuilderTest {
@@ -20,86 +24,44 @@ class IncrementalJSDOMBuilderTest {
     fun test() {
         val generatedHtmlMap = GeneratedHtmlMap()
 
-        val textCellToChange = Cell(TextCellData("b"))
-        val cell = Cell(CellData()).apply {
-            addChild(Cell(TextCellData("a")))
-            addChild(
-                Cell(CellData()).apply {
-                    addChild(textCellToChange)
-                    addChild(Cell(CellData().also { it.properties[CommonCellProperties.onNewLine] = true }))
-                    addChild(Cell(TextCellData("c")))
-                },
-            )
-            addChild(Cell(TextCellData("d")))
+        val tree = FrontendCellTree()
+        lateinit var textCellToChange: IMutableCellTree.MutableCell
+        val rootCell = tree.createCell().apply {
+            cell("a")
+            addNewChild().apply {
+                cell("b").also { textCellToChange = it }
+                addNewChild().also {
+                    it.setProperty(CommonCellProperties.onNewLine, true)
+                }
+                cell("c")
+            }
+            cell("d")
         }
 
         var domBuilder: TagConsumer<IVirtualDom.HTMLElement> = IncrementalVirtualDOMBuilder(JSDom(), null, generatedHtmlMap)
-        val dom = cell.layout.toHtml(domBuilder)
+        val dom = rootCell.layout.toHtml(domBuilder)
         val elements1: List<IVirtualDom.Node> = listOf(dom) + dom.descendants()
-        println(cell)
-        println(dom.unwrap().outerHTML)
+        println("cell: " + rootCell)
+        println("html: " + dom.unwrap().outerHTML)
 
         val newText = "X"
-        val cell2 = replaceCell(cell, textCellToChange, Cell(TextCellData(newText)))
-        assertNotSame(cell, cell2, "No cell was replaced")
+        textCellToChange.text = newText
         domBuilder = IncrementalVirtualDOMBuilder(JSDom(), dom, generatedHtmlMap)
-        val dom2 = cell2.layout.toHtml(domBuilder)
+        val dom2 = rootCell.layout.toHtml(domBuilder)
         val elements2: List<IVirtualDom.Node> = listOf(dom2) + dom2.descendants()
-        println(cell2)
-        println(dom2.unwrap().outerHTML)
+        println("cell: " + rootCell)
+        println("html: " + dom2.unwrap().outerHTML)
         assertEquals(elements1.size, elements2.size)
 
         val expectedChanges = elements1.indices.joinToString("") {
             val element2 = elements2[it]
             if (element2 is IVirtualDom.Text && element2.textContent == newText) "C" else "-"
         }
-        println(expectedChanges)
+        println("expected changes: " + expectedChanges)
         assertTrue(expectedChanges.contains("C"))
         val actualChanges = elements1.indices.joinToString("") { if (elements1[it] == elements2[it]) "-" else "C" }
-        println(actualChanges)
+        println("actual changes: " + actualChanges)
         assertEquals(expectedChanges, actualChanges)
-    }
-
-    fun replaceCell(tree: Cell, oldCell: Cell, newCell: Cell): Cell {
-        val oldTreeStr = tree.toString()
-        if (tree == oldCell) return newCell
-        val oldChildren = tree.getChildren()
-        val newChildren = oldChildren.map { replaceCell(it, oldCell, newCell) }
-        if (oldChildren != newChildren) {
-            val newTree = Cell(tree.data).also { newParent ->
-                newChildren.forEach {
-                    it.parent?.removeChild(it)
-                    newParent.addChild(it)
-                }
-            }
-            val newTreeStr = newTree.toString()
-            return newTree
-        }
-        return tree
-    }
-
-    fun insertCell(tree: Cell, anchor: Cell, newCell: Cell): Cell {
-        val oldTreeStr = tree.toString()
-        if (tree == anchor) {
-            return Cell().also { newParent ->
-                newParent.addChild(newCell)
-                anchor.parent?.removeChild(anchor)
-                newParent.addChild(anchor)
-            }
-        }
-        val oldChildren = tree.getChildren()
-        val newChildren = oldChildren.map { insertCell(it, anchor, newCell) }
-        if (oldChildren != newChildren) {
-            val newTree = Cell(tree.data).also { newParent ->
-                newChildren.forEach {
-                    it.parent?.removeChild(it)
-                    newParent.addChild(it)
-                }
-            }
-            val newTreeStr = newTree.toString()
-            return newTree
-        }
-        return tree
     }
 
     @Test fun runRandomTest_4_3() = runRandomTests(567454, 4, 3)
@@ -135,30 +97,27 @@ class IncrementalJSDOMBuilderTest {
     fun runRandomTests(seed: Int, cellsPerLevel: Int, levels: Int) {
         val rand = Random(seed)
         runRandomTest(rand, cellsPerLevel, levels) { cell ->
-            val randomLeafCell = cell.descendants().filter { !it.getVisibleText().isNullOrEmpty() }.shuffled(rand).firstOrNull()
+            val randomLeafCell = cell.descendants().filter { it.getVisibleText().isNotEmpty() }.shuffled(rand).firstOrNull()
                 ?: cell.descendants().filter { it.getChildren().isEmpty() }.shuffled(rand).first()
             println("replace $randomLeafCell")
-            replaceCell(
-                cell,
-                randomLeafCell,
-                Cell(TextCellData("replacement")),
-            )
+            (randomLeafCell as IMutableCellTree.MutableCell).text = "replacement"
+            randomLeafCell
         }
         runRandomTest(rand, cellsPerLevel, levels) { cell ->
             val randomCell = cell.descendants().shuffled(rand).firstOrNull()
                 ?: cell.descendants().filter { it.getChildren().isEmpty() }.shuffled(rand).first()
+            randomCell as MutableCell
             println("insertBefore $randomCell")
-            insertCell(
-                cell,
-                randomCell,
-                Cell(TextCellData("insertion")),
-            )
+            randomCell.getParent()!!.addNewChild(randomCell.index()).also {
+                it.text = "insertion"
+            }
         }
     }
 
-    fun runRandomTest(rand: Random, cellsPerLevel: Int, levels: Int, modify: (Cell) -> Cell) {
+    fun runRandomTest(rand: Random, cellsPerLevel: Int, levels: Int, modify: (MutableCell) -> MutableCell) {
         val generatedHtmlMap = GeneratedHtmlMap()
-        val cell = EditorTestUtils.buildRandomCells(rand, cellsPerLevel, levels)
+        val tree = FrontendCellTree()
+        val cell = EditorTestUtils.buildRandomCells(rand, cellsPerLevel, levels, tree)
         val dom = cell.layout.toHtml(IncrementalVirtualDOMBuilder(JSDom(), null, generatedHtmlMap))
         val html = dom.unwrap().outerHTML
         println("old html: " + html)
@@ -168,9 +127,20 @@ class IncrementalJSDOMBuilderTest {
         val dom2incremental = newCell.layout.toHtml(IncrementalVirtualDOMBuilder(JSDom(), dom, generatedHtmlMap))
         val html2incremental = dom2incremental.unwrap().outerHTML
 
-        newCell.descendantsAndSelf().forEach { it.clearCachedLayout() }
+        newCell.descendantsAndSelf().forEach { (it as FrontendCellTree.FrontendCellImpl).clearCachedLayout() }
         val dom2nonIncremental = newCell.layout.toHtml(IncrementalVirtualDOMBuilder(JSDom(), null, generatedHtmlMap))
         val html2nonIncremental = dom2nonIncremental.unwrap().outerHTML
         assertEquals(html2nonIncremental, html2incremental)
+    }
+
+    private fun IMutableCellTree.cell(text: String, body: IMutableCellTree.MutableCell.() -> Unit): IMutableCellTree.MutableCell {
+        return this.createCell().also { it.setProperty(TextCellProperties.text, text) }.also(body)
+    }
+
+    private fun IMutableCellTree.MutableCell.cell(text: String, body: IMutableCellTree.MutableCell.() -> Unit = {}): IMutableCellTree.MutableCell {
+        return this.addNewChild().also {
+            it.type = ECellType.TEXT
+            it.text = text
+        }.also(body)
     }
 }

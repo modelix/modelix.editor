@@ -4,10 +4,11 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.classes
 import kotlinx.html.div
 import kotlinx.html.style
+import org.modelix.editor.text.frontend.getVisibleText
 import kotlin.math.max
 import kotlin.math.min
 
-class CaretSelectionView(selection: CaretSelection, val editor: EditorComponent) : SelectionView<CaretSelection>(selection) {
+class CaretSelectionView(selection: CaretSelection, val editor: FrontendEditorComponent) : SelectionView<CaretSelection>(selection) {
 
     private fun hasRange() = selection.start != selection.end
 

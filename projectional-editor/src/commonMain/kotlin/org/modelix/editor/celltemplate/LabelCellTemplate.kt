@@ -5,7 +5,7 @@ import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.INonExistingNode
-import org.modelix.editor.TextCellData
+import org.modelix.editor.TextCellSpec
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
 
@@ -17,8 +17,8 @@ import org.modelix.model.api.INode
  */
 class LabelCellTemplate(concept: IConcept, val text: String) :
     CellTemplate(concept) {
-    override fun createCell(context: CellCreationContext, node: INode): TextCellData {
-        return TextCellData(text, "").also {
+    override fun createCell(context: CellCreationContext, node: INode): TextCellSpec {
+        return TextCellSpec(text, "").also {
             if (!it.properties.isSet(CommonCellProperties.textColor)) {
                 it.properties[CommonCellProperties.textColor] = "LightGray"
             }
