@@ -29,5 +29,5 @@ modelix-build-tools-lib = { group = "org.modelix.mps", name = "build-tools-lib",
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.13" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.4.0" }
-playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.56.0" }
+playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.57.0" }
 testcontainers = { group = "org.testcontainers", name = "testcontainers", version = "2.0.2" }
