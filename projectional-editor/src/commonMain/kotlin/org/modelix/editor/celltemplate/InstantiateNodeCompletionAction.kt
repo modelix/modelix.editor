@@ -1,9 +1,9 @@
 package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CaretPositionPolicy
-import org.modelix.editor.EditorComponent
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.INonExistingNode
+import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.IConcept
 
 class InstantiateNodeCompletionAction(
@@ -26,7 +26,7 @@ class InstantiateNodeCompletionAction(
 
     override fun getDescription(): String = description
 
-    override fun execute(editor: EditorComponent): CaretPositionPolicy? {
+    override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
         val newNode = location.getExistingAncestor()!!.getArea().executeWrite {
             location.replaceNode(concept)
         }

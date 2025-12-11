@@ -673,15 +673,14 @@
   integrity sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==
 
 "@modelix/projectional-editor-ssr-client-lib@file:../projectional-editor-ssr-client-lib/build/packages/js":
-  version "1.5.2-3-g212dc07.dirty-SNAPSHOT"
+  version "1.10.0-20-g33d5a61-dirty-SNAPSHOT"
   dependencies:
-    format-util "^1.0.5"
     ws "8.18.0"
 
-"@modelix/ts-model-api@^8.15.0":
-  version "8.20.0"
-  resolved "https://artifacts.itemis.cloud/repository/npm/@modelix/ts-model-api/-/ts-model-api-8.20.0.tgz#42da9340f93dde2a9b5d77e39ed0597db0677cfc"
-  integrity sha512-lXYOWBdBbUQ2dxpuIbphiMFWhYwF8GvF+dCMbBAa3F9cKGzlPJ6Qk/fQsT77+xgbFL3D6ueY62IUOquS7B01oQ==
+"@modelix/ts-model-api@^16.2.1":
+  version "16.6.1"
+  resolved "https://artifacts.itemis.cloud/repository/npm/@modelix/ts-model-api/-/ts-model-api-16.6.1.tgz#bb2432bd8a018b767ca14c02ec9c5f35aea562c4"
+  integrity sha512-7kQop6X7YEiJToGJF2Ze0W5tZVdAWhbByBjLUC49tFKfqxRRcXpb3NLafBhIIleYALhsTOKuE3woWgZL1tz2zQ==
 
 "@mui/base@5.0.0-beta.40-0":
   version "5.0.0-beta.40-0"
@@ -1894,11 +1893,6 @@ flatted@^3.2.9:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.1.tgz#21db470729a6734d4997002f439cb308987f567a"
   integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
-
-format-util@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/format-util/-/format-util-1.0.5.tgz#1ffb450c8a03e7bccffe40643180918cc297d271"
-  integrity sha512-varLbTj0e0yVyRpqQhuWV+8hlePAgaoFRhNFj50BNjEIrw1/DphHSObtqwskVCPWNgzwPoQrZAbfa/SBiicNeg==
 
 fs.realpath@^1.0.0:
   version "1.0.0"

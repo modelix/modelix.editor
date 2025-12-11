@@ -1,5 +1,7 @@
 package org.modelix.editor
 
+import org.modelix.editor.text.frontend.FrontendCellTree
+import org.modelix.editor.text.frontend.layout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -38,7 +40,8 @@ class TextLayouterTest {
     @Test fun indent6() = testCells("a {\n  b\n  c\n  d\n  }", listOf("a", listOf(indentChildren, "{", newLine, "b", newLine, "c", newLine, "d", newLine, "}")))
 
     private fun testCells(expected: String, template: Any) {
-        val text = EditorTestUtils.buildCells(template).layout
+        val tree = FrontendCellTree()
+        val text = EditorTestUtils.buildCells(template, tree).layout
         text.lines.forEach { line ->
             assertSame(text, line.getText())
             line.words.forEach { word ->

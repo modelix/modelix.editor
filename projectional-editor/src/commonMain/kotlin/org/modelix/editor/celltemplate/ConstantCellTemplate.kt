@@ -5,16 +5,16 @@ import org.modelix.editor.CellCreationContext
 import org.modelix.editor.ChildNodeCellReference
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.ConstantCompletionToken
-import org.modelix.editor.EditorComponent
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICompletionTokenOrList
 import org.modelix.editor.INonExistingNode
 import org.modelix.editor.IParseTreeToAstBuilder
 import org.modelix.editor.TemplateCellReference
-import org.modelix.editor.TextCellData
+import org.modelix.editor.TextCellSpec
 import org.modelix.editor.ancestors
 import org.modelix.editor.commonAncestor
+import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.toNonExisting
 import org.modelix.editor.withCaretPolicy
 import org.modelix.editor.withMatchingText
@@ -39,7 +39,7 @@ class ConstantCellTemplate(concept: IConcept, val text: String) : CellTemplate(c
         val token = builder.consumeNextToken { it is Token && it.symbol == symbol } ?: return
     }
 
-    override fun createCell(context: CellCreationContext, node: INode) = TextCellData(text, "")
+    override fun createCell(context: CellCreationContext, node: INode) = TextCellSpec(text, "")
 
     override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
         return listOf(InstantiateNodeCompletionAction(text, concept, location))
@@ -64,12 +64,12 @@ class ConstantCellTemplate(concept: IConcept, val text: String) : CellTemplate(c
         ICodeCompletionAction {
         override fun getMatchingText(): String = text
         override fun getDescription(): String = concept.getShortName()
-        override fun execute(editor: EditorComponent): CaretPositionPolicy? {
+        override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val wrapper = nodeToWrap.getParent()!!.getOrCreateNode(null).asWritableNode()
                 .addNewChild(nodeToWrap.getContainmentLink()?.toReference()!!, nodeToWrap.index(), concept.getReference().upcast())
             wrapper.moveChild(wrappingLink.toReference(), 0, nodeToWrap.getOrCreateNode(null).asWritableNode())
             return CaretPositionPolicy(wrapper.asLegacyNode())
-                .avoid(ChildNodeCellReference(wrapper.getNodeReference(), wrappingLink))
+                .avoid(ChildNodeCellReference(wrapper.getNodeReference(), wrappingLink.toReference()))
                 .avoid(createCellReference(wrapper))
         }
 

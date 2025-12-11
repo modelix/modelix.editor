@@ -4,10 +4,10 @@ import org.modelix.constraints.ConstraintsAspect
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
-import org.modelix.editor.CellData
+import org.modelix.editor.CellSpecBase
+import org.modelix.editor.CellTreeState
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
-import org.modelix.editor.EditorComponent
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
@@ -18,8 +18,9 @@ import org.modelix.editor.ITextChangeAction
 import org.modelix.editor.PropertyCellReference
 import org.modelix.editor.PropertyCompletionToken
 import org.modelix.editor.TemplateCellReference
-import org.modelix.editor.TextCellData
+import org.modelix.editor.TextCellSpec
 import org.modelix.editor.replacement
+import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.toNonExisting
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
@@ -49,12 +50,12 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
         builder.currentNode().setPropertyValue(property, (token as Token).text)
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellData {
+    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
         val value = node.getPropertyValue(property)
-        val data = TextCellData(value ?: "", if (value == null) placeholderText else "")
+        val data = TextCellSpec(value ?: "", if (value == null) placeholderText else "")
         data.properties[CellActionProperties.replaceText] = ChangePropertyAction(node)
         data.properties[CommonCellProperties.tabTarget] = true
-        data.cellReferences += PropertyCellReference(property, node.reference)
+        data.cellReferences += PropertyCellReference(property.toReference(), node.reference)
         return data
     }
 
@@ -99,7 +100,7 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
             return concept.getShortName()
         }
 
-        override fun execute(editor: EditorComponent): CaretPositionPolicy? {
+        override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val node = location.getOrCreateNode(concept)
             node.setPropertyValue(property, value)
             return CaretPositionPolicy(createCellReference(node))
@@ -112,7 +113,7 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
             return validateValue(node.toNonExisting(), value)
         }
 
-        override fun replaceText(editor: EditorComponent, range: IntRange, replacement: String, newText: String): Boolean {
+        override fun replaceText(editor: CellTreeState, range: IntRange, replacement: String, newText: String): Boolean {
             node.getArea().executeWrite {
                 node.setPropertyValue(property, newText)
             }

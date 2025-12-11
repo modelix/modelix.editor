@@ -9,6 +9,8 @@ dependencies {
     implementation(coreLibs.ktor.server.core)
     implementation(coreLibs.ktor.server.websockets)
     implementation(libs.kotlin.logging)
+    implementation(libs.kotlinx.rpc.krpc.ktor.server)
+    implementation(libs.kotlinx.rpc.krpc.serialization.json)
 }
 
 kotlin {
