@@ -1,6 +1,6 @@
 package org.modelix.editor
 
-class CodeCompletionMenuUI(val ccmenu: CodeCompletionMenu, val editor: EditorComponent) {
+class CodeCompletionMenuUI(val ccmenu: CodeCompletionMenu, val editor: FrontendEditorComponent) {
     fun updateBounds() {
         val ccContainerElement = editor.generatedHtmlMap.getOutput(ccmenu) ?: return
         val layoutable = ccmenu.anchor

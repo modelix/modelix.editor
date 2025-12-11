@@ -1,8 +1,11 @@
 package org.modelix.editor
 
+import org.modelix.editor.text.frontend.layout
+import org.modelix.editor.text.shared.celltree.ICellTree
+import org.modelix.editor.text.shared.celltree.IMutableCellTree
 import org.modelix.model.api.INode
 
-open class CellData : Freezable(), ILocalOrChildNodeCell {
+sealed class CellSpecBase : Freezable(), ILocalOrChildNodeCell {
     val cellReferences: MutableList<CellReference> = ArrayList()
     val children: MutableList<ILocalOrChildNodeCell> = ArrayList()
     val properties = CellProperties()
@@ -30,13 +33,18 @@ open class CellData : Freezable(), ILocalOrChildNodeCell {
     open fun isVisible(): Boolean = false
 }
 
-fun Cell.isVisible() = data.isVisible()
+fun Cell.isVisible() = when (getProperty(CommonCellProperties.type)) {
+    ECellType.COLLECTION -> false
+    ECellType.TEXT -> true
+}
 
-interface ILocalOrChildNodeCell
+sealed interface ILocalOrChildNodeCell
 
-class ChildDataReference(val childNode: INode) : ILocalOrChildNodeCell
+class ChildSpecReference(val childNode: INode) : ILocalOrChildNodeCell
 
-class TextCellData(val text: String, private val placeholderText: String = "") : CellData() {
+class CellSpec : CellSpecBase()
+
+class TextCellSpec(val text: String, val placeholderText: String = "") : CellSpecBase() {
     fun getVisibleText(cell: Cell): String {
         return if (cell.getChildren().isEmpty()) {
             text.ifEmpty { placeholderText }
@@ -56,3 +64,9 @@ class TextCellData(val text: String, private val placeholderText: String = "") :
 
     override fun isVisible(): Boolean = true
 }
+
+val ICellTree.Cell.type: ECellType get() = getProperty(CommonCellProperties.type)
+
+var IMutableCellTree.MutableCell.type: ECellType?
+    get() = getProperty(CommonCellProperties.type)
+    set(value) = if (value == null) removeProperty(CommonCellProperties.type) else setProperty(CommonCellProperties.type, value)

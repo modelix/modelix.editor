@@ -1,7 +1,7 @@
 import kotlinx.browser.document
 import kotlinx.html.dom.create
 import kotlinx.html.js.div
-import org.modelix.editor.EditorState
+import org.modelix.editor.CellTreeState
 import org.modelix.editor.kernelf.KernelfAPI
 import org.modelix.editor.kernelf.modelJson
 import org.w3c.dom.Node
@@ -27,11 +27,11 @@ class IncrementalDomTest {
         val model = KernelfAPI.loadModelFromJson(modelJson)
         val testSuites = KernelfAPI.findTestSuites(model)
         val containerElement = document.create.div()
-        val editorState = EditorState()
-        KernelfApiJS.updateNodeAsDom(editorState, testSuites.first().unwrap(), containerElement)
+        val cellTreeState = CellTreeState()
+        KernelfApiJS.updateNodeAsDom(cellTreeState, testSuites.first().unwrap(), containerElement)
         val elements1 = containerElement.descendants().toList()
         testSuites.first().name = "changed"
-        KernelfApiJS.updateNodeAsDom(editorState, testSuites.first().unwrap(), containerElement)
+        KernelfApiJS.updateNodeAsDom(cellTreeState, testSuites.first().unwrap(), containerElement)
         val elements2 = containerElement.descendants().toList()
         assertEquals(elements1.size, elements2.size)
         val expectedChanges = elements1.indices.joinToString {

@@ -21,6 +21,7 @@ plugins {
     id("com.dorongold.task-tree") version "4.0.1"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.rpc) apply false
     id("org.jetbrains.intellij") version "1.17.4" apply false
     alias(libs.plugins.npm.publish) apply false
 }
@@ -151,7 +152,7 @@ rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlu
 copyMps()
 
 // make all 'packJsPackage' tasks depend on all 'kotlinNodeJsSetup' tasks, because gradle complained about this being missing
-tasks.register("setupNodeEverywhere") {
+tasks.register<Task>("setupNodeEverywhere") {
     dependsOn(":kernelf-apigen:kotlinNodeJsSetup")
     dependsOn(":kernelf-editor:kotlinNodeJsSetup")
     dependsOn(":parser:kotlinNodeJsSetup")

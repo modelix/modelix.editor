@@ -43,7 +43,7 @@ fun Application.module() {
     }
     println("Root node references: \n" + rootNodeRefs.joinToString("\n"))
 
-    val ssrServer = ModelixSSRServer(branch.getArea())
+    val ssrServer = ModelixSSRServer(branch.getArea().asModel())
     KernelfEditor.register(ssrServer.editorEngine)
     KernelfLanguages.registerAll()
 

@@ -2,14 +2,15 @@ package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
-import org.modelix.editor.CellData
+import org.modelix.editor.CellSpec
+import org.modelix.editor.CellSpecBase
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICompletionTokenOrList
 import org.modelix.editor.INonExistingNode
 import org.modelix.editor.IParseTreeToAstBuilder
-import org.modelix.editor.TextCellData
+import org.modelix.editor.TextCellSpec
 import org.modelix.editor.toNonExisting
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
@@ -37,18 +38,18 @@ class FlagCellTemplate(
         builder.currentNode().setPropertyValue(property, "true")
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellData {
-        if (node.getPropertyValue(property) == "true") return TextCellData(text, "")
+    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
+        if (node.getPropertyValue(property) == "true") return TextCellSpec(text, "")
 
-        val forceShow = context.editorState.forceShowOptionals[createCellReference(node)] == true
+        val forceShow = context.cellTreeState.forceShowOptionals[createCellReference(node)] == true
         return if (forceShow) {
-            TextCellData("", text).also {
+            TextCellSpec("", text).also {
                 it.properties[CommonCellProperties.isForceShown] = true
                 it.properties[CellActionProperties.insert] =
                     ChangePropertyCellAction(node.toNonExisting(), property, "true")
             }
         } else {
-            CellData().also {
+            CellSpec().also {
                 it.properties[CellActionProperties.show] = ForceShowOptionalCellAction(createCellReference(node))
             }
         }

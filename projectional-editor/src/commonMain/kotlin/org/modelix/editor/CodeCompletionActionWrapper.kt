@@ -1,5 +1,7 @@
 package org.modelix.editor
 
+import org.modelix.editor.text.backend.BackendEditorComponent
+
 open class CodeCompletionActionWrapper(val wrappedAction: ICodeCompletionAction) : ICodeCompletionAction by wrappedAction {
     override fun shadowedBy(shadowing: ICodeCompletionAction): Boolean {
         return wrappedAction.shadowedBy(if (shadowing is CodeCompletionActionWrapper) shadowing.wrappedAction else shadowing)
@@ -26,7 +28,7 @@ class CodeCompletionActionProviderWrapper(
 }
 
 class CodeCompletionActionWithPostprocessor(action: ICodeCompletionAction, val after: () -> Unit) : CodeCompletionActionWrapper(action) {
-    override fun execute(editor: EditorComponent): ICaretPositionPolicy? {
+    override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
         val policy = wrappedAction.execute(editor)
         after()
         return policy
@@ -34,7 +36,7 @@ class CodeCompletionActionWithPostprocessor(action: ICodeCompletionAction, val a
 }
 
 class CodeCompletionActionWithCaretPolicy(action: ICodeCompletionAction, val policy: (ICaretPositionPolicy?) -> ICaretPositionPolicy?) : CodeCompletionActionWrapper(action) {
-    override fun execute(editor: EditorComponent): ICaretPositionPolicy? {
+    override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
         return policy(wrappedAction.execute(editor))
     }
 }

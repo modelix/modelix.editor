@@ -2,7 +2,8 @@ package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
-import org.modelix.editor.CellData
+import org.modelix.editor.CellSpec
+import org.modelix.editor.CellSpecBase
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.IActionOrProvider
@@ -38,12 +39,12 @@ class OptionalCellTemplate(concept: IConcept) : CellTemplate(concept), IOptional
         }
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellData {
-        return CellData()
+    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
+        return CellSpec()
     }
 
-    override fun applyChildren(context: CellCreationContext, node: INode, cell: CellData): List<CellData> {
-        fun forceShow() = context.editorState.forceShowOptionals[createCellReference(node)] == true
+    override fun applyChildren(context: CellCreationContext, node: INode, cell: CellSpecBase): List<CellSpecBase> {
+        fun forceShow() = context.cellTreeState.forceShowOptionals[createCellReference(node)] == true
 
         val symbols = getChildren().asSequence().flatMap { it.getGrammarSymbols() }
         val conditionSymbol = symbols.filterIsInstance<IGrammarConditionSymbol>().firstOrNull()

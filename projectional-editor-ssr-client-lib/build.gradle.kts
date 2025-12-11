@@ -31,6 +31,8 @@ kotlin {
                 implementation(libs.kotlin.html)
                 implementation(libs.modelix.model.api)
                 implementation(libs.kotlin.logging)
+                implementation(libs.kotlinx.rpc.krpc.ktor.client)
+                implementation(libs.kotlinx.rpc.krpc.serialization.json)
             }
         }
         val jsTest by getting {

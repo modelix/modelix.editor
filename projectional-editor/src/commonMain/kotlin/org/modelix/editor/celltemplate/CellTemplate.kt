@@ -2,20 +2,20 @@ package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
-import org.modelix.editor.CellData
 import org.modelix.editor.CellProperties
+import org.modelix.editor.CellSpecBase
+import org.modelix.editor.CellTreeState
 import org.modelix.editor.ChildCellTemplateReference
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.ECellLayout
-import org.modelix.editor.EditorState
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICellTemplateReference
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICompletionTokenOrList
 import org.modelix.editor.INonExistingNode
 import org.modelix.editor.TemplateCellReference
-import org.modelix.editor.TextCellData
+import org.modelix.editor.TextCellSpec
 import org.modelix.editor.asProvider
 import org.modelix.editor.asTokenList
 import org.modelix.editor.withTokens
@@ -35,23 +35,23 @@ abstract class CellTemplate(val concept: IConcept) {
     @set:JvmName("setReferenceField")
     protected var reference: ICellTemplateReference? = null
     val withNode: MutableList<(node: INode) -> Unit> = ArrayList()
-    fun apply(context: CellCreationContext, node: INode): CellData {
+    fun apply(context: CellCreationContext, node: INode): CellSpecBase {
         val cellData = createCell(context, node)
         cellData.properties.addAll(properties)
         cellData.children.addAll(applyChildren(context, node, cellData))
         if (properties[CommonCellProperties.layout] == ECellLayout.VERTICAL) {
-            cellData.children.drop(1).forEach { (it as CellData).properties[CommonCellProperties.onNewLine] = true }
+            cellData.children.drop(1).forEach { (it as CellSpecBase).properties[CommonCellProperties.onNewLine] = true }
         }
         withNode.forEach { it(node) }
         val cellReference: TemplateCellReference = createCellReference(node)
         cellData.cellReferences.add(cellReference)
-        applyTextReplacement(cellData, context.editorState)
+        applyTextReplacement(cellData, context.cellTreeState)
         return cellData
     }
-    protected open fun applyChildren(context: CellCreationContext, node: INode, cell: CellData): List<CellData> {
+    protected open fun applyChildren(context: CellCreationContext, node: INode, cell: CellSpecBase): List<CellSpecBase> {
         return children.map { it.apply(context, node) }
     }
-    protected abstract fun createCell(context: CellCreationContext, node: INode): CellData
+    protected abstract fun createCell(context: CellCreationContext, node: INode): CellSpecBase
 
     open fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
         val completionText = properties[CommonCellProperties.codeCompletionText]
@@ -122,17 +122,17 @@ abstract class CellTemplate(val concept: IConcept) {
     fun createCellReference(node: INode) = createCellReference(node.reference)
     fun createCellReference(node: ITypedNode) = createCellReference(node.untyped())
 
-    private fun applyTextReplacement(cellData: CellData, editorState: EditorState) {
-        if (cellData is TextCellData) {
-            val cellRef = cellData.cellReferences.firstOrNull()
+    private fun applyTextReplacement(cellSpec: CellSpecBase, cellTreeState: CellTreeState) {
+        if (cellSpec is TextCellSpec) {
+            val cellRef = cellSpec.cellReferences.firstOrNull()
             if (cellRef != null) {
-                editorState.textReplacements[cellRef]
-                    ?.let { cellData.properties[CommonCellProperties.textReplacement] = it }
-                cellData.properties[CellActionProperties.replaceText] =
-                    OverrideText(cellData, cellData.properties[CellActionProperties.replaceText])
+                cellTreeState.textReplacements[cellRef]
+                    ?.let { cellSpec.properties[CommonCellProperties.textReplacement] = it }
+                cellSpec.properties[CellActionProperties.replaceText] =
+                    OverrideText(cellSpec, cellSpec.properties[CellActionProperties.replaceText])
             }
         }
-        cellData.children.filterIsInstance<CellData>().forEach { applyTextReplacement(it, editorState) }
+        cellSpec.children.filterIsInstance<CellSpecBase>().forEach { applyTextReplacement(it, cellTreeState) }
     }
 }
 

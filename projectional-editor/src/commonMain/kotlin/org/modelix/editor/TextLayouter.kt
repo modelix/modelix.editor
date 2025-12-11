@@ -4,13 +4,18 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.div
 import kotlinx.html.span
 import kotlinx.html.style
+import org.modelix.editor.text.frontend.editorComponent
+import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.frontend.text
+import org.modelix.editor.text.frontend.type
+import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalList
 
 class TextLine(words_: Iterable<Layoutable>) : IProducesHtml {
     var initialText: LayoutedText? = null
     var finalText: LayoutedText? = null
     val words: List<Layoutable> = words_.toList()
-    val layoutablesIndexList: IncrementalList<Pair<Cell, LayoutableCell>> =
+    val layoutablesIndexList: IncrementalList<Pair<ICellTree.Cell, LayoutableCell>> =
         IncrementalList.of(words.filterIsInstance<LayoutableCell>().map { it.cell to it })
 
     init {
@@ -57,7 +62,7 @@ class LayoutedText(
     var indent: Int = 0,
 ) : IProducesHtml {
     var owner: LayoutedText? = null
-    val layoutablesIndexList: IncrementalList<Pair<Cell, LayoutableCell>> =
+    val layoutablesIndexList: IncrementalList<Pair<ICellTree.Cell, LayoutableCell>> =
         IncrementalList.concat(lines.map { it.layoutablesIndexList })
 
     init {
@@ -278,21 +283,21 @@ abstract class Layoutable : IProducesHtml {
         consumer.onTagContent(text.useNbsp())
     }
 }*/
-class LayoutableCell(val cell: Cell) : Layoutable() {
+class LayoutableCell(val cell: ICellTree.Cell) : Layoutable() {
     init {
-        require(cell.data is TextCellData) { "Not a text cell: $cell" }
+        require(cell.type == ECellType.TEXT) { "Not a text cell: $cell" }
     }
     override fun getLength(): Int {
         return toText().length
     }
     override fun toText(): String {
         return cell.getProperty(CommonCellProperties.textReplacement)
-            ?: (cell.data as TextCellData).getVisibleText(cell)
+            ?: cell.getVisibleText()
     }
     override fun isWhitespace(): Boolean = false
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
         val textIsOverridden = cell.getProperty(CommonCellProperties.textReplacement) != null
-        val isPlaceholder = (cell.data as TextCellData).text.isEmpty()
+        val isPlaceholder = cell.text.isNullOrEmpty()
         val textColor = when {
             textIsOverridden -> "#A81E1E"
             isPlaceholder -> cell.getProperty(CommonCellProperties.placeholderTextColor)
@@ -315,7 +320,7 @@ class LayoutableCell(val cell: Cell) : Layoutable() {
 
 fun Cell.layoutable(): LayoutableCell? {
     // return rootCell().layout.lines.asSequence().flatMap { it.words }.filterIsInstance<LayoutableCell>().find { it.cell == this }
-    return editorComponent?.resolveLayoutable(this)
+    return editorComponent.resolveLayoutable(this)
 }
 
 class LayoutableIndent(val indentSize: Int) : Layoutable() {

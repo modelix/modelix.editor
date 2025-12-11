@@ -1,30 +1,31 @@
 package org.modelix.editor
 
-data class CellSelection(val cell: Cell, val directionLeft: Boolean, val previousSelection: Selection?) : Selection() {
-    fun getEditor(): EditorComponent? = cell.editorComponent
+import org.modelix.editor.text.frontend.getSelectableText
+import org.modelix.editor.text.frontend.layout
+import org.modelix.editor.text.shared.celltree.cellReferences
 
+data class CellSelection(val editor: FrontendEditorComponent, val cell: Cell, val directionLeft: Boolean, val previousSelection: Selection?) : Selection() {
     override fun getSelectedCells(): List<Cell> {
         return listOf(cell)
     }
 
     override fun isValid(): Boolean {
-        return getEditor() != null
+        return cell.isAttached()
     }
 
-    override fun update(editor: EditorComponent): Selection? {
-        return cell.data.cellReferences.asSequence()
+    override fun update(editor: FrontendEditorComponent): Selection? {
+        return cell.cellReferences.asSequence()
             .flatMap { editor.resolveCell(it) }
-            .map { CellSelection(it, directionLeft, previousSelection?.update(editor)) }
+            .map { CellSelection(editor, it, directionLeft, previousSelection?.update(editor)) }
             .firstOrNull()
     }
 
-    override fun processKeyDown(event: JSKeyboardEvent): Boolean {
-        val editor = getEditor() ?: throw IllegalStateException("Not attached to any editor")
+    override suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
         when (event.knownKey) {
             KnownKeys.ArrowUp -> {
                 if (event.modifiers.meta) {
                     cell.ancestors().firstOrNull { it.getProperty(CommonCellProperties.selectable) }
-                        ?.let { editor.changeSelection(CellSelection(it, directionLeft, this)) }
+                        ?.let { editor.changeSelection(CellSelection(editor, it, directionLeft, this)) }
                 } else {
                     unwrapCaretSelection()?.selectNextPreviousLine(false)
                 }
@@ -41,22 +42,22 @@ data class CellSelection(val cell: Cell, val directionLeft: Boolean, val previou
                     val isLeft = event.knownKey == KnownKeys.ArrowLeft
                     if (isLeft == directionLeft) {
                         cell.ancestors().firstOrNull { it.isSelectable() }
-                            ?.let { editor.changeSelection(CellSelection(it, directionLeft, this)) }
+                            ?.let { editor.changeSelection(CellSelection(editor, it, directionLeft, this)) }
                     } else {
                         previousSelection?.let { editor.changeSelection(it) }
                     }
                 } else {
                     val caretSelection = unwrapCaretSelection()
                     if (caretSelection != null) {
-                        editor.changeSelection(CaretSelection(caretSelection.layoutable, caretSelection.start))
+                        editor.changeSelection(CaretSelection(editor, caretSelection.layoutable, caretSelection.start))
                     } else {
                         val tabTargets = cell.descendantsAndSelf().filter { it.isTabTarget() }
                         if (event.knownKey == KnownKeys.ArrowLeft) {
                             tabTargets.firstOrNull()?.layoutable()
-                                ?.let { editor.changeSelection(CaretSelection(it, 0)) }
+                                ?.let { editor.changeSelection(CaretSelection(editor, it, 0)) }
                         } else {
                             tabTargets.lastOrNull()?.layoutable()
-                                ?.let { editor.changeSelection(CaretSelection(it, it.cell.getSelectableText()?.length ?: 0)) }
+                                ?.let { editor.changeSelection(CaretSelection(editor, it, it.cell.getSelectableText()?.length ?: 0)) }
                         }
                     }
                 }
@@ -66,23 +67,10 @@ data class CellSelection(val cell: Cell, val directionLeft: Boolean, val previou
                 if (!typedText.isNullOrEmpty()) {
                     val anchor = getLayoutables().filterIsInstance<LayoutableCell>().firstOrNull()
                     if (anchor != null) {
-                        val actionProviders = cell.getSubstituteActions().toList()
                         if (typedText == " " && event.modifiers == Modifiers.CTRL) {
-                            editor.showCodeCompletionMenu(
-                                anchor = anchor,
-                                position = CompletionPosition.CENTER,
-                                entries = actionProviders,
-                                pattern = "",
-                                caretPosition = 0,
-                            )
+                            editor.serviceCall { triggerCodeCompletion(editor.editorId, anchor.cell.getId(), 0) }
                         } else {
-                            editor.showCodeCompletionMenu(
-                                anchor = anchor,
-                                position = CompletionPosition.CENTER,
-                                entries = actionProviders,
-                                pattern = typedText,
-                                caretPosition = typedText.length,
-                            )
+                            editor.serviceCall { triggerCodeCompletion(editor.editorId, anchor.cell.getId(), typedText.length) }
                         }
                     }
                 }
@@ -98,7 +86,6 @@ data class CellSelection(val cell: Cell, val directionLeft: Boolean, val previou
     }
 
     fun getLayoutables(): List<Layoutable> {
-        val editor = getEditor() ?: return emptyList()
         val rootText = editor.getRootCell().layout
         return cell.layout.lines.asSequence().flatMap { it.words }
             .filter { it.getLine()?.getText() === rootText }.toList()

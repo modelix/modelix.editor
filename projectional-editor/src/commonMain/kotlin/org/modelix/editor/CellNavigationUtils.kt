@@ -1,11 +1,11 @@
 package org.modelix.editor
 
 fun Cell.nextCells(): Sequence<Cell> {
-    return nextSiblings().flatMap { it.descendantsAndSelf() } + (parent?.let { sequenceOf(it) + it.nextCells() } ?: emptySequence())
+    return nextSiblings().flatMap { it.descendantsAndSelf() } + (getParent()?.let { sequenceOf(it) + it.nextCells() } ?: emptySequence())
 }
 
 fun Cell.previousCells(): Sequence<Cell> {
-    return previousSiblings().flatMap { it.descendantsAndSelf(iterateBackwards = true) } + (parent?.let { sequenceOf(it) + it.previousCells() } ?: emptySequence())
+    return previousSiblings().flatMap { it.descendantsAndSelf(iterateBackwards = true) } + (getParent()?.let { sequenceOf(it) + it.previousCells() } ?: emptySequence())
 }
 
 fun Cell.previousLeafs(includeSelf: Boolean = false): Sequence<Cell> {
@@ -25,12 +25,12 @@ fun Cell.nextLeaf(condition: (Cell) -> Boolean): Cell? {
 }
 
 fun Cell.previousLeaf(): Cell? {
-    val sibling = previousSibling() ?: return parent?.previousLeaf()
+    val sibling = previousSibling() ?: return getParent()?.previousLeaf()
     return sibling.lastLeaf()
 }
 
 fun Cell.nextLeaf(): Cell? {
-    val sibling = nextSibling() ?: return parent?.nextLeaf()
+    val sibling = nextSibling() ?: return getParent()?.nextLeaf()
     return sibling.firstLeaf()
 }
 
@@ -53,12 +53,12 @@ fun Cell.nextSibling(): Cell? {
 }
 
 fun Cell.previousSiblings(): Sequence<Cell> {
-    val parent = this.parent ?: return emptySequence()
+    val parent = this.getParent() ?: return emptySequence()
     return parent.getChildren().asReversed().asSequence().dropWhile { it != this }.drop(1)
 }
 
 fun Cell.nextSiblings(): Sequence<Cell> {
-    val parent = this.parent ?: return emptySequence()
+    val parent = this.getParent() ?: return emptySequence()
     return parent.getChildren().asSequence().dropWhile { it != this }.drop(1)
 }
 
@@ -70,9 +70,9 @@ fun Cell.descendants(iterateBackwards: Boolean = false): Sequence<Cell> {
 }
 
 fun Cell.descendantsAndSelf(iterateBackwards: Boolean = false): Sequence<Cell> = sequenceOf(this) + descendants(iterateBackwards)
-fun Cell.ancestors(includeSelf: Boolean = false) = generateSequence(if (includeSelf) this else this.parent) { it.parent }
+fun Cell.ancestors(includeSelf: Boolean = false) = generateSequence(if (includeSelf) this else this.getParent()) { it.getParent() }
 
-fun Cell.commonAncestor(other: Cell): Cell = (ancestors(true) - other.ancestors(true).toSet()).last().parent!!
+fun Cell.commonAncestor(other: Cell): Cell = (ancestors(true) - other.ancestors(true).toSet()).last().getParent()!!
 
 fun Cell.isLeaf() = this.getChildren().isEmpty()
 fun Cell.isFirstChild() = previousSibling() == null

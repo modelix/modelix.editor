@@ -28,7 +28,7 @@ class PagesTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll() {
-            mps = GenericContainer("modelix/mps-vnc-baseimage:0.9.4-mps${System.getenv("MPS_VERSION")}")
+            mps = GenericContainer("modelix/mps-vnc-baseimage:0.9.4-mps2023.2")
                 .withCopyFileToContainer(MountableFile.forHostPath(File(System.getenv("MODELIX_MPS_PLUGINS_PATH")).toPath()), "/mps/plugins")
                 .withCopyFileToContainer(MountableFile.forHostPath(File(System.getenv("MODELIX_TEST_LANGUAGES_PATH")).toPath()), "/mps-languages")
                 .withExposedPorts(43595)

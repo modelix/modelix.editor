@@ -2,6 +2,8 @@ package org.modelix.editor
 
 import kotlinx.serialization.Serializable
 
+sealed interface JSUIEvent
+
 @Serializable
 data class JSMouseEvent(
     val eventType: JSMouseEventType,
@@ -10,7 +12,7 @@ data class JSMouseEvent(
     val modifiers: Modifiers = Modifiers.NONE,
     val button: Short,
     val buttons: Short,
-) {
+) : JSUIEvent {
     fun getButtonAsEnum(): JSMouseButton = when (button) {
         0.toShort() -> JSMouseButton.PRIMARY
         1.toShort() -> JSMouseButton.AUXILIARY

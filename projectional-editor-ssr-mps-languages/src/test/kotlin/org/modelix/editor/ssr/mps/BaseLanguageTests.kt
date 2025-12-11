@@ -1,10 +1,13 @@
 package org.modelix.editor.ssr.mps
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.modelix.editor.CaretSelection
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
-import org.modelix.editor.EditorComponent
 import org.modelix.editor.EditorEngine
+import org.modelix.editor.FrontendEditorComponent
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
 import org.modelix.editor.JSKeyboardEvent
@@ -19,11 +22,14 @@ import org.modelix.editor.flattenApplicableActions
 import org.modelix.editor.getCompletionPattern
 import org.modelix.editor.getMaxCaretPos
 import org.modelix.editor.getSubstituteActions
-import org.modelix.editor.getVisibleText
 import org.modelix.editor.lastLeaf
 import org.modelix.editor.layoutable
+import org.modelix.editor.text.backend.TextEditorServiceImpl
+import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.model.api.INode
+import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
 
 /**
@@ -31,11 +37,15 @@ import org.modelix.model.mpsadapters.MPSWritableNode
  */
 @Suppress("ktlint:standard:wrapping", "ktlint:standard:trailing-comma-on-call-site")
 class BaseLanguageTests : TestBase("SimpleProject") {
-    lateinit var editor: EditorComponent
+    lateinit var editor: FrontendEditorComponent
+    lateinit var service: TextEditorServiceImpl
     lateinit var mpsIntegration: EditorIntegrationForMPS
     lateinit var editorEngine: EditorEngine
     lateinit var incrementalEngine: IncrementalEngine
     lateinit var classNode: MPSWritableNode
+    lateinit var coroutineScope: CoroutineScope
+
+    private fun getBackend() = service.getAllEditorBackends().single()
 
     override fun setUp() {
         super.setUp()
@@ -50,7 +60,14 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         editorEngine = EditorEngine(incrementalEngine)
         mpsIntegration = EditorIntegrationForMPS(editorEngine)
         mpsIntegration.init(mpsProject.repository)
-        editor = editorEngine.editNode(classNode.asLegacyNode())
+        coroutineScope = CoroutineScope(Dispatchers.Default)
+        service = TextEditorServiceImpl(editorEngine, MPSArea(mpsProject.repository).asModel(), coroutineScope)
+        runBlocking {
+            editor = FrontendEditorComponent(service).also {
+                it.openNode(classNode.getNodeReference()).await()
+            }
+            editor.flush()
+        }
     }
 
     override fun tearDown() {
@@ -61,12 +78,13 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         super.tearDown()
     }
 
+    private fun ICellTree.Cell.backend() = service.getEditorBackend(editor.editorId).tree.getCell(getId())
+
     fun assertFinalEditorText(expected: String) {
         assertEditorText(expected)
 
         // Reset all editor state to ensure the typed text triggered a model transformation.
-        editor.state.reset()
-        editor.update()
+        runBlocking { editor.resetState() }
         assertEditorText(expected)
     }
 
@@ -94,26 +112,29 @@ class BaseLanguageTests : TestBase("SimpleProject") {
     fun pressEnter() = pressKey(KnownKeys.Enter)
 
     fun pressKey(key: KnownKeys) {
-        editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key))
+        runBlocking { editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key)) }
     }
 
     fun typeText(text: CharSequence) {
         for (c in text) {
-            editor.processKeyEvent(
-                JSKeyboardEvent(
-                    eventType = JSKeyboardEventType.KEYDOWN,
-                    typedText = c.toString(),
-                    knownKey = null,
-                    rawKey = c.toString(),
-                ),
-            )
+            runBlocking {
+                editor.processKeyEvent(
+                    JSKeyboardEvent(
+                        eventType = JSKeyboardEventType.KEYDOWN,
+                        typedText = c.toString(),
+                        knownKey = null,
+                        rawKey = c.toString(),
+                    ),
+                )
+            }
         }
     }
 
     fun getCodeCompletionEntries(pattern: String): List<ICodeCompletionAction> {
         return readAction {
-            val actionProviders: Sequence<ICodeCompletionActionProvider> = (editor.getSelection() as CaretSelection).layoutable.cell.getSubstituteActions()
-            val actions = actionProviders.flatMap { it.flattenApplicableActions(CodeCompletionParameters(editor, pattern)) }.toList()
+            val selection = editor.getSelection() as CaretSelection
+            val actionProviders: Sequence<ICodeCompletionActionProvider> = selection.layoutable.cell.backend().getSubstituteActions()
+            val actions = actionProviders.flatMap { it.flattenApplicableActions(CodeCompletionParameters(getBackend(), pattern)) }.toList()
             val matchingActions = actions.filter {
                 val matchingText = it.getCompletionPattern()
                 matchingText.isNotEmpty() && matchingText.startsWith(pattern)
@@ -445,13 +466,47 @@ class BaseLanguageTests : TestBase("SimpleProject") {
     fun `test typing plus expression`() {
         placeCaretIntoCellWithText("<no statement>")
         typeText("int ")
+        assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                int <no name>;
+              }
+            }
+        """)
         pressKey(KnownKeys.Tab)
         typeText("abc")
+        assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                int abc;
+              }
+            }
+        """)
         typeText("=")
+        assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                int abc = <no initializer>;
+              }
+            }
+        """)
         typeText("10")
+        assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                int abc = 10;
+              }
+            }
+        """)
         typeText("+")
-        // pressKey(KnownKeys.Enter)
         typeText("20")
+        assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                int abc = 10 + 20;
+              }
+            }
+        """)
         assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
@@ -469,7 +524,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             placeCaretIntoCellWithText("<no statement>")
 
             val layoutable = (editor.getSelection() as CaretSelection).layoutable
-            val node = layoutable.cell.ancestors(true)
+            val node = layoutable.cell.backend().ancestors(true)
                 .mapNotNull { it.getProperty(CommonCellProperties.node) }.first()
 
             val parser = ParserForEditor(editorEngine).getParser(node.expectedConcept()!!, forCodeCompletion = completion)
@@ -482,7 +537,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         placeCaretIntoCellWithText("class")
 
         val layoutable = (editor.getSelection() as CaretSelection).layoutable
-        val node = layoutable.cell.ancestors(true)
+        val node = layoutable.cell.backend().ancestors(true)
             .mapNotNull { it.getProperty(CommonCellProperties.node) }.first()
         val concept = node.getNode()!!.concept!!
         val parser = ParserForEditor(editorEngine).getParser(concept, forCodeCompletion = completion)
@@ -508,21 +563,4 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test completion 1`() = runParsingTest("""intᚹ""")
     fun `test completion 2`() = runParsingTest("""int aᚹ""")
-
-    fun `disabled test parser completion`() {
-        placeCaretIntoCellWithText("<no statement>")
-        (editor.getSelection() as CaretSelection).replaceText("int a")
-        // repeat(5) { pressKey(KnownKeys.ArrowLeft) }
-        (editor.getSelection() as CaretSelection).triggerParserCompletion()
-        val actions = editor.getCodeCompletionActions()
-        actions.forEach { println("Code Completion Entry: " + it.getCompletionPattern()) }
-        pressEnter()
-        assertFinalEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int a;
-              }
-            }
-        """)
-    }
 }

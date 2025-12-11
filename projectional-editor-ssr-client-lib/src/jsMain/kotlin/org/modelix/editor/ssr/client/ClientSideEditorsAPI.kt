@@ -29,7 +29,7 @@ object ClientSideEditorsAPI {
             protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
             host = currentUrl.hostname
             port = 43593 // currentUrl.port.toIntOrNull() ?: io.ktor.http.DEFAULT_PORT
-            pathSegments = listOf("ws")
+            pathSegments = listOf("rpc")
         }.buildString()
         console.log("Text editor URL: $wsUrl")
         initWithUrl(wsUrl)
@@ -40,7 +40,7 @@ object ClientSideEditorsAPI {
         val httpClient = HttpClient(Js) {
             install(WebSockets)
         }
-        client = ModelixSSRClient(httpClient, url).also { it.connect { } }
+        client = ModelixSSRClient(httpClient, url)
     }
 
     fun createEditor(rootNodeReference: String, existingContainerElement: HTMLDivElement? = null): HTMLElement {
