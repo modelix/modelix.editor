@@ -31,7 +31,7 @@ jobs:
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
           scope: '<@modelix>'
       - name: Cache Node packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: release-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
