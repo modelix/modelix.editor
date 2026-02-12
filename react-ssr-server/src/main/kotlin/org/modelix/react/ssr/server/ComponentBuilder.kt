@@ -358,7 +358,7 @@ class MessageSendingHandlerBuilder(
     fun build(): String =
         """
             (${functionParameters.joinToString(",")}) => window.modelix.sendMessage({
-                ${MessageFromClient::messageId.name}: "$messageId", 
+                ${MessageFromClient::messageId.name}: "$messageId",
                 ${MessageFromClient::parameters.name}: {
                     ${
             messageParameters.entries.joinToString(", ") {
