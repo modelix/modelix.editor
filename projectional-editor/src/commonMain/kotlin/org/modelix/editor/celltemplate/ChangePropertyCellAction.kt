@@ -14,15 +14,14 @@ class ChangePropertyCellAction(
     val value: String,
 ) : ICellAction {
     override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
-        val node = editor.runWrite {
-            node.getOrCreateNode().also {
-                it.setPropertyValue(property, value)
+        val node =
+            editor.runWrite {
+                node.getOrCreateNode().also {
+                    it.setPropertyValue(property, value)
+                }
             }
-        }
         return CaretPositionPolicy(PropertyCellReference(property.toReference(), node.reference))
     }
 
-    override fun isApplicable(): Boolean {
-        return true
-    }
+    override fun isApplicable(): Boolean = true
 }

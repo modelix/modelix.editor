@@ -16,13 +16,15 @@ class ClientSideEditor(
     existingContainerElement: HTMLDivElement? = null,
     val editorComponent: JsEditorComponent,
 ) {
-    val containerElement: HTMLDivElement = (existingContainerElement ?: document.create.div("modelix-text-editor")).also {
-        it.tabIndex = -1 // allows setting the keyboard focus
-    }
-    val editorElement: HTMLDivElement = containerElement.append.div {
-        id = editorElementId
-        +"Loading ..."
-    }
+    val containerElement: HTMLDivElement =
+        (existingContainerElement ?: document.create.div("modelix-text-editor")).also {
+            it.tabIndex = -1 // allows setting the keyboard focus
+        }
+    val editorElement: HTMLDivElement =
+        containerElement.append.div {
+            id = editorElementId
+            +"Loading ..."
+        }
 
     fun dispose() {
         // TODO call this method somewhere

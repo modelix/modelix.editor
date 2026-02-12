@@ -10,23 +10,29 @@ import org.w3c.dom.HTMLElement
 
 private val LOG = KotlinLogging.logger { }
 
-class ClientSideEditors(val service: TextEditorService, val coroutineScope: CoroutineScope) {
-
+class ClientSideEditors(
+    val service: TextEditorService,
+    val coroutineScope: CoroutineScope,
+) {
     private val editors: MutableMap<String, ClientSideEditor> = HashMap()
     private var nextEditorId: Long = 1000
 
-    fun createEditor(rootNodeReference: INodeReference, existingContainerElement: HTMLDivElement? = null): HTMLElement {
+    fun createEditor(
+        rootNodeReference: INodeReference,
+        existingContainerElement: HTMLDivElement? = null,
+    ): HTMLElement {
         val editorElementId = "modelix-editor-" + nextEditorId++.toString()
         LOG.trace { "Trying to create new editor $editorElementId" }
 
         val editorComponent = JsEditorComponent(service)
         editorComponent.openNode(rootNodeReference)
 
-        val editorSession = ClientSideEditor(
-            editorElementId = editorElementId,
-            existingContainerElement = existingContainerElement,
-            editorComponent = editorComponent
-        )
+        val editorSession =
+            ClientSideEditor(
+                editorElementId = editorElementId,
+                existingContainerElement = existingContainerElement,
+                editorComponent = editorComponent
+            )
         LOG.info { "Creating editor ${editorSession.editorElementId}" }
         editors[editorSession.editorElementId] = editorSession
         return editorSession.containerElement

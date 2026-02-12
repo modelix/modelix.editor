@@ -10,13 +10,13 @@ import org.modelix.editor.SpaceTokenType
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
 
-class NewLineCellTemplate(concept: IConcept) :
-    CellTemplate(concept) {
-    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
-        return CellSpec().also { cell -> cell.properties[CommonCellProperties.onNewLine] = true }
-    }
+class NewLineCellTemplate(
+    concept: IConcept,
+) : CellTemplate(concept) {
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): CellSpecBase = CellSpec().also { cell -> cell.properties[CommonCellProperties.onNewLine] = true }
 
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return SpaceCompletionToken(SpaceTokenType.MANDATORY)
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = SpaceCompletionToken(SpaceTokenType.MANDATORY)
 }

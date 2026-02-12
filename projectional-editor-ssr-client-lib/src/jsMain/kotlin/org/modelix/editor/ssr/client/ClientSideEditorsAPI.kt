@@ -16,7 +16,6 @@ import org.w3c.dom.HTMLElement
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 object ClientSideEditorsAPI {
-
     private lateinit var client: ModelixSSRClient
 
     fun init() {
@@ -25,25 +24,29 @@ object ClientSideEditorsAPI {
         println("ClientSideEditorsAPI.init()")
         KotlinLoggingConfiguration.logLevel = Level.TRACE
         val currentUrl = document.location!!
-        val wsUrl = URLBuilder().apply {
-            protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
-            host = currentUrl.hostname
-            port = 43593 // currentUrl.port.toIntOrNull() ?: io.ktor.http.DEFAULT_PORT
-            pathSegments = listOf("rpc")
-        }.buildString()
+        val wsUrl =
+            URLBuilder()
+                .apply {
+                    protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
+                    host = currentUrl.hostname
+                    port = 43593 // currentUrl.port.toIntOrNull() ?: io.ktor.http.DEFAULT_PORT
+                    pathSegments = listOf("rpc")
+                }.buildString()
         console.log("Text editor URL: $wsUrl")
         initWithUrl(wsUrl)
     }
 
     fun initWithUrl(url: String) {
         println("ClientSideEditorsAPI.initWithUrl($url)")
-        val httpClient = HttpClient(Js) {
-            install(WebSockets)
-        }
+        val httpClient =
+            HttpClient(Js) {
+                install(WebSockets)
+            }
         client = ModelixSSRClient(httpClient, url)
     }
 
-    fun createEditor(rootNodeReference: String, existingContainerElement: HTMLDivElement? = null): HTMLElement {
-        return client.createEditor(NodeReference(rootNodeReference), existingContainerElement)
-    }
+    fun createEditor(
+        rootNodeReference: String,
+        existingContainerElement: HTMLDivElement? = null,
+    ): HTMLElement = client.createEditor(NodeReference(rootNodeReference), existingContainerElement)
 }

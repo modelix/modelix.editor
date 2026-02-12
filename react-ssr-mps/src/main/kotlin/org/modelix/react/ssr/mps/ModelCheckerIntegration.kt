@@ -23,47 +23,51 @@ import org.modelix.react.ssr.server.IRenderer
 
 @Suppress("unused")
 object ModelCheckerIntegration {
-
-    private val fCheckRootNode = incrementalFunction<List<NodeReportItem>, INode>("checkRootNode") { context, node ->
-        runCheck(ModelixNodeAsMPSNode.toMPSNode(node))
-    }
-
-    private val fGetRootNode = incrementalFunction<INode, INode>("getRootNode") { context, node ->
-        if (node.getContainmentLink()?.getUID() == BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes.getUID()) {
-            node
-        } else {
-            getRootNode(node.parent ?: return@incrementalFunction node)
+    private val fCheckRootNode =
+        incrementalFunction<List<NodeReportItem>, INode>("checkRootNode") { context, node ->
+            runCheck(ModelixNodeAsMPSNode.toMPSNode(node))
         }
-    }
+
+    private val fGetRootNode =
+        incrementalFunction<INode, INode>("getRootNode") { context, node ->
+            if (node.getContainmentLink()?.getUID() ==
+                BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
+                    .getUID()
+            ) {
+                node
+            } else {
+                getRootNode(node.parent ?: return@incrementalFunction node)
+            }
+        }
 
     @JvmStatic
-    fun getAllMessages(node: INode): List<NodeReportItem> {
-        return checkRoot(getRootNode(node))[node.reference] ?: emptyList()
-    }
+    fun getAllMessages(node: INode): List<NodeReportItem> = checkRoot(getRootNode(node))[node.reference] ?: emptyList()
 
     @JvmStatic
-    fun getAllMessages(node: SNode): List<NodeReportItem> {
-        return getAllMessages(ModelixNodeAsMPSNode.toModelixNode(node))
-    }
+    fun getAllMessages(node: SNode): List<NodeReportItem> = getAllMessages(ModelixNodeAsMPSNode.toModelixNode(node))
 
     @JvmStatic
-    fun getNodeMessages(node: SNode): List<NodeReportItem> {
-        return getMessages(node, NodeMessageTarget())
-    }
+    fun getNodeMessages(node: SNode): List<NodeReportItem> = getMessages(node, NodeMessageTarget())
 
     @JvmStatic
-    fun getMessages(node: SNode, feature: SConceptFeature?): List<NodeReportItem> {
-        return getMessages(node, NodeReportItem.conceptFeatureToMessageTarget(feature))
-    }
+    fun getMessages(
+        node: SNode,
+        feature: SConceptFeature?,
+    ): List<NodeReportItem> = getMessages(node, NodeReportItem.conceptFeatureToMessageTarget(feature))
 
     @JvmStatic
-    fun getMessages(node: SNode, target: MessageTarget): List<NodeReportItem> {
-        return getAllMessages(node).filter { it.messageTarget.sameAs(target) }
-    }
+    fun getMessages(
+        node: SNode,
+        target: MessageTarget,
+    ): List<NodeReportItem> = getAllMessages(node).filter { it.messageTarget.sameAs(target) }
 
     @JvmStatic
     @Deprecated("Provide an SConceptFeature")
-    fun getMessages(node: SNode, onlyGlobal: Boolean, featureName: String?): String {
+    fun getMessages(
+        node: SNode,
+        onlyGlobal: Boolean,
+        featureName: String?,
+    ): String {
         fun roleName(t: MessageTarget): String? {
             if (t is PropertyMessageTarget) {
                 return t.role
@@ -89,17 +93,16 @@ object ModelCheckerIntegration {
         return messages.groupBy { it.node.toModelix() }
     }
 
-    private fun getRootNode(node: INode): INode {
-        return fGetRootNode(node).bind(IRenderer.contextIncrementalEngine.getValue()).invoke()
-    }
+    private fun getRootNode(node: INode): INode = fGetRootNode(node).bind(IRenderer.contextIncrementalEngine.getValue()).invoke()
 
     private fun runCheck(root: SNode): List<NodeReportItem> {
         val items = ArrayList<NodeReportItem>()
-        val consumer: Consumer<NodeReportItem> = object : Consumer<NodeReportItem> {
-            override fun consume(item: NodeReportItem) {
-                items.add(item)
+        val consumer: Consumer<NodeReportItem> =
+            object : Consumer<NodeReportItem> {
+                override fun consume(item: NodeReportItem) {
+                    items.add(item)
+                }
             }
-        }
 
         @Suppress("removal")
         val repository = MPSModuleRepository.getInstance()

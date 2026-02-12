@@ -28,30 +28,28 @@ import org.modelix.model.mpsadapters.MPSProperty
 import org.modelix.model.mpsadapters.MPSReferenceLink
 import org.modelix.model.mpsadapters.MPSWritableNode
 
-data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
+data class ModelixNodeAsMPSNode(
+    val node: IReadableNode,
+) : SNode {
     companion object {
         @JvmStatic
-        fun toModelixNode(node: SNode): INode {
-            return when (node) {
+        fun toModelixNode(node: SNode): INode =
+            when (node) {
                 is ModelixNodeAsMPSNode -> node.node.asLegacyNode()
                 else -> MPSNode(node)
             }
-        }
 
         @JvmStatic
         @JvmName("toModelixNodeNullable")
-        fun toModelixNode(node: SNode?): INode? {
-            return when (node) {
+        fun toModelixNode(node: SNode?): INode? =
+            when (node) {
                 null -> null
                 is ModelixNodeAsMPSNode -> node.node.asLegacyNode()
                 else -> MPSNode(node)
             }
-        }
 
         @JvmStatic
-        fun toMPSNode(node: INode): SNode {
-            return ModelixNodeAsMPSNode(node.asWritableNode())
-        }
+        fun toMPSNode(node: INode): SNode = ModelixNodeAsMPSNode(node.asWritableNode())
 
         @JvmStatic
         @JvmName("toMPSNodeNullable")
@@ -61,9 +59,7 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         }
 
         @JvmStatic
-        fun toMPSNode(node: IReadableNode): SNode {
-            return ModelixNodeAsMPSNode(node)
-        }
+        fun toMPSNode(node: IReadableNode): SNode = ModelixNodeAsMPSNode(node)
 
         @JvmStatic
         @JvmName("toMPSNodeNullable")
@@ -73,26 +69,22 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         }
 
         @JvmStatic
-        fun ensureIsTracked(node: SNode): SNode {
-            return when (node) {
+        fun ensureIsTracked(node: SNode): SNode =
+            when (node) {
                 is ModelixNodeAsMPSNode -> node
                 else -> ModelixNodeAsMPSNode(MPSWritableNode(node))
             }
-        }
 
         @JvmStatic
         @JvmName("ensureIsTrackedNullable")
-        fun ensureIsTracked(node: SNode?): SNode? {
-            return if (node == null) null else ensureIsTracked(node)
-        }
+        fun ensureIsTracked(node: SNode?): SNode? = if (node == null) null else ensureIsTracked(node)
 
-        private fun unwrapMPSNode(node: SNode): SNode {
-            return ((node as? ModelixNodeAsMPSNode)?.node as? MPSWritableNode)?.node
+        private fun unwrapMPSNode(node: SNode): SNode =
+            ((node as? ModelixNodeAsMPSNode)?.node as? MPSWritableNode)?.node
                 ?: node
-        }
 
-        private fun forceUnwrapMPSNode(node: SNode): SNode {
-            return if (node is ModelixNodeAsMPSNode) {
+        private fun forceUnwrapMPSNode(node: SNode): SNode =
+            if (node is ModelixNodeAsMPSNode) {
                 val writableNode = node.node
                 if (writableNode is MPSWritableNode) {
                     writableNode.node
@@ -102,32 +94,29 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
             } else {
                 node
             }
-        }
     }
 
     constructor(node: INode) : this(node.asReadableNode())
 
     private val writableNode: IWritableNode get() = node as IWritableNode
 
-    override fun addChild(link: SContainmentLink, newChild: SNode) {
+    override fun addChild(
+        link: SContainmentLink,
+        newChild: SNode,
+    ) {
         forceUnwrapMPSNode(this).addChild(link, forceUnwrapMPSNode(newChild))
     }
 
-    override fun getModel(): SModel? {
-        return forceUnwrapMPSNode(this).model
-    }
+    override fun getModel(): SModel? = forceUnwrapMPSNode(this).model
 
-    override fun getNodeId(): SNodeId {
-        return forceUnwrapMPSNode(this).nodeId
-    }
+    override fun getNodeId(): SNodeId = forceUnwrapMPSNode(this).nodeId
 
-    override fun getReference(): SNodeReference {
-        return forceUnwrapMPSNode(this).reference
-    }
+    override fun getReference(): SNodeReference = forceUnwrapMPSNode(this).reference
 
-    override fun getReference(link: SReferenceLink): SReference? {
-        return ReferenceAdapter(link).takeIf { node.getReferenceTarget(MPSReferenceLink(link).toReference()) != null }
-    }
+    override fun getReference(link: SReferenceLink): SReference? =
+        ReferenceAdapter(link).takeIf {
+            node.getReferenceTarget(MPSReferenceLink(link).toReference()) != null
+        }
 
     @Suppress("removal")
     override fun getReference(p0: String?): SReference {
@@ -140,33 +129,44 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         return jetbrains.mps.smodel.SNodeUtil.concept_BaseConcept
     }
 
-    override fun isInstanceOfConcept(superConcept: SAbstractConcept): Boolean {
-        return node.getConcept().isSubConceptOf(MPSConcept(superConcept))
-    }
+    override fun isInstanceOfConcept(superConcept: SAbstractConcept): Boolean = node.getConcept().isSubConceptOf(MPSConcept(superConcept))
 
     override fun getPresentation(): String {
         TODO("Not yet implemented")
     }
 
-    override fun getName(): String? {
-        return getProperty(SNodeUtil.property_INamedConcept_name)
-    }
+    override fun getName(): String? = getProperty(SNodeUtil.property_INamedConcept_name)
 
     @Suppress("removal")
-    override fun addChild(role: String?, newChild: SNode?) {
+    override fun addChild(
+        role: String?,
+        newChild: SNode?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun insertChildBefore(link: SContainmentLink, newChild: SNode, anchor: SNode?) {
+    override fun insertChildBefore(
+        link: SContainmentLink,
+        newChild: SNode,
+        anchor: SNode?,
+    ) {
         forceUnwrapMPSNode(this).insertChildBefore(link, forceUnwrapMPSNode(newChild), anchor?.let { forceUnwrapMPSNode(it) })
     }
 
     @Suppress("removal")
-    override fun insertChildBefore(role: String, p1: SNode, p2: SNode?) {
+    override fun insertChildBefore(
+        role: String,
+        p1: SNode,
+        p2: SNode?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun insertChildAfter(link: SContainmentLink, newChild: SNode, anchor: SNode?) {
+    override fun insertChildAfter(
+        link: SContainmentLink,
+        newChild: SNode,
+        anchor: SNode?,
+    ) {
         forceUnwrapMPSNode(this).insertChildAfter(link, forceUnwrapMPSNode(newChild), anchor?.let { forceUnwrapMPSNode(it) })
     }
 
@@ -178,25 +178,15 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         writableNode.remove()
     }
 
-    override fun getParent(): SNode? {
-        return node.getParent()?.let { ModelixNodeAsMPSNode(it) }
-    }
+    override fun getParent(): SNode? = node.getParent()?.let { ModelixNodeAsMPSNode(it) }
 
-    override fun getContainingRoot(): SNode {
-        return parent?.containingRoot ?: this
-    }
+    override fun getContainingRoot(): SNode = parent?.containingRoot ?: this
 
-    override fun getContainmentLink(): SContainmentLink? {
-        return (node.getContainmentLink() as? MPSChildLink)?.link
-    }
+    override fun getContainmentLink(): SContainmentLink? = (node.getContainmentLink() as? MPSChildLink)?.link
 
-    override fun getFirstChild(): SNode? {
-        return node.getAllChildren().firstOrNull()?.let { ModelixNodeAsMPSNode(it) }
-    }
+    override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull()?.let { ModelixNodeAsMPSNode(it) }
 
-    override fun getLastChild(): SNode? {
-        return node.getAllChildren().lastOrNull()?.let { ModelixNodeAsMPSNode(it) }
-    }
+    override fun getLastChild(): SNode? = node.getAllChildren().lastOrNull()?.let { ModelixNodeAsMPSNode(it) }
 
     override fun getPrevSibling(): SNode? {
         val siblings = node.getParent()?.getAllChildren()?.toList() ?: return null
@@ -210,17 +200,17 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         return siblings.getOrNull(index + 1)?.let { ModelixNodeAsMPSNode(it) }
     }
 
-    override fun getChildren(link: SContainmentLink?): MutableIterable<SNode> {
-        return node.getChildren(link?.let { MPSChildLink(it).toReference() } ?: NullChildLinkReference)
+    override fun getChildren(link: SContainmentLink?): MutableIterable<SNode> =
+        node
+            .getChildren(link?.let { MPSChildLink(it).toReference() } ?: NullChildLinkReference)
             .map { ModelixNodeAsMPSNode(it) }
             .toMutableList()
-    }
 
-    override fun getChildren(): MutableIterable<SNode> {
-        return node.getAllChildren()
+    override fun getChildren(): MutableIterable<SNode> =
+        node
+            .getAllChildren()
             .map { ModelixNodeAsMPSNode(it) }
             .toMutableList()
-    }
 
     @Suppress("removal")
     override fun getChildren(role: String?): MutableIterable<SNode> {
@@ -228,36 +218,52 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         return node.getChildren(IChildLinkReference.fromName(role)).wrap().toMutableList()
     }
 
-    override fun setReferenceTarget(role: SReferenceLink, target: SNode?) {
+    override fun setReferenceTarget(
+        role: SReferenceLink,
+        target: SNode?,
+    ) {
         writableNode.setReferenceTarget(MPSReferenceLink(role).toReference(), target?.let { toModelixNode(it).asWritableNode() })
     }
 
     @Suppress("removal")
-    override fun setReferenceTarget(role: String?, target: SNode?) {
+    override fun setReferenceTarget(
+        role: String?,
+        target: SNode?,
+    ) {
         requireNotNull(role)
         writableNode.setReferenceTarget(IReferenceLinkReference.fromName(role), target?.let { toModelixNode(it).asWritableNode() })
     }
 
-    override fun setReference(p0: SReferenceLink, p1: ResolveInfo?) {
+    override fun setReference(
+        p0: SReferenceLink,
+        p1: ResolveInfo?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun setReference(p0: SReferenceLink, p1: SNodeReference) {
+    override fun setReference(
+        p0: SReferenceLink,
+        p1: SNodeReference,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun setReference(p0: SReferenceLink, p1: SReference?) {
+    override fun setReference(
+        p0: SReferenceLink,
+        p1: SReference?,
+    ) {
         TODO("Not yet implemented")
     }
 
     @Suppress("removal")
-    override fun setReference(role: String?, reference: SReference?) {
+    override fun setReference(
+        role: String?,
+        reference: SReference?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun getReferenceTarget(link: SReferenceLink): SNode? {
-        return node.getReferenceTarget(MPSReferenceLink(link).toReference()).wrap()
-    }
+    override fun getReferenceTarget(link: SReferenceLink): SNode? = node.getReferenceTarget(MPSReferenceLink(link).toReference()).wrap()
 
     @Suppress("removal")
     override fun getReferenceTarget(role: String?): SNode? {
@@ -269,34 +275,32 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         writableNode.setReferenceTargetRef(MPSReferenceLink(link).toReference(), null)
     }
 
-    override fun getReferences(): MutableIterable<SReference> {
-        return node.getReferenceLinks()
+    override fun getReferences(): MutableIterable<SReference> =
+        node
+            .getReferenceLinks()
             .mapNotNull { MPSReferenceLink.tryFromReference(it) }
             .map { ReferenceAdapter(it.link) }
             .toMutableList()
-    }
 
-    override fun getProperties(): MutableIterable<SProperty> {
-        return node.getPropertyLinks()
+    override fun getProperties(): MutableIterable<SProperty> =
+        node
+            .getPropertyLinks()
             .mapNotNull { MPSProperty.tryFromReference(it) }
             .map { it.property }
             .toMutableList()
-    }
 
-    override fun hasProperty(role: SProperty): Boolean {
-        return node.getPropertyLinks()
+    override fun hasProperty(role: SProperty): Boolean =
+        node
+            .getPropertyLinks()
             .mapNotNull { MPSProperty.tryFromReference(it) }
             .any { it.property == role }
-    }
 
     @Suppress("removal")
     override fun hasProperty(p0: String?): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun getProperty(role: SProperty): String? {
-        return node.getPropertyValue(MPSProperty(role).toReference())
-    }
+    override fun getProperty(role: SProperty): String? = node.getPropertyValue(MPSProperty(role).toReference())
 
     @Suppress("removal")
     override fun getProperty(role: String?): String? {
@@ -304,35 +308,36 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
         return node.getPropertyValue(IPropertyReference.fromName(role))
     }
 
-    override fun setProperty(role: SProperty, value: String?) {
+    override fun setProperty(
+        role: SProperty,
+        value: String?,
+    ) {
         writableNode.setPropertyValue(MPSProperty(role).toReference(), value)
     }
 
     @Suppress("removal")
-    override fun setProperty(role: String?, value: String?) {
+    override fun setProperty(
+        role: String?,
+        value: String?,
+    ) {
         requireNotNull(role)
         writableNode.setPropertyValue(IPropertyReference.fromName(role), value)
     }
 
-    override fun getUserObject(key: Any?): Any? {
-        return null
-    }
+    override fun getUserObject(key: Any?): Any? = null
 
-    override fun putUserObject(key: Any?, value: Any?) {
+    override fun putUserObject(
+        key: Any?,
+        value: Any?,
+    ) {
         TODO("Not yet implemented")
     }
 
-    override fun getUserObjectKeys(): MutableIterable<Any> {
-        return mutableListOf()
-    }
+    override fun getUserObjectKeys(): MutableIterable<Any> = mutableListOf()
 
-    override fun getRoleInParent(): String? {
-        return containmentLink?.name
-    }
+    override fun getRoleInParent(): String? = containmentLink?.name
 
-    override fun getPropertyNames(): MutableIterable<String> {
-        return properties.map { it.name }.toMutableList()
-    }
+    override fun getPropertyNames(): MutableIterable<String> = properties.map { it.name }.toMutableList()
 
     @JvmName("wrapNode")
     private fun IReadableNode.wrap(): ModelixNodeAsMPSNode = ModelixNodeAsMPSNode(this)
@@ -344,7 +349,9 @@ data class ModelixNodeAsMPSNode(val node: IReadableNode) : SNode {
     @JvmName("wrapNodes")
     private fun Iterable<IReadableNode>.wrap(): List<ModelixNodeAsMPSNode> = map { it.wrap() }
 
-    inner class ReferenceAdapter(private val link: SReferenceLink) : SReference {
+    inner class ReferenceAdapter(
+        private val link: SReferenceLink,
+    ) : SReference {
         override fun getLink(): SReferenceLink = link
 
         override fun getSourceNode(): SNode = this@ModelixNodeAsMPSNode

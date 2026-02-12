@@ -7,11 +7,16 @@ import java.awt.Point
 import java.awt.event.MouseEvent
 import javax.swing.SwingUtilities
 
-class RemoteMouseCursor(val targetComponent: Component) {
+class RemoteMouseCursor(
+    val targetComponent: Component,
+) {
     private var lastTarget: Component? = null
     private var lastPosition: Point? = null
 
-    fun mouseMoved(position: Point, modifiers: Int) {
+    fun mouseMoved(
+        position: Point,
+        modifiers: Int,
+    ) {
         ThreadUtils.assertEDT()
 
         val x = position.x
@@ -47,21 +52,25 @@ class RemoteMouseCursor(val targetComponent: Component) {
         target: Component,
         button: Int,
     ) {
-        val event = MouseEvent(
-            targetComponent,
-            type,
-            System.currentTimeMillis(),
-            modifiers,
-            position.x,
-            position.y,
-            clickCount,
-            false,
-            button
-        )
+        val event =
+            MouseEvent(
+                targetComponent,
+                type,
+                System.currentTimeMillis(),
+                modifiers,
+                position.x,
+                position.y,
+                clickCount,
+                false,
+                button
+            )
         target.dispatchEvent(SwingUtilities.convertMouseEvent(targetComponent, event, target))
     }
 
-    fun mouseClicked(position: Point, modifiers: Int) {
+    fun mouseClicked(
+        position: Point,
+        modifiers: Int,
+    ) {
         ThreadUtils.assertEDT()
 
         if (lastPosition != position) {
@@ -123,7 +132,10 @@ class RemoteMouseCursor(val targetComponent: Component) {
         lastTarget = null
     }
 
-    fun getRedirectedTarget(x: Int, y: Int): Component {
+    fun getRedirectedTarget(
+        x: Int,
+        y: Int,
+    ): Component {
         ThreadUtils.assertEDT()
 
         var target = SwingUtilities.getDeepestComponentAt(targetComponent, x, y)

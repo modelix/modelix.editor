@@ -57,18 +57,35 @@ class CodeCompletionTest {
         ModelData.fromJson(modelJson).load(branch)
         val engine = EditorEngine(IncrementalEngine())
         KernelfEditor.register(engine)
-        testSuite = branch.computeRead { branch.getArea().getRoot().allChildren.ofType<N_Module>().models.rootNodes.ofType<N_TestSuite>().first() }
+        testSuite =
+            branch.computeRead {
+                branch
+                    .getArea()
+                    .getRoot()
+                    .allChildren
+                    .ofType<N_Module>()
+                    .models.rootNodes
+                    .ofType<N_TestSuite>()
+                    .first()
+            }
         service = TextEditorServiceImpl(engine, branch.getArea().asModel(), this)
         editor = FrontendEditorComponent(service)
         editor.editNode(testSuite.untypedReference().toSerialized())
         numberLiteral = branch.computeRead { testSuite.descendants<N_NumberLiteral>().first() }
         editor.flushAndUpdateSelection {
-            val cell = requireNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
-                "Property cell not found. \n" + editor.getRootCell().descendants().flatMap { it.cellReferences }.joinToString("\n")
-            }
-            val layoutable = requireNotNull(cell.layoutable()) {
-                "Layoutable not found"
-            }
+            val cell =
+                requireNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
+                    "Property cell not found. \n" +
+                        editor
+                            .getRootCell()
+                            .descendants()
+                            .flatMap { it.cellReferences }
+                            .joinToString("\n")
+                }
+            val layoutable =
+                requireNotNull(cell.layoutable()) {
+                    "Layoutable not found"
+                }
             CaretSelection(editor, layoutable, 0)
         }
     }
@@ -80,53 +97,59 @@ class CodeCompletionTest {
     }
 
     @Test
-    fun printModel() = runCompletionTest {
-        println(editor.getRootCell().layout.toString())
-    }
+    fun printModel() =
+        runCompletionTest {
+            println(editor.getRootCell().layout.toString())
+        }
 
     @Test
-    fun printActions() = runCompletionTest {
-        val actions = getSubstituteActions(getNumberLiteralCell())
-        actions.forEach { println(it.getCompletionPattern() + " | " + it.getDescription()) }
-    }
+    fun printActions() =
+        runCompletionTest {
+            val actions = getSubstituteActions(getNumberLiteralCell())
+            actions.forEach { println(it.getCompletionPattern() + " | " + it.getDescription()) }
+        }
 
     @Test
-    fun notEmpty() = runCompletionTest {
-        val actions = getSubstituteActions(getNumberLiteralCell())
-        assertTrue(actions.isNotEmpty())
-    }
+    fun notEmpty() =
+        runCompletionTest {
+            val actions = getSubstituteActions(getNumberLiteralCell())
+            assertTrue(actions.isNotEmpty())
+        }
 
     @Test
-    fun actionsOnNameProperty() = runCompletionTest {
-        val namePropertyCell = editor.getRootCell().descendants().find { it.getVisibleText() == "stringTests" }!!
-        editor.changeSelection(CaretSelection(editor, namePropertyCell.layoutable()!!, 0))
+    fun actionsOnNameProperty() =
+        runCompletionTest {
+            val namePropertyCell = editor.getRootCell().descendants().find { it.getVisibleText() == "stringTests" }!!
+            editor.changeSelection(CaretSelection(editor, namePropertyCell.layoutable()!!, 0))
 
-        val firstLeaf = namePropertyCell.firstLeaf()
-        assertEquals("stringTests", firstLeaf.getVisibleText())
-        val previousLeaf = namePropertyCell.previousLeaf { it.isVisible() }!!
-        assertEquals("test case", previousLeaf.getVisibleText())
-        val commonAncestor = previousLeaf.commonAncestor(firstLeaf)
-        assertEquals(namePropertyCell.getParent(), commonAncestor)
+            val firstLeaf = namePropertyCell.firstLeaf()
+            assertEquals("stringTests", firstLeaf.getVisibleText())
+            val previousLeaf = namePropertyCell.previousLeaf { it.isVisible() }!!
+            assertEquals("test case", previousLeaf.getVisibleText())
+            val commonAncestor = previousLeaf.commonAncestor(firstLeaf)
+            assertEquals(namePropertyCell.getParent(), commonAncestor)
 
-        val actions = getSubstituteActions(namePropertyCell)
-        assertEquals(emptyList(), actions)
-    }
+            val actions = getSubstituteActions(namePropertyCell)
+            assertEquals(emptyList(), actions)
+        }
 
     @Test
-    fun noDuplicates() = runCompletionTest {
-        val actions = getSubstituteActions(getNumberLiteralCell())
-        val knownDuplicates = setOf(
-            "it",
-            "ParamRef { <shortDescription> <virtualPackage> <param> <smodelAttribute> }",
-            "StripUnitExpression { <shortDescription> <virtualPackage> <expr> <smodelAttribute> }",
-            "ValExpression { <shortDescription> <virtualPackage> <smodelAttribute> }"
-        )
-        val actualDuplicates = actions.groupBy { it.getCompletionPattern() }.filter { it.value.size > 1 }.map { it.key }
-        val unexpectedDuplicates = actualDuplicates - knownDuplicates
-        val missingDuplicates = knownDuplicates - actualDuplicates
-        assertTrue(unexpectedDuplicates.isEmpty(), "Duplicate entries found: " + unexpectedDuplicates)
-        assertTrue(missingDuplicates.isEmpty(), "These entries aren't duplicates anymore: " + missingDuplicates)
-    }
+    fun noDuplicates() =
+        runCompletionTest {
+            val actions = getSubstituteActions(getNumberLiteralCell())
+            val knownDuplicates =
+                setOf(
+                    "it",
+                    "ParamRef { <shortDescription> <virtualPackage> <param> <smodelAttribute> }",
+                    "StripUnitExpression { <shortDescription> <virtualPackage> <expr> <smodelAttribute> }",
+                    "ValExpression { <shortDescription> <virtualPackage> <smodelAttribute> }"
+                )
+            val actualDuplicates = actions.groupBy { it.getCompletionPattern() }.filter { it.value.size > 1 }.map { it.key }
+            val unexpectedDuplicates = actualDuplicates - knownDuplicates
+            val missingDuplicates = knownDuplicates - actualDuplicates
+            assertTrue(unexpectedDuplicates.isEmpty(), "Duplicate entries found: " + unexpectedDuplicates)
+            assertTrue(missingDuplicates.isEmpty(), "These entries aren't duplicates anymore: " + missingDuplicates)
+        }
 
     private fun getNumberLiteralCell() = editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)!!
 
@@ -134,17 +157,21 @@ class CodeCompletionTest {
         val cell = service.getEditorBackend(editor.editorId).tree.getCell(cell.getId())
         val parameters = CodeCompletionParameters(service.getEditorBackend(editor.editorId), "")
         return branch.computeRead {
-            cell.getSubstituteActions().flatMap { it.flattenApplicableActions(parameters) }
-                .sortedBy { it.getCompletionPattern() }.toList()
+            cell
+                .getSubstituteActions()
+                .flatMap { it.flattenApplicableActions(parameters) }
+                .sortedBy { it.getCompletionPattern() }
+                .toList()
         }
     }
 
-    private fun runCompletionTest(body: suspend () -> Unit) = runTest {
-        try {
-            beforeTest()
-            body()
-        } finally {
-            afterTest()
+    private fun runCompletionTest(body: suspend () -> Unit) =
+        runTest {
+            try {
+                beforeTest()
+                body()
+            } finally {
+                afterTest()
+            }
         }
-    }
 }

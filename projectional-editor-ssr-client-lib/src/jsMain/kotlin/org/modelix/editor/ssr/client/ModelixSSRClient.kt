@@ -19,26 +19,30 @@ import org.w3c.dom.HTMLElement
 
 private val LOG = KotlinLogging.logger { }
 
-class ModelixSSRClient(private val httpClient: HttpClient, private val url: String) {
-
+class ModelixSSRClient(
+    private val httpClient: HttpClient,
+    private val url: String,
+) {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
-    private val rpcClient = httpClient.rpc(urlString = url) {
-        rpcConfig {
-            serialization {
-                json()
+    private val rpcClient =
+        httpClient.rpc(urlString = url) {
+            rpcConfig {
+                serialization {
+                    json()
+                }
             }
         }
-    }
     private val editors = ClientSideEditors(rpcClient.withService<TextEditorService>(), coroutineScope)
 
     fun dispose() {
         coroutineScope.cancel("Disposed")
     }
 
-    fun createEditor(rootNodeReference: INodeReference, existingContainerElement: HTMLDivElement? = null): HTMLElement {
-        return editors.createEditor(rootNodeReference, existingContainerElement)
-    }
+    fun createEditor(
+        rootNodeReference: INodeReference,
+        existingContainerElement: HTMLDivElement? = null,
+    ): HTMLElement = editors.createEditor(rootNodeReference, existingContainerElement)
 }
 
 inline fun <R> KLogger.logExceptions(body: () -> R): R {
@@ -50,8 +54,7 @@ inline fun <R> KLogger.logExceptions(body: () -> R): R {
     }
 }
 
-fun CoroutineScope.launchLogging(body: suspend CoroutineScope.() -> Unit): Job {
-    return launch {
+fun CoroutineScope.launchLogging(body: suspend CoroutineScope.() -> Unit): Job =
+    launch {
         LOG.logExceptions { body() }
     }
-}

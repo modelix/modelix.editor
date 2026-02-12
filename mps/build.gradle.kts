@@ -16,10 +16,11 @@ dependencies {
 }
 
 val repositoryConceptsFolder = layout.buildDirectory.dir("repositoryConcepts")
-val extractRepositoryConcepts = tasks.register("extractRepositoryConcepts", Sync::class) {
-    from(zipTree({ repositoryConcepts.singleFile }))
-    into(repositoryConceptsFolder)
-}
+val extractRepositoryConcepts =
+    tasks.register("extractRepositoryConcepts", Sync::class) {
+        from(zipTree({ repositoryConcepts.singleFile }))
+        into(repositoryConceptsFolder)
+    }
 
 mpsBuild {
     dependsOn(extractRepositoryConcepts)

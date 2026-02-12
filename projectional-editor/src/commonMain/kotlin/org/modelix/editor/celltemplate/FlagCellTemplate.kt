@@ -24,13 +24,11 @@ class FlagCellTemplate(
     concept: IConcept,
     property: IProperty,
     val text: String,
-) : PropertyCellTemplate(concept, property), IGrammarSymbol {
-
+) : PropertyCellTemplate(concept, property),
+    IGrammarSymbol {
     override fun toParserSymbol(): ISymbol = OptionalSymbol(ConstantSymbol(text))
 
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return null
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = null
 
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
@@ -38,7 +36,10 @@ class FlagCellTemplate(
         builder.currentNode().setPropertyValue(property, "true")
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): CellSpecBase {
         if (node.getPropertyValue(property) == "true") return TextCellSpec(text, "")
 
         val forceShow = context.cellTreeState.forceShowOptionals[createCellReference(node)] == true
@@ -55,7 +56,10 @@ class FlagCellTemplate(
         }
     }
 
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider>? {
         // TODO
         return listOf()
     }

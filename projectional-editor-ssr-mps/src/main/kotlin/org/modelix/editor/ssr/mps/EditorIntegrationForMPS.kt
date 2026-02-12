@@ -8,7 +8,9 @@ import org.modelix.model.mpsadapters.MPSChangeTranslator
 import org.modelix.model.mpsadapters.MPSLanguageRepository
 import org.modelix.scopes.ScopeAspect
 
-class EditorIntegrationForMPS(val editorEngine: EditorEngine) {
+class EditorIntegrationForMPS(
+    val editorEngine: EditorEngine,
+) {
     private var aspectsFromMPS: LanguageAspectsFromMPSModules? = null
     private var mpsChangeTranslator: MPSChangeTranslator? = null
     private var mpsLanguageRepository: MPSLanguageRepository? = null

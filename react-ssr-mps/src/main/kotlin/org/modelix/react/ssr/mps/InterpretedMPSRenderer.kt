@@ -61,9 +61,7 @@ class InterpretedMPSRenderer(
     nodeRef: RendererCall,
     coroutineScope: CoroutineScope,
 ) : GenericNodeRenderer(incrementalEngine, nodeRef, coroutineScope) {
-    override fun resolveNode(nodeRef: NodeReference): INode? {
-        return MPSArea(repository()).resolveNode(nodeRef)
-    }
+    override fun resolveNode(nodeRef: NodeReference): INode? = MPSArea(repository()).resolveNode(nodeRef)
 
     override suspend fun <R> runWrite(body: () -> R): R {
         var result: R? = null
@@ -75,143 +73,209 @@ class InterpretedMPSRenderer(
         return result as R
     }
 
-    override fun <R> runRead(body: () -> R): R {
-        return repository().modelAccess.computeRead {
+    override fun <R> runRead(body: () -> R): R =
+        repository().modelAccess.computeRead {
             body()
         }
-    }
 
-    override fun renderNodeEditor(node: RendererCall): ViewModel {
-        return buildViewModel {
+    override fun renderNodeEditor(node: RendererCall): ViewModel =
+        buildViewModel {
             child(renderMPSNode(node))
         }
-    }
 
-    private val findConceptComponents: () -> Map<ConceptReference, N_ConceptRenderer> = incremenentalEngine.incrementalFunction("findConceptComponents") { _ ->
-        repository().modules.asSequence()
-            .flatMap { it.models }
-            .flatMap { it.rootNodes }
-            .map { ModelixNodeAsMPSNode.toModelixNode(it).typed<N_BaseConcept>() }
-            .filterIsInstance<N_ReactModule>()
-            .flatMap { it.content }
-            .filterIsInstance<N_ConceptRenderer>()
-            .associateBy { it.concept.asConceptReference() }
-    }
+    private val findConceptComponents: () -> Map<ConceptReference, N_ConceptRenderer> =
+        incremenentalEngine.incrementalFunction("findConceptComponents") { _ ->
+            repository()
+                .modules
+                .asSequence()
+                .flatMap { it.models }
+                .flatMap { it.rootNodes }
+                .map { ModelixNodeAsMPSNode.toModelixNode(it).typed<N_BaseConcept>() }
+                .filterIsInstance<N_ReactModule>()
+                .flatMap { it.content }
+                .filterIsInstance<N_ConceptRenderer>()
+                .associateBy { it.concept.asConceptReference() }
+        }
 
     private fun renderMPSNode(node: RendererCall): IComponentOrList = renderMPSNodeIncremental(node)
-    private val renderMPSNodeIncremental: (RendererCall) -> IComponentOrList = incremenentalEngine.incrementalFunction("renderMPSNode") { _, call: RendererCall ->
-        val node = (call as NodeRendererCall).node.asLegacyNode()
-        val allComponents = findConceptComponents()
 
-        val renderers = node.concept!!.getAllConcepts().asSequence().mapNotNull {
-            allComponents[it.getReference() as ConceptReference]
+    private val renderMPSNodeIncremental: (RendererCall) -> IComponentOrList =
+        incremenentalEngine.incrementalFunction("renderMPSNode") { _, call: RendererCall ->
+            val node = (call as NodeRendererCall).node.asLegacyNode()
+            val allComponents = findConceptComponents()
+
+            val renderers =
+                node.concept!!.getAllConcepts().asSequence().mapNotNull {
+                    allComponents[it.getReference() as ConceptReference]
+                }
+            val renderer =
+                renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
+                    ?: return@incrementalFunction renderNode(call)
+
+            val rootComponents = checkNotNull(renderer.components) { "No root component found" }
+            IComponentOrList.fromSequence(rootComponents.asSequence().map { renderComponent(node, it) })
         }
-        val renderer = renderers.firstOrNull() // TODO resolve conflict if multiple renderers are applicable
-            ?: return@incrementalFunction renderNode(call)
 
-        val rootComponents = checkNotNull(renderer.components) { "No root component found" }
-        IComponentOrList.fromSequence(rootComponents.asSequence().map { renderComponent(node, it) })
-    }
+    private fun renderComponent(
+        node: INode,
+        component: N_IReactComponent,
+    ): List<IComponentOrList> = renderComponentIncremental(node, component)
 
-    private fun renderComponent(node: INode, component: N_IReactComponent): List<IComponentOrList> = renderComponentIncremental(node, component)
-    private val renderComponentIncremental: (INode, N_IReactComponent) -> List<IComponentOrList> = incremenentalEngine.incrementalFunction("renderComponent") { _, node: INode, component: N_IReactComponent ->
-        try {
-            when (component) {
-                is N_ChildrenComponent -> {
-                    val link = MPSChildLink(MetaAdapterByDeclaration.getContainmentLink((component.link.untyped().asWritableNode() as MPSWritableNode).node))
-                    node.getChildren(link).map { renderMPSNode(NodeRendererCall(it.asReadableNode())) }
-                }
-                is N_TextComponent -> {
-                    listOf(ComponentOrText(text = evaluateExpression(node, component.value.get())?.toString()))
-                }
-                is N_GenericReactComponent -> {
-                    listOf(
-                        ComponentOrText(
-                            component = buildComponent(component.componentType) {
-                                for (property in component.properties) {
-                                    val value = property.value.get()
-                                    when (value) {
-                                        is N_PrimitivePropertyValue -> {
-                                            val evaluatedValue = evaluateExpression(node, value.value.get())
-                                            when (evaluatedValue) {
-                                                null -> {}
-                                                is String -> property(property.propertyName, evaluatedValue)
-                                                is Number -> property(property.propertyName, evaluatedValue)
-                                                is Boolean -> property(property.propertyName, evaluatedValue)
-                                                is Component -> property(property.propertyName, evaluatedValue)
-                                                is ComponentOrText -> property(property.propertyName, evaluatedValue)
-                                                is JsonElement -> property(property.propertyName, evaluatedValue)
-                                                is JsCode -> property(property.propertyName, evaluatedValue)
-                                                else -> property(property.propertyName, evaluatedValue.toString())
+    private val renderComponentIncremental: (INode, N_IReactComponent) -> List<IComponentOrList> =
+        incremenentalEngine.incrementalFunction("renderComponent") { _, node: INode, component: N_IReactComponent ->
+            try {
+                when (component) {
+                    is N_ChildrenComponent -> {
+                        val link =
+                            MPSChildLink(
+                                MetaAdapterByDeclaration.getContainmentLink(
+                                    (component.link.untyped().asWritableNode() as MPSWritableNode).node
+                                )
+                            )
+                        node.getChildren(link).map { renderMPSNode(NodeRendererCall(it.asReadableNode())) }
+                    }
+
+                    is N_TextComponent -> {
+                        listOf(ComponentOrText(text = evaluateExpression(node, component.value.get())?.toString()))
+                    }
+
+                    is N_GenericReactComponent -> {
+                        listOf(
+                            ComponentOrText(
+                                component =
+                                    buildComponent(component.componentType) {
+                                        for (property in component.properties) {
+                                            val value = property.value.get()
+                                            when (value) {
+                                                is N_PrimitivePropertyValue -> {
+                                                    val evaluatedValue = evaluateExpression(node, value.value.get())
+                                                    when (evaluatedValue) {
+                                                        null -> {}
+
+                                                        is String -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is Number -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is Boolean -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is Component -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is ComponentOrText -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is JsonElement -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        is JsCode -> {
+                                                            property(property.propertyName, evaluatedValue)
+                                                        }
+
+                                                        else -> {
+                                                            property(property.propertyName, evaluatedValue.toString())
+                                                        }
+                                                    }
+                                                }
+
+                                                is N_ComponentPropertyValue -> {
+                                                    value.component.get()?.let { renderComponent(node, it).firstOrNull() }?.let {
+                                                        property(property.propertyName, it.flatten().single())
+                                                    }
+                                                }
+
+                                                is N_JsFunctionPropertyValue -> {}
+
+                                                is N_IJsonValue -> {
+                                                    property(property.propertyName, createJsonElement(node, value))
+                                                }
+
+                                                else -> {}
                                             }
                                         }
-                                        is N_ComponentPropertyValue -> {
-                                            value.component.get()?.let { renderComponent(node, it).firstOrNull() }?.let {
-                                                property(property.propertyName, it.flatten().single())
-                                            }
+
+                                        for (child in component.children) {
+                                            child(IComponentOrList.create(renderComponent(node, child)))
                                         }
-                                        is N_JsFunctionPropertyValue -> {}
-                                        is N_IJsonValue -> {
-                                            property(property.propertyName, createJsonElement(node, value))
-                                        }
-                                        else -> {}
                                     }
-                                }
-
-                                for (child in component.children) {
-                                    child(IComponentOrList.create(renderComponent(node, child)))
-                                }
-                            }
+                            )
                         )
-                    )
-                }
-                else -> listOf(ComponentOrText(text = "Unknown component type: ${component.untypedConcept().getLongName()}"))
-            }
-        } catch (ex: Exception) {
-            listOf(ComponentOrText(text = ex.message))
-        }
-    }
+                    }
 
-    fun createJsonElement(contextNode: INode, value: N_IJsonValue?): JsonElement = createJsonElementIncremental(contextNode, value)
-    val createJsonElementIncremental: (contextNode: INode, value: N_IJsonValue?) -> JsonElement = incrementalEngine.incrementalFunction("createJsonElementIncremental") { _, contextNode, value ->
-        when (value) {
-            null -> JsonNull
-            is N_JsonObjectValue -> {
-                buildJsonObject {
-                    for (member in value.members) {
-                        property(member.key, createJsonElement(contextNode, member.value.get()))
+                    else -> {
+                        listOf(ComponentOrText(text = "Unknown component type: ${component.untypedConcept().getLongName()}"))
                     }
                 }
+            } catch (ex: Exception) {
+                listOf(ComponentOrText(text = ex.message))
             }
-            is N_JsonArray -> {
-                JsonArray(value.elements.map { createJsonElement(contextNode, it) })
-            }
-            is N_PrimitivePropertyValue -> {
-                val evaluatedPrimitive = evaluateExpression(contextNode, value.value.get())
-                when (evaluatedPrimitive) {
-                    is String -> JsonPrimitive(evaluatedPrimitive)
-                    is Number -> JsonPrimitive(evaluatedPrimitive)
-                    is Boolean -> JsonPrimitive(evaluatedPrimitive)
-                    else -> error("Unknown json primitive type: $evaluatedPrimitive")
+        }
+
+    fun createJsonElement(
+        contextNode: INode,
+        value: N_IJsonValue?,
+    ): JsonElement = createJsonElementIncremental(contextNode, value)
+
+    val createJsonElementIncremental: (contextNode: INode, value: N_IJsonValue?) -> JsonElement =
+        incrementalEngine.incrementalFunction("createJsonElementIncremental") { _, contextNode, value ->
+            when (value) {
+                null -> {
+                    JsonNull
+                }
+
+                is N_JsonObjectValue -> {
+                    buildJsonObject {
+                        for (member in value.members) {
+                            property(member.key, createJsonElement(contextNode, member.value.get()))
+                        }
+                    }
+                }
+
+                is N_JsonArray -> {
+                    JsonArray(value.elements.map { createJsonElement(contextNode, it) })
+                }
+
+                is N_PrimitivePropertyValue -> {
+                    val evaluatedPrimitive = evaluateExpression(contextNode, value.value.get())
+                    when (evaluatedPrimitive) {
+                        is String -> JsonPrimitive(evaluatedPrimitive)
+                        is Number -> JsonPrimitive(evaluatedPrimitive)
+                        is Boolean -> JsonPrimitive(evaluatedPrimitive)
+                        else -> error("Unknown json primitive type: $evaluatedPrimitive")
+                    }
+                }
+
+                else -> {
+                    error("Unknown json element type: $value")
                 }
             }
-            else -> error("Unknown json element type: $value")
         }
-    }
 
-    fun evaluateExpression(contextNode: INode, expression: N_Expression?): Any? = evaluateExpressionIncremental(contextNode, expression)
-    private val evaluateExpressionIncremental: (INode, N_Expression?) -> Any? = incrementalEngine.incrementalFunction("evaluateExpression") { _, contextNode: INode, expression: N_Expression? ->
-        when (expression) {
-            null -> null
-            is N_StringLiteral -> expression.value
-            is N_IntegerConstant -> expression.value
-            is N_BooleanConstant -> expression.value
-            is N_ComponentNodeExpression -> contextNode
-            else -> null
+    fun evaluateExpression(
+        contextNode: INode,
+        expression: N_Expression?,
+    ): Any? = evaluateExpressionIncremental(contextNode, expression)
+
+    private val evaluateExpressionIncremental: (INode, N_Expression?) -> Any? =
+        incrementalEngine.incrementalFunction("evaluateExpression") { _, contextNode: INode, expression: N_Expression? ->
+            when (expression) {
+                null -> null
+                is N_StringLiteral -> expression.value
+                is N_IntegerConstant -> expression.value
+                is N_BooleanConstant -> expression.value
+                is N_ComponentNodeExpression -> contextNode
+                else -> null
+            }
         }
-    }
 }
 
-fun N_AbstractConceptDeclaration.asConceptReference(): ConceptReference {
-    return MPSConcept(MetaAdapterByDeclaration.getConcept((this.untyped().asWritableNode() as MPSWritableNode).node)).getReference()
-}
+fun N_AbstractConceptDeclaration.asConceptReference(): ConceptReference =
+    MPSConcept(MetaAdapterByDeclaration.getConcept((this.untyped().asWritableNode() as MPSWritableNode).node)).getReference()

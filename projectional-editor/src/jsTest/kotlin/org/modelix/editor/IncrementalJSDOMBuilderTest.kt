@@ -26,17 +26,18 @@ class IncrementalJSDOMBuilderTest {
 
         val tree = FrontendCellTree()
         lateinit var textCellToChange: IMutableCellTree.MutableCell
-        val rootCell = tree.createCell().apply {
-            cell("a")
-            addNewChild().apply {
-                cell("b").also { textCellToChange = it }
-                addNewChild().also {
-                    it.setProperty(CommonCellProperties.onNewLine, true)
+        val rootCell =
+            tree.createCell().apply {
+                cell("a")
+                addNewChild().apply {
+                    cell("b").also { textCellToChange = it }
+                    addNewChild().also {
+                        it.setProperty(CommonCellProperties.onNewLine, true)
+                    }
+                    cell("c")
                 }
-                cell("c")
+                cell("d")
             }
-            cell("d")
-        }
 
         var domBuilder: TagConsumer<IVirtualDom.HTMLElement> = IncrementalVirtualDOMBuilder(JSDom(), null, generatedHtmlMap)
         val dom = rootCell.layout.toHtml(domBuilder)
@@ -53,10 +54,11 @@ class IncrementalJSDOMBuilderTest {
         println("html: " + dom2.unwrap().outerHTML)
         assertEquals(elements1.size, elements2.size)
 
-        val expectedChanges = elements1.indices.joinToString("") {
-            val element2 = elements2[it]
-            if (element2 is IVirtualDom.Text && element2.textContent == newText) "C" else "-"
-        }
+        val expectedChanges =
+            elements1.indices.joinToString("") {
+                val element2 = elements2[it]
+                if (element2 is IVirtualDom.Text && element2.textContent == newText) "C" else "-"
+            }
         println("expected changes: " + expectedChanges)
         assertTrue(expectedChanges.contains("C"))
         val actualChanges = elements1.indices.joinToString("") { if (elements1[it] == elements2[it]) "-" else "C" }
@@ -94,18 +96,36 @@ class IncrementalJSDOMBuilderTest {
         }
     }
 
-    fun runRandomTests(seed: Int, cellsPerLevel: Int, levels: Int) {
+    fun runRandomTests(
+        seed: Int,
+        cellsPerLevel: Int,
+        levels: Int,
+    ) {
         val rand = Random(seed)
         runRandomTest(rand, cellsPerLevel, levels) { cell ->
-            val randomLeafCell = cell.descendants().filter { it.getVisibleText().isNotEmpty() }.shuffled(rand).firstOrNull()
-                ?: cell.descendants().filter { it.getChildren().isEmpty() }.shuffled(rand).first()
+            val randomLeafCell =
+                cell
+                    .descendants()
+                    .filter { it.getVisibleText().isNotEmpty() }
+                    .shuffled(rand)
+                    .firstOrNull()
+                    ?: cell
+                        .descendants()
+                        .filter { it.getChildren().isEmpty() }
+                        .shuffled(rand)
+                        .first()
             println("replace $randomLeafCell")
             (randomLeafCell as IMutableCellTree.MutableCell).text = "replacement"
             randomLeafCell
         }
         runRandomTest(rand, cellsPerLevel, levels) { cell ->
-            val randomCell = cell.descendants().shuffled(rand).firstOrNull()
-                ?: cell.descendants().filter { it.getChildren().isEmpty() }.shuffled(rand).first()
+            val randomCell =
+                cell.descendants().shuffled(rand).firstOrNull()
+                    ?: cell
+                        .descendants()
+                        .filter { it.getChildren().isEmpty() }
+                        .shuffled(rand)
+                        .first()
             randomCell as MutableCell
             println("insertBefore $randomCell")
             randomCell.getParent()!!.addNewChild(randomCell.index()).also {
@@ -114,7 +134,12 @@ class IncrementalJSDOMBuilderTest {
         }
     }
 
-    fun runRandomTest(rand: Random, cellsPerLevel: Int, levels: Int, modify: (MutableCell) -> MutableCell) {
+    fun runRandomTest(
+        rand: Random,
+        cellsPerLevel: Int,
+        levels: Int,
+        modify: (MutableCell) -> MutableCell,
+    ) {
         val generatedHtmlMap = GeneratedHtmlMap()
         val tree = FrontendCellTree()
         val cell = EditorTestUtils.buildRandomCells(rand, cellsPerLevel, levels, tree)
@@ -133,14 +158,25 @@ class IncrementalJSDOMBuilderTest {
         assertEquals(html2nonIncremental, html2incremental)
     }
 
-    private fun IMutableCellTree.cell(text: String, body: IMutableCellTree.MutableCell.() -> Unit): IMutableCellTree.MutableCell {
-        return this.createCell().also { it.setProperty(TextCellProperties.text, text) }.also(body)
-    }
+    private fun IMutableCellTree.cell(
+        text: String,
+        body: IMutableCellTree.MutableCell.() -> Unit,
+    ): IMutableCellTree.MutableCell =
+        this
+            .createCell()
+            .also {
+                it.setProperty(TextCellProperties.text, text)
+            }.also(body)
 
-    private fun IMutableCellTree.MutableCell.cell(text: String, body: IMutableCellTree.MutableCell.() -> Unit = {}): IMutableCellTree.MutableCell {
-        return this.addNewChild().also {
-            it.type = ECellType.TEXT
-            it.text = text
-        }.also(body)
-    }
+    private fun IMutableCellTree.MutableCell.cell(
+        text: String,
+        body: IMutableCellTree.MutableCell.() -> Unit = {
+        },
+    ): IMutableCellTree.MutableCell =
+        this
+            .addNewChild()
+            .also {
+                it.type = ECellType.TEXT
+                it.text = text
+            }.also(body)
 }

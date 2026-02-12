@@ -1,6 +1,7 @@
 package org.modelix.editor.kernelf
 
-val modelJson = """
+val modelJson =
+    """
 {
     "root": {
         "id": "",
@@ -3745,7 +3746,7 @@ val modelJson = """
         ]
     }
 }
-""".trimIndent()
+    """.trimIndent()
 
 val modelJson2 = """
    {

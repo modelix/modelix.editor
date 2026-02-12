@@ -25,14 +25,13 @@ import org.modelix.editor.text.shared.celltree.MoveCellToOp
 import org.modelix.editor.text.shared.celltree.NewCellOp
 import org.modelix.editor.text.shared.celltree.NewChildCellOp
 
-class FrontendCellTree(val editorComponent: FrontendEditorComponent? = null) : CellTreeBase() {
-
+class FrontendCellTree(
+    val editorComponent: FrontendEditorComponent? = null,
+) : CellTreeBase() {
     override fun newCellInstance(
         id: CellInstanceId,
         parent: CellImpl?,
-    ): CellImpl {
-        return FrontendCellImpl(id, parent as FrontendCellImpl?)
-    }
+    ): CellImpl = FrontendCellImpl(id, parent as FrontendCellImpl?)
 
     override fun getRoot(): FrontendCellImpl = super.getRoot() as FrontendCellImpl
 
@@ -53,22 +52,26 @@ class FrontendCellTree(val editorComponent: FrontendEditorComponent? = null) : C
         }
     }
 
-    inner class FrontendCellImpl(id: CellInstanceId, parent: FrontendCellImpl?) : CellImpl(id, parent) {
-        private var layout_ = ResettableLazy<LayoutedText> {
-            runLayoutOnCell(this) { it.layout }
-        }
+    inner class FrontendCellImpl(
+        id: CellInstanceId,
+        parent: FrontendCellImpl?,
+    ) : CellImpl(id, parent) {
+        private var cachedLayout =
+            ResettableLazy<LayoutedText> {
+                runLayoutOnCell(this) { it.layout }
+            }
         val layout: LayoutedText
-            get() = layout_.value
+            get() = cachedLayout.value
 
         fun clearCachedLayout() {
             withTreeLock {
-                layout_.reset()
+                cachedLayout.reset()
             }
         }
 
         fun invalidateLayout() {
             withTreeLock {
-                layout_.reset()
+                cachedLayout.reset()
                 getParent()?.invalidateLayout()
             }
         }
@@ -77,14 +80,16 @@ class FrontendCellTree(val editorComponent: FrontendEditorComponent? = null) : C
 
         override fun getParent() = super.getParent() as FrontendCellImpl?
 
-        override fun <T> getProperty(key: CellPropertyKey<T>): T {
-            return withTreeLock {
+        override fun <T> getProperty(key: CellPropertyKey<T>): T =
+            withTreeLock {
                 require(key.frontend) { "Property ${key.name} is not available in the frontend" }
                 if (properties.containsKey(key.name)) key.fromSerializableValue(properties[key.name]) else key.defaultValue
             }
-        }
 
-        override fun <T> setProperty(key: CellPropertyKey<T>, newValue: T) {
+        override fun <T> setProperty(
+            key: CellPropertyKey<T>,
+            newValue: T,
+        ) {
             withTreeLock {
                 super.setProperty(key, newValue)
                 invalidateLayout()
@@ -98,13 +103,12 @@ class FrontendCellTree(val editorComponent: FrontendEditorComponent? = null) : C
             }
         }
 
-        override fun addNewChild(index: Int): IMutableCellTree.MutableCell {
-            return withTreeLock {
+        override fun addNewChild(index: Int): IMutableCellTree.MutableCell =
+            withTreeLock {
                 super.addNewChild(index).also {
                     invalidateLayout()
                 }
             }
-        }
 
         override fun moveCell(index: Int) {
             withTreeLock {
@@ -113,7 +117,10 @@ class FrontendCellTree(val editorComponent: FrontendEditorComponent? = null) : C
             }
         }
 
-        override fun moveCell(targetParent: IMutableCellTree.MutableCell, index: Int) {
+        override fun moveCell(
+            targetParent: IMutableCellTree.MutableCell,
+            index: Int,
+        ) {
             withTreeLock {
                 invalidateLayout()
                 super.moveCell(targetParent, index)
@@ -145,16 +152,13 @@ var IMutableCellTree.MutableCell.text: String?
     set(value) = setProperty(TextCellProperties.text, value)
 val ICellTree.Cell.placeholderText: String? get() = getProperty(TextCellProperties.placeholderText)
 
-fun ICellTree.Cell.getVisibleText(): String {
-    return getProperty(CommonCellProperties.textReplacement)
+fun ICellTree.Cell.getVisibleText(): String =
+    getProperty(CommonCellProperties.textReplacement)
         ?: text?.takeIf { it.isNotEmpty() }
         ?: placeholderText
         ?: ""
-}
 
-fun ICellTree.Cell.getSelectableText(): String? {
-    return getProperty(CommonCellProperties.textReplacement) ?: text
-}
+fun ICellTree.Cell.getSelectableText(): String? = getProperty(CommonCellProperties.textReplacement) ?: text
 
 val ICellTree.Cell.layout: LayoutedText get() = (this as FrontendCellTree.FrontendCellImpl).layout
 
@@ -164,18 +168,32 @@ val ICellTree.Cell.editorComponent: FrontendEditorComponent get() {
     }
 }
 
-fun ICellTree.Cell.backend(service: TextEditorServiceImpl, editor: FrontendEditorComponent) = backend(service, editor.editorId)
-fun ICellTree.Cell.backend(service: TextEditorServiceImpl, editorId: EditorId) = service.getEditorBackend(editorId).tree.getCell(getId())
+fun ICellTree.Cell.backend(
+    service: TextEditorServiceImpl,
+    editor: FrontendEditorComponent,
+) = backend(service, editor.editorId)
 
-fun runLayoutOnCell(cell: ICellTree.Cell): LayoutedText {
-    return runLayoutOnCell(cell) { runLayoutOnCell(it) }
-}
+fun ICellTree.Cell.backend(
+    service: TextEditorServiceImpl,
+    editorId: EditorId,
+) = service.getEditorBackend(editorId).tree.getCell(getId())
 
-fun runLayoutOnCell(cell: ICellTree.Cell, layoutChild: (ICellTree.Cell) -> LayoutedText): LayoutedText {
-    return TextLayouter().also { runLayoutOnCell(it, cell, layoutChild) }.done()
-}
+fun runLayoutOnCell(cell: ICellTree.Cell): LayoutedText = runLayoutOnCell(cell) { runLayoutOnCell(it) }
 
-fun runLayoutOnCell(layouter: TextLayouter, cell: ICellTree.Cell, layoutChild: (ICellTree.Cell) -> LayoutedText) {
+fun runLayoutOnCell(
+    cell: ICellTree.Cell,
+    layoutChild: (ICellTree.Cell) -> LayoutedText,
+): LayoutedText =
+    TextLayouter()
+        .also {
+            runLayoutOnCell(it, cell, layoutChild)
+        }.done()
+
+fun runLayoutOnCell(
+    layouter: TextLayouter,
+    cell: ICellTree.Cell,
+    layoutChild: (ICellTree.Cell) -> LayoutedText,
+) {
     when (cell.type) {
         ECellType.COLLECTION -> {
             val body: () -> Unit = {
@@ -190,6 +208,7 @@ fun runLayoutOnCell(layouter: TextLayouter, cell: ICellTree.Cell, layoutChild: (
                 body()
             }
         }
+
         ECellType.TEXT -> {
             if (cell.getProperty(CommonCellProperties.onNewLine)) layouter.onNewLine()
             if (cell.getProperty(CommonCellProperties.noSpace)) layouter.noSpace()

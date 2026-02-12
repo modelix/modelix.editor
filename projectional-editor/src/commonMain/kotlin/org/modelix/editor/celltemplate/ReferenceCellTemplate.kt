@@ -34,15 +34,11 @@ class ReferenceCellTemplate(
     concept: IConcept,
     val link: IReferenceLink,
     val presentation: INode.() -> String?,
-) : CellTemplate(concept), IGrammarSymbol {
+) : CellTemplate(concept),
+    IGrammarSymbol {
+    override fun toParserSymbol(): ISymbol = ReferenceSymbol(link)
 
-    override fun toParserSymbol(): ISymbol {
-        return ReferenceSymbol(link)
-    }
-
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return ReferenceCompletionToken(link)
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = ReferenceCompletionToken(link)
 
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
@@ -50,7 +46,10 @@ class ReferenceCellTemplate(
         // TODO builder.currentNode().setReferenceTarget(link, TODO())
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): CellSpecBase {
         val data = TextCellSpec(getText(node), "<no ${link.getSimpleName()}>")
         data.cellReferences += ReferencedNodeCellReference(node.reference, link.toReference())
         data.properties[CommonCellProperties.tabTarget] = true
@@ -60,41 +59,46 @@ class ReferenceCellTemplate(
             }
         return data
     }
+
     private fun getText(node: INode): String = getTargetNode(node)?.let(presentation) ?: ""
-    private fun getTargetNode(sourceNode: INode): INode? {
-        return sourceNode.getReferenceTarget(link)
-    }
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider> {
-        return listOf(WrapReferenceTargetProvider(location.replacement(concept)))
-    }
 
-    override fun getSymbolTransformationAction(node: INode, optionalCell: TemplateCellReference): IActionOrProvider? {
-        return WrapReferenceTargetProvider(node.toNonExisting())
-    }
+    private fun getTargetNode(sourceNode: INode): INode? = sourceNode.getReferenceTarget(link)
 
-    inner class WrapReferenceTargetProvider(val sourceNode: INonExistingNode) : ICodeCompletionActionProvider {
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider> = listOf(WrapReferenceTargetProvider(location.replacement(concept)))
+
+    override fun getSymbolTransformationAction(
+        node: INode,
+        optionalCell: TemplateCellReference,
+    ): IActionOrProvider? = WrapReferenceTargetProvider(node.toNonExisting())
+
+    inner class WrapReferenceTargetProvider(
+        val sourceNode: INonExistingNode,
+    ) : ICodeCompletionActionProvider {
         override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> {
             val scope = ScopeAspect.getScope(sourceNode, link)
             val targets = scope.getVisibleElements(sourceNode, link)
             return targets.map { target ->
-                val text = when (target) {
-                    is ExistingNode -> presentation(target.getNode()) ?: ""
-                    else -> "<create new target node>"
-                }
+                val text =
+                    when (target) {
+                        is ExistingNode -> presentation(target.getNode()) ?: ""
+                        else -> "<create new target node>"
+                    }
                 WrapReferenceTarget(sourceNode, target, text)
             }
         }
     }
 
-    inner class WrapReferenceTarget(val location: INonExistingNode, val target: INonExistingNode, val presentation: String) :
-        ICodeCompletionAction {
-        override fun getMatchingText(): String {
-            return presentation
-        }
+    inner class WrapReferenceTarget(
+        val location: INonExistingNode,
+        val target: INonExistingNode,
+        val presentation: String,
+    ) : ICodeCompletionAction {
+        override fun getMatchingText(): String = presentation
 
-        override fun getDescription(): String {
-            return concept.getShortName()
-        }
+        override fun getDescription(): String = concept.getShortName()
 
         override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val sourceNode = location.getOrCreateNode(concept)

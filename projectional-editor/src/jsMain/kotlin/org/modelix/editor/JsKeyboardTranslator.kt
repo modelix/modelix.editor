@@ -7,13 +7,14 @@ import org.w3c.dom.events.MouseEvent
 fun KeyboardEvent.convert(eventType: JSKeyboardEventType): JSKeyboardEvent {
     val knownKey = KnownKeys.getIfKnown(key)
     val typedText: String? = key.let { if (it.length == 1) it else null }
-    val locationEnum = when (this.location) {
-        KeyboardEvent.DOM_KEY_LOCATION_STANDARD -> KeyLocation.STANDARD
-        KeyboardEvent.DOM_KEY_LOCATION_LEFT -> KeyLocation.LEFT
-        KeyboardEvent.DOM_KEY_LOCATION_RIGHT -> KeyLocation.RIGHT
-        KeyboardEvent.DOM_KEY_LOCATION_NUMPAD -> KeyLocation.NUMPAD
-        else -> KeyLocation.STANDARD
-    }
+    val locationEnum =
+        when (this.location) {
+            KeyboardEvent.DOM_KEY_LOCATION_STANDARD -> KeyLocation.STANDARD
+            KeyboardEvent.DOM_KEY_LOCATION_LEFT -> KeyLocation.LEFT
+            KeyboardEvent.DOM_KEY_LOCATION_RIGHT -> KeyLocation.RIGHT
+            KeyboardEvent.DOM_KEY_LOCATION_NUMPAD -> KeyLocation.NUMPAD
+            else -> KeyLocation.STANDARD
+        }
     return JSKeyboardEvent(
         eventType = eventType,
         typedText = typedText,
@@ -26,7 +27,10 @@ fun KeyboardEvent.convert(eventType: JSKeyboardEventType): JSKeyboardEvent {
     )
 }
 
-fun MouseEvent.convert(eventType: JSMouseEventType, relativeTo: HTMLElement?): JSMouseEvent {
+fun MouseEvent.convert(
+    eventType: JSMouseEventType,
+    relativeTo: HTMLElement?,
+): JSMouseEvent {
     val origin = relativeTo?.getAbsoluteBounds() ?: Bounds.ZERO
     return JSMouseEvent(
         eventType = eventType,

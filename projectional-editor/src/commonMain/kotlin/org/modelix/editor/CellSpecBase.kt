@@ -5,7 +5,9 @@ import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.editor.text.shared.celltree.IMutableCellTree
 import org.modelix.model.api.INode
 
-sealed class CellSpecBase : Freezable(), ILocalOrChildNodeCell {
+sealed class CellSpecBase :
+    Freezable(),
+    ILocalOrChildNodeCell {
     val cellReferences: MutableList<CellReference> = ArrayList()
     val children: MutableList<ILocalOrChildNodeCell> = ArrayList()
     val properties = CellProperties()
@@ -14,7 +16,10 @@ sealed class CellSpecBase : Freezable(), ILocalOrChildNodeCell {
         children.add(child)
     }
 
-    open fun layout(buffer: TextLayouter, cell: Cell) {
+    open fun layout(
+        buffer: TextLayouter,
+        cell: Cell,
+    ) {
         val body: () -> Unit = {
             if (properties[CommonCellProperties.onNewLine]) buffer.onNewLine()
             if (properties[CommonCellProperties.noSpace]) buffer.noSpace()
@@ -33,27 +38,35 @@ sealed class CellSpecBase : Freezable(), ILocalOrChildNodeCell {
     open fun isVisible(): Boolean = false
 }
 
-fun Cell.isVisible() = when (getProperty(CommonCellProperties.type)) {
-    ECellType.COLLECTION -> false
-    ECellType.TEXT -> true
-}
+fun Cell.isVisible() =
+    when (getProperty(CommonCellProperties.type)) {
+        ECellType.COLLECTION -> false
+        ECellType.TEXT -> true
+    }
 
 sealed interface ILocalOrChildNodeCell
 
-class ChildSpecReference(val childNode: INode) : ILocalOrChildNodeCell
+class ChildSpecReference(
+    val childNode: INode,
+) : ILocalOrChildNodeCell
 
 class CellSpec : CellSpecBase()
 
-class TextCellSpec(val text: String, val placeholderText: String = "") : CellSpecBase() {
-    fun getVisibleText(cell: Cell): String {
-        return if (cell.getChildren().isEmpty()) {
+class TextCellSpec(
+    val text: String,
+    val placeholderText: String = "",
+) : CellSpecBase() {
+    fun getVisibleText(cell: Cell): String =
+        if (cell.getChildren().isEmpty()) {
             text.ifEmpty { placeholderText }
         } else {
             """$text<${cell.getChildren()}>"""
         }
-    }
 
-    override fun layout(buffer: TextLayouter, cell: Cell) {
+    override fun layout(
+        buffer: TextLayouter,
+        cell: Cell,
+    ) {
         if (properties[CommonCellProperties.onNewLine]) buffer.onNewLine()
         if (properties[CommonCellProperties.noSpace]) buffer.noSpace()
         buffer.append(LayoutableCell(cell))

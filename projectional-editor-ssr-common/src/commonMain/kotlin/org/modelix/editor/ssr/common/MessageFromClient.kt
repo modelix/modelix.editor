@@ -14,26 +14,21 @@ data class MessageFromClient(
      * when creating a new editor component.
      */
     val editorId: String? = null,
-
     /**
      * The node to open in the editor. The first message containing a new `editorId` will instantiate
      * an editor component on the server side and should always specify the root node.
      */
     val rootNodeReference: String? = null,
-
     /**
      * When the editor component is not used anymore, the client can set this flag to free resources on the server and
      * stop getting updates for it.
      */
     val dispose: Boolean = false,
-
     /**
      * The user pressed a key on the client side that should be processed by the editor component.
      */
     val keyboardEvent: JSKeyboardEvent? = null,
-
     val mouseEvent: JSMouseEvent? = null,
-
     val boundUpdates: Map<String, HTMLElementBoundsUpdate>? = null,
 ) {
     fun toJson() = Json.encodeToString(this)

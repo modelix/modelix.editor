@@ -90,8 +90,9 @@ import java.util.Collections
 import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class ModelixSSRServerForMPSProject(private val project: Project) : Disposable {
-
+class ModelixSSRServerForMPSProject(
+    private val project: Project,
+) : Disposable {
     init {
         ApplicationManager.getApplication().service<ModelixSSRServerForMPS>().registerProject(project)
     }
@@ -103,7 +104,6 @@ class ModelixSSRServerForMPSProject(private val project: Project) : Disposable {
 
 @Service(Service.Level.APP)
 class ModelixSSRServerForMPS : Disposable {
-
     private var ssrServer: ModelixSSRServer? = null
     private var ktorServer: EmbeddedServer<*, *>? = null
     private val projects: MutableSet<Project> = Collections.synchronizedSet(HashSet())
@@ -118,17 +118,17 @@ class ModelixSSRServerForMPS : Disposable {
         projects.remove(project)
     }
 
-    private fun getMPSProjects(): List<MPSProject> {
-        return runSynchronized(projects) {
+    private fun getMPSProjects(): List<MPSProject> =
+        runSynchronized(projects) {
             projects.mapNotNull { it.getComponent(MPSProject::class.java) }
         }
-    }
 
-    private fun getRootNode(): INode? {
-        return getMPSProjects().asSequence().map {
-            MPSRepositoryAsNode(it.repository).asLegacyNode()
-        }.firstOrNull()
-    }
+    private fun getRootNode(): INode? =
+        getMPSProjects()
+            .asSequence()
+            .map {
+                MPSRepositoryAsNode(it.repository).asLegacyNode()
+            }.firstOrNull()
 
     fun ensureStarted() {
         runSynchronized(this) {
@@ -140,9 +140,10 @@ class ModelixSSRServerForMPS : Disposable {
             this.ssrServer = ssrServer
             mpsIntegration = EditorIntegrationForMPS(ssrServer.editorEngine)
             mpsIntegration!!.init(getMPSProjects().first().repository)
-            ktorServer = org.modelix.mps.editor.common.embeddedServer(port = 43593, classLoader = this.javaClass.classLoader) {
-                initKtorServer(ssrServer)
-            }
+            ktorServer =
+                org.modelix.mps.editor.common.embeddedServer(port = 43593, classLoader = this.javaClass.classLoader) {
+                    initKtorServer(ssrServer)
+                }
             ktorServer!!.start()
         }
     }
@@ -161,14 +162,18 @@ class ModelixSSRServerForMPS : Disposable {
                     repository.getArea().executeRead {
                         body {
                             ul {
-                                repository.getChildren(BuiltinLanguages.MPSRepositoryConcepts.Repository.modules).sortedBy { it.name }.forEach {
-                                    li {
-                                        a {
-                                            href = "module/${URLEncoder.encode(it.reference.serialize(), StandardCharsets.UTF_8)}/"
-                                            +(it.name ?: "<no name>")
+                                repository
+                                    .getChildren(
+                                        BuiltinLanguages.MPSRepositoryConcepts.Repository.modules
+                                    ).sortedBy { it.name }
+                                    .forEach {
+                                        li {
+                                            a {
+                                                href = "module/${URLEncoder.encode(it.reference.serialize(), StandardCharsets.UTF_8)}/"
+                                                +(it.name ?: "<no name>")
+                                            }
                                         }
                                     }
-                                }
                             }
                         }
                     }
@@ -266,32 +271,39 @@ class ModelixSSRServerForMPSStartupActivity : ProjectActivity {
 }
 
 object MPSScopeProvider : IScopeProvider {
-    override fun getScope(sourceNode: INonExistingNode, link: IReferenceLink): IScope {
+    override fun getScope(
+        sourceNode: INonExistingNode,
+        link: IReferenceLink,
+    ): IScope {
         val mpsSourceNode = sourceNode.getNode()?.asWritableNode() as? MPSWritableNode
-        val descriptor = if (mpsSourceNode == null) {
-            val contextNode: SNode = sourceNode.getExistingAncestor().toMPS()!!
-            val containmentLink: SContainmentLink = sourceNode.getContainmentLink().toMPS()!!
-            val index = sourceNode.index()
-            val association: SReferenceLink = link.toMPS()!!
-            val concept: SAbstractConcept = sourceNode.expectedConcept().toMPS()!!
-            ModelConstraints.getReferenceDescriptor(
-                contextNode,
-                containmentLink,
-                index,
-                association,
-                concept,
-            )
-        } else {
-            ModelConstraints.getReferenceDescriptor(mpsSourceNode.node, link.toMPS()!!)
-        }
+        val descriptor =
+            if (mpsSourceNode == null) {
+                val contextNode: SNode = sourceNode.getExistingAncestor().toMPS()!!
+                val containmentLink: SContainmentLink = sourceNode.getContainmentLink().toMPS()!!
+                val index = sourceNode.index()
+                val association: SReferenceLink = link.toMPS()!!
+                val concept: SAbstractConcept = sourceNode.expectedConcept().toMPS()!!
+                ModelConstraints.getReferenceDescriptor(
+                    contextNode,
+                    containmentLink,
+                    index,
+                    association,
+                    concept,
+                )
+            } else {
+                ModelConstraints.getReferenceDescriptor(mpsSourceNode.node, link.toMPS()!!)
+            }
         return MPSScope(descriptor.getScope())
     }
 }
 
-class MPSScope(val scope: Scope) : IScope {
-    override fun getVisibleElements(node: INonExistingNode, link: IReferenceLink): List<INonExistingNode> {
-        return scope.getAvailableElements("").map { ExistingNode(MPSNode(it)) }
-    }
+class MPSScope(
+    val scope: Scope,
+) : IScope {
+    override fun getVisibleElements(
+        node: INonExistingNode,
+        link: IReferenceLink,
+    ): List<INonExistingNode> = scope.getAvailableElements("").map { ExistingNode(MPSNode(it)) }
 }
 
 object MPSConstraints : IConstraintsChecker {
@@ -308,25 +320,29 @@ object MPSConstraints : IConstraintsChecker {
 
         // ConstraintsCanBeFacade.checkCanBeRoot()
 
-        val containmentContext = ContainmentContext.Builder()
-            .parentNode(parentNode)
-            .link(node.getContainmentLink().toMPS())
-            .childConcept(node.expectedConcept().toMPS()!!)
-            .build()
+        val containmentContext =
+            ContainmentContext
+                .Builder()
+                .parentNode(parentNode)
+                .link(node.getContainmentLink().toMPS())
+                .childConcept(node.expectedConcept().toMPS()!!)
+                .build()
 
-        val ancestorViolations = node.ancestors().flatMap { ancestor ->
-            val ancestorNode = ancestor.getNode().toMPS() ?: return@flatMap emptyList()
+        val ancestorViolations =
+            node.ancestors().flatMap { ancestor ->
+                val ancestorNode = ancestor.getNode().toMPS() ?: return@flatMap emptyList()
 
-            ConstraintsCanBeFacade.checkCanBeAncestor(
-                CanBeAncestorContext.Builder()
-                    .ancestorNode(ancestorNode)
-                    .parentNode(parentNode)
-                    .childConcept(node.expectedConcept().toMPS()!!)
-                    .descendantNode(node.getNode().toMPS())
-                    .link(node.getContainmentLink().toMPS())
-                    .build(),
-            )
-        }
+                ConstraintsCanBeFacade.checkCanBeAncestor(
+                    CanBeAncestorContext
+                        .Builder()
+                        .ancestorNode(ancestorNode)
+                        .parentNode(parentNode)
+                        .childConcept(node.expectedConcept().toMPS()!!)
+                        .descendantNode(node.getNode().toMPS())
+                        .link(node.getContainmentLink().toMPS())
+                        .build(),
+                )
+            }
         val parentViolations = ConstraintsCanBeFacade.checkCanBeParent(containmentContext).asSequence()
         val childViolations = ConstraintsCanBeFacade.checkCanBeChild(containmentContext).asSequence()
         return (ancestorViolations + parentViolations + childViolations).map { MPSConstraintViolation(it) }.toList() +
@@ -336,9 +352,18 @@ object MPSConstraints : IConstraintsChecker {
     fun checkLanguageImported(node: INonExistingNode): List<IConstraintViolation> {
         val concept = node.expectedConcept() as? MPSConcept ?: return emptyList()
         val language = concept.concept.language
-        val model = node.ancestors().map { it.getNode() }.filterIsInstance<MPSModelAsNode>()
-            .map { it.model }.firstOrNull() ?: return emptyList()
-        val usedLanguages = ModelDependencyResolver(LanguageRegistry.getInstance(model.repository), model.repository).usedLanguages(model).toSet()
+        val model =
+            node
+                .ancestors()
+                .map { it.getNode() }
+                .filterIsInstance<MPSModelAsNode>()
+                .map { it.model }
+                .firstOrNull() ?: return emptyList()
+        val usedLanguages =
+            ModelDependencyResolver(
+                LanguageRegistry.getInstance(model.repository),
+                model.repository
+            ).usedLanguages(model).toSet()
         return if (!usedLanguages.contains(language)) {
             listOf(MPSLanguageNotImportedViolation(concept.concept))
         } else {
@@ -346,26 +371,47 @@ object MPSConstraints : IConstraintsChecker {
         }
     }
 
-    override fun checkPropertyValue(node: INonExistingNode, property: IProperty, value: String): List<IConstraintViolation> {
+    override fun checkPropertyValue(
+        node: INonExistingNode,
+        property: IProperty,
+        value: String,
+    ): List<IConstraintViolation> {
         val mpsProperty = property.toMPS() ?: return emptyList()
         val internalValue = IPropertyPresentationProvider.getPresentationProviderFor(mpsProperty).fromPresentation(value)
-        val mpsNode = node.getNode()?.toMPS()
-            ?: jetbrains.mps.smodel.SNode(node.expectedConcept().toMPS() as? SConcept ?: jetbrains.mps.smodel.SNodeUtil.concept_BaseConcept)
+        val mpsNode =
+            node.getNode()?.toMPS()
+                ?: jetbrains.mps.smodel.SNode(
+                    node.expectedConcept().toMPS() as? SConcept ?: jetbrains.mps.smodel.SNodeUtil.concept_BaseConcept
+                )
         val context = FailingPropertyConstraintContext(mpsNode, mpsProperty, internalValue)
         return ConstraintsChildAndPropFacade.checkPropertyValue(context).map { MPSProblem(it) }
     }
 }
 
 fun INode?.toMPS(): SNode? = this?.asWritableNode().toMPS()
+
 fun IWritableNode?.toMPS(): SNode? = if (this is MPSWritableNode) this.node else null
+
 fun IChildLink?.toMPS(): SContainmentLink? = if (this is MPSChildLink) this.link else null
+
 fun IChildLinkDefinition?.toMPS(): SContainmentLink? = if (this is MPSChildLink) this.link else null
+
 fun IReferenceLink?.toMPS(): SReferenceLink? = if (this is MPSReferenceLink) this.link else null
+
 fun IProperty?.toMPS(): SProperty? = if (this is MPSProperty) this.property else null
+
 fun IConcept?.toMPS(): SAbstractConcept? = if (this is MPSConcept) this.concept else null
 
 val INode.name get() = getPropertyValue(BuiltinLanguages.jetbrains_mps_lang_core.INamedConcept.name)
 
-class MPSConstraintViolation(val rule: Rule<*>) : IConstraintViolation
-class MPSProblem(val problem: Problem) : IConstraintViolation
-class MPSLanguageNotImportedViolation(val concept: SAbstractConcept) : IConstraintViolation
+class MPSConstraintViolation(
+    val rule: Rule<*>,
+) : IConstraintViolation
+
+class MPSProblem(
+    val problem: Problem,
+) : IConstraintViolation
+
+class MPSLanguageNotImportedViolation(
+    val concept: SAbstractConcept,
+) : IConstraintViolation
