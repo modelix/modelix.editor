@@ -7,10 +7,18 @@ import org.modelix.model.api.ConceptReference
 sealed interface ICellTemplateReference
 
 @Serializable
-data class RooCellTemplateReference(val conceptEditorId: Long, val subConcept: ConceptReference) : ICellTemplateReference
+data class RooCellTemplateReference(
+    val conceptEditorId: Long,
+    val subConcept: ConceptReference,
+) : ICellTemplateReference
 
 @Serializable
-data class ChildCellTemplateReference(val parent: ICellTemplateReference, val index: Int) : ICellTemplateReference
+data class ChildCellTemplateReference(
+    val parent: ICellTemplateReference,
+    val index: Int,
+) : ICellTemplateReference
 
 @Serializable
-data class SeparatorCellTemplateReference(val parent: ICellTemplateReference) : ICellTemplateReference
+data class SeparatorCellTemplateReference(
+    val parent: ICellTemplateReference,
+) : ICellTemplateReference

@@ -1,6 +1,9 @@
 package org.modelix.editor
 
-class CodeCompletionMenuUI(val ccmenu: CodeCompletionMenu, val editor: FrontendEditorComponent) {
+class CodeCompletionMenuUI(
+    val ccmenu: CodeCompletionMenu,
+    val editor: FrontendEditorComponent,
+) {
     fun updateBounds() {
         val ccContainerElement = editor.generatedHtmlMap.getOutput(ccmenu) ?: return
         val layoutable = ccmenu.anchor
@@ -8,16 +11,25 @@ class CodeCompletionMenuUI(val ccmenu: CodeCompletionMenu, val editor: FrontendE
         val anchorAbsoluteBounds = anchorElement.getOuterBounds()
         val anchorRelativeBounds =
             anchorAbsoluteBounds.relativeTo(editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO)
-        val patternElement = ccContainerElement.descendants().filterIsInstance<IVirtualDom.HTMLElement>()
-            .first { it.getClasses().contains("ccmenu-pattern") }
-        val left: Double = when (ccmenu.completionPosition) {
-            CompletionPosition.CENTER -> anchorRelativeBounds.x
-            CompletionPosition.LEFT -> {
-                anchorRelativeBounds.x - patternElement.getOuterBounds().width
-            }
+        val patternElement =
+            ccContainerElement
+                .descendants()
+                .filterIsInstance<IVirtualDom.HTMLElement>()
+                .first { it.getClasses().contains("ccmenu-pattern") }
+        val left: Double =
+            when (ccmenu.completionPosition) {
+                CompletionPosition.CENTER -> {
+                    anchorRelativeBounds.x
+                }
 
-            CompletionPosition.RIGHT -> anchorRelativeBounds.maxX()
-        }
+                CompletionPosition.LEFT -> {
+                    anchorRelativeBounds.x - patternElement.getOuterBounds().width
+                }
+
+                CompletionPosition.RIGHT -> {
+                    anchorRelativeBounds.maxX()
+                }
+            }
         ccContainerElement.style.left = "${left}px"
         ccContainerElement.style.top = "${anchorRelativeBounds.y}px"
 

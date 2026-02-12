@@ -14,8 +14,10 @@ import org.modelix.editor.getCompletionPattern
 import org.modelix.editor.text.shared.celltree.BackendCellTree
 import org.modelix.editor.text.shared.celltree.CellTreeOp
 
-class BackendEditorComponent(val rootCall: CellCreationCall, val engine: EditorEngine) {
-
+class BackendEditorComponent(
+    val rootCall: CellCreationCall,
+    val engine: EditorEngine,
+) {
     val state = CellTreeState()
     val tree: BackendCellTree get() = state.cellTree
     var completionMenu: CompletionMenuBackend? = null
@@ -29,36 +31,39 @@ class BackendEditorComponent(val rootCall: CellCreationCall, val engine: EditorE
         selectionUpdater = newSelection
     }
 
-    fun update(): List<CellTreeOp> {
-        return tree.runUpdate {
+    fun update(): List<CellTreeOp> =
+        tree.runUpdate {
             runRead {
                 val newCell = engine.createCell(state, rootCall)
-                tree.getRoot().getChildren().minus(newCell).forEach { it.detach() }
+                tree
+                    .getRoot()
+                    .getChildren()
+                    .minus(newCell)
+                    .forEach { it.detach() }
                 if (newCell.getParent() != tree.getRoot()) {
                     newCell.moveCell(tree.getRoot(), 0)
                 }
             }
         }
-    }
 
-    fun loadCompletionEntries(providers: List<ICodeCompletionActionProvider>, pattern: String): List<ICodeCompletionAction> {
-        return CompletionMenuBackend(providers).let {
+    fun loadCompletionEntries(
+        providers: List<ICodeCompletionActionProvider>,
+        pattern: String,
+    ): List<ICodeCompletionAction> =
+        CompletionMenuBackend(providers).let {
             completionMenu = it
             it.updateActions(pattern)
         }
-    }
 
-    fun <R> runWrite(body: () -> R): R {
-        return when (rootCall) {
+    fun <R> runWrite(body: () -> R): R =
+        when (rootCall) {
             is NodeCellCreationCall -> rootCall.node.getModel().executeWrite(body)
         }
-    }
 
-    fun <R> runRead(body: () -> R): R {
-        return when (rootCall) {
+    fun <R> runRead(body: () -> R): R =
+        when (rootCall) {
             is NodeCellCreationCall -> rootCall.node.getModel().executeRead(body)
         }
-    }
 
     inner class CompletionMenuBackend(
         val providers: List<ICodeCompletionActionProvider>,
@@ -66,23 +71,20 @@ class BackendEditorComponent(val rootCall: CellCreationCall, val engine: EditorE
         val actionsCache = CachedCodeCompletionActions(providers)
         private var entries: List<ICodeCompletionAction> = emptyList()
 
-        fun updateActions(pattern: String): List<ICodeCompletionAction> {
-            return computeActions(pattern).also { entries = it }
-        }
+        fun updateActions(pattern: String): List<ICodeCompletionAction> = computeActions(pattern).also { entries = it }
 
         fun getEntries(): List<ICodeCompletionAction> = entries
 
-        fun computeActions(pattern: String): List<ICodeCompletionAction> {
-            return runRead {
+        fun computeActions(pattern: String): List<ICodeCompletionAction> =
+            runRead {
                 val parameters = CodeCompletionParameters(this@BackendEditorComponent, pattern)
-                actionsCache.update(parameters)
+                actionsCache
+                    .update(parameters)
                     .filter {
                         val matchingText = it.getCompletionPattern()
                         matchingText.isNotEmpty() && matchingText.startsWith(parameters.pattern)
-                    }
-                    .applyShadowing()
+                    }.applyShadowing()
                     .sortedBy { it.getCompletionPattern().lowercase() }
             }
-        }
     }
 }

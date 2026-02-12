@@ -35,7 +35,7 @@ import org.modelix.model.mpsadapters.MPSWritableNode
 /**
  * Test editor for MPS baseLanguage ClassConcept
  */
-@Suppress("ktlint:standard:wrapping", "ktlint:standard:trailing-comma-on-call-site")
+@Suppress("ktlint:standard:wrapping", "ktlint:standard:trailing-comma-on-call-site", "ktlint:standard:function-naming")
 class BaseLanguageTests : TestBase("SimpleProject") {
     lateinit var editor: FrontendEditorComponent
     lateinit var service: TextEditorServiceImpl
@@ -63,9 +63,10 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         coroutineScope = CoroutineScope(Dispatchers.Default)
         service = TextEditorServiceImpl(editorEngine, MPSArea(mpsProject.repository).asModel(), coroutineScope)
         runBlocking {
-            editor = FrontendEditorComponent(service).also {
-                it.openNode(classNode.getNodeReference()).await()
-            }
+            editor =
+                FrontendEditorComponent(service).also {
+                    it.openNode(classNode.getNodeReference()).await()
+                }
             editor.flush()
         }
     }
@@ -104,7 +105,10 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         editor.changeSelection(CaretSelection(lastLeafCell.layoutable()!!, lastLeafCell.getMaxCaretPos()))
     }
 
-    fun placeCaretIntoCellWithText(text: String, position: Int = -1) {
+    fun placeCaretIntoCellWithText(
+        text: String,
+        position: Int = -1,
+    ) {
         val cell = editor.getRootCell().descendantsAndSelf().first { it.getVisibleText() == text }
         editor.changeSelection(CaretSelection(cell.layoutable()!!, if (position == -1) cell.getMaxCaretPos() else position))
     }
@@ -130,20 +134,23 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         }
     }
 
-    fun getCodeCompletionEntries(pattern: String): List<ICodeCompletionAction> {
-        return readAction {
+    fun getCodeCompletionEntries(pattern: String): List<ICodeCompletionAction> =
+        readAction {
             val selection = editor.getSelection() as CaretSelection
-            val actionProviders: Sequence<ICodeCompletionActionProvider> = selection.layoutable.cell.backend().getSubstituteActions()
+            val actionProviders: Sequence<ICodeCompletionActionProvider> =
+                selection.layoutable.cell
+                    .backend()
+                    .getSubstituteActions()
             val actions = actionProviders.flatMap { it.flattenApplicableActions(CodeCompletionParameters(getBackend(), pattern)) }.toList()
-            val matchingActions = actions.filter {
-                val matchingText = it.getCompletionPattern()
-                matchingText.isNotEmpty() && matchingText.startsWith(pattern)
-            }
+            val matchingActions =
+                actions.filter {
+                    val matchingText = it.getCompletionPattern()
+                    matchingText.isNotEmpty() && matchingText.startsWith(pattern)
+                }
             val shadowedActions = matchingActions.applyShadowing()
             val sortedActions = shadowedActions.sortedBy { it.getCompletionPattern().lowercase() }
             sortedActions
         }
-    }
 
     fun `test initial editor`() {
         assertFinalEditorText("""
@@ -517,28 +524,45 @@ class BaseLanguageTests : TestBase("SimpleProject") {
     }
 
     private fun runParsingTest(input: String) = runParsingTest(input, false)
+
     private fun runCompletionTest(input: String) = runParsingTest(input, true)
-    private fun runParsingTest(input: String, completion: Boolean) {
+
+    private fun runParsingTest(
+        input: String,
+        completion: Boolean,
+    ) {
         readAction {
             println("Running test ...")
             placeCaretIntoCellWithText("<no statement>")
 
             val layoutable = (editor.getSelection() as CaretSelection).layoutable
-            val node = layoutable.cell.backend().ancestors(true)
-                .mapNotNull { it.getProperty(CommonCellProperties.node) }.first()
+            val node =
+                layoutable.cell
+                    .backend()
+                    .ancestors(true)
+                    .mapNotNull { it.getProperty(CommonCellProperties.node) }
+                    .first()
 
             val parser = ParserForEditor(editorEngine).getParser(node.expectedConcept()!!, forCodeCompletion = completion)
             val parseTree = parser.parse(input)
             println(parseTree)
         }
     }
-    private fun runClassParsingTest(input: String, completion: Boolean) {
+
+    private fun runClassParsingTest(
+        input: String,
+        completion: Boolean,
+    ) {
         println("Running test ...")
         placeCaretIntoCellWithText("class")
 
         val layoutable = (editor.getSelection() as CaretSelection).layoutable
-        val node = layoutable.cell.backend().ancestors(true)
-            .mapNotNull { it.getProperty(CommonCellProperties.node) }.first()
+        val node =
+            layoutable.cell
+                .backend()
+                .ancestors(true)
+                .mapNotNull { it.getProperty(CommonCellProperties.node) }
+                .first()
         val concept = node.getNode()!!.concept!!
         val parser = ParserForEditor(editorEngine).getParser(concept, forCodeCompletion = completion)
         val parseTree = parser.parse(input)
@@ -546,14 +570,19 @@ class BaseLanguageTests : TestBase("SimpleProject") {
     }
 
     fun `test statement parsing 1`() = runParsingTest("int a;")
+
     fun `test statement parsing 2`() = runParsingTest("int a = 10 + 20;")
+
     fun `test statement parsing 3`() = runParsingTest("return 10;")
 
     fun `test statement parsing 4`() = runParsingTest("""for ( int i = 0 ; i < 10 ; i++ ) { return i ; }""")
+
     fun `test statement parsing 5`() = runParsingTest("""System.out.println("Hello");""")
+
     fun `disabled test statement parsing 6`() = runParsingTest("""System.out.println("Hello World!");""")
 
-    fun `test class parsing 1`() = runClassParsingTest("""
+    fun `test class parsing 1`() =
+        runClassParsingTest("""
         class Math {
             public static int plus(int a, int b) {
                 return a + b;
@@ -562,5 +591,6 @@ class BaseLanguageTests : TestBase("SimpleProject") {
     """, false)
 
     fun `test completion 1`() = runParsingTest("""intᚹ""")
+
     fun `test completion 2`() = runParsingTest("""int aᚹ""")
 }

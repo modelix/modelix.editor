@@ -11,7 +11,9 @@ import org.modelix.editor.text.frontend.type
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalList
 
-class TextLine(words_: Iterable<Layoutable>) : IProducesHtml {
+class TextLine(
+    words_: Iterable<Layoutable>,
+) : IProducesHtml {
     var initialText: LayoutedText? = null
     var finalText: LayoutedText? = null
     val words: List<Layoutable> = words_.toList()
@@ -109,13 +111,14 @@ class TextLayouter {
         val endsWithNoSpace = !autoInsertSpace
         val endsWithNewLine = insertNewLineNext
         closeLine()
-        val newText = LayoutedText(
-            TreeList.flatten(closedLines),
-            beginsWithNewLine = beginsWithNewLine,
-            endsWithNewLine = endsWithNewLine,
-            beginsWithNoSpace = beginsWithNoSpace,
-            endsWithNoSpace = endsWithNoSpace,
-        )
+        val newText =
+            LayoutedText(
+                TreeList.flatten(closedLines),
+                beginsWithNewLine = beginsWithNewLine,
+                endsWithNewLine = endsWithNewLine,
+                beginsWithNoSpace = beginsWithNoSpace,
+                endsWithNoSpace = endsWithNoSpace,
+            )
         childTexts.forEach { it.owner = newText }
         return newText
     }
@@ -153,10 +156,12 @@ class TextLayouter {
         if (isEmpty()) beginsWithNewLine = true
         insertNewLineNext = true
     }
+
     fun emptyLine() {
         addNewLine()
         onNewLine()
     }
+
     fun withIndent(body: () -> Unit) {
         val oldIndent = currentIndent
         try {
@@ -166,6 +171,7 @@ class TextLayouter {
             currentIndent = oldIndent
         }
     }
+
     fun noSpace() {
         if (isEmpty()) beginsWithNoSpace = true
         autoInsertSpace = false
@@ -239,8 +245,11 @@ abstract class Layoutable : IProducesHtml {
     var finalLine: TextLine? = null
 
     abstract fun getLength(): Int
+
     abstract fun isWhitespace(): Boolean
+
     abstract fun toText(): String
+
     override fun toString(): String = toText()
 
     fun getX(): Int {
@@ -270,9 +279,7 @@ abstract class Layoutable : IProducesHtml {
         return if (next) nonEmptySiblingLine.words.first() else nonEmptySiblingLine.words.last()
     }
 
-    fun getSiblingsInText(next: Boolean): Sequence<Layoutable> {
-        return generateSequence(getSiblingInText(next)) { it.getSiblingInText(next) }
-    }
+    fun getSiblingsInText(next: Boolean): Sequence<Layoutable> = generateSequence(getSiblingInText(next)) { it.getSiblingInText(next) }
 }
 
 /*class LayoutableWord(val text: String) : ILayoutable {
@@ -283,30 +290,35 @@ abstract class Layoutable : IProducesHtml {
         consumer.onTagContent(text.useNbsp())
     }
 }*/
-class LayoutableCell(val cell: ICellTree.Cell) : Layoutable() {
+class LayoutableCell(
+    val cell: ICellTree.Cell,
+) : Layoutable() {
     init {
         require(cell.type == ECellType.TEXT) { "Not a text cell: $cell" }
     }
-    override fun getLength(): Int {
-        return toText().length
-    }
-    override fun toText(): String {
-        return cell.getProperty(CommonCellProperties.textReplacement)
+
+    override fun getLength(): Int = toText().length
+
+    override fun toText(): String =
+        cell.getProperty(CommonCellProperties.textReplacement)
             ?: cell.getVisibleText()
-    }
+
     override fun isWhitespace(): Boolean = false
+
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
         val textIsOverridden = cell.getProperty(CommonCellProperties.textReplacement) != null
         val isPlaceholder = cell.text.isNullOrEmpty()
-        val textColor = when {
-            textIsOverridden -> "#A81E1E"
-            isPlaceholder -> cell.getProperty(CommonCellProperties.placeholderTextColor)
-            else -> cell.getProperty(CommonCellProperties.textColor)
-        }
-        val backgroundColor = when {
-            textIsOverridden -> "rgba(255, 0, 0, 0.5)"
-            else -> null
-        }
+        val textColor =
+            when {
+                textIsOverridden -> "#A81E1E"
+                isPlaceholder -> cell.getProperty(CommonCellProperties.placeholderTextColor)
+                else -> cell.getProperty(CommonCellProperties.textColor)
+            }
+        val backgroundColor =
+            when {
+                textIsOverridden -> "rgba(255, 0, 0, 0.5)"
+                else -> null
+            }
         consumer.span("text-cell") {
             val styleParts = mutableListOf<String>()
             if (textColor != null) styleParts += "color: $textColor"
@@ -323,21 +335,31 @@ fun Cell.layoutable(): LayoutableCell? {
     return editorComponent.resolveLayoutable(this)
 }
 
-class LayoutableIndent(val indentSize: Int) : Layoutable() {
+class LayoutableIndent(
+    val indentSize: Int,
+) : Layoutable() {
     fun totalIndent() = indentSize + (initialLine?.getContextIndent() ?: 0)
+
     override fun getLength(): Int = totalIndent() * 2
+
     override fun isWhitespace(): Boolean = true
+
     override fun toText(): String = (1..totalIndent()).joinToString("") { "  " }
+
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
         consumer.span("indent") {
             +toText().useNbsp()
         }
     }
 }
-class LayoutableSpace() : Layoutable() {
+
+class LayoutableSpace : Layoutable() {
     override fun getLength(): Int = 1
+
     override fun isWhitespace(): Boolean = true
+
     override fun toText(): String = " "
+
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
         consumer.span {
             +Typography.nbsp.toString()

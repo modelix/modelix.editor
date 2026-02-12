@@ -15,16 +15,22 @@ import org.modelix.model.api.INode
  * It is ignored when generating transformation action.
  * A constant is part of the grammar.
  */
-class LabelCellTemplate(concept: IConcept, val text: String) :
-    CellTemplate(concept) {
-    override fun createCell(context: CellCreationContext, node: INode): TextCellSpec {
-        return TextCellSpec(text, "").also {
+class LabelCellTemplate(
+    concept: IConcept,
+    val text: String,
+) : CellTemplate(concept) {
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): TextCellSpec =
+        TextCellSpec(text, "").also {
             if (!it.properties.isSet(CommonCellProperties.textColor)) {
                 it.properties[CommonCellProperties.textColor] = "LightGray"
             }
         }
-    }
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
-        return emptyList()
-    }
+
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider>? = emptyList()
 }

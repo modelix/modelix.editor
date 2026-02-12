@@ -34,7 +34,8 @@ intellij {
         project(":projectional-editor-ssr-mps"),
         project(":editor-common-mps"),
         project(":react-ssr-mps"),
-    ) + listOf(
+    ) +
+        listOf(
 //        "Git4Idea",
 //        "Subversion",
 //        "com.intellij.copyright",
@@ -48,7 +49,7 @@ intellij {
 //        "jetbrains.mps.build",
 //        "jetbrains.mps.build.ui",
 //        "jetbrains.mps.console",
-        "jetbrains.mps.core",
+            "jetbrains.mps.core",
 //        "jetbrains.mps.debugger.api",
 //        "jetbrains.mps.debugger.java",
 //        "jetbrains.mps.editor.contextActions",
@@ -68,7 +69,7 @@ intellij {
 //        "jetbrains.mps.ide.migration.workbench",
 //        "jetbrains.mps.ide.modelchecker",
 //        "jetbrains.mps.ide.mpsmigration",
-        "jetbrains.mps.kotlin",
+            "jetbrains.mps.kotlin",
 //        "jetbrains.mps.navbar",
 //        "jetbrains.mps.rcp",
 //        "jetbrains.mps.samples",
@@ -79,11 +80,10 @@ intellij {
 //        "org.intellij.plugins.markdown",
 //        "org.jetbrains.plugins.github",
 //        "org.jetbrains.settingsRepository",
-
 //        "com.intellij",
 //        "com.jetbrains.sh",
 //        "org.jetbrains.plugins.terminal",
-    )
+        )
 }
 
 tasks {

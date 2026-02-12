@@ -8,7 +8,10 @@ import org.modelix.model.api.getRoot
 import org.modelix.model.api.isInstanceOfSafe
 
 class DefaultScope : IScope {
-    override fun getVisibleElements(node: INonExistingNode, link: IReferenceLink): List<INonExistingNode> {
+    override fun getVisibleElements(
+        node: INonExistingNode,
+        link: IReferenceLink,
+    ): List<INonExistingNode> {
         // TODO performance
         val targetConcept = link.targetConcept
         return (node.getExistingAncestor() ?: return emptyList())

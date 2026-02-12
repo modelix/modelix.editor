@@ -7,9 +7,20 @@ import org.modelix.editor.text.shared.celltree.cellReferences
 import kotlin.math.max
 import kotlin.math.min
 
-class CaretSelection(val editor: FrontendEditorComponent, val layoutable: LayoutableCell, val start: Int, val end: Int, val desiredXPosition: Int? = null) : Selection() {
+class CaretSelection(
+    val editor: FrontendEditorComponent,
+    val layoutable: LayoutableCell,
+    val start: Int,
+    val end: Int,
+    val desiredXPosition: Int? = null,
+) : Selection() {
     constructor(editor: FrontendEditorComponent, cell: LayoutableCell, pos: Int) : this(editor, cell, pos, pos)
-    constructor(editor: FrontendEditorComponent, cell: LayoutableCell, pos: Int, desiredXPosition: Int?) : this(editor, cell, pos, pos, desiredXPosition)
+    constructor(
+        editor: FrontendEditorComponent,
+        cell: LayoutableCell,
+        pos: Int,
+        desiredXPosition: Int?,
+    ) : this(editor, cell, pos, pos, desiredXPosition)
     constructor(cell: LayoutableCell, pos: Int) : this(cell.cell.editorComponent, cell, pos, pos)
     constructor(cell: LayoutableCell, pos: Int, desiredXPosition: Int?) : this(cell.cell.editorComponent, cell, pos, pos, desiredXPosition)
 
@@ -20,9 +31,7 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
 
     fun getSelectedTextRange() = min(start, end) until max(start, end)
 
-    override fun getSelectedCells(): List<ICellTree.Cell> {
-        return listOf(layoutable.cell)
-    }
+    override fun getSelectedCells(): List<ICellTree.Cell> = listOf(layoutable.cell)
 
     override fun isValid(): Boolean {
         val visibleText = editor.getRootCell().layout
@@ -30,11 +39,12 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
         return visibleText === ownText
     }
 
-    private fun reResolveLayoutable(editor: FrontendEditorComponent): LayoutableCell? {
-        return layoutable.cell.cellReferences.asSequence()
+    private fun reResolveLayoutable(editor: FrontendEditorComponent): LayoutableCell? =
+        layoutable.cell.cellReferences
+            .asSequence()
             .mapNotNull { editor.resolveCell(it).firstOrNull() }
-            .firstOrNull()?.layoutable()
-    }
+            .firstOrNull()
+            ?.layoutable()
 
     override fun update(editor: FrontendEditorComponent): Selection? {
         val newLayoutable = reResolveLayoutable(editor) ?: return null
@@ -53,9 +63,11 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                         editor.changeSelection(CaretSelection(editor, layoutable, end - 1))
                     }
                 } else {
-                    val previous = layoutable.getSiblingsInText(next = false)
-                        .filterIsInstance<LayoutableCell>()
-                        .find { it.cell.getSelectableText() != null }
+                    val previous =
+                        layoutable
+                            .getSiblingsInText(next = false)
+                            .filterIsInstance<LayoutableCell>()
+                            .find { it.cell.getSelectableText() != null }
                     if (previous != null) {
                         if (event.modifiers.shift) {
                             val commonAncestor = layoutable.cell.commonAncestor(previous.cell)
@@ -67,6 +79,7 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                     }
                 }
             }
+
             KnownKeys.ArrowRight -> {
                 if (end < (layoutable.cell.getSelectableText()?.length ?: 0)) {
                     if (event.modifiers.shift) {
@@ -75,9 +88,11 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                         editor.changeSelection(CaretSelection(editor, layoutable, end + 1))
                     }
                 } else {
-                    val next = layoutable.getSiblingsInText(next = true)
-                        .filterIsInstance<LayoutableCell>()
-                        .find { it.cell.getSelectableText() != null }
+                    val next =
+                        layoutable
+                            .getSiblingsInText(next = true)
+                            .filterIsInstance<LayoutableCell>()
+                            .find { it.cell.getSelectableText() != null }
                     if (next != null) {
                         if (event.modifiers.shift) {
                             val commonAncestor = layoutable.cell.commonAncestor(next.cell)
@@ -89,9 +104,11 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                     }
                 }
             }
+
             KnownKeys.ArrowDown -> {
                 selectNextPreviousLine(true)
             }
+
             KnownKeys.ArrowUp -> {
                 if (event.modifiers.meta) {
                     layoutable.cell.let { editor.changeSelection(CellSelection(editor, it, true, this)) }
@@ -99,16 +116,19 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                     selectNextPreviousLine(false)
                 }
             }
+
             KnownKeys.Tab -> {
                 editor.serviceCall { navigateTab(editor.editorId, layoutable.cell.getId(), forward = !event.modifiers.shift) }
             }
+
             KnownKeys.Delete, KnownKeys.Backspace -> {
                 if (start == end) {
-                    val posToDelete = when (knownKey) {
-                        KnownKeys.Delete -> end
-                        KnownKeys.Backspace -> (end - 1)
-                        else -> throw RuntimeException("Cannot happen")
-                    }
+                    val posToDelete =
+                        when (knownKey) {
+                            KnownKeys.Delete -> end
+                            KnownKeys.Backspace -> (end - 1)
+                            else -> throw RuntimeException("Cannot happen")
+                        }
                     val legalRange = 0 until (layoutable.cell.getSelectableText()?.length ?: 0)
                     if (legalRange.contains(posToDelete)) {
                         replaceText(posToDelete until posToDelete, "", editor, true)
@@ -125,9 +145,11 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
                     replaceText(min(start, end) until max(start, end), "", editor, true)
                 }
             }
+
             KnownKeys.Enter -> {
                 editor.serviceCall { executeInsert(editor.editorId, layoutable.cell.getId()) }
             }
+
             else -> {
                 val typedText = event.typedText
                 if (!typedText.isNullOrEmpty()) {
@@ -158,13 +180,18 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
 
     fun getCurrentCellText() = layoutable.cell.getSelectableText() ?: ""
 
-    suspend fun replaceText(newText: String): Boolean {
-        return replaceText(0 until getCurrentCellText().length, newText, editor, false)
-    }
+    suspend fun replaceText(newText: String): Boolean = replaceText(0 until getCurrentCellText().length, newText, editor, false)
 
-    private suspend fun replaceText(range: IntRange, replacement: String, editor: FrontendEditorComponent, triggerCompletion: Boolean): Boolean {
-        return editor.serviceCall { replaceText(editor.editorId, layoutable.cell.getId(), range, replacement, triggerCompletion) }.result
-    }
+    private suspend fun replaceText(
+        range: IntRange,
+        replacement: String,
+        editor: FrontendEditorComponent,
+        triggerCompletion: Boolean,
+    ): Boolean =
+        editor
+            .serviceCall {
+                replaceText(editor.editorId, layoutable.cell.getId(), range, replacement, triggerCompletion)
+            }.result
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -193,15 +220,23 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
         return text.substring(0 until end) + "|" + text.substring(end)
     }
 
-    private fun createNextPreviousLineSelection(next: Boolean, x: Int): CaretSelection? {
+    private fun createNextPreviousLineSelection(
+        next: Boolean,
+        x: Int,
+    ): CaretSelection? {
         val line: TextLine = layoutable.getLine() ?: return null
         val text: LayoutedText = line.getText() ?: return null
         val lines = text.lines.asSequence()
-        val nextPrevLines = if (next) {
-            lines.dropWhile { it != line }.drop(1)
-        } else {
-            lines.takeWhile { it != line }.toList().reversed().asSequence()
-        }
+        val nextPrevLines =
+            if (next) {
+                lines.dropWhile { it != line }.drop(1)
+            } else {
+                lines
+                    .takeWhile { it != line }
+                    .toList()
+                    .reversed()
+                    .asSequence()
+            }
         return nextPrevLines.mapNotNull { it.createBestMatchingCaretSelection(x) }.firstOrNull()
     }
 
@@ -212,10 +247,22 @@ class CaretSelection(val editor: FrontendEditorComponent, val layoutable: Layout
             val range = currentOffset..(currentOffset + length)
             if (layoutable is LayoutableCell) {
                 if (x < range.first) return CaretSelection(editor, layoutable, 0, desiredXPosition = x)
-                if (range.contains(x)) return CaretSelection(editor, layoutable, (x - range.first).coerceAtMost(layoutable.cell.getMaxCaretPos()), desiredXPosition = x)
+                if (range.contains(
+                        x
+                    )
+                ) {
+                    return CaretSelection(
+                        editor,
+                        layoutable,
+                        (x - range.first).coerceAtMost(layoutable.cell.getMaxCaretPos()),
+                        desiredXPosition = x
+                    )
+                }
             }
             currentOffset += length
         }
-        return words.filterIsInstance<LayoutableCell>().lastOrNull()?.let { CaretSelection(editor, it, it.cell.getMaxCaretPos(), desiredXPosition = x) }
+        return words.filterIsInstance<LayoutableCell>().lastOrNull()?.let {
+            CaretSelection(editor, it, it.cell.getMaxCaretPos(), desiredXPosition = x)
+        }
     }
 }

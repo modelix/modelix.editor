@@ -50,7 +50,11 @@ import org.modelix.model.api.IMutableModel
 import org.modelix.model.api.NodeReference
 import org.modelix.model.api.runSynchronized
 
-class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, val coroutineScope: CoroutineScope) : TextEditorService {
+class TextEditorServiceImpl(
+    val engine: EditorEngine,
+    val model: IMutableModel,
+    val coroutineScope: CoroutineScope,
+) : TextEditorService {
     private var updateChannels: AtomicReference<Map<EditorId, EditorUpdateChannel>> = AtomicReference(emptyMap())
     private val validator = Validator(coroutineScope) { sendUpdates() }
 
@@ -58,13 +62,14 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         validator.start()
     }
 
-    fun getAllEditorBackends(): List<BackendEditorComponent> {
-        return updateChannels.get().map { it.value.editor }
-    }
+    fun getAllEditorBackends(): List<BackendEditorComponent> = updateChannels.get().map { it.value.editor }
 
     fun getEditorBackend(editorId: Int): BackendEditorComponent = updateChannels.get().getValue(editorId).editor
 
-    override fun openNode(editorId: EditorId, nodeRef: NodeReference): Flow<EditorUpdateData> {
+    override fun openNode(
+        editorId: EditorId,
+        nodeRef: NodeReference,
+    ): Flow<EditorUpdateData> {
         val node = model.executeRead { model.resolveNode(nodeRef) }
         val editorBackend = engine.editNode(node)
         return channelFlow {
@@ -79,23 +84,34 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         }
     }
 
-    private suspend fun <R> runWithCell(editorId: Int, cellId: CellInstanceId, body: (EditorUpdateChannel, ICellTree.Cell) -> R): R {
-        return runWithEditor(editorId) { updateChannel, editor ->
+    private suspend fun <R> runWithCell(
+        editorId: Int,
+        cellId: CellInstanceId,
+        body: (EditorUpdateChannel, ICellTree.Cell) -> R,
+    ): R =
+        runWithEditor(editorId) { updateChannel, editor ->
             body(updateChannel, editor.tree.getCell(cellId))
         }
-    }
 
-    private suspend fun <R> runWithEditor(editorId: Int, body: (EditorUpdateChannel, BackendEditorComponent) -> R): R {
-        val updateChannel: EditorUpdateChannel = requireNotNull(updateChannels.get().get(editorId)) {
-            "Editor not found: $editorId"
-        }
+    private suspend fun <R> runWithEditor(
+        editorId: Int,
+        body: (EditorUpdateChannel, BackendEditorComponent) -> R,
+    ): R {
+        val updateChannel: EditorUpdateChannel =
+            requireNotNull(updateChannels.get().get(editorId)) {
+                "Editor not found: $editorId"
+            }
         return updateChannel.withPausedUpdates {
             val editor = updateChannel.editor
             body(updateChannel, editor)
         }
     }
 
-    override suspend fun navigateTab(editorId: Int, cellId: CellInstanceId, forward: Boolean): EditorUpdateData =
+    override suspend fun navigateTab(
+        editorId: Int,
+        cellId: CellInstanceId,
+        forward: Boolean,
+    ): EditorUpdateData =
         runWithCell(editorId, cellId) { updateChannel, cell ->
             for (c in if (forward) cell.nextCells() else cell.previousCells()) {
                 if (c.isTabTarget()) {
@@ -107,7 +123,8 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
                 if (action != null) {
                     // cannot tab into nested optionals because the parent optional will disappear
                     if (!c.ancestors(true).any { it.getProperty(CommonCellProperties.isForceShown) }) {
-                        updateChannel.editor.state.forceShowOptionals.clear()
+                        updateChannel.editor.state.forceShowOptionals
+                            .clear()
                         return@runWithCell updateChannel.createSelection(action.execute(updateChannel.editor))
                     }
                 }
@@ -118,42 +135,47 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
     override suspend fun executeDelete(
         editorId: Int,
         cellId: CellInstanceId,
-    ): EditorUpdateData = runWithCell(editorId, cellId) { updateChannel, cell ->
-        val deleteAction = cell.ancestors(true)
-            .mapNotNull { it.getProperty(CellActionProperties.delete) }
-            .firstOrNull { it.isApplicable() }
-        if (deleteAction != null) {
-            return@runWithCell updateChannel.createSelection(deleteAction.execute(updateChannel.editor))
+    ): EditorUpdateData =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
+            val deleteAction =
+                cell
+                    .ancestors(true)
+                    .mapNotNull { it.getProperty(CellActionProperties.delete) }
+                    .firstOrNull { it.isApplicable() }
+            if (deleteAction != null) {
+                return@runWithCell updateChannel.createSelection(deleteAction.execute(updateChannel.editor))
+            }
+            return@runWithCell updateChannel.createUpdate()
         }
-        return@runWithCell updateChannel.createUpdate()
-    }
 
     override suspend fun executeInsert(
         editorId: Int,
         cellId: CellInstanceId,
-    ): EditorUpdateData = runWithCell(editorId, cellId) { updateChannel, cell ->
-        val actionOnSelectedCell = cell.getProperty(CellActionProperties.insert)?.takeIf { it.isApplicable() }
-        if (actionOnSelectedCell != null) {
-            return@runWithCell updateChannel.createSelection(actionOnSelectedCell.execute(updateChannel.editor))
-        } else {
-            var previousLeaf: Cell? = cell
-            while (previousLeaf != null) {
-                val nextLeaf = previousLeaf.nextLeaf { it.isVisible() }
-                val actions = getBordersBetween(previousLeaf.rightBorder(), nextLeaf?.leftBorder())
-                    .filter { it.isLeft }
-                    .mapNotNull { it.cell.getProperty(CellActionProperties.insert) }
-                    .distinct()
-                    .filter { it.isApplicable() }
-                // TODO resolve conflicts if multiple actions are applicable
-                val action = actions.firstOrNull()
-                if (action != null) {
-                    return@runWithCell updateChannel.createSelection(action.execute(updateChannel.editor))
+    ): EditorUpdateData =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
+            val actionOnSelectedCell = cell.getProperty(CellActionProperties.insert)?.takeIf { it.isApplicable() }
+            if (actionOnSelectedCell != null) {
+                return@runWithCell updateChannel.createSelection(actionOnSelectedCell.execute(updateChannel.editor))
+            } else {
+                var previousLeaf: Cell? = cell
+                while (previousLeaf != null) {
+                    val nextLeaf = previousLeaf.nextLeaf { it.isVisible() }
+                    val actions =
+                        getBordersBetween(previousLeaf.rightBorder(), nextLeaf?.leftBorder())
+                            .filter { it.isLeft }
+                            .mapNotNull { it.cell.getProperty(CellActionProperties.insert) }
+                            .distinct()
+                            .filter { it.isApplicable() }
+                    // TODO resolve conflicts if multiple actions are applicable
+                    val action = actions.firstOrNull()
+                    if (action != null) {
+                        return@runWithCell updateChannel.createSelection(action.execute(updateChannel.editor))
+                    }
+                    previousLeaf = nextLeaf
                 }
-                previousLeaf = nextLeaf
             }
+            return@runWithCell updateChannel.createUpdate()
         }
-        return@runWithCell updateChannel.createUpdate()
-    }
 
     override suspend fun processTypedText(
         editorId: Int,
@@ -170,38 +192,42 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
                 // if (replaceText(range, typedText, editor, false)) return
 
                 val completionPosition = if (leftTransform) CompletionPosition.LEFT else CompletionPosition.RIGHT
-                val providers = (
-                    if (completionPosition == CompletionPosition.LEFT) {
-                        cell.getActionsBefore()
-                    } else {
-                        cell.getActionsAfter()
-                    }
+                val providers =
+                    (
+                        if (completionPosition == CompletionPosition.LEFT) {
+                            cell.getActionsBefore()
+                        } else {
+                            cell.getActionsAfter()
+                        }
                     ).toList()
                 val params = CodeCompletionParameters(updateChannel.editor, replacement)
-                val matchingActions = updateChannel.editor.runRead {
-                    val actions = providers.flatMap { it.flattenApplicableActions(params) }
-                    actions
-                        .filter { it.getCompletionPattern().startsWith(replacement) }
-                        .applyShadowing()
-                }
+                val matchingActions =
+                    updateChannel.editor.runRead {
+                        val actions = providers.flatMap { it.flattenApplicableActions(params) }
+                        actions
+                            .filter { it.getCompletionPattern().startsWith(replacement) }
+                            .applyShadowing()
+                    }
                 if (matchingActions.isNotEmpty()) {
                     if (matchingActions.size == 1 && matchingActions.first().getCompletionPattern() == replacement) {
                         return@runWithCell matchingActions.first().executeAndUpdateSelection(updateChannel)
                     }
                     return@runWithCell updateChannel.createUpdate().copy(
-                        completionMenuTrigger = CompletionMenuTrigger(
-                            anchor = cell.getId(),
-                            completionPosition = completionPosition,
-                            pattern = replacement,
-                            caretPosition = replacement.length
-                        ),
-                        completionEntries = updateChannel.editor.loadCompletionEntries(providers, replacement).mapIndexed { index, entry ->
-                            CompletionMenuEntryData(
-                                id = index,
-                                matchingText = entry.getMatchingText(),
-                                description = entry.getDescription()
-                            )
-                        }
+                        completionMenuTrigger =
+                            CompletionMenuTrigger(
+                                anchor = cell.getId(),
+                                completionPosition = completionPosition,
+                                pattern = replacement,
+                                caretPosition = replacement.length
+                            ),
+                        completionEntries =
+                            updateChannel.editor.loadCompletionEntries(providers, replacement).mapIndexed { index, entry ->
+                                CompletionMenuEntryData(
+                                    id = index,
+                                    matchingText = entry.getMatchingText(),
+                                    description = entry.getDescription()
+                                )
+                            }
                     )
                 }
             }
@@ -209,7 +235,13 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         }
     }
 
-    private fun replaceText(cell: ICellTree.Cell, range: IntRange, replacement: String, updateChannel: EditorUpdateChannel, triggerCompletion: Boolean): EditorUpdateData? {
+    private fun replaceText(
+        cell: ICellTree.Cell,
+        range: IntRange,
+        replacement: String,
+        updateChannel: EditorUpdateChannel,
+        triggerCompletion: Boolean,
+    ): EditorUpdateData? {
         val editor = updateChannel.editor
         val oldText = cell.getSelectableText() ?: ""
         val newText = oldText.replaceRange(range, replacement)
@@ -219,16 +251,18 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
             val providers = cell.getSubstituteActions()
             val params = CodeCompletionParameters(editor, newText)
             val actions = editor.runRead { providers.flatMap { it.flattenApplicableActions(params) }.toList() }
-            val matchingActions = actions
-                .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
-                .applyShadowing()
+            val matchingActions =
+                actions
+                    .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
+                    .applyShadowing()
             val singleAction = matchingActions.singleOrNull()
             if (singleAction != null) {
-                val caretPolicy = editor.runWrite {
-                    singleAction.execute(editor).also {
-                        editor.state.clearTextReplacement(cell)
+                val caretPolicy =
+                    editor.runWrite {
+                        singleAction.execute(editor).also {
+                            editor.state.clearTextReplacement(cell)
+                        }
                     }
-                }
                 return updateChannel.createSelection(caretPolicy)
             }
         }
@@ -237,7 +271,8 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         for (action in replaceTextActions) {
             if (action.isValid(newText) && action.replaceText(editor.state, range, replacement, newText)) {
                 val cellReferences = cell.cellReferences.toSet()
-                return updateChannel.createUpdate()
+                return updateChannel
+                    .createUpdate()
                     .copy(selectionChange = CaretPositionPolicyWithIndex(cellReferences, range.first + replacement.length))
             }
         }
@@ -248,65 +283,71 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         editorId: Int,
         cellId: CellInstanceId,
         caretPosition: Int,
-    ): EditorUpdateData {
-        return runWithCell(editorId, cellId) { updateChannel, cell ->
+    ): EditorUpdateData =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
             val pattern = cell.getSelectableText().orEmpty().take(caretPosition)
             val providers = cell.getSubstituteActions().toList()
             updateChannel.createUpdate().copy(
-                completionMenuTrigger = CompletionMenuTrigger(
-                    anchor = cell.getId(),
-                    completionPosition = CompletionPosition.CENTER,
-                    pattern = pattern,
-                    caretPosition = caretPosition
-                ),
-                completionEntries = updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
-                    CompletionMenuEntryData(
-                        id = index,
-                        matchingText = entry.getMatchingText(),
-                        description = entry.getDescription()
-                    )
-                }
+                completionMenuTrigger =
+                    CompletionMenuTrigger(
+                        anchor = cell.getId(),
+                        completionPosition = CompletionPosition.CENTER,
+                        pattern = pattern,
+                        caretPosition = caretPosition
+                    ),
+                completionEntries =
+                    updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
+                        CompletionMenuEntryData(
+                            id = index,
+                            matchingText = entry.getMatchingText(),
+                            description = entry.getDescription()
+                        )
+                    }
             )
         }
-    }
 
     override suspend fun updateCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
         pattern: String,
-    ): EditorUpdateData {
-        return runWithCell(editorId, cellId) { updateChannel, cell ->
+    ): EditorUpdateData =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
             val providers = cell.getSubstituteActions().toList()
             updateChannel.createUpdate().copy(
-                completionEntries = updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
-                    CompletionMenuEntryData(
-                        id = index,
-                        matchingText = entry.getMatchingText(),
-                        description = entry.getDescription()
-                    )
-                }
+                completionEntries =
+                    updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
+                        CompletionMenuEntryData(
+                            id = index,
+                            matchingText = entry.getMatchingText(),
+                            description = entry.getDescription()
+                        )
+                    }
             )
         }
-    }
 
     override suspend fun hasCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
         pattern: String,
-    ): Boolean {
-        return runWithCell(editorId, cellId) { updateChannel, cell ->
+    ): Boolean =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
             model.executeRead {
-                updateChannel.editor.completionMenu?.computeActions(pattern)?.any() == true
+                updateChannel.editor.completionMenu
+                    ?.computeActions(pattern)
+                    ?.any() == true
             }
         }
-    }
 
-    override suspend fun executeCodeCompletionAction(editorId: Int, actionId: Int): EditorUpdateData {
-        return runWithEditor(editorId) { updateChannel, editor ->
+    override suspend fun executeCodeCompletionAction(
+        editorId: Int,
+        actionId: Int,
+    ): EditorUpdateData =
+        runWithEditor(editorId) { updateChannel, editor ->
             model.executeWrite {
-                val action = requireNotNull(editor.completionMenu?.getEntries()?.getOrNull(actionId)) {
-                    "Action with ID $actionId not found"
-                }
+                val action =
+                    requireNotNull(editor.completionMenu?.getEntries()?.getOrNull(actionId)) {
+                        "Action with ID $actionId not found"
+                    }
                 val policy = action.execute(editor)
                 val update = updateChannel.createUpdate()
                 update.copy(
@@ -314,7 +355,6 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
                 )
             }
         }
-    }
 
     override suspend fun replaceText(
         editorId: Int,
@@ -333,9 +373,10 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
                 val providers = cell.getSubstituteActions()
                 val params = CodeCompletionParameters(editor, newText)
                 val actions = editor.runRead { providers.flatMap { it.flattenApplicableActions(params) }.toList() }
-                val matchingActions = actions
-                    .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
-                    .applyShadowing()
+                val matchingActions =
+                    actions
+                        .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
+                        .applyShadowing()
                 val singleAction = matchingActions.singleOrNull()
                 if (singleAction != null) {
                     editor.runWrite<Unit> {
@@ -351,15 +392,17 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
 
             val replaceTextActions = cell.centerAlignedHierarchy().mapNotNull { it.getProperty(CellActionProperties.replaceText) }
             for (action in replaceTextActions) {
-                val newCaretPosition = CaretPositionPolicyWithIndex(
-                    CaretPositionPolicy(avoidedCellRefs = emptySet(), preferredCellRefs = cell.cellReferences.toSet()),
-                    range.first + replacement.length
-                )
+                val newCaretPosition =
+                    CaretPositionPolicyWithIndex(
+                        CaretPositionPolicy(avoidedCellRefs = emptySet(), preferredCellRefs = cell.cellReferences.toSet()),
+                        range.first + replacement.length
+                    )
                 if (action.isValid(newText) && action.replaceText(editor.state, range, replacement, newText)) {
                     return@runWithCell ServiceCallResult(
-                        updateData = updateChannel.createUpdate().copy(
-                            selectionChange = newCaretPosition
-                        ),
+                        updateData =
+                            updateChannel.createUpdate().copy(
+                                selectionChange = newCaretPosition
+                            ),
                         result = true
                     )
                 }
@@ -368,24 +411,20 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
         }
     }
 
-    override suspend fun resetState(editorId: Int): EditorUpdateData {
-        return runWithEditor(editorId) { updateChannel, editor ->
+    override suspend fun resetState(editorId: Int): EditorUpdateData =
+        runWithEditor(editorId) { updateChannel, editor ->
             editor.state.reset()
             updateChannel.createUpdate()
         }
-    }
 
-    override suspend fun flush(editorId: Int): EditorUpdateData {
-        return runWithEditor(editorId) { updateChannel, editor -> updateChannel.createUpdate() }
-    }
+    override suspend fun flush(editorId: Int): EditorUpdateData =
+        runWithEditor(editorId) { updateChannel, editor -> updateChannel.createUpdate() }
 
-    private fun ICellAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData {
-        return channel.createSelection(execute(channel.editor))
-    }
+    private fun ICellAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData =
+        channel.createSelection(execute(channel.editor))
 
-    private fun ICodeCompletionAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData {
-        return channel.createSelection(execute(channel.editor))
-    }
+    private fun ICodeCompletionAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData =
+        channel.createSelection(execute(channel.editor))
 
     fun triggerUpdates() {
         validator.invalidate()
@@ -403,44 +442,53 @@ class TextEditorServiceImpl(val engine: EditorEngine, val model: IMutableModel, 
     }
 }
 
-class EditorUpdateChannel(val editorId: EditorId, val editor: BackendEditorComponent, val channel: SendChannel<EditorUpdateData>) {
+class EditorUpdateChannel(
+    val editorId: EditorId,
+    val editor: BackendEditorComponent,
+    val channel: SendChannel<EditorUpdateData>,
+) {
     private val mutex = Mutex()
+
     suspend fun sendUpdate() {
         mutex.withLock {
-            editor.update()
+            editor
+                .update()
                 .takeIf { it.isNotEmpty() }
                 ?.let { channel.send(EditorUpdateData(it)) }
         }
     }
 
-    suspend fun <R> withPausedUpdates(body: suspend () -> R): R {
-        return mutex.withLock {
+    suspend fun <R> withPausedUpdates(body: suspend () -> R): R =
+        mutex.withLock {
             body()
         }
-    }
 
-    fun createSelection(textCell: ICellTree.Cell, position: Int): EditorUpdateData {
+    fun createSelection(
+        textCell: ICellTree.Cell,
+        position: Int,
+    ): EditorUpdateData {
         require(textCell.type == ECellType.TEXT) { "Not a text cell: $textCell" }
-        val newSelection = CaretPositionPolicyWithIndex(
-            policy = CaretPositionPolicy(
-                avoidedCellRefs = emptySet(),
-                preferredCellRefs = textCell.cellReferences.toSet()
-            ),
-            index = position
-        )
+        val newSelection =
+            CaretPositionPolicyWithIndex(
+                policy =
+                    CaretPositionPolicy(
+                        avoidedCellRefs = emptySet(),
+                        preferredCellRefs = textCell.cellReferences.toSet()
+                    ),
+                index = position
+            )
         return createSelection(newSelection)
     }
 
-    fun createSelection(newSelection: ICaretPositionPolicy?): EditorUpdateData {
-        return EditorUpdateData(cellTreeChanges = editor.update(), selectionChange = newSelection)
-    }
+    fun createSelection(newSelection: ICaretPositionPolicy?): EditorUpdateData =
+        EditorUpdateData(cellTreeChanges = editor.update(), selectionChange = newSelection)
 
-    fun createUpdate(): EditorUpdateData {
-        return EditorUpdateData(editor.update())
-    }
+    fun createUpdate(): EditorUpdateData = EditorUpdateData(editor.update())
 }
 
-class AtomicReference<E>(private var value: E) {
+class AtomicReference<E>(
+    private var value: E,
+) {
     fun getAndUpdate(updater: (E) -> E): E {
         runSynchronized(this) {
             value = updater(value)

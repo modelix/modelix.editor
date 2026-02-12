@@ -30,19 +30,18 @@ import org.modelix.parser.PropertySymbol
 import org.modelix.parser.RegexSymbol
 import org.modelix.parser.Token
 
-open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
-    CellTemplate(concept), IGrammarConditionSymbol {
+open class PropertyCellTemplate(
+    concept: IConcept,
+    val property: IProperty,
+) : CellTemplate(concept),
+    IGrammarConditionSymbol {
     var placeholderText: String = "<no ${property.getSimpleName()}>"
     var validator: ((String) -> Boolean)? = null
     var regex: Regex? = null
 
-    override fun toParserSymbol(): ISymbol {
-        return PropertySymbol(property, regex ?: RegexSymbol.defaultPropertyPattern)
-    }
+    override fun toParserSymbol(): ISymbol = PropertySymbol(property, regex ?: RegexSymbol.defaultPropertyPattern)
 
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return PropertyCompletionToken(property)
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = PropertyCompletionToken(property)
 
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
@@ -50,7 +49,10 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
         builder.currentNode().setPropertyValue(property, (token as Token).text)
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellSpecBase {
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): CellSpecBase {
         val value = node.getPropertyValue(property)
         val data = TextCellSpec(value ?: "", if (value == null) placeholderText else "")
         data.properties[CellActionProperties.replaceText] = ChangePropertyAction(node)
@@ -59,46 +61,46 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
         return data
     }
 
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
-        return listOf(WrapPropertyValueProvider(location))
-    }
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider>? = listOf(WrapPropertyValueProvider(location))
 
-    private fun validateValue(node: INonExistingNode, value: String): Boolean {
-        return validator?.invoke(value)
+    private fun validateValue(
+        node: INonExistingNode,
+        value: String,
+    ): Boolean =
+        validator?.invoke(value)
             ?: regex?.matches(value)
             ?: ConstraintsAspect.checkPropertyValue(node, property, value).isEmpty()
-    }
 
-    override fun getSymbolConditionState(node: INode): Boolean {
-        return node.getPropertyValue(property) != null
-    }
+    override fun getSymbolConditionState(node: INode): Boolean = node.getPropertyValue(property) != null
 
-    override fun setSymbolConditionFalse(node: INode) {
-        return node.setPropertyValue(property, null)
-    }
+    override fun setSymbolConditionFalse(node: INode) = node.setPropertyValue(property, null)
 
-    override fun getSymbolTransformationAction(node: INode, optionalCell: TemplateCellReference): IActionOrProvider? {
-        return WrapPropertyValueProvider(node.toNonExisting())
-    }
+    override fun getSymbolTransformationAction(
+        node: INode,
+        optionalCell: TemplateCellReference,
+    ): IActionOrProvider? = WrapPropertyValueProvider(node.toNonExisting())
 
-    inner class WrapPropertyValueProvider(val location: INonExistingNode) : ICodeCompletionActionProvider {
-        override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> {
-            return if (parameters.pattern.isNotBlank() && validateValue(location.replacement(concept), parameters.pattern)) {
+    inner class WrapPropertyValueProvider(
+        val location: INonExistingNode,
+    ) : ICodeCompletionActionProvider {
+        override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> =
+            if (parameters.pattern.isNotBlank() && validateValue(location.replacement(concept), parameters.pattern)) {
                 listOf(WrapPropertyValue(location, parameters.pattern))
             } else {
                 emptyList()
             }
-        }
     }
 
-    inner class WrapPropertyValue(val location: INonExistingNode, val value: String) : ICodeCompletionAction {
-        override fun getMatchingText(): String {
-            return value
-        }
+    inner class WrapPropertyValue(
+        val location: INonExistingNode,
+        val value: String,
+    ) : ICodeCompletionAction {
+        override fun getMatchingText(): String = value
 
-        override fun getDescription(): String {
-            return concept.getShortName()
-        }
+        override fun getDescription(): String = concept.getShortName()
 
         override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val node = location.getOrCreateNode(concept)
@@ -107,13 +109,20 @@ open class PropertyCellTemplate(concept: IConcept, val property: IProperty) :
         }
     }
 
-    inner class ChangePropertyAction(val node: INode) : ITextChangeAction {
+    inner class ChangePropertyAction(
+        val node: INode,
+    ) : ITextChangeAction {
         override fun isValid(value: String?): Boolean {
             if (value == null) return true
             return validateValue(node.toNonExisting(), value)
         }
 
-        override fun replaceText(editor: CellTreeState, range: IntRange, replacement: String, newText: String): Boolean {
+        override fun replaceText(
+            editor: CellTreeState,
+            range: IntRange,
+            replacement: String,
+            newText: String,
+        ): Boolean {
             node.getArea().executeWrite {
                 node.setPropertyValue(property, newText)
             }

@@ -50,8 +50,8 @@ import org.modelix.parser.SubConceptsSymbol
 class ChildCellTemplate(
     concept: IConcept,
     val link: IChildLink,
-) : CellTemplate(concept), IGrammarConditionSymbol {
-
+) : CellTemplate(concept),
+    IGrammarConditionSymbol {
     private var separatorCell: CellTemplate? = null
 
     /**
@@ -61,19 +61,18 @@ class ChildCellTemplate(
      */
     var newLineConcept: IConcept? = null
 
-    override fun toParserSymbol(): ISymbol {
-        return if (link.isMultiple) {
-            val separatorSymbols = (separatorCell?.getGrammarSymbols()?.toList() ?: emptyList())
-                .map { it.toParserSymbol() }.filterIsInstance<ITerminalSymbol>()
+    override fun toParserSymbol(): ISymbol =
+        if (link.isMultiple) {
+            val separatorSymbols =
+                (separatorCell?.getGrammarSymbols()?.toList() ?: emptyList())
+                    .map { it.toParserSymbol() }
+                    .filterIsInstance<ITerminalSymbol>()
             ListSymbol(SubConceptsSymbol(link.targetConcept), separatorSymbols.firstOrNull())
         } else {
             SubConceptsSymbol(link.targetConcept)
         }
-    }
 
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return ChildCompletionToken(link)
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = ChildCompletionToken(link)
 
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
@@ -81,7 +80,10 @@ class ChildCellTemplate(
         loadChildrenFromParseTree(builder, token)
     }
 
-    private fun loadChildrenFromParseTree(builder: IParseTreeToAstBuilder, parseTree: IParseTreeNode) {
+    private fun loadChildrenFromParseTree(
+        builder: IParseTreeToAstBuilder,
+        parseTree: IParseTreeNode,
+    ) {
         when (parseTree) {
             is ParseTreeNode -> {
                 val nonTerminal = parseTree.rule.head
@@ -89,19 +91,28 @@ class ChildCellTemplate(
                     is ExactConceptSymbol -> {
                         builder.buildChild(link, parseTree)
                     }
+
                     is SubConceptsSymbol -> {
                         parseTree.children.forEach { loadChildrenFromParseTree(builder, it) }
                     }
+
                     is ListSymbol -> {
                         parseTree.children.forEach { loadChildrenFromParseTree(builder, it) }
                     }
-                    else -> throw NotImplementedError("$nonTerminal")
+
+                    else -> {
+                        throw NotImplementedError("$nonTerminal")
+                    }
                 }
             }
+
             is AmbiguousNode -> {
                 builder.buildChild(link, parseTree)
             }
-            else -> throw NotImplementedError("$parseTree")
+
+            else -> {
+                throw NotImplementedError("$parseTree")
+            }
         }
     }
 
@@ -115,10 +126,14 @@ class ChildCellTemplate(
         separatorCell?.setReference(SeparatorCellTemplateReference(ref))
     }
 
-    override fun createCell(context: CellCreationContext, node: INode) = CellSpec().also { cell ->
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ) = CellSpec().also { cell ->
         val childNodes = getChildNodes(node)
         val substitutionPlaceholder = context.cellTreeState.substitutionPlaceholderPositions[createCellReference(node)]
         val placeholderIndex = substitutionPlaceholder?.index?.coerceIn(0..childNodes.size) ?: 0
+
         fun addSubstitutionPlaceholder(index: Int) {
             val isDefaultPlaceholder = childNodes.isEmpty()
             val placeholderText = if (isDefaultPlaceholder) "<no ${link.getSimpleName()}>" else "<choose ${link.getSimpleName()}>"
@@ -132,26 +147,30 @@ class ChildCellTemplate(
                 placeholder.cellReferences += ChildNodeCellReference(node.reference, link.toReference(), index)
             }
             placeholder.properties[CommonCellProperties.tabTarget] = true
-            placeholder.properties[CellActionProperties.delete] = object : ICellAction {
-                override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
-                    context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
-                    return null // Position is updated by the frontend
-                }
+            placeholder.properties[CellActionProperties.delete] =
+                object : ICellAction {
+                    override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+                        context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
+                        return null // Position is updated by the frontend
+                    }
 
-                override fun isApplicable(): Boolean = true
-            }
+                    override fun isApplicable(): Boolean = true
+                }
             cell.addChild(placeholder)
         }
+
         fun addInsertActionCell(index: Int) {
             if (link.isMultiple) {
                 val actionCell = CellSpec()
-                val action = newLineConcept?.let {
-                    InstantiateNodeCellAction(NonExistingChild(ExistingNode(node), link, index), it)
-                } ?: InsertSubstitutionPlaceholderAction(context.cellTreeState, createCellReference(node), index)
+                val action =
+                    newLineConcept?.let {
+                        InstantiateNodeCellAction(NonExistingChild(ExistingNode(node), link, index), it)
+                    } ?: InsertSubstitutionPlaceholderAction(context.cellTreeState, createCellReference(node), index)
                 actionCell.properties[CellActionProperties.insert] = action
                 cell.addChild(actionCell)
             }
         }
+
         fun addSeparator(before: CellReference) {
             separatorCell?.let {
                 cell.addChild(
@@ -164,8 +183,12 @@ class ChildCellTemplate(
         if (childNodes.isEmpty()) {
             addSubstitutionPlaceholder(0)
         } else {
-            val separatorText = separatorCell?.getGrammarSymbols()?.filterIsInstance<ConstantCellTemplate>()
-                ?.firstOrNull()?.text
+            val separatorText =
+                separatorCell
+                    ?.getGrammarSymbols()
+                    ?.filterIsInstance<ConstantCellTemplate>()
+                    ?.firstOrNull()
+                    ?.text
             val childCells = childNodes.map { ChildSpecReference(it) }
             childCells.forEachIndexed { index, child ->
                 val childCellReference = ChildNodeCellReference(node.reference, link.toReference(), index)
@@ -186,16 +209,18 @@ class ChildCellTemplate(
                 wrapper.cellReferences += childCellReference
 
                 if (separatorText != null) {
-                    wrapper.properties[CellActionProperties.transformBefore] = InsertSubstitutionPlaceholderCompletionAction(
-                        index,
-                        separatorText,
-                        createCellReference(node),
-                    ).asProvider()
-                    wrapper.properties[CellActionProperties.transformAfter] = InsertSubstitutionPlaceholderCompletionAction(
-                        index + 1,
-                        separatorText,
-                        createCellReference(node),
-                    ).asProvider()
+                    wrapper.properties[CellActionProperties.transformBefore] =
+                        InsertSubstitutionPlaceholderCompletionAction(
+                            index,
+                            separatorText,
+                            createCellReference(node),
+                        ).asProvider()
+                    wrapper.properties[CellActionProperties.transformAfter] =
+                        InsertSubstitutionPlaceholderCompletionAction(
+                            index + 1,
+                            separatorText,
+                            createCellReference(node),
+                        ).asProvider()
                 }
 
                 cell.addChild(wrapper)
@@ -213,7 +238,10 @@ class ChildCellTemplate(
 
     fun getChildNodes(node: INode) = node.getChildren(link).toList()
 
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider>? {
         // This cell produces "wrappers".
         // For example, in MPS baseLanguage you can type "int" (which is a Type) where a Statement is expected,
         // and it is automatically wrapped with a LocalVariableDeclarationStatement.
@@ -230,30 +258,25 @@ class ChildCellTemplate(
         return listOf(ReplaceNodeActionProvider(childNode))
     }
 
-    override fun getSymbolConditionState(node: INode): Boolean {
-        return node.getChildren(link).iterator().hasNext()
-    }
+    override fun getSymbolConditionState(node: INode): Boolean = node.getChildren(link).iterator().hasNext()
 
     override fun setSymbolConditionFalse(node: INode) {
         node.getChildren(link).toList().forEach { it.remove() }
     }
 
-    override fun getSymbolTransformationAction(node: INode, optionalCell: TemplateCellReference): IActionOrProvider? {
-        return ReplaceNodeActionProvider(NonExistingChild(node.toNonExisting(), link))
-    }
+    override fun getSymbolTransformationAction(
+        node: INode,
+        optionalCell: TemplateCellReference,
+    ): IActionOrProvider? = ReplaceNodeActionProvider(NonExistingChild(node.toNonExisting(), link))
 
     inner class InsertSubstitutionPlaceholderCompletionAction(
         val index: Int,
         val separatorText: String,
         val ref: TemplateCellReference,
     ) : ICodeCompletionAction {
-        override fun getDescription(): String {
-            return "Add new node to ${link.getSimpleName()}"
-        }
+        override fun getDescription(): String = "Add new node to ${link.getSimpleName()}"
 
-        override fun getMatchingText(): String {
-            return separatorText
-        }
+        override fun getMatchingText(): String = separatorText
 
         override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             editor.state.substitutionPlaceholderPositions[ref] = SubstitutionPlaceholderPosition(index)

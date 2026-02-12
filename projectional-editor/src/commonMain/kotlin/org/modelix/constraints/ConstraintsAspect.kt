@@ -8,14 +8,25 @@ object ConstraintsAspect {
 
     fun check(node: INonExistingNode) = checkers.flatMap { it.check(node) }
 
-    fun checkPropertyValue(node: INonExistingNode, property: IProperty, value: String) = checkers.flatMap { it.checkPropertyValue(node, property, value) }
+    fun checkPropertyValue(
+        node: INonExistingNode,
+        property: IProperty,
+        value: String,
+    ) = checkers.flatMap {
+        it.checkPropertyValue(node, property, value)
+    }
 
     fun canCreate(node: INonExistingNode) = check(node).isEmpty()
 }
 
 interface IConstraintsChecker {
     fun check(node: INonExistingNode): List<IConstraintViolation>
-    fun checkPropertyValue(node: INonExistingNode, property: IProperty, value: String): List<IConstraintViolation>
+
+    fun checkPropertyValue(
+        node: INonExistingNode,
+        property: IProperty,
+        value: String,
+    ): List<IConstraintViolation>
 }
 
 interface IConstraintViolation

@@ -2,24 +2,24 @@ package org.modelix.parser
 
 interface IDisambiguator {
     fun chooseActionIndex(actions: List<LRAction>): Int
+
     fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator
+
     companion object {
         fun default() = ChooseFirstDisambiguator() // PreferReduceDisambiguator(ChooseFirstDisambiguator())
     }
 }
 
-fun IDisambiguator.chooseActionIndexIfNecessary(actions: List<LRAction>): Int {
-    return if (actions.size == 1) 0 else chooseActionIndex(actions)
-}
+fun IDisambiguator.chooseActionIndexIfNecessary(actions: List<LRAction>): Int = if (actions.size == 1) 0 else chooseActionIndex(actions)
 
-fun IDisambiguator.chooseAction(actions: List<LRAction>): LRAction {
-    return if (actions.size == 1) actions[0] else actions[chooseActionIndex(actions)]
-}
+fun IDisambiguator.chooseAction(actions: List<LRAction>): LRAction =
+    if (actions.size == 1) actions[0] else actions[chooseActionIndex(actions)]
 
 class DepthFirstSearchDisambiguator : IDisambiguator {
     private val nextIndices = mutableListOf<Int>()
     private val isDone = mutableListOf<Boolean>()
     private var currentDepth = 0
+
     override fun chooseActionIndex(actions: List<LRAction>): Int {
         if (currentDepth > nextIndices.lastIndex) {
             nextIndices.add(0)
@@ -30,6 +30,7 @@ class DepthFirstSearchDisambiguator : IDisambiguator {
         currentDepth++
         return result
     }
+
     fun next(): Boolean {
         if (isDone.isEmpty()) return false
         while (isDone.last()) {
@@ -48,9 +49,9 @@ class DepthFirstSearchDisambiguator : IDisambiguator {
 class BreadthFirstSearchDisambiguator : IDisambiguator {
     private val root = SearchTree()
     private var currentPath = mutableListOf(root)
-    override fun chooseActionIndex(actions: List<LRAction>): Int {
-        return currentPath.last().chooseActionIndex(actions)
-    }
+
+    override fun chooseActionIndex(actions: List<LRAction>): Int = currentPath.last().chooseActionIndex(actions)
+
     fun next(): Boolean {
         currentPath.reversed().forEach { it.updateDoneState() }
         currentPath.clear()
@@ -93,13 +94,14 @@ class BreadthFirstSearchDisambiguator : IDisambiguator {
 }
 
 class ChooseFirstDisambiguator : IDisambiguator {
-    override fun chooseActionIndex(actions: List<LRAction>): Int {
-        return 0
-    }
+    override fun chooseActionIndex(actions: List<LRAction>): Int = 0
+
     override fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator = newLast
 }
 
-class PreferShiftDisambiguator(val next: IDisambiguator) : IDisambiguator {
+class PreferShiftDisambiguator(
+    val next: IDisambiguator,
+) : IDisambiguator {
     override fun chooseActionIndex(actions: List<LRAction>): Int {
         if (actions.size == 2) {
             if (actions[0] is ShiftAction && actions[1] is ReduceAction) return 0
@@ -108,12 +110,13 @@ class PreferShiftDisambiguator(val next: IDisambiguator) : IDisambiguator {
         return next.chooseActionIndex(actions)
     }
 
-    override fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator {
-        return PreferShiftDisambiguator(next.withLastDisambiguator(newLast))
-    }
+    override fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator =
+        PreferShiftDisambiguator(next.withLastDisambiguator(newLast))
 }
 
-class PreferReduceDisambiguator(val next: IDisambiguator) : IDisambiguator {
+class PreferReduceDisambiguator(
+    val next: IDisambiguator,
+) : IDisambiguator {
     override fun chooseActionIndex(actions: List<LRAction>): Int {
         if (actions.size == 2) {
             if (actions[0] is ShiftAction && actions[1] is ReduceAction) return 1
@@ -122,7 +125,6 @@ class PreferReduceDisambiguator(val next: IDisambiguator) : IDisambiguator {
         return next.chooseActionIndex(actions)
     }
 
-    override fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator {
-        return PreferReduceDisambiguator(next.withLastDisambiguator(newLast))
-    }
+    override fun withLastDisambiguator(newLast: IDisambiguator): IDisambiguator =
+        PreferReduceDisambiguator(next.withLastDisambiguator(newLast))
 }

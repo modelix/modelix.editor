@@ -13,24 +13,33 @@ import kotlinx.coroutines.launch
  * When calling invalidate(), the `validator` function is executed, but avoid executing it too often when there are
  * many invalidate() calls.
  */
-class Validator(val coroutineScope: CoroutineScope, private val validator: suspend () -> Unit) {
+class Validator(
+    val coroutineScope: CoroutineScope,
+    private val validator: suspend () -> Unit,
+) {
     private val channel = Channel<Unit>(capacity = 1, onBufferOverflow = BufferOverflow.DROP_LATEST)
     private var validationJob: Job? = null
-    fun invalidate() { channel.trySend(Unit) }
+
+    fun invalidate() {
+        channel.trySend(Unit)
+    }
+
     fun start() {
         check(validationJob?.isActive != true) { "Already started" }
-        validationJob = coroutineScope.launch {
-            for (x in channel) {
-                try {
-                    validator()
-                } catch (ex: CancellationException) {
-                    throw ex
-                } catch (ex: Throwable) {
-                    LOG.error(ex) { "Validation failed" }
+        validationJob =
+            coroutineScope.launch {
+                for (x in channel) {
+                    try {
+                        validator()
+                    } catch (ex: CancellationException) {
+                        throw ex
+                    } catch (ex: Throwable) {
+                        LOG.error(ex) { "Validation failed" }
+                    }
                 }
             }
-        }
     }
+
     fun stop() {
         validationJob?.cancel("stopped")
         validationJob = null

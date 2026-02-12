@@ -14,8 +14,9 @@ import org.modelix.model.api.getAllConcepts
 import org.modelix.model.api.remove
 import org.modelix.parser.IParseTreeNode
 
-class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
-
+class EditorEngine(
+    incrementalEngine: IncrementalEngine? = null,
+) {
     private val incrementalEngine: IncrementalEngine
     private val ownsIncrementalEngine: Boolean
     private val editorsForConcept: MutableMap<IConceptReference, MutableList<ConceptEditor>> = LinkedHashMap()
@@ -39,19 +40,20 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
             cell
         }
 
-    private val createCellSpecIncremental: (CellTreeState, CellCreationCall) -> CellSpecBase = this.incrementalEngine.incrementalFunction("createCellData") { _, editorState, call ->
-        when (call) {
-            is NodeCellCreationCall -> {
-                val node = call.node.asLegacyNode()
-                val cellData = doCreateCellData(editorState, node)
-                cellData.properties[CommonCellProperties.node] = node.toNonExisting()
-                cellData.properties[CommonCellProperties.cellCall] = call
-                cellData.freeze()
-                LOG.trace { "Cell created for $node: $cellData" }
-                cellData
+    private val createCellSpecIncremental: (CellTreeState, CellCreationCall) -> CellSpecBase =
+        this.incrementalEngine.incrementalFunction("createCellData") { _, editorState, call ->
+            when (call) {
+                is NodeCellCreationCall -> {
+                    val node = call.node.asLegacyNode()
+                    val cellData = doCreateCellData(editorState, node)
+                    cellData.properties[CommonCellProperties.node] = node.toNonExisting()
+                    cellData.properties[CommonCellProperties.cellCall] = call
+                    cellData.freeze()
+                    LOG.trace { "Cell created for $node: $cellData" }
+                    cellData
+                }
             }
         }
-    }
 
     fun addRegistry(registry: IConceptEditorRegistry) {
         conceptEditorRegistries += registry
@@ -68,11 +70,20 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
         }
     }
 
-    fun createCell(cellTreeState: CellTreeState, node: INode) = createCell(cellTreeState, node.asWritableNode())
+    fun createCell(
+        cellTreeState: CellTreeState,
+        node: INode,
+    ) = createCell(cellTreeState, node.asWritableNode())
 
-    fun createCell(cellTreeState: CellTreeState, node: IWritableNode) = createCell(cellTreeState, NodeCellCreationCall(node))
+    fun createCell(
+        cellTreeState: CellTreeState,
+        node: IWritableNode,
+    ) = createCell(cellTreeState, NodeCellCreationCall(node))
 
-    fun createCell(cellTreeState: CellTreeState, call: CellCreationCall) = createCellIncremental(cellTreeState, call)
+    fun createCell(
+        cellTreeState: CellTreeState,
+        call: CellCreationCall,
+    ) = createCellIncremental(cellTreeState, call)
 
     fun createCellModel(concept: IConcept): CellTemplate {
         val editor: ConceptEditor = resolveConceptEditor(concept).first()
@@ -80,19 +91,22 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
         return template
     }
 
-    fun createCellModelExcludingDefault(concept: IConcept): CellTemplate? {
-        return resolveConceptEditor(concept).minus(defaultConceptEditor).firstOrNull()?.apply(concept)
-    }
+    fun createCellModelExcludingDefault(concept: IConcept): CellTemplate? =
+        resolveConceptEditor(concept).minus(defaultConceptEditor).firstOrNull()?.apply(concept)
 
-    fun editNode(node: IWritableNode): BackendEditorComponent {
-        return BackendEditorComponent(NodeCellCreationCall(node), this)
-    }
+    fun editNode(node: IWritableNode): BackendEditorComponent = BackendEditorComponent(NodeCellCreationCall(node), this)
 
-    private fun doCreateCell(cellTreeState: CellTreeState, call: CellCreationCall): IMutableCellTree.MutableCell {
-        return dataToCell(cellTreeState, createCellSpecIncremental(cellTreeState, call), cellTreeState.cellTree.createCell())
-    }
+    private fun doCreateCell(
+        cellTreeState: CellTreeState,
+        call: CellCreationCall,
+    ): IMutableCellTree.MutableCell =
+        dataToCell(cellTreeState, createCellSpecIncremental(cellTreeState, call), cellTreeState.cellTree.createCell())
 
-    private fun dataToCell(cellTreeState: CellTreeState, data: CellSpecBase, cell: IMutableCellTree.MutableCell): IMutableCellTree.MutableCell {
+    private fun dataToCell(
+        cellTreeState: CellTreeState,
+        data: CellSpecBase,
+        cell: IMutableCellTree.MutableCell,
+    ): IMutableCellTree.MutableCell {
         data.cellReferences.takeIf { it.isNotEmpty() }?.let {
             cell.setProperty(CommonCellProperties.cellReferences, it.toList())
         }
@@ -103,6 +117,7 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
             is CellSpec -> {
                 cell.setProperty(CommonCellProperties.type, ECellType.COLLECTION)
             }
+
             is TextCellSpec -> {
                 cell.setProperty(CommonCellProperties.type, ECellType.TEXT)
                 cell.setProperty(TextCellProperties.text, data.text)
@@ -110,14 +125,16 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
             }
         }
         for ((index, childRef) in data.children.withIndex()) {
-            val childCell = when (childRef) {
-                is CellSpecBase -> {
-                    dataToCell(cellTreeState, childRef, cell.addNewChild(index))
+            val childCell =
+                when (childRef) {
+                    is CellSpecBase -> {
+                        dataToCell(cellTreeState, childRef, cell.addNewChild(index))
+                    }
+
+                    is ChildSpecReference -> {
+                        createCell(cellTreeState, childRef.childNode)
+                    }
                 }
-                is ChildSpecReference -> {
-                    createCell(cellTreeState, childRef.childNode)
-                }
-            }
             if (childCell.getParent() != cell) {
                 childCell.moveCell(cell, index)
             } else if (cell.getChildAt(index) != childCell) {
@@ -128,7 +145,10 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
         return cell
     }
 
-    private fun doCreateCellData(cellTreeState: CellTreeState, node: INode): CellSpecBase {
+    private fun doCreateCellData(
+        cellTreeState: CellTreeState,
+        node: INode,
+    ): CellSpecBase {
         try {
             val editor = resolveConceptEditor(node.concept)
             val context = CellCreationContext(this, cellTreeState)
@@ -153,31 +173,40 @@ class EditorEngine(incrementalEngine: IncrementalEngine? = null) {
 
     fun resolveConceptEditor(concept: IConcept?): List<ConceptEditor> {
         if (concept == null) return listOf(defaultConceptEditor)
-        val editors = concept.getAllConcepts().firstNotNullOfOrNull { superConcept ->
-            val conceptReference = superConcept.getReference()
-            val allEditors = (editorsForConcept[conceptReference] ?: emptyList()) +
-                conceptEditorRegistries.flatMap { it.getConceptEditors(conceptReference) }
-            allEditors
-                .filter { it.declaredConcept == null || it.applicableToSubConcepts || concept.isExactly(it.declaredConcept) }
-                .takeIf { it.isNotEmpty() }
-        }
+        val editors =
+            concept.getAllConcepts().firstNotNullOfOrNull { superConcept ->
+                val conceptReference = superConcept.getReference()
+                val allEditors =
+                    (editorsForConcept[conceptReference] ?: emptyList()) +
+                        conceptEditorRegistries.flatMap { it.getConceptEditors(conceptReference) }
+                allEditors
+                    .filter { it.declaredConcept == null || it.applicableToSubConcepts || concept.isExactly(it.declaredConcept) }
+                    .takeIf { it.isNotEmpty() }
+            }
         return (editors ?: emptyList()) + defaultConceptEditor
     }
 
-    fun parse(input: String, outputConcept: IConcept, complete: Boolean): List<IParseTreeNode> {
-        return parser.getParser(startConcept = outputConcept, forCodeCompletion = complete).parseForest(input, complete).toList()
-    }
+    fun parse(
+        input: String,
+        outputConcept: IConcept,
+        complete: Boolean,
+    ): List<IParseTreeNode> =
+        parser.getParser(startConcept = outputConcept, forCodeCompletion = complete).parseForest(input, complete).toList()
 
     fun dispose() {
         if (ownsIncrementalEngine) incrementalEngine.dispose()
     }
 
     companion object {
-        private val LOG = io.github.oshai.kotlinlogging.KotlinLogging.logger {}
+        private val LOG =
+            io.github.oshai.kotlinlogging.KotlinLogging
+                .logger {}
     }
 }
 
-class DeleteNodeCellAction(val node: INode) : ICellAction {
+class DeleteNodeCellAction(
+    val node: INode,
+) : ICellAction {
     override fun isApplicable(): Boolean = true
 
     override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
@@ -189,4 +218,7 @@ class DeleteNodeCellAction(val node: INode) : ICellAction {
 }
 
 sealed class CellCreationCall
-data class NodeCellCreationCall(val node: IWritableNode) : CellCreationCall()
+
+data class NodeCellCreationCall(
+    val node: IWritableNode,
+) : CellCreationCall()

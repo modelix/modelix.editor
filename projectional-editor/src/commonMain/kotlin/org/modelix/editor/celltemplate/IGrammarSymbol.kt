@@ -9,11 +9,15 @@ import org.modelix.model.api.INode
 import org.modelix.parser.ISymbol
 
 interface IGrammarSymbol {
-    fun createWrapperAction(nodeToWrap: INode, wrappingLink: IChildLink): List<ICodeCompletionAction> {
-        return emptyList()
-    }
+    fun createWrapperAction(
+        nodeToWrap: INode,
+        wrappingLink: IChildLink,
+    ): List<ICodeCompletionAction> = emptyList()
 
-    fun getSymbolTransformationAction(node: INode, optionalCell: TemplateCellReference): IActionOrProvider?
+    fun getSymbolTransformationAction(
+        node: INode,
+        optionalCell: TemplateCellReference,
+    ): IActionOrProvider?
 
     fun toParserSymbol(): ISymbol
 
@@ -24,8 +28,7 @@ interface IOptionalSymbol : IGrammarSymbol {
     fun getChildSymbols(): Sequence<IGrammarSymbol>
 }
 
-fun Sequence<IGrammarSymbol>.leafSymbols(): Sequence<IGrammarSymbol> {
-    return flatMap {
+fun Sequence<IGrammarSymbol>.leafSymbols(): Sequence<IGrammarSymbol> =
+    flatMap {
         if (it is IOptionalSymbol) it.getChildSymbols() else sequenceOf(it)
     }
-}

@@ -15,7 +15,10 @@ import org.modelix.incremental.DependencyTracking
 import org.modelix.incremental.IStateVariableGroup
 import org.modelix.incremental.IStateVariableReference
 
-class DescriptorCache<E : Any>(val descriptorClass: Class<E>) : Disposable, IStateVariableReference<Unit> {
+class DescriptorCache<E : Any>(
+    val descriptorClass: Class<E>,
+) : Disposable,
+    IStateVariableReference<Unit> {
     private var loadedDescriptors: MutableMap<Pair<SModule, String>, E?> = HashMap()
 
     private var deployListener: DeployListener? = null
@@ -34,43 +37,62 @@ class DescriptorCache<E : Any>(val descriptorClass: Class<E>) : Disposable, ISta
 
     override fun dispose() {
         if (deployListener != null) {
-            val classLoaderManager = ApplicationManager.getApplication().getComponent(
-                MPSCoreComponents::class.java
-            ).classLoaderManager
+            val classLoaderManager =
+                ApplicationManager
+                    .getApplication()
+                    .getComponent(
+                        MPSCoreComponents::class.java
+                    ).classLoaderManager
             classLoaderManager.removeListener(deployListener!!)
         }
         loadedDescriptors = HashMap()
     }
 
-    fun getDescriptor(module: SModule, modelAndClassName: String): E? {
+    fun getDescriptor(
+        module: SModule,
+        modelAndClassName: String,
+    ): E? {
         DependencyTracking.accessed(this)
-        val descriptor = getDescriptor_(module, modelAndClassName)
+        val descriptor = getDescriptor1(module, modelAndClassName)
         if (descriptor != null) {
             if (deployListener == null) {
-                deployListener = object : DeployListener {
-                    override fun onUnloaded(modules: Set<ReloadableModule>, p1: ProgressMonitor) {
-                        invalidate()
-                    }
+                deployListener =
+                    object : DeployListener {
+                        override fun onUnloaded(
+                            modules: Set<ReloadableModule>,
+                            p1: ProgressMonitor,
+                        ) {
+                            invalidate()
+                        }
 
-                    override fun onLoaded(modules: Set<ReloadableModule>, p1: ProgressMonitor) {
-                        invalidate()
+                        override fun onLoaded(
+                            modules: Set<ReloadableModule>,
+                            p1: ProgressMonitor,
+                        ) {
+                            invalidate()
+                        }
+                    }.also {
+                        // The non deprecated API doesn't work when executing tests from the command line, because getApplication returns NULL.
+                        val classLoaderManager = ClassLoaderManager.getInstance()
+                        classLoaderManager.addListener(it)
                     }
-                }.also {
-                    // The non deprecated API doesn't work when executing tests from the command line, because getApplication returns NULL.
-                    val classLoaderManager = ClassLoaderManager.getInstance()
-                    classLoaderManager.addListener(it)
-                }
             }
         }
         return descriptor
     }
 
-    protected fun getDescriptor_(module: SModule, modelAndClassName: String): E? {
+    private fun getDescriptor1(
+        module: SModule,
+        modelAndClassName: String,
+    ): E? {
         if (module !is ReloadableModule) return null
-        return loadedDescriptors.getOrPut(module to modelAndClassName) { getDescriptor__(module, modelAndClassName) }
+        return loadedDescriptors.getOrPut(module to modelAndClassName) { getDescriptor0(module, modelAndClassName) }
     }
 
-    protected fun getDescriptor__(module: ReloadableModule, modelAndClassName: String): E? {
+    private fun getDescriptor0(
+        module: ReloadableModule,
+        modelAndClassName: String,
+    ): E? {
         val className = module.moduleName + "." + modelAndClassName
         try {
             val cls = module.getOwnClass(className)

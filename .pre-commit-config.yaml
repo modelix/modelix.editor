@@ -27,5 +27,5 @@ repos:
     hooks:
       - id: pretty-format-kotlin
         args:
-          - --ktlint-version=0.50.0
+          - --ktlint-version=1.8.0
           - --autofix

@@ -95,7 +95,10 @@ kotlin {
     }
 }
 
-fun fixSourceMap(sourcesDir: File, sourceMapFile: File) {
+fun fixSourceMap(
+    sourcesDir: File,
+    sourceMapFile: File,
+) {
     if (!sourcesDir.exists()) return
     if (!sourceMapFile.exists()) return
     val json = JsonParser.parseString(sourceMapFile.readText()).asJsonObject
@@ -153,33 +156,34 @@ tasks.named("packJsPackage") {
 val productionLibraryByKotlinOutputDirectory = layout.buildDirectory.dir("compileSync/js/main/productionLibrary/kotlin")
 val preparedProductionLibraryOutputDirectory = layout.buildDirectory.dir("npmPublication")
 
-val patchTypesScriptInProductionLibrary = tasks.register("patchTypesScriptInProductionLibrary") {
-    dependsOn("compileProductionLibraryKotlinJs")
-    inputs.dir(productionLibraryByKotlinOutputDirectory)
-    outputs.dir(preparedProductionLibraryOutputDirectory)
-    outputs.cacheIf { true }
-    doLast {
-        // Delete old data
-        delete {
-            delete(preparedProductionLibraryOutputDirectory)
-        }
+val patchTypesScriptInProductionLibrary =
+    tasks.register("patchTypesScriptInProductionLibrary") {
+        dependsOn("compileProductionLibraryKotlinJs")
+        inputs.dir(productionLibraryByKotlinOutputDirectory)
+        outputs.dir(preparedProductionLibraryOutputDirectory)
+        outputs.cacheIf { true }
+        doLast {
+            // Delete old data
+            delete {
+                delete(preparedProductionLibraryOutputDirectory)
+            }
 
-        // Copy over library create by Kotlin
-        copy {
-            from(productionLibraryByKotlinOutputDirectory)
-            into(preparedProductionLibraryOutputDirectory)
-        }
+            // Copy over library create by Kotlin
+            copy {
+                from(productionLibraryByKotlinOutputDirectory)
+                into(preparedProductionLibraryOutputDirectory)
+            }
 
-        // Add correct TypeScript imports.
-        val typescriptDeclaration =
-            preparedProductionLibraryOutputDirectory.get().file("modelix.editor-kernelf-editor.d.ts").asFile
-        val originalTypescriptDeclarationContent = typescriptDeclaration.readText()
-        typescriptDeclaration.writer().use {
-            it.appendLine("""import { INodeJS } from "@modelix/ts-model-api";""").appendLine()
-            it.append(originalTypescriptDeclarationContent)
+            // Add correct TypeScript imports.
+            val typescriptDeclaration =
+                preparedProductionLibraryOutputDirectory.get().file("modelix.editor-kernelf-editor.d.ts").asFile
+            val originalTypescriptDeclarationContent = typescriptDeclaration.readText()
+            typescriptDeclaration.writer().use {
+                it.appendLine("""import { INodeJS } from "@modelix/ts-model-api";""").appendLine()
+                it.append(originalTypescriptDeclarationContent)
+            }
         }
     }
-}
 
 npmPublish {
 //    registries {
@@ -208,7 +212,8 @@ npmPublish {
 tasks.named("packJsPackage") {
     doLast {
         val packagesDir = buildDir.resolve("packages")
-        packagesDir.resolve("modelix-kernelf-editor-$version.tgz")
+        packagesDir
+            .resolve("modelix-kernelf-editor-$version.tgz")
             .copyTo(packagesDir.resolve("modelix-kernelf-editor.tgz"), overwrite = true)
     }
 }

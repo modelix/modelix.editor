@@ -26,7 +26,10 @@ abstract class RendererBase : IRenderer {
 
     abstract suspend fun <R> runWrite(body: () -> R): R
 
-    fun registerMessageHandler(id: String, impl: suspend (MessageFromClient) -> Unit) {
+    fun registerMessageHandler(
+        id: String,
+        impl: suspend (MessageFromClient) -> Unit,
+    ) {
         messageHandlers[id] = impl
     }
 
@@ -34,9 +37,7 @@ abstract class RendererBase : IRenderer {
         messageHandlers[message.messageId]?.invoke(message)
     }
 
-    final override fun render(): ViewModel {
-        return doRender().also { lastViewModel = it }
-    }
+    final override fun render(): ViewModel = doRender().also { lastViewModel = it }
 
     protected abstract fun doRender(): ViewModel
 }

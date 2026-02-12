@@ -15,7 +15,8 @@ class CodeCompletionMenu(
     initialEntries: List<CompletionMenuEntryData>,
     initialPattern: String = "",
     initialCaretPosition: Int? = null,
-) : IProducesHtml, IKeyboardHandler {
+) : IProducesHtml,
+    IKeyboardHandler {
     val patternEditor = PatternEditor(initialPattern, initialCaretPosition)
     private var selectedIndex: Int = 0
     private var allEntries: List<CompletionMenuEntryData> = initialEntries
@@ -55,16 +56,38 @@ class CodeCompletionMenu(
 
     override suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
         when (event.knownKey) {
-            KnownKeys.ArrowUp -> selectPrevious()
-            KnownKeys.ArrowDown -> selectNext()
-            KnownKeys.ArrowLeft -> patternEditor.moveCaret(-1)
-            KnownKeys.ArrowRight -> patternEditor.moveCaret(1)
-            KnownKeys.Escape -> editor.closeCodeCompletionMenu()
+            KnownKeys.ArrowUp -> {
+                selectPrevious()
+            }
+
+            KnownKeys.ArrowDown -> {
+                selectNext()
+            }
+
+            KnownKeys.ArrowLeft -> {
+                patternEditor.moveCaret(-1)
+            }
+
+            KnownKeys.ArrowRight -> {
+                patternEditor.moveCaret(1)
+            }
+
+            KnownKeys.Escape -> {
+                editor.closeCodeCompletionMenu()
+            }
+
             KnownKeys.Enter -> {
                 getSelectedEntry()?.execute()
             }
-            KnownKeys.Backspace -> patternEditor.deleteText(true)
-            KnownKeys.Delete -> patternEditor.deleteText(false)
+
+            KnownKeys.Backspace -> {
+                patternEditor.deleteText(true)
+            }
+
+            KnownKeys.Delete -> {
+                patternEditor.deleteText(false)
+            }
+
             else -> {
                 if (!event.typedText.isNullOrEmpty()) {
                     patternEditor.insertText(event.typedText)
@@ -117,7 +140,10 @@ class CodeCompletionMenu(
         }
     }
 
-    inner class PatternEditor(initialPattern: String, initialCaretPosition: Int?) : IProducesHtml {
+    inner class PatternEditor(
+        initialPattern: String,
+        initialCaretPosition: Int?,
+    ) : IProducesHtml {
         private var patternCell: Cell? = null
         var caretPos: Int = initialCaretPosition ?: initialPattern.length
         var pattern: String = initialPattern
@@ -148,7 +174,9 @@ class CodeCompletionMenu(
             val newTextBeforeCaret = pattern.substring(0, caretPos)
 
             val exactMatches = allEntries.filter { it.matchesExactly(oldTextBeforeCaret) }
-            if (exactMatches.size == 1 && !editor.serviceCall { hasCodeCompletionActions(editor.editorId, anchor.cell.getId(), newTextBeforeCaret) }) {
+            if (exactMatches.size == 1 &&
+                !editor.serviceCall { hasCodeCompletionActions(editor.editorId, anchor.cell.getId(), newTextBeforeCaret) }
+            ) {
                 exactMatches.single().execute()
                 editor.closeCodeCompletionMenu()
                 if (remainingText.isNotEmpty()) {
@@ -177,20 +205,26 @@ class CodeCompletionMenu(
     }
 }
 
-class CachedCodeCompletionActions(providers: List<ICodeCompletionActionProvider>) {
+class CachedCodeCompletionActions(
+    providers: List<ICodeCompletionActionProvider>,
+) {
     private var cacheEntries: List<CacheEntry> = providers.map { CacheEntry(it) }
 
-    fun update(parameters: CodeCompletionParameters): List<ICodeCompletionAction> {
-        return cacheEntries.flatMap { it.update(parameters) }.toList()
-    }
+    fun update(parameters: CodeCompletionParameters): List<ICodeCompletionAction> = cacheEntries.flatMap { it.update(parameters) }.toList()
 
-    inner class CacheEntry(val provider: IActionOrProvider) {
+    inner class CacheEntry(
+        val provider: IActionOrProvider,
+    ) {
         private var initialized = false
         private var cacheEntries: List<CacheEntry> = emptyList()
         private var dependsOnPattern: Boolean = true
+
         fun update(parameters: CodeCompletionParameters): Sequence<ICodeCompletionAction> {
             return when (provider) {
-                is ICodeCompletionAction -> sequenceOf(provider)
+                is ICodeCompletionAction -> {
+                    sequenceOf(provider)
+                }
+
                 is ICodeCompletionActionProvider -> {
                     parameters.wasPatternAccessed() // reset state
                     if (!initialized || dependsOnPattern) {
@@ -200,7 +234,10 @@ class CachedCodeCompletionActions(providers: List<ICodeCompletionActionProvider>
                     }
                     return cacheEntries.asSequence().flatMap { it.update(parameters) }
                 }
-                else -> throw RuntimeException("Unknown type: " + provider::class)
+
+                else -> {
+                    throw RuntimeException("Unknown type: " + provider::class)
+                }
             }
         }
     }
@@ -212,47 +249,58 @@ interface ICodeCompletionActionProvider : IActionOrProvider {
     fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider>
 }
 
-fun ICodeCompletionActionProvider.flattenApplicableActions(parameters: CodeCompletionParameters): List<ICodeCompletionAction> {
-    return flatten(parameters).toList()
-}
+fun ICodeCompletionActionProvider.flattenApplicableActions(parameters: CodeCompletionParameters): List<ICodeCompletionAction> =
+    flatten(parameters).toList()
 
-class ActionAsProvider(val action: ICodeCompletionAction) : ICodeCompletionActionProvider {
-    override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> {
-        return listOf(action)
-    }
+class ActionAsProvider(
+    val action: ICodeCompletionAction,
+) : ICodeCompletionActionProvider {
+    override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> = listOf(action)
 }
 
 fun ICodeCompletionAction.asProvider(): ICodeCompletionActionProvider = ActionAsProvider(this)
-fun IActionOrProvider.asProvider(): ICodeCompletionActionProvider = when (this) {
-    is ICodeCompletionAction -> ActionAsProvider(this)
-    is ICodeCompletionActionProvider -> this
-    else -> error("Unknown type: $this")
-}
 
-private fun IActionOrProvider.flatten(parameters: CodeCompletionParameters): Sequence<ICodeCompletionAction> = when (this) {
-    is ICodeCompletionAction -> sequenceOf(this)
-    is ICodeCompletionActionProvider -> getApplicableActions(parameters).asSequence().flatMap { it.flatten(parameters) }
-    else -> throw RuntimeException("Unknown type: " + this::class)
-}
+fun IActionOrProvider.asProvider(): ICodeCompletionActionProvider =
+    when (this) {
+        is ICodeCompletionAction -> ActionAsProvider(this)
+        is ICodeCompletionActionProvider -> this
+        else -> error("Unknown type: $this")
+    }
+
+private fun IActionOrProvider.flatten(parameters: CodeCompletionParameters): Sequence<ICodeCompletionAction> =
+    when (this) {
+        is ICodeCompletionAction -> sequenceOf(this)
+        is ICodeCompletionActionProvider -> getApplicableActions(parameters).asSequence().flatMap { it.flatten(parameters) }
+        else -> throw RuntimeException("Unknown type: " + this::class)
+    }
 
 interface ICodeCompletionAction : IActionOrProvider {
     fun getMatchingText(): String
+
     fun getTokens(): ICompletionTokenOrList = ConstantCompletionToken(getMatchingText())
+
     fun getDescription(): String
+
     fun execute(editor: BackendEditorComponent): ICaretPositionPolicy?
+
     fun shadows(shadowed: ICodeCompletionAction) = false
+
     fun shadowedBy(shadowing: ICodeCompletionAction) = false
 }
 
 fun ICodeCompletionAction.getCompletionPattern(): String = getTokens().toString()
 
-class CodeCompletionParameters(val editor: BackendEditorComponent, pattern: String) {
+class CodeCompletionParameters(
+    val editor: BackendEditorComponent,
+    pattern: String,
+) {
     val pattern: String = pattern
         get() {
             patternAccessed = true
             return field
         }
     private var patternAccessed: Boolean = false
+
     fun wasPatternAccessed(): Boolean {
         val result = patternAccessed
         patternAccessed = false
@@ -266,13 +314,13 @@ enum class CompletionPosition {
     RIGHT,
 }
 
-fun List<ICodeCompletionAction>.applyShadowing(): List<ICodeCompletionAction> {
-    return groupBy { it.getCompletionPattern() }.flatMap { applyShadowingToGroup(it.value) }
-}
+fun List<ICodeCompletionAction>.applyShadowing(): List<ICodeCompletionAction> =
+    groupBy {
+        it.getCompletionPattern()
+    }.flatMap { applyShadowingToGroup(it.value) }
 
-private fun applyShadowingToGroup(actions: List<ICodeCompletionAction>): List<ICodeCompletionAction> {
-    return actions.filter { a1 ->
+private fun applyShadowingToGroup(actions: List<ICodeCompletionAction>): List<ICodeCompletionAction> =
+    actions.filter { a1 ->
         val isShadowed = actions.any { a2 -> a2 !== a1 && (a2.shadows(a1) || a1.shadowedBy(a2)) }
         !isShadowed
     }
-}

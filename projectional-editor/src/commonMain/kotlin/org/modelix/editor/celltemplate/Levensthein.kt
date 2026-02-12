@@ -67,11 +67,12 @@ object Levenshtein {
                     var swapDistance: Int
                     if (candidateSwapIndex != null && jSwap != -1) {
                         val iSwap = candidateSwapIndex
-                        var preSwapCost = if (iSwap == 0 && jSwap == 0) {
-                            0
-                        } else {
-                            table[max(0, iSwap - 1)][max(0, jSwap - 1)]
-                        }
+                        var preSwapCost =
+                            if (iSwap == 0 && jSwap == 0) {
+                                0
+                            } else {
+                                table[max(0, iSwap - 1)][max(0, jSwap - 1)]
+                            }
 
                         swapDistance =
                             preSwapCost + (i - iSwap - 1) * deleteCost + (j - jSwap - 1) * insertCost + swapCost

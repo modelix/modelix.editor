@@ -56,11 +56,12 @@ tasks {
 
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
-        val installMpsPlugin = register<Sync>("installMpsPlugin") {
-            dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
-            into(pluginDir.resolve(project.name))
-        }
+        val installMpsPlugin =
+            register<Sync>("installMpsPlugin") {
+                dependsOn(prepareSandbox)
+                from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+                into(pluginDir.resolve(project.name))
+            }
         register("installMpsDevPlugins") {
             dependsOn(installMpsPlugin)
         }
@@ -74,7 +75,14 @@ tasks {
             .from(patchPluginXml.flatMap { it.outputFiles })
 
         doLast {
-            val jarsInBasePlugin = defaultDestinationDir.get().resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
+            val jarsInBasePlugin =
+                defaultDestinationDir
+                    .get()
+                    .resolve(project(":editor-common-mps").name)
+                    .resolve("lib")
+                    .list()
+                    ?.toHashSet()
+                    ?: emptySet<String>()
             defaultDestinationDir.get().resolve(project.name).resolve("lib").listFiles()?.forEach {
                 if (jarsInBasePlugin.contains(it.name)) it.delete()
             }
@@ -117,13 +125,22 @@ publishing {
 metamodel {
     mpsHeapSize = "2g"
     mpsHome = mpsHomeDir.get().asFile.absoluteFile
-    modulesFrom(project(":mps").layout.projectDirectory.dir("modules/org.modelix.mps.react").asFile)
+    modulesFrom(
+        project(":mps")
+            .layout.projectDirectory
+            .dir("modules/org.modelix.mps.react")
+            .asFile,
+    )
 
     includeNamespace("org.modelix")
     includeLanguage("jetbrains.mps.baseLanguage")
     includeLanguage("jetbrains.mps.lang.structure")
     kotlinProject = project
-    kotlinDir = project.layout.buildDirectory.dir("apigen/kotlin_gen").get().asFile
+    kotlinDir =
+        project.layout.buildDirectory
+            .dir("apigen/kotlin_gen")
+            .get()
+            .asFile
     registrationHelperName = "org.modelix.react.ApiGenLanguages"
     conceptPropertiesInterfaceName = "org.modelix.react.IConceptProperties"
 }

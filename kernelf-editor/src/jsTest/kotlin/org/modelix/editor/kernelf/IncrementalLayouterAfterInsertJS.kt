@@ -51,41 +51,85 @@ open class IncrementalLayoutAfterInsertJS {
 
     @Ignore
     @Test
-    fun domAfterInsert() = runLayoutTest {
-        val containerElement = document.create.div()
-        val generatedHtmlMap = GeneratedHtmlMap()
-        var consumer = JSDom(containerElement.ownerDocument!!).let { vdom -> IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap) }
-        val initialHtml = editor.getRootCell().layout.toHtml(consumer).unwrap().outerHTML
+    fun domAfterInsert() =
+        runLayoutTest {
+            val containerElement = document.create.div()
+            val generatedHtmlMap = GeneratedHtmlMap()
+            var consumer =
+                JSDom(containerElement.ownerDocument!!).let { vdom ->
+                    IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap)
+                }
+            val initialHtml =
+                editor
+                    .getRootCell()
+                    .layout
+                    .toHtml(consumer)
+                    .unwrap()
+                    .outerHTML
 
-        editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, KnownKeys.Enter))
-        consumer = JSDom(containerElement.ownerDocument!!).let { vdom -> IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap) }
-        val incrementalHtml = editor.getRootCell().layout.toHtml(consumer).unwrap().outerHTML
+            editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, KnownKeys.Enter))
+            consumer =
+                JSDom(containerElement.ownerDocument!!).let { vdom ->
+                    IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap)
+                }
+            val incrementalHtml =
+                editor
+                    .getRootCell()
+                    .layout
+                    .toHtml(consumer)
+                    .unwrap()
+                    .outerHTML
 
-        editor.clearLayoutCache()
+            editor.clearLayoutCache()
 
-        consumer = JSDom(containerElement.ownerDocument!!).let { vdom -> IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap) }
-        val nonIncrementalHtml = editor.getRootCell().layout.toHtml(consumer).unwrap().outerHTML
-        assertEquals(nonIncrementalHtml, incrementalHtml)
-    }
-
-    private fun runLayoutTest(body: suspend () -> Unit) = runTest {
-        KernelfLanguages.registerAll()
-        branch = PBranch(ModelFacade.newLocalTree(), IdGenerator.getInstance(56754)).withIncrementalComputationSupport()
-        ModelData.fromJson(modelJson).load(branch)
-
-        val engine = EditorEngine(IncrementalEngine())
-        KernelfEditor.register(engine)
-        testSuite = branch.computeRead { branch.getArea().getRoot().allChildren.ofType<N_Module>().models.rootNodes.ofType<N_TestSuite>().first() }
-        service = TextEditorServiceImpl(engine, branch.getArea().asModel(), backgroundScope)
-        editor = JsEditorComponent(service)
-        editor.editNode(testSuite.untypedReference())
-        assertTestItem = branch.computeRead { testSuite.descendants<N_AssertTestItem>().drop(1).first() }
-        editor.flushAndUpdateSelection {
-            val cell = editor.resolveNodeCell(assertTestItem)!!.firstLeaf().nextLeafs(true).first { it.isVisible() }
-            println(cell.toString())
-            CaretSelection(cell.layoutable()!!, 0)
+            consumer =
+                JSDom(containerElement.ownerDocument!!).let { vdom ->
+                    IncrementalVirtualDOMBuilder(vdom, vdom.wrap(containerElement), generatedHtmlMap)
+                }
+            val nonIncrementalHtml =
+                editor
+                    .getRootCell()
+                    .layout
+                    .toHtml(consumer)
+                    .unwrap()
+                    .outerHTML
+            assertEquals(nonIncrementalHtml, incrementalHtml)
         }
-        body()
-        KernelfLanguages.languages.forEach { it.unregister() }
-    }
+
+    private fun runLayoutTest(body: suspend () -> Unit) =
+        runTest {
+            KernelfLanguages.registerAll()
+            branch = PBranch(ModelFacade.newLocalTree(), IdGenerator.getInstance(56754)).withIncrementalComputationSupport()
+            ModelData.fromJson(modelJson).load(branch)
+
+            val engine = EditorEngine(IncrementalEngine())
+            KernelfEditor.register(engine)
+            testSuite =
+                branch.computeRead {
+                    branch
+                        .getArea()
+                        .getRoot()
+                        .allChildren
+                        .ofType<N_Module>()
+                        .models.rootNodes
+                        .ofType<N_TestSuite>()
+                        .first()
+                }
+            service = TextEditorServiceImpl(engine, branch.getArea().asModel(), backgroundScope)
+            editor = JsEditorComponent(service)
+            editor.editNode(testSuite.untypedReference())
+            assertTestItem = branch.computeRead { testSuite.descendants<N_AssertTestItem>().drop(1).first() }
+            editor.flushAndUpdateSelection {
+                val cell =
+                    editor
+                        .resolveNodeCell(assertTestItem)!!
+                        .firstLeaf()
+                        .nextLeafs(true)
+                        .first { it.isVisible() }
+                println(cell.toString())
+                CaretSelection(cell.layoutable()!!, 0)
+            }
+            body()
+            KernelfLanguages.languages.forEach { it.unregister() }
+        }
 }

@@ -6,8 +6,6 @@ import org.modelix.model.api.ILanguage
 
 class BehaviorAspect : ILanguageAspect {
     companion object : ILanguageAspectFactory<BehaviorAspect> {
-        override fun createInstance(language: ILanguage): BehaviorAspect {
-            return BehaviorAspect()
-        }
+        override fun createInstance(language: ILanguage): BehaviorAspect = BehaviorAspect()
     }
 }

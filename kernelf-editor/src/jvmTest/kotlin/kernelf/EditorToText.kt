@@ -5,7 +5,6 @@ import java.io.File
 import kotlin.test.Test
 
 class EditorToText {
-
     @Test
     fun toText() {
         val jsonFile = File("models/test.in.expr.os.strings@tests.json")

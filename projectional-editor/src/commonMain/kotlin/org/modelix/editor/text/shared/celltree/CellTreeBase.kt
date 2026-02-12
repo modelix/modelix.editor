@@ -27,30 +27,24 @@ open class CellTreeBase : IMutableCellTree {
 
     override fun getRoot(): CellImpl = root
 
-    override fun getCell(id: CellInstanceId): CellImpl {
-        return withTreeLock { allCells[id] ?: throw NoSuchElementException("Cell ID: ${id.id}") }
-    }
+    override fun getCell(id: CellInstanceId): CellImpl = withTreeLock { allCells[id] ?: throw NoSuchElementException("Cell ID: ${id.id}") }
 
-    final override fun createCell(): IMutableCellTree.MutableCell {
-        return createCell(CellInstanceId(nextId++))
-    }
+    final override fun createCell(): IMutableCellTree.MutableCell = createCell(CellInstanceId(nextId++))
 
-    override fun createCell(id: CellInstanceId): IMutableCellTree.MutableCell {
-        return withTreeLock {
+    override fun createCell(id: CellInstanceId): IMutableCellTree.MutableCell =
+        withTreeLock {
             require(!allCells.containsKey(id)) { "Cell already exists: $id" }
             newCellInstance(id, null).also {
                 registerCell(it)
                 detachedCells.add(id)
             }
         }
-    }
 
-    fun resolveCell(reference: CellReference): List<Cell> {
-        return withTreeLock {
+    fun resolveCell(reference: CellReference): List<Cell> =
+        withTreeLock {
             cellIndex.update(getRoot().referencesIndexList)
             cellIndex.lookup(reference).map { getCell(it) }
         }
-    }
 
     fun deleteDetachedCells() {
         withTreeLock {
@@ -66,7 +60,10 @@ open class CellTreeBase : IMutableCellTree {
         }
     }
 
-    protected open fun newCellInstance(id: CellInstanceId, parent: CellImpl? = null) = CellImpl(id, parent)
+    protected open fun newCellInstance(
+        id: CellInstanceId,
+        parent: CellImpl? = null,
+    ) = CellImpl(id, parent)
 
     open inner class CellImpl(
         private val id: CellInstanceId,
@@ -75,15 +72,16 @@ open class CellTreeBase : IMutableCellTree {
         protected val properties: MutableMap<String, Any?> = HashMap()
         private val children: MutableList<CellImpl> = ArrayList()
 
-        private val referencesIndexList_ = ResettableLazy {
-            withTreeLock {
-                IncrementalList.concat(
-                    IncrementalList.of(this.cellReferences.map { it to id }),
-                    IncrementalList.concat(getChildren().map { (it as CellImpl).referencesIndexList }),
-                )
+        private val cachedReferencesIndexList =
+            ResettableLazy {
+                withTreeLock {
+                    IncrementalList.concat(
+                        IncrementalList.of(this.cellReferences.map { it to id }),
+                        IncrementalList.concat(getChildren().map { (it as CellImpl).referencesIndexList }),
+                    )
+                }
             }
-        }
-        val referencesIndexList: IncrementalList<Pair<CellReference, CellInstanceId>> by referencesIndexList_
+        val referencesIndexList: IncrementalList<Pair<CellReference, CellInstanceId>> by cachedReferencesIndexList
 
         override fun getTree(): IMutableCellTree = this@CellTreeBase
 
@@ -91,26 +89,31 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun getParent(): IMutableCellTree.MutableCell? = withTreeLock { parent }
 
-        override fun isAttached(): Boolean {
-            return withTreeLock { this == root || parent?.isAttached() == true }
-        }
+        override fun isAttached(): Boolean = withTreeLock { this == root || parent?.isAttached() == true }
 
-        override fun <T> getProperty(key: CellPropertyKey<T>): T {
-            return withTreeLock { if (properties.containsKey(key.name)) properties[key.name] as T else key.defaultValue }
-        }
+        override fun <T> getProperty(key: CellPropertyKey<T>): T =
+            withTreeLock {
+                if (properties.containsKey(key.name)) properties[key.name] as T else key.defaultValue
+            }
 
-        fun setProperty(key: String, newValue: CellPropertyValue<*>?) {
+        fun setProperty(
+            key: String,
+            newValue: CellPropertyValue<*>?,
+        ) {
             withTreeLock {
                 properties[key] = newValue?.value
             }
         }
 
         @Synchronized
-        override fun <T> setProperty(key: CellPropertyKey<T>, newValue: T) {
+        override fun <T> setProperty(
+            key: CellPropertyKey<T>,
+            newValue: T,
+        ) {
             withTreeLock {
                 require(newValue !is CellPropertyKey<*>)
                 properties[key.name] = newValue
-                if (key == CommonCellProperties.cellReferences) referencesIndexList_.reset()
+                if (key == CommonCellProperties.cellReferences) cachedReferencesIndexList.reset()
             }
         }
 
@@ -123,37 +126,32 @@ open class CellTreeBase : IMutableCellTree {
         override fun removeProperty(key: CellPropertyKey<*>) {
             withTreeLock {
                 properties.remove(key.name)
-                if (key == CommonCellProperties.cellReferences) referencesIndexList_.reset()
+                if (key == CommonCellProperties.cellReferences) cachedReferencesIndexList.reset()
             }
         }
 
-        override fun hasProperty(key: CellPropertyKey<*>): Boolean {
-            return withTreeLock { properties.containsKey(key.name) }
-        }
+        override fun hasProperty(key: CellPropertyKey<*>): Boolean = withTreeLock { properties.containsKey(key.name) }
 
-        override fun getChildren(): List<IMutableCellTree.MutableCell> {
-            return withTreeLock { children }
-        }
+        override fun getChildren(): List<IMutableCellTree.MutableCell> = withTreeLock { children }
 
-        override fun getChildAt(index: Int): IMutableCellTree.MutableCell? {
-            return withTreeLock { children.getOrNull(index) }
-        }
+        override fun getChildAt(index: Int): IMutableCellTree.MutableCell? = withTreeLock { children.getOrNull(index) }
 
-        fun addNewChild(index: Int, childId: CellInstanceId): IMutableCellTree.MutableCell {
-            return withTreeLock {
+        fun addNewChild(
+            index: Int,
+            childId: CellInstanceId,
+        ): IMutableCellTree.MutableCell =
+            withTreeLock {
                 newCellInstance(childId, this).also {
                     children.add(index, it)
                     registerCell(it)
                 }
             }
-        }
 
-        override fun addNewChild(index: Int): IMutableCellTree.MutableCell {
-            return withTreeLock {
-                referencesIndexList_.reset()
+        override fun addNewChild(index: Int): IMutableCellTree.MutableCell =
+            withTreeLock {
+                cachedReferencesIndexList.reset()
                 addNewChild(index, CellInstanceId(nextId++))
             }
-        }
 
         override fun moveCell(index: Int) {
             withTreeLock {
@@ -163,12 +161,15 @@ open class CellTreeBase : IMutableCellTree {
             }
         }
 
-        override fun moveCell(targetParent: IMutableCellTree.MutableCell, index: Int) {
+        override fun moveCell(
+            targetParent: IMutableCellTree.MutableCell,
+            index: Int,
+        ) {
             withTreeLock {
                 targetParent as CellImpl
                 require(targetParent != parent) { "Use moveCell(index: Int)" }
-                parent?.referencesIndexList_?.reset()
-                targetParent.referencesIndexList_.reset()
+                parent?.cachedReferencesIndexList?.reset()
+                targetParent.cachedReferencesIndexList.reset()
                 val oldParent = parent
                 oldParent?.children?.remove(this)
                 targetParent.children.add(index, this)
@@ -179,7 +180,7 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun detach() {
             withTreeLock {
-                parent?.referencesIndexList_?.reset()
+                parent?.cachedReferencesIndexList?.reset()
                 detachedCells.add(id)
                 parent?.children?.remove(this)
                 parent = null
@@ -188,7 +189,7 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun delete() {
             withTreeLock {
-                parent?.referencesIndexList_?.reset()
+                parent?.cachedReferencesIndexList?.reset()
                 children.toList().forEach { it.delete() }
                 parent?.children?.remove(this)
                 parent = null
@@ -203,8 +204,6 @@ open class CellTreeBase : IMutableCellTree {
             return if (index >= 0) index else 0
         }
 
-        override fun toString(): String {
-            return id.id.toString()
-        }
+        override fun toString(): String = id.id.toString()
     }
 }

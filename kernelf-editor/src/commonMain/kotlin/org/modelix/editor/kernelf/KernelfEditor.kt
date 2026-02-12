@@ -7,6 +7,7 @@ import org.modelix.editor.EditorEngine
 fun CellTemplateBuilder<*, *>.iets3keyword() {
     textColor("DarkBlue")
 }
+
 fun CellTemplateBuilder<*, *>.iets3type() {
     textColor("rgb(0, 155, 191)")
     // TODO bold

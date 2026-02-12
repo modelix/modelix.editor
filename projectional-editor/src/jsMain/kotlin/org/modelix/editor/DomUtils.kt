@@ -9,9 +9,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.asList
 import org.w3c.dom.events.MouseEvent
 
-fun Element.getAbsoluteBounds(): Bounds {
-    return getBoundingClientRect().toBounds().translated(window.scrollX, window.scrollY)
-}
+fun Element.getAbsoluteBounds(): Bounds = getBoundingClientRect().toBounds().translated(window.scrollX, window.scrollY)
 
 fun HTMLElement.setBounds(bounds: Bounds) {
     with(style) {
@@ -22,14 +20,21 @@ fun HTMLElement.setBounds(bounds: Bounds) {
     }
 }
 
-fun Element.getAbsoluteInnerBounds(): Bounds {
-    return (getClientRects().asSequence().firstOrNull()?.toBounds()?.translated(window.scrollX, window.scrollY) ?: Bounds.ZERO)
-}
+fun Element.getAbsoluteInnerBounds(): Bounds =
+    (
+        getClientRects()
+            .asSequence()
+            .firstOrNull()
+            ?.toBounds()
+            ?.translated(window.scrollX, window.scrollY) ?: Bounds.ZERO
+    )
 
 fun DOMRect.toBounds() = Bounds(x, y, width, height)
 
 private fun getBodyAbsoluteBounds() = document.body?.getBoundingClientRect()?.toBounds() ?: Bounds.ZERO
+
 fun MouseEvent.getAbsolutePositionX() = clientX + window.scrollX
+
 fun MouseEvent.getAbsolutePositionY() = clientY + window.scrollY
 
 fun Node.descendants(): Sequence<Node> = childNodes.asList().asSequence().flatMap { sequenceOf(it) + it.descendants() }

@@ -5,6 +5,7 @@ import kotlinx.html.TagConsumer
 
 interface IProducesHtml {
     fun isHtmlOutputValid(): Boolean = true
+
     fun <T> produceHtml(consumer: TagConsumer<T>)
 }
 
@@ -25,11 +26,10 @@ fun <T> TagConsumer<T>.produceChild(child: IProducesHtml?) {
     }
 }
 
-fun <T> IProducesHtml.toHtml(consumer: TagConsumer<T>): T {
-    return if (consumer is IIncrementalTagConsumer) {
+fun <T> IProducesHtml.toHtml(consumer: TagConsumer<T>): T =
+    if (consumer is IIncrementalTagConsumer) {
         consumer.produce(this)()
     } else {
         produceHtml(consumer)
         consumer.finalize()
     }
-}

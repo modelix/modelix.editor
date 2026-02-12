@@ -1,7 +1,9 @@
 package org.modelix.interpreter.vm.core
 
-class CallInstruction(val entryPoint: Instruction, val parameterCount: Int) : Instruction() {
-
+class CallInstruction(
+    val entryPoint: Instruction,
+    val parameterCount: Int,
+) : Instruction() {
     override fun execute(state: VMState): VMState {
         var newFrame = StackFrame(returnTo = next)
         var newState = state
@@ -16,7 +18,7 @@ class CallInstruction(val entryPoint: Instruction, val parameterCount: Int) : In
     }
 }
 
-class ReturnInstruction() : Instruction() {
+class ReturnInstruction : Instruction() {
     override fun execute(state: VMState): VMState {
         val (newCallStack, currentFrame) = state.callStack.popFrame()
         check(currentFrame.operandStack.size == 1) { "Operand stack should contain a single value, but was: " + currentFrame.operandStack }
@@ -26,27 +28,29 @@ class ReturnInstruction() : Instruction() {
     }
 }
 
-class PushConstantInstruction<E>(val value: E) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state.pushOperand(value)
-    }
+class PushConstantInstruction<E>(
+    val value: E,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = state.pushOperand(value)
 }
 
-class StoreInstruction<E>(val target: MemoryKey<in E>) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state.popOperand().let { (value, newState) -> newState.writeMemory(target, value as E) }
-    }
+class StoreInstruction<E>(
+    val target: MemoryKey<in E>,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = state.popOperand().let { (value, newState) -> newState.writeMemory(target, value as E) }
 }
 
-class LoadInstruction<E>(val source: MemoryKey<out E>) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state.pushOperand(state.readMemory(source))
-    }
+class LoadInstruction<E>(
+    val source: MemoryKey<out E>,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = state.pushOperand(state.readMemory(source))
 }
 
-abstract class BinaryOperationInstruction<Arg1, Arg2, Result>() : Instruction() {
-
-    abstract fun apply(arg1: Arg1, arg2: Arg2): Result
+abstract class BinaryOperationInstruction<Arg1, Arg2, Result> : Instruction() {
+    abstract fun apply(
+        arg1: Arg1,
+        arg2: Arg2,
+    ): Result
 
     override fun execute(state: VMState): VMState {
         var newState: VMState = state
@@ -65,43 +69,56 @@ abstract class BinaryOperationInstruction<Arg1, Arg2, Result>() : Instruction() 
     }
 }
 
-class AddIntegersInstruction() : BinaryOperationInstruction<Int, Int, Int>() {
-    override fun apply(arg1: Int, arg2: Int): Int {
-        return arg1 + arg2
-    }
+class AddIntegersInstruction : BinaryOperationInstruction<Int, Int, Int>() {
+    override fun apply(
+        arg1: Int,
+        arg2: Int,
+    ): Int = arg1 + arg2
 }
 
-class MultiplyIntegersInstruction() : BinaryOperationInstruction<Int, Int, Int>() {
-    override fun apply(arg1: Int, arg2: Int): Int {
-        return arg1 * arg2
-    }
+class MultiplyIntegersInstruction : BinaryOperationInstruction<Int, Int, Int>() {
+    override fun apply(
+        arg1: Int,
+        arg2: Int,
+    ): Int = arg1 * arg2
 }
 
-class JumpInstruction(val target: Instruction) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state.copy(nextInstruction = target)
-    }
+class JumpInstruction(
+    val target: Instruction,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = state.copy(nextInstruction = target)
 }
 
-class ConditionalJumpInstruction(val condition: MemoryKey<out Boolean>, val target: Instruction) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return if (state.readMemory(condition)) state.copy(nextInstruction = target) else state
-    }
+class ConditionalJumpInstruction(
+    val condition: MemoryKey<out Boolean>,
+    val target: Instruction,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = if (state.readMemory(condition)) state.copy(nextInstruction = target) else state
 }
 
-class MoveInstruction<E>(val source: MemoryKey<out E>, val target: MemoryKey<in E>) : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state.writeMemory(target, state.readMemory(source))
-    }
+class MoveInstruction<E>(
+    val source: MemoryKey<out E>,
+    val target: MemoryKey<in E>,
+) : Instruction() {
+    override fun execute(state: VMState): VMState = state.writeMemory(target, state.readMemory(source))
 }
 
 class NoOpInstruction : Instruction() {
-    override fun execute(state: VMState): VMState {
-        return state
-    }
+    override fun execute(state: VMState): VMState = state
 }
 
-data class NamedGlobalVarKey<E>(val name: String) : MemoryKey<E>(MemoryType.GLOBAL, name)
-data class NamedLocalVarKey<E>(val name: String) : MemoryKey<E>(MemoryType.LOCAL, name)
-data class ParameterKey<E>(val index: Int) : MemoryKey<E>(MemoryType.LOCAL, "parameter" + index)
-data class ReturnValueKey<E>(val index: Int) : MemoryKey<E>(MemoryType.LOCAL, "returnValue" + index)
+data class NamedGlobalVarKey<E>(
+    val name: String,
+) : MemoryKey<E>(MemoryType.GLOBAL, name)
+
+data class NamedLocalVarKey<E>(
+    val name: String,
+) : MemoryKey<E>(MemoryType.LOCAL, name)
+
+data class ParameterKey<E>(
+    val index: Int,
+) : MemoryKey<E>(MemoryType.LOCAL, "parameter" + index)
+
+data class ReturnValueKey<E>(
+    val index: Int,
+) : MemoryKey<E>(MemoryType.LOCAL, "returnValue" + index)

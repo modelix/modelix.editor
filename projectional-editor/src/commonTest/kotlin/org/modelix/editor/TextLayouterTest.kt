@@ -27,19 +27,37 @@ class TextLayouterTest {
 
     @Test fun newLine3() = testCells("a {\nb\n}", listOf(listOf(listOf("a"), listOf("{", newLine, listOf("b"), newLine, "}"))))
 
-    @Test fun indent1() = testCells("{\n  b\n  c\n  d\n}", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d"), newLine, "}"))
+    @Test fun indent1() =
+        testCells("{\n  b\n  c\n  d\n}", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d"), newLine, "}"))
 
-    @Test fun indent2() = testCells("{\n  b\n  c\n  d\n}", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d", newLine), "}"))
+    @Test fun indent2() =
+        testCells("{\n  b\n  c\n  d\n}", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d", newLine), "}"))
 
-    @Test fun indent3() = testCells("  {\n  b\n  c\n  d\n  }", listOf(indentChildren, "{", newLine, "b", newLine, "c", newLine, "d", newLine, "}"))
+    @Test fun indent3() =
+        testCells("  {\n  b\n  c\n  d\n  }", listOf(indentChildren, "{", newLine, "b", newLine, "c", newLine, "d", newLine, "}"))
 
-    @Test fun indent4() = testCells("a {\n  b\n  c\n  d\n}", listOf("a", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d"), newLine, "}")))
+    @Test fun indent4() =
+        testCells(
+            "a {\n  b\n  c\n  d\n}",
+            listOf("a", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d"), newLine, "}"))
+        )
 
-    @Test fun indent5() = testCells("a {\n  b\n  c\n  d\n}", listOf("a", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d", newLine), "}")))
+    @Test fun indent5() =
+        testCells(
+            "a {\n  b\n  c\n  d\n}",
+            listOf("a", listOf("{", newLine, listOf(indentChildren, "b", newLine, "c", newLine, "d", newLine), "}"))
+        )
 
-    @Test fun indent6() = testCells("a {\n  b\n  c\n  d\n  }", listOf("a", listOf(indentChildren, "{", newLine, "b", newLine, "c", newLine, "d", newLine, "}")))
+    @Test fun indent6() =
+        testCells(
+            "a {\n  b\n  c\n  d\n  }",
+            listOf("a", listOf(indentChildren, "{", newLine, "b", newLine, "c", newLine, "d", newLine, "}"))
+        )
 
-    private fun testCells(expected: String, template: Any) {
+    private fun testCells(
+        expected: String,
+        template: Any,
+    ) {
         val tree = FrontendCellTree()
         val text = EditorTestUtils.buildCells(template, tree).layout
         text.lines.forEach { line ->

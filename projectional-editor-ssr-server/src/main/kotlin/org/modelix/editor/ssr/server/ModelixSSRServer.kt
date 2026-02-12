@@ -26,18 +26,24 @@ import kotlin.time.Duration.Companion.days
 
 private val LOG = KotlinLogging.logger { }
 
-class ModelixSSRServer(private val model: IMutableModel) {
-
+class ModelixSSRServer(
+    private val model: IMutableModel,
+) {
     private val incrementalEngine = IncrementalEngine()
     val editorEngine: EditorEngine = EditorEngine(incrementalEngine)
     private val lock = Any()
     private val coroutinesScope = CoroutineScope(Dispatchers.Default)
     private val serviceInstances: AtomicReference<Set<TextEditorServiceImpl>> = AtomicReference(emptySet())
-    private val dependencyListener: IDependencyListener = object : IDependencyListener {
-        override fun parentGroupChanged(childGroup: IStateVariableGroup) {}
-        override fun accessed(key: IStateVariableReference<*>) {}
-        override fun modified(key: IStateVariableReference<*>) { serviceInstances.get().forEach { it.triggerUpdates() } }
-    }
+    private val dependencyListener: IDependencyListener =
+        object : IDependencyListener {
+            override fun parentGroupChanged(childGroup: IStateVariableGroup) {}
+
+            override fun accessed(key: IStateVariableReference<*>) {}
+
+            override fun modified(key: IStateVariableReference<*>) {
+                serviceInstances.get().forEach { it.triggerUpdates() }
+            }
+        }
 
     fun install(route: Route) {
         route.installRoutes()
