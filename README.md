@@ -46,4 +46,4 @@ You can define a custom editor also in the special `modelix` model using the lan
 
 During development on this project you can run the `installMpsDevPlugins` task
 to build and install only those plugins that don't contain any MPS modules.
-Then open the project in the `mps` folder with MPS to load and edit the MPS modules. 
+Then open the project in the `mps` folder with MPS to load and edit the MPS modules.
