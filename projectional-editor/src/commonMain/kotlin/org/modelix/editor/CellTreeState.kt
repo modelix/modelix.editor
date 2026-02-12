@@ -21,4 +21,6 @@ class CellTreeState {
     fun clearTextReplacement(cell: CellReference): Unit = textReplacements.remove(cell)
 }
 
-class SubstitutionPlaceholderPosition(val index: Int)
+class SubstitutionPlaceholderPosition(
+    val index: Int,
+)

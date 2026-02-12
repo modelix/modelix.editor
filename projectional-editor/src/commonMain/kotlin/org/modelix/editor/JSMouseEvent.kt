@@ -13,24 +13,30 @@ data class JSMouseEvent(
     val button: Short,
     val buttons: Short,
 ) : JSUIEvent {
-    fun getButtonAsEnum(): JSMouseButton = when (button) {
-        0.toShort() -> JSMouseButton.PRIMARY
-        1.toShort() -> JSMouseButton.AUXILIARY
-        2.toShort() -> JSMouseButton.SECONDARY
-        3.toShort() -> JSMouseButton.FOURTH
-        4.toShort() -> JSMouseButton.FIFTH
-        else -> JSMouseButton.NONE
-    }
+    fun getButtonAsEnum(): JSMouseButton =
+        when (button) {
+            0.toShort() -> JSMouseButton.PRIMARY
+            1.toShort() -> JSMouseButton.AUXILIARY
+            2.toShort() -> JSMouseButton.SECONDARY
+            3.toShort() -> JSMouseButton.FOURTH
+            4.toShort() -> JSMouseButton.FIFTH
+            else -> JSMouseButton.NONE
+        }
 
     fun getButtonsAsEnum(): Set<JSMouseButton> {
-        val bitToValue = listOf(
-            JSMouseButton.PRIMARY,
-            JSMouseButton.SECONDARY,
-            JSMouseButton.AUXILIARY,
-            JSMouseButton.FOURTH,
-            JSMouseButton.FIFTH,
-        )
-        return bitToValue.withIndex().filter { (buttons.toInt() ushr it.index) and 1 == 1 }.map { it.value }.toSet()
+        val bitToValue =
+            listOf(
+                JSMouseButton.PRIMARY,
+                JSMouseButton.SECONDARY,
+                JSMouseButton.AUXILIARY,
+                JSMouseButton.FOURTH,
+                JSMouseButton.FIFTH,
+            )
+        return bitToValue
+            .withIndex()
+            .filter { (buttons.toInt() ushr it.index) and 1 == 1 }
+            .map { it.value }
+            .toSet()
     }
 }
 

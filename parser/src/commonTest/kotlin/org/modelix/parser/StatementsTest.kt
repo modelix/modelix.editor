@@ -5,43 +5,47 @@ import kotlin.test.assertTrue
 import kotlin.time.measureTime
 
 class StatementsTest {
-
-    @Test fun localVarDeclWithoutInitializer() = runTest(
-        "int a;",
-        """
-        Statement+ { LocalVariableDeclarationStatement {
-            LocalVariableDeclaration+ { LocalVariableDeclaration {
-                Type+ { IntegerType { ConstantToken(text=int) } }
-                PropertyToken(text=a)
-                optional(constant[=] Expression+) { EmptyToken }
+    @Test fun localVarDeclWithoutInitializer() =
+        runTest(
+            "int a;",
+            """
+            Statement+ { LocalVariableDeclarationStatement {
+                LocalVariableDeclaration+ { LocalVariableDeclaration {
+                    Type+ { IntegerType { ConstantToken(text=int) } }
+                    PropertyToken(text=a)
+                    optional(constant[=] Expression+) { EmptyToken }
+                } }
+                ConstantToken(text=;)
             } }
-            ConstantToken(text=;)
-        } }
-        """.trimIndent()
-    )
+            """.trimIndent()
+        )
 
-    @Test fun localVarDeclWithInitializer() = runTest(
-        "int a = 10 + 20;",
-        """
-        Statement+ { LocalVariableDeclarationStatement {
-            LocalVariableDeclaration+ { LocalVariableDeclaration {
-                Type+ { IntegerType { ConstantToken(text=int) } }
-                PropertyToken(text=a)
-                optional(constant[=] Expression+) {
-                    ConstantToken(text==)
-                    Expression+ { PlusExpression {
-                        Expression+ { IntegerLiteral { PropertyToken(text=10) } }
-                        ConstantToken(text=+)
-                        Expression+ { IntegerLiteral { PropertyToken(text=20) } }
-                    } }
-                }
+    @Test fun localVarDeclWithInitializer() =
+        runTest(
+            "int a = 10 + 20;",
+            """
+            Statement+ { LocalVariableDeclarationStatement {
+                LocalVariableDeclaration+ { LocalVariableDeclaration {
+                    Type+ { IntegerType { ConstantToken(text=int) } }
+                    PropertyToken(text=a)
+                    optional(constant[=] Expression+) {
+                        ConstantToken(text==)
+                        Expression+ { PlusExpression {
+                            Expression+ { IntegerLiteral { PropertyToken(text=10) } }
+                            ConstantToken(text=+)
+                            Expression+ { IntegerLiteral { PropertyToken(text=20) } }
+                        } }
+                    }
+                } }
+                ConstantToken(text=;)
             } }
-            ConstantToken(text=;)
-        } }
-        """.trimIndent()
-    )
+            """.trimIndent()
+        )
 
-    fun runTest(input: String, expected: String) {
+    fun runTest(
+        input: String,
+        expected: String,
+    ) {
         val parser = TestGrammar.getParser(TestGrammar.statement)
         val parseTrees = parser.parseForest(input)
         println(measureTime { parser.parse(input) })

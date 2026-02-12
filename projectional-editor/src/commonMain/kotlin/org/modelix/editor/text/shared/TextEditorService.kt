@@ -13,17 +13,67 @@ typealias EditorId = Int
 
 @Rpc
 interface TextEditorService {
-    fun openNode(editorId: EditorId, nodeRef: NodeReference): Flow<EditorUpdateData>
-    suspend fun navigateTab(editorId: Int, cellId: CellInstanceId, forward: Boolean): EditorUpdateData
-    suspend fun executeDelete(editorId: Int, cellId: CellInstanceId): EditorUpdateData
-    suspend fun executeInsert(editorId: Int, cellId: CellInstanceId): EditorUpdateData
-    suspend fun processTypedText(editorId: Int, cellId: CellInstanceId, range: IntRange, replacement: String): EditorUpdateData
-    suspend fun triggerCodeCompletion(editorId: Int, cellId: CellInstanceId, caretPosition: Int): EditorUpdateData
-    suspend fun updateCodeCompletionActions(editorId: Int, cellId: CellInstanceId, pattern: String): EditorUpdateData
-    suspend fun hasCodeCompletionActions(editorId: Int, cellId: CellInstanceId, pattern: String): Boolean
-    suspend fun executeCodeCompletionAction(editorId: Int, actionId: Int): EditorUpdateData
-    suspend fun replaceText(editorId: Int, cellId: CellInstanceId, range: IntRange, replacement: String, triggerCompletion: Boolean): ServiceCallResult<Boolean>
+    fun openNode(
+        editorId: EditorId,
+        nodeRef: NodeReference,
+    ): Flow<EditorUpdateData>
+
+    suspend fun navigateTab(
+        editorId: Int,
+        cellId: CellInstanceId,
+        forward: Boolean,
+    ): EditorUpdateData
+
+    suspend fun executeDelete(
+        editorId: Int,
+        cellId: CellInstanceId,
+    ): EditorUpdateData
+
+    suspend fun executeInsert(
+        editorId: Int,
+        cellId: CellInstanceId,
+    ): EditorUpdateData
+
+    suspend fun processTypedText(
+        editorId: Int,
+        cellId: CellInstanceId,
+        range: IntRange,
+        replacement: String,
+    ): EditorUpdateData
+
+    suspend fun triggerCodeCompletion(
+        editorId: Int,
+        cellId: CellInstanceId,
+        caretPosition: Int,
+    ): EditorUpdateData
+
+    suspend fun updateCodeCompletionActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        pattern: String,
+    ): EditorUpdateData
+
+    suspend fun hasCodeCompletionActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        pattern: String,
+    ): Boolean
+
+    suspend fun executeCodeCompletionAction(
+        editorId: Int,
+        actionId: Int,
+    ): EditorUpdateData
+
+    suspend fun replaceText(
+        editorId: Int,
+        cellId: CellInstanceId,
+        range: IntRange,
+        replacement: String,
+        triggerCompletion: Boolean,
+    ): ServiceCallResult<Boolean>
+
     suspend fun resetState(editorId: Int): EditorUpdateData
+
     suspend fun flush(editorId: Int): EditorUpdateData
 }
 
@@ -90,7 +140,10 @@ class NullTextEditorService : TextEditorService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun executeCodeCompletionAction(editorId: Int, actionId: Int): EditorUpdateData {
+    override suspend fun executeCodeCompletionAction(
+        editorId: Int,
+        actionId: Int,
+    ): EditorUpdateData {
         TODO("Not yet implemented")
     }
 
@@ -146,7 +199,5 @@ data class CompletionMenuEntryData(
         return matchingText.contains(pattern)
     }
 
-    fun matchesExactly(pattern: String): Boolean {
-        return matchingText == pattern
-    }
+    fun matchesExactly(pattern: String): Boolean = matchingText == pattern
 }

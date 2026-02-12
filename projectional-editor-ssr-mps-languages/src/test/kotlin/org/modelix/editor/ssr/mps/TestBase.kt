@@ -38,7 +38,9 @@ import kotlin.io.path.deleteRecursively
  * Based on org.jetbrains.uast.test.env.AbstractLargeProjectTest
  */
 @Suppress("removal")
-abstract class TestBase(val testDataName: String?) : UsefulTestCase() {
+abstract class TestBase(
+    val testDataName: String?,
+) : UsefulTestCase() {
     init {
         // workaround for MPS 2023.3 failing to start in test mode
         System.setProperty("intellij.platform.load.app.info.from.resources", "true")
@@ -66,13 +68,14 @@ abstract class TestBase(val testDataName: String?) : UsefulTestCase() {
         projectDir.deleteRecursively()
         projectDir.toFile().mkdirs()
         projectDir.toFile().deleteOnExit()
-        val project = if (testDataName != null) {
-            val sourceDir = File("testdata/$testDataName")
-            sourceDir.copyRecursively(projectDir.toFile(), overwrite = true)
-            ProjectManagerEx.getInstanceEx().openProject(projectDir, OpenProjectTask())!!
-        } else {
-            ProjectManagerEx.getInstanceEx().newProject(projectDir, OpenProjectTask())!!
-        }
+        val project =
+            if (testDataName != null) {
+                val sourceDir = File("testdata/$testDataName")
+                sourceDir.copyRecursively(projectDir.toFile(), overwrite = true)
+                ProjectManagerEx.getInstanceEx().openProject(projectDir, OpenProjectTask())!!
+            } else {
+                ProjectManagerEx.getInstanceEx().newProject(projectDir, OpenProjectTask())!!
+            }
 
         disposeOnTearDownInEdt { ProjectManager.getInstance().closeAndDispose(project) }
 
@@ -97,13 +100,9 @@ abstract class TestBase(val testDataName: String?) : UsefulTestCase() {
         return checkNotNull(ProjectHelper.fromIdeaProject(project)) { "MPS project not loaded" }
     }
 
-    protected fun <R> writeAction(body: () -> R): R {
-        return mpsProject.modelAccess.computeWriteAction(body)
-    }
+    protected fun <R> writeAction(body: () -> R): R = mpsProject.modelAccess.computeWriteAction(body)
 
-    protected fun <R> writeActionOnEdt(body: () -> R): R {
-        return onEdt { writeAction { body() } }
-    }
+    protected fun <R> writeActionOnEdt(body: () -> R): R = onEdt { writeAction { body() } }
 
     protected fun <R> onEdt(body: () -> R): R {
         var result: R? = null

@@ -2,38 +2,40 @@ package org.modelix.editor
 
 abstract class TreeList<E> : Iterable<E> {
     abstract val size: Int
+
     operator fun get(index: Int): E {
         require(index in 0 until size) { "$index not in range 0 until $size" }
         return getUnsafe(index)
     }
+
     abstract fun getUnsafe(index: Int): E
+
     abstract fun asSequence(): Sequence<E>
-    override fun iterator(): Iterator<E> {
-        return asSequence().iterator()
-    }
+
+    override fun iterator(): Iterator<E> = asSequence().iterator()
 
     abstract fun withoutLast(): TreeList<E>
+
     abstract fun withoutFirst(): TreeList<E>
+
     abstract fun last(): E?
+
     abstract fun first(): E?
+
     fun isNotEmpty() = asSequence().iterator().hasNext()
 
     companion object {
-        fun <T> of(vararg elements: T): TreeList<T> {
-            return TreeListParent(elements.map { TreeListLeaf(it) }).normalized()
-        }
+        fun <T> of(vararg elements: T): TreeList<T> = TreeListParent(elements.map { TreeListLeaf(it) }).normalized()
 
-        fun <T> fromCollection(elements: Collection<T>): TreeList<T> {
-            return TreeListParent(elements.map { TreeListLeaf(it) }).normalized()
-        }
+        fun <T> fromCollection(elements: Collection<T>): TreeList<T> = TreeListParent(elements.map { TreeListLeaf(it) }).normalized()
 
-        fun <T> flatten(elements: Iterable<TreeList<T>>): TreeList<T> {
-            return TreeListParent(elements.toList()).normalized()
-        }
+        fun <T> flatten(elements: Iterable<TreeList<T>>): TreeList<T> = TreeListParent(elements.toList()).normalized()
     }
 }
 
-private class TreeListLeaf<E>(val element: E) : TreeList<E>() {
+private class TreeListLeaf<E>(
+    val element: E,
+) : TreeList<E>() {
     override val size: Int
         get() = 1
 
@@ -42,28 +44,20 @@ private class TreeListLeaf<E>(val element: E) : TreeList<E>() {
         return element
     }
 
-    override fun asSequence(): Sequence<E> {
-        return sequenceOf(element)
-    }
+    override fun asSequence(): Sequence<E> = sequenceOf(element)
 
-    override fun withoutLast(): TreeList<E> {
-        return TreeListEmpty()
-    }
+    override fun withoutLast(): TreeList<E> = TreeListEmpty()
 
-    override fun withoutFirst(): TreeList<E> {
-        return TreeListEmpty()
-    }
+    override fun withoutFirst(): TreeList<E> = TreeListEmpty()
 
-    override fun last(): E {
-        return element
-    }
+    override fun last(): E = element
 
-    override fun first(): E? {
-        return element
-    }
+    override fun first(): E? = element
 }
 
-private class TreeListParent<E>(val children: List<TreeList<E>>) : TreeList<E>() {
+private class TreeListParent<E>(
+    val children: List<TreeList<E>>,
+) : TreeList<E>() {
     override val size: Int = children.sumOf { it.size }
 
     override fun getUnsafe(index: Int): E {
@@ -75,25 +69,15 @@ private class TreeListParent<E>(val children: List<TreeList<E>>) : TreeList<E>()
         throw IndexOutOfBoundsException("index: $index, size: $size")
     }
 
-    override fun asSequence(): Sequence<E> {
-        return children.asSequence().flatMap { it.asSequence() }
-    }
+    override fun asSequence(): Sequence<E> = children.asSequence().flatMap { it.asSequence() }
 
-    override fun withoutLast(): TreeList<E> {
-        return TreeListParent(children.dropLast(1).plusElement(children.last().withoutLast())).normalized()
-    }
+    override fun withoutLast(): TreeList<E> = TreeListParent(children.dropLast(1).plusElement(children.last().withoutLast())).normalized()
 
-    override fun withoutFirst(): TreeList<E> {
-        return TreeListParent(listOf(children.first().withoutFirst()) + children.drop(1)).normalized()
-    }
+    override fun withoutFirst(): TreeList<E> = TreeListParent(listOf(children.first().withoutFirst()) + children.drop(1)).normalized()
 
-    override fun last(): E? {
-        return children.last().last()
-    }
+    override fun last(): E? = children.last().last()
 
-    override fun first(): E? {
-        return children.first().first()
-    }
+    override fun first(): E? = children.first().first()
 
     fun normalized(): TreeList<E> {
         val withoutEmpty = this.children.filter { it !is TreeListEmpty }
@@ -109,27 +93,15 @@ private class TreeListEmpty<E> : TreeList<E>() {
     override val size: Int
         get() = 0
 
-    override fun getUnsafe(index: Int): E {
-        throw IndexOutOfBoundsException("index = $index, size = 0")
-    }
+    override fun getUnsafe(index: Int): E = throw IndexOutOfBoundsException("index = $index, size = 0")
 
-    override fun asSequence(): Sequence<E> {
-        return emptySequence<E>()
-    }
+    override fun asSequence(): Sequence<E> = emptySequence<E>()
 
-    override fun withoutLast(): TreeList<E> {
-        return this
-    }
+    override fun withoutLast(): TreeList<E> = this
 
-    override fun withoutFirst(): TreeList<E> {
-        return this
-    }
+    override fun withoutFirst(): TreeList<E> = this
 
-    override fun last(): E? {
-        return null
-    }
+    override fun last(): E? = null
 
-    override fun first(): E? {
-        return null
-    }
+    override fun first(): E? = null
 }

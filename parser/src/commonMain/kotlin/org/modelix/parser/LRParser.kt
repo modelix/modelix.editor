@@ -1,39 +1,63 @@
 package org.modelix.parser
 
 interface IParser {
-    fun parse(input: String, complete: Boolean): IParseTreeNode
+    fun parse(
+        input: String,
+        complete: Boolean,
+    ): IParseTreeNode
+
     fun parse(input: String): IParseTreeNode = parse(input, complete = false)
+
     fun parseCompleting(input: String): IParseTreeNode = parse(input, complete = true)
-    fun tryParse(input: String, complete: Boolean): IParseTreeNode?
+
+    fun tryParse(
+        input: String,
+        complete: Boolean,
+    ): IParseTreeNode?
+
     fun parseForest(input: String): Sequence<IParseTreeNode> = parseForest(input, false)
-    fun parseForest(input: String, complete: Boolean): Sequence<IParseTreeNode>
+
+    fun parseForest(
+        input: String,
+        complete: Boolean,
+    ): Sequence<IParseTreeNode>
 }
 
-class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambiguator) : IParser {
+class LRParser(
+    val table: LRTable,
+    private val defaultDisambiguator: IDisambiguator,
+) : IParser {
     var stepLimit = 10_000
     private var disambiguator = defaultDisambiguator
 
-    override fun parse(input: String, complete: Boolean): IParseTreeNode {
-        return tryParse(input, complete) ?: error("Invalid input: $input\nCurrent stack: ???")
-    }
+    override fun parse(
+        input: String,
+        complete: Boolean,
+    ): IParseTreeNode = tryParse(input, complete) ?: error("Invalid input: $input\nCurrent stack: ???")
 
-    override fun tryParse(input: String, complete: Boolean): IParseTreeNode? {
-        return doParse(input, complete).firstOrNull()
-    }
+    override fun tryParse(
+        input: String,
+        complete: Boolean,
+    ): IParseTreeNode? = doParse(input, complete).firstOrNull()
 
-    override fun parseForest(input: String, complete: Boolean): Sequence<IParseTreeNode> {
-        return doParse(input, complete).asSequence()
-    }
+    override fun parseForest(
+        input: String,
+        complete: Boolean,
+    ): Sequence<IParseTreeNode> = doParse(input, complete).asSequence()
 
-    private fun doParse(input: String, complete: Boolean): List<IParseTreeNode> {
+    private fun doParse(
+        input: String,
+        complete: Boolean,
+    ): List<IParseTreeNode> {
         val acceptedForks = ArrayList<Fork>()
 
-        fun List<Fork>.filterAccepted() = filter {
-            if (it.accepted) {
-                acceptedForks.add(it)
+        fun List<Fork>.filterAccepted() =
+            filter {
+                if (it.accepted) {
+                    acceptedForks.add(it)
+                }
+                !it.accepted
             }
-            !it.accepted
-        }
 
         val scanner = Scanner(input)
         scanner.addKnownConstants(table.knownConstants)
@@ -79,22 +103,26 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
 
     private fun mergeForks(forks: List<Fork>): List<Fork> {
         if (forks.size < 2) return forks
-        val mergedForks = forks.filter { !it.stack.peek().isState() } +
-            forks.filter { it.stack.peek().isState() }.groupBy { it.stack.peek().getState() to it.actionToApply }
-                .map { group ->
-                    if (group.value.size == 1) return@map group.value.first()
+        val mergedForks =
+            forks.filter { !it.stack.peek().isState() } +
+                forks
+                    .filter { it.stack.peek().isState() }
+                    .groupBy { it.stack.peek().getState() to it.actionToApply }
+                    .map { group ->
+                        if (group.value.size == 1) return@map group.value.first()
 
-                    val mergedStack = group.value
-                        .map { it.stack }
-                        .reduce { acc, it ->
-                            checkNotNull(acc.tryMerge(it)) { "Merge failed" }
-                        }
+                        val mergedStack =
+                            group.value
+                                .map { it.stack }
+                                .reduce { acc, it ->
+                                    checkNotNull(acc.tryMerge(it)) { "Merge failed" }
+                                }
 
-                    Fork(
-                        mergedStack,
-                        group.key.second,
-                    )
-                }
+                        Fork(
+                            mergedStack,
+                            group.key.second,
+                        )
+                    }
         // if (forks.size != mergedForks.size) println("forks ${forks.size} -> ${mergedForks.size}")
         check(mergedForks.size <= 1000) { "Too many forks" }
         return mergedForks
@@ -108,13 +136,12 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
         var output: List<IParseTreeNode>? = null
 
         fun stateIndex(): Int = (stack.peek().takeIf { it.isState() } ?: stack.elementAt(1)).getState()
+
         fun state() = table.states[stateIndex()]
 
         fun readyToShift() = actionToApply is ShiftAction
 
-        override fun toString(): String {
-            return "$stack || $actionToApply"
-        }
+        override fun toString(): String = "$stack || $actionToApply"
 
         fun forksForNextActions(lookaheadTokens: List<IToken>): List<Fork> {
             check(!accepted) { "Already accepted" }
@@ -128,10 +155,14 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
                     state().getSymbolsAndActions().firstOrNull { it.first.matches(tokenOnStack) }?.second
                 return actions?.map { Fork(stack, it) } ?: emptyList()
             } else {
-                val applicableActions = state().getSymbolsAndActions().filter {
-                    val symbol = it.first
-                    symbol == EmptySymbol || lookaheadTokens.any { symbol.matches(it) }
-                }.flatMap { it.second.asSequence() }.toSet()
+                val applicableActions =
+                    state()
+                        .getSymbolsAndActions()
+                        .filter {
+                            val symbol = it.first
+                            symbol == EmptySymbol || lookaheadTokens.any { symbol.matches(it) }
+                        }.flatMap { it.second.asSequence() }
+                        .toSet()
                 // TODO filter out reductions that don't match the actual content on the stack
                 return applicableActions.map { Fork(stack, it) }
             }
@@ -145,25 +176,40 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
         fun applyAction(tokensForShift: List<IToken>): List<Fork> {
             check(!accepted) { "Already accepted" }
             return when (val action = actionToApply) {
-                null -> error("No action applicable. Fork should have been discarded.")
-                is SkipAction -> listOf(Fork(stack, null))
+                null -> {
+                    error("No action applicable. Fork should have been discarded.")
+                }
+
+                is SkipAction -> {
+                    listOf(Fork(stack, null))
+                }
+
                 is ShiftAction -> {
                     var newStack = stack
                     val matchingTokens = tokensForShift.filter { action.symbol.matches(it) }
-                    val matchingToken = when (matchingTokens.size) {
-                        0 -> error("None of the tokens matches ${action.symbol}: $tokensForShift")
-                        1 -> matchingTokens.single()
-                        else -> error("Multiple of the tokens matches ${action.symbol}: $matchingTokens")
-                    }
+                    val matchingToken =
+                        when (matchingTokens.size) {
+                            0 -> error("None of the tokens matches ${action.symbol}: $tokensForShift")
+                            1 -> matchingTokens.single()
+                            else -> error("Multiple of the tokens matches ${action.symbol}: $matchingTokens")
+                        }
                     newStack = newStack.pushNode(matchingToken)
                     newStack = newStack.pushState(action.nextState)
                     listOf(Fork(newStack, null))
                 }
-                is CompletionAction -> reduceItem(action.item)
-                is ReduceAction -> reduceItem(RuleItem(action.rule, action.rule.symbols.size))
+
+                is CompletionAction -> {
+                    reduceItem(action.item)
+                }
+
+                is ReduceAction -> {
+                    reduceItem(RuleItem(action.rule, action.rule.symbols.size))
+                }
+
                 is GotoAction -> {
                     listOf(Fork(stack.pushState(action.nextState), null))
                 }
+
                 AcceptAction -> {
                     output = stack.withoutMerges().map { it.elementAt(it.getSize().first - 2).getToken() }
                     accepted = true
@@ -188,9 +234,10 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
 
                 if (removedTokens.size == 1) {
                     val symbolToReduce: INonTerminalToken? = removedTokens.single() as? ParseTreeNode
-                    val wrappers = generateSequence(symbolToReduce) {
-                        (it as? ParseTreeNode)?.children?.singleOrNull() as? INonTerminalToken
-                    }.map { it.getNonTerminalSymbol() }
+                    val wrappers =
+                        generateSequence(symbolToReduce) {
+                            (it as? ParseTreeNode)?.children?.singleOrNull() as? INonTerminalToken
+                        }.map { it.getNonTerminalSymbol() }
                     val isUnnecessaryWrapper = wrappers.contains(item.rule.head)
                     // if, after applying a series of wrappers, we end up with the same non-terminal that we
                     // already had on the stack, it means we could have just taken that one without wrapping it
@@ -213,16 +260,23 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
         return push(StackElement(state))
     }
 
-    private data class StackElement private constructor(private val node: IParseTreeNode? = null, private val state: Int? = null) : IGSSElement {
+    private data class StackElement private constructor(
+        private val node: IParseTreeNode? = null,
+        private val state: Int? = null,
+    ) : IGSSElement {
         constructor(token: IParseTreeNode) : this(token, null)
         constructor(state: Int) : this(null, state)
+
         fun isNode() = node != null
+
         fun isState() = state != null
+
         fun getToken() = checkNotNull(node) { "Not a token" }
+
         fun getState() = checkNotNull(state) { "Not a state" }
-        override fun toString(): String {
-            return if (isNode()) getToken().toString() else "[" + getState().toString() + "]"
-        }
+
+        override fun toString(): String = if (isNode()) getToken().toString() else "[" + getState().toString() + "]"
+
         override fun merge(other: IGSSElement): IGSSElement? {
             check(other is StackElement)
             if (this == other) return this
@@ -239,15 +293,14 @@ class LRParser(val table: LRTable, private val defaultDisambiguator: IDisambigua
     }
 }
 
-fun Grammar.createParser(disambiguator: IDisambiguator = IDisambiguator.default()): LRParser {
-    return LRParser(createParseTable(), disambiguator)
-}
+fun Grammar.createParser(disambiguator: IDisambiguator = IDisambiguator.default()): LRParser = LRParser(createParseTable(), disambiguator)
 
 fun Grammar.createParseTable(): LRTable {
     val closureTable = LRClosureTable(grammar = this).also { it.load() }
     return LRTable().also { it.load(closureTable) }
 }
 
-inline fun <K, V : Any> Sequence<K>.associateWithNotNull(valueSelector: (K) -> V?): Map<K, V> {
-    return associateWith { valueSelector(it) }.filterValues { it != null } as Map<K, V>
-}
+inline fun <K, V : Any> Sequence<K>.associateWithNotNull(valueSelector: (K) -> V?): Map<K, V> =
+    associateWith {
+        valueSelector(it)
+    }.filterValues { it != null } as Map<K, V>

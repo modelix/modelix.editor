@@ -7,11 +7,14 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 
-class JsEditorComponent(service: TextEditorService) : FrontendEditorComponent(service, JSDom()), IProducesHtml {
-
-    val containerElement: IVirtualDom.HTMLElement = virtualDom.create().div("js-editor-component") {
-        tabIndex = "-1" // allows setting keyboard focus
-    }
+class JsEditorComponent(
+    service: TextEditorService,
+) : FrontendEditorComponent(service, JSDom()),
+    IProducesHtml {
+    val containerElement: IVirtualDom.HTMLElement =
+        virtualDom.create().div("js-editor-component") {
+            tabIndex = "-1" // allows setting keyboard focus
+        }
 
     init {
         (virtualDom as JSDom).originElement = containerElement.unwrap()

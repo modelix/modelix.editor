@@ -45,11 +45,14 @@ import java.nio.charset.StandardCharsets
 import java.util.Collections
 import kotlin.time.Duration.Companion.seconds
 
-private val LOG = io.github.oshai.kotlinlogging.KotlinLogging.logger { }
+private val LOG =
+    io.github.oshai.kotlinlogging.KotlinLogging
+        .logger { }
 
 @Service(Service.Level.PROJECT)
-class ImageEditorForMPSProject(private val project: Project) : Disposable {
-
+class ImageEditorForMPSProject(
+    private val project: Project,
+) : Disposable {
     init {
         ApplicationManager.getApplication().service<ImageEditorForMPS>().registerProject(project)
     }
@@ -61,18 +64,18 @@ class ImageEditorForMPSProject(private val project: Project) : Disposable {
 
 @Service(Service.Level.APP)
 class ImageEditorForMPS : Disposable {
-
     companion object {
         fun getInstance() = ApplicationManager.getApplication().getService(ImageEditorForMPS::class.java)
     }
 
     private var ktorServer: EmbeddedServer<*, *>? = null
     private val projects: MutableSet<Project> = Collections.synchronizedSet(HashSet())
-    private val commandLister = object : org.jetbrains.mps.openapi.repository.CommandListener {
-        override fun commandFinished() {
-            // ssrServer?.updateAll()
+    private val commandLister =
+        object : org.jetbrains.mps.openapi.repository.CommandListener {
+            override fun commandFinished() {
+                // ssrServer?.updateAll()
+            }
         }
-    }
 
     fun registerProject(project: Project) {
         projects.add(project)
@@ -83,21 +86,19 @@ class ImageEditorForMPS : Disposable {
         projects.remove(project)
     }
 
-    private fun getMPSProjects(): List<MPSProject> {
-        return runSynchronized(projects) {
+    private fun getMPSProjects(): List<MPSProject> =
+        runSynchronized(projects) {
             projects.mapNotNull { it.getComponent(MPSProject::class.java) }
         }
-    }
 
-    private fun getRepository(): SRepository {
-        return getMPSProjects().asSequence().map {
-            it.repository
-        }.firstOrNull() ?: MPSModuleRepository.getInstance()
-    }
+    private fun getRepository(): SRepository =
+        getMPSProjects()
+            .asSequence()
+            .map {
+                it.repository
+            }.firstOrNull() ?: MPSModuleRepository.getInstance()
 
-    private fun getRootNode(): INode {
-        return MPSRepositoryAsNode(getRepository()).asLegacyNode()
-    }
+    private fun getRootNode(): INode = MPSRepositoryAsNode(getRepository()).asLegacyNode()
 
     fun ensureStarted() {
         runSynchronized(this) {
@@ -106,9 +107,10 @@ class ImageEditorForMPS : Disposable {
             println("starting react SSR server")
 
             MPSModuleRepository.getInstance().modelAccess.addCommandListener(commandLister)
-            ktorServer = embeddedServer(Netty, port = 43596) {
-                initKtorServer()
-            }
+            ktorServer =
+                embeddedServer(Netty, port = 43596) {
+                    initKtorServer()
+                }
             ktorServer!!.start()
         }
     }
@@ -147,14 +149,19 @@ class ImageEditorForMPS : Disposable {
         ensureStopped()
     }
 
-    private suspend fun handleWebsocketSession(session: DefaultWebSocketServerSession, nodeRef: NodeReference) {
+    private suspend fun handleWebsocketSession(
+        session: DefaultWebSocketServerSession,
+        nodeRef: NodeReference,
+    ) {
         val repository = getMPSProjects().firstOrNull()?.repository
-        val rootNode = repository?.modelAccess?.computeRead {
-            (MPSArea(repository).let { nodeRef.resolveIn(it) }?.asWritableNode() as? MPSWritableNode)?.node
-        }
+        val rootNode =
+            repository?.modelAccess?.computeRead {
+                (MPSArea(repository).let { nodeRef.resolveIn(it) }?.asWritableNode() as? MPSWritableNode)?.node
+            }
         require(rootNode !is ModelixNodeAsMPSNode) { "MPS node without Modelix wrapper expected" }
         var inspectorEditorSession: RenderSession? = null
-        val mainEditorSession = RenderSession(getMPSProjects().first(), session, "unknown user", isInspector = false, { inspectorEditorSession }, rootNode)
+        val mainEditorSession =
+            RenderSession(getMPSProjects().first(), session, "unknown user", isInspector = false, { inspectorEditorSession }, rootNode)
         try {
             mainEditorSession.onOpen()
 
@@ -166,7 +173,14 @@ class ImageEditorForMPS : Disposable {
                             try {
                                 if (inspectorEditorSession == null) {
                                     inspectorEditorSession =
-                                        RenderSession(getMPSProjects().first(), session, "unknown user", isInspector = true, { null }, rootNode)
+                                        RenderSession(
+                                            getMPSProjects().first(),
+                                            session,
+                                            "unknown user",
+                                            isInspector = true,
+                                            { null },
+                                            rootNode
+                                        )
                                     inspectorEditorSession.onOpen()
                                 }
                                 inspectorEditorSession.processMessage(obj)
@@ -181,6 +195,7 @@ class ImageEditorForMPS : Disposable {
                             }
                         }
                     }
+
                     else -> {}
                 }
             }

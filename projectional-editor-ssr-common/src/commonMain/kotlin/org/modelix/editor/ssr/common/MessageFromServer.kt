@@ -13,18 +13,17 @@ class MessageFromServer(
      * @see MessageFromClient.editorId
      */
     val editorId: String? = null,
-
     /**
      * The server is responsible for computing the resulting DOM tree and sending incremental updates to the client.
      */
     val domUpdate: DomTreeUpdate? = null,
-
     /**
      * An exception was thrown on the server side.
      */
     val error: String? = null,
 ) {
     fun toJson() = Json.encodeToString(this)
+
     companion object {
         fun fromJson(msg: String) = Json.decodeFromString<MessageFromServer>(msg)
     }
@@ -45,7 +44,9 @@ sealed interface IElementUpdateData : INodeUpdateData {
 
 @Serializable
 @SerialName("Text")
-data class TextNodeUpdateData(val text: String) : INodeUpdateData
+data class TextNodeUpdateData(
+    val text: String,
+) : INodeUpdateData
 
 @Serializable
 @SerialName("HTMLElement")
@@ -58,4 +59,6 @@ data class HTMLElementUpdateData(
 
 @Serializable
 @SerialName("ref")
-data class ElementReference(override val id: String) : IElementUpdateData
+data class ElementReference(
+    override val id: String,
+) : IElementUpdateData

@@ -11,7 +11,9 @@ import org.modelix.metamodel.ITypedReferenceLink
 import org.modelix.model.api.ILanguage
 import org.modelix.model.api.IReferenceLink
 
-class ScopeAspect(val language: ILanguage) : ILanguageAspect {
+class ScopeAspect(
+    val language: ILanguage,
+) : ILanguageAspect {
     private val scopes: MutableMap<IReferenceLink, IScope> = HashMap()
 
     fun getScope(link: IReferenceLink): IScope? {
@@ -19,7 +21,10 @@ class ScopeAspect(val language: ILanguage) : ILanguageAspect {
         return scopes[link]
     }
 
-    fun registerScope(link: IReferenceLink, scope: IScope) {
+    fun registerScope(
+        link: IReferenceLink,
+        scope: IScope,
+    ) {
         require(link.getConcept().language == language) { "$link doesn't belong to $language" }
         scopes[link] = scope
     }
@@ -27,15 +32,15 @@ class ScopeAspect(val language: ILanguage) : ILanguageAspect {
     companion object : ILanguageAspectFactory<ScopeAspect> {
         private val scopeProviders = HashSet<IScopeProvider>()
 
-        override fun createInstance(language: ILanguage): ScopeAspect {
-            return ScopeAspect(language)
-        }
+        override fun createInstance(language: ILanguage): ScopeAspect = ScopeAspect(language)
 
-        fun getScope(sourceNode: INonExistingNode, link: IReferenceLink): IScope {
-            return scopeProviders.asSequence().mapNotNull { it.getScope(sourceNode, link) }.firstOrNull()
+        fun getScope(
+            sourceNode: INonExistingNode,
+            link: IReferenceLink,
+        ): IScope =
+            scopeProviders.asSequence().mapNotNull { it.getScope(sourceNode, link) }.firstOrNull()
                 ?: ScopeAspect.getInstance(link.getConcept().language!!).getScope(link)
                 ?: EmptyScope()
-        }
 
         fun registerScopeProvider(provider: IScopeProvider) {
             scopeProviders.add(provider)
@@ -48,19 +53,27 @@ class ScopeAspect(val language: ILanguage) : ILanguageAspect {
 }
 
 interface IScopeProvider {
-    fun getScope(sourceNode: INonExistingNode, link: IReferenceLink): IScope?
+    fun getScope(
+        sourceNode: INonExistingNode,
+        link: IReferenceLink,
+    ): IScope?
 }
 
-fun LanguageAspectsBuilder<*>.scope(link: ITypedReferenceLink<*>, scope: IScope) {
-    return aspects.getAspect(language, ScopeAspect).registerScope(link.untyped(), scope)
-}
+fun LanguageAspectsBuilder<*>.scope(
+    link: ITypedReferenceLink<*>,
+    scope: IScope,
+) = aspects.getAspect(language, ScopeAspect).registerScope(link.untyped(), scope)
 
-fun <TargetT : ITypedNode> LanguageAspectsBuilder<*>.scope(link: ITypedReferenceLink<TargetT>, scopeFunction: (INonExistingNode) -> List<TargetT>) {
-    return scope(link, ScopeFunction(scopeFunction))
-}
+fun <TargetT : ITypedNode> LanguageAspectsBuilder<*>.scope(
+    link: ITypedReferenceLink<TargetT>,
+    scopeFunction: (INonExistingNode) -> List<TargetT>,
+) = scope(link, ScopeFunction(scopeFunction))
 
-class ScopeFunction<TargetT : ITypedNode>(val function: (INonExistingNode) -> List<TargetT>) : IScope {
-    override fun getVisibleElements(node: INonExistingNode, link: IReferenceLink): List<INonExistingNode> {
-        return function(node).map { it.unwrap().toNonExisting() }
-    }
+class ScopeFunction<TargetT : ITypedNode>(
+    val function: (INonExistingNode) -> List<TargetT>,
+) : IScope {
+    override fun getVisibleElements(
+        node: INonExistingNode,
+        link: IReferenceLink,
+    ): List<INonExistingNode> = function(node).map { it.unwrap().toNonExisting() }
 }

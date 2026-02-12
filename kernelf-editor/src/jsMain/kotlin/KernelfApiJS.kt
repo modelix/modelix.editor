@@ -28,29 +28,44 @@ import org.w3c.dom.Node
 
 @JsExport
 object KernelfApiJS {
-    private val LOG = io.github.oshai.kotlinlogging.KotlinLogging.logger {}
+    private val LOG =
+        io.github.oshai.kotlinlogging.KotlinLogging
+            .logger {}
     private val generatedHtmlMap = GeneratedHtmlMap()
 
-    fun connectToModelServer(json: Array<String>, callback: (INode) -> Unit) {
+    fun connectToModelServer(
+        json: Array<String>,
+        callback: (INode) -> Unit,
+    ) {
         KernelfAPI.connectToModelServer(
             initialJsonData = json,
             callback = callback,
             errorCallback = { LOG.error(it) { "Failed to connect to model server" } },
         )
     }
+
     fun loadModelsFromJson(json: Array<String>): INode = KernelfAPI.loadModelsFromJson(json)
+
     fun getModules(rootNode: INode): Array<INode> = KernelfAPI.getModules(rootNode)
+
     fun nodeToString(node: Any): String = KernelfAPI.nodeToString(JSNodeConverter.toINode(node))
 
     fun getNodeConverter() = JSNodeConverter
 
-    private fun renderNodeAsDom(cellTreeState: CellTreeState, rootNode: INode): HTMLElement {
+    private fun renderNodeAsDom(
+        cellTreeState: CellTreeState,
+        rootNode: INode,
+    ): HTMLElement {
         val tagConsumer = document.createTree()
         KernelfAPI.renderNode(cellTreeState, rootNode, tagConsumer)
         return tagConsumer.finalize()
     }
 
-    fun updateNodeAsDom(cellTreeState: CellTreeState, rootNode: INode, parentElement: HTMLElement) {
+    fun updateNodeAsDom(
+        cellTreeState: CellTreeState,
+        rootNode: INode,
+        parentElement: HTMLElement,
+    ) {
         val existing = parentElement.firstElementChild as? HTMLElement
         val virtualDom = JSDom(parentElement.ownerDocument!!)
         val consumer = IncrementalVirtualDOMBuilder(virtualDom, existing?.let { virtualDom.wrap(it) }, generatedHtmlMap)
@@ -70,44 +85,53 @@ object KernelfApiJS {
         }
         val branch = ModelFacade.getBranch(rootNode)?.deepUnwrap()
         if (branch != null) {
-            branch.addListener(object : IBranchListener {
-                private var updateScheduled = atomic(false)
-                private val coroutinesScope = CoroutineScope(Dispatchers.Main)
-                override fun treeChanged(oldTree: ITree?, newTree: ITree) {
-                    if (editor.containerElement.unwrap().isInDocument()) {
-                        if (!updateScheduled.getAndSet(true)) {
-                            coroutinesScope.launch {
-                                updateScheduled.getAndSet(false)
-                                editor.updateNow()
+            branch.addListener(
+                object : IBranchListener {
+                    private var updateScheduled = atomic(false)
+                    private val coroutinesScope = CoroutineScope(Dispatchers.Main)
+
+                    override fun treeChanged(
+                        oldTree: ITree?,
+                        newTree: ITree,
+                    ) {
+                        if (editor.containerElement.unwrap().isInDocument()) {
+                            if (!updateScheduled.getAndSet(true)) {
+                                coroutinesScope.launch {
+                                    updateScheduled.getAndSet(false)
+                                    editor.updateNow()
+                                }
                             }
+                        } else {
+                            coroutinesScope.cancel("Editor removed from document")
+                            branch.removeListener(this)
+                            editor.dispose()
                         }
-                    } else {
-                        coroutinesScope.cancel("Editor removed from document")
-                        branch.removeListener(this)
-                        editor.dispose()
                     }
                 }
-            })
+            )
         } else {
             val area = rootNode.getArea()
-            area.addListener(object : IAreaListener {
-                private var updateScheduled = atomic(false)
-                private val coroutinesScope = CoroutineScope(Dispatchers.Main)
-                override fun areaChanged(changes: IAreaChangeList) {
-                    if (editor.containerElement.unwrap().isInDocument()) {
-                        if (!updateScheduled.getAndSet(true)) {
-                            coroutinesScope.launch {
-                                updateScheduled.getAndSet(false)
-                                editor.updateNow()
+            area.addListener(
+                object : IAreaListener {
+                    private var updateScheduled = atomic(false)
+                    private val coroutinesScope = CoroutineScope(Dispatchers.Main)
+
+                    override fun areaChanged(changes: IAreaChangeList) {
+                        if (editor.containerElement.unwrap().isInDocument()) {
+                            if (!updateScheduled.getAndSet(true)) {
+                                coroutinesScope.launch {
+                                    updateScheduled.getAndSet(false)
+                                    editor.updateNow()
+                                }
                             }
+                        } else {
+                            coroutinesScope.cancel("Editor removed from document")
+                            area.removeListener(this)
+                            editor.dispose()
                         }
-                    } else {
-                        coroutinesScope.cancel("Editor removed from document")
-                        area.removeListener(this)
-                        editor.dispose()
                     }
                 }
-            })
+            )
         }
         editor.updateHtml()
         return editor.containerElement.unwrap()

@@ -18,79 +18,171 @@ import org.modelix.parser.SubConceptsSymbol
 
 interface IPendingNode : INode {
     fun commit(location: INonExistingNode): INode
+
     fun flattenFirstAmbiguousNode(): List<INode>
+
     fun replaceAllAmbiguousWithFirst(): INode
 }
 
 abstract class PendingNodeBase : IPendingNode {
-    override fun addNewChild(role: String?, index: Int, concept: IConcept?): INode = TODO("Not yet implemented")
+    override fun addNewChild(
+        role: String?,
+        index: Int,
+        concept: IConcept?,
+    ): INode = TODO("Not yet implemented")
+
     override val allChildren: Iterable<INode> get() = TODO("Not yet implemented")
     override val concept: IConcept? get() = TODO("Not yet implemented")
     override val isValid: Boolean get() = TODO("Not yet implemented")
     override val parent: INode? get() = TODO("Not yet implemented")
     override val reference: INodeReference get() = TODO("Not yet implemented")
     override val roleInParent: String? get() = TODO("Not yet implemented")
+
     override fun getArea(): IArea = TODO("Not yet implemented")
+
     override fun getChildren(role: String?): Iterable<INode> = TODO("Not yet implemented")
+
     override fun getConceptReference(): IConceptReference? = TODO("Not yet implemented")
+
     override fun getPropertyRoles(): List<String> = TODO("Not yet implemented")
+
     override fun getPropertyValue(role: String): String? = TODO("Not yet implemented")
+
     override fun getReferenceRoles(): List<String> = TODO("Not yet implemented")
+
     override fun getReferenceTarget(role: String): INode? = TODO("Not yet implemented")
-    override fun moveChild(role: String?, index: Int, child: INode): Unit = TODO("Not yet implemented")
+
+    override fun moveChild(
+        role: String?,
+        index: Int,
+        child: INode,
+    ): Unit = TODO("Not yet implemented")
+
     override fun removeChild(child: INode): Unit = TODO("Not yet implemented")
-    override fun setPropertyValue(role: String, value: String?): Unit = TODO("Not yet implemented")
-    override fun setReferenceTarget(role: String, target: INode?): Unit = TODO("Not yet implemented")
-    override fun addNewChild(role: IChildLink, index: Int, concept: IConcept?): INode = TODO("Not yet implemented")
-    override fun addNewChild(role: IChildLink, index: Int, concept: IConceptReference?): INode = TODO("Not yet implemented")
-    override fun addNewChild(role: String?, index: Int, concept: IConceptReference?): INode = TODO("Not yet implemented")
-    override fun addNewChildren(link: IChildLink, index: Int, concepts: List<IConceptReference?>): List<INode> = TODO("Not yet implemented")
-    override fun addNewChildren(role: String?, index: Int, concepts: List<IConceptReference?>): List<INode> = TODO("Not yet implemented")
+
+    override fun setPropertyValue(
+        role: String,
+        value: String?,
+    ): Unit = TODO("Not yet implemented")
+
+    override fun setReferenceTarget(
+        role: String,
+        target: INode?,
+    ): Unit = TODO("Not yet implemented")
+
+    override fun addNewChild(
+        role: IChildLink,
+        index: Int,
+        concept: IConcept?,
+    ): INode = TODO("Not yet implemented")
+
+    override fun addNewChild(
+        role: IChildLink,
+        index: Int,
+        concept: IConceptReference?,
+    ): INode = TODO("Not yet implemented")
+
+    override fun addNewChild(
+        role: String?,
+        index: Int,
+        concept: IConceptReference?,
+    ): INode = TODO("Not yet implemented")
+
+    override fun addNewChildren(
+        link: IChildLink,
+        index: Int,
+        concepts: List<IConceptReference?>,
+    ): List<INode> = TODO("Not yet implemented")
+
+    override fun addNewChildren(
+        role: String?,
+        index: Int,
+        concepts: List<IConceptReference?>,
+    ): List<INode> = TODO("Not yet implemented")
+
     override fun getAllChildrenAsFlow(): Flow<INode> = TODO("Not yet implemented")
+
     override fun getAllProperties(): List<Pair<IProperty, String>> = TODO("Not yet implemented")
+
     override fun getAllReferenceTargetRefs(): List<Pair<IReferenceLink, INodeReference>> = TODO("Not yet implemented")
+
     override fun getAllReferenceTargetRefsAsFlow(): Flow<Pair<IReferenceLink, INodeReference>> = TODO("Not yet implemented")
+
     override fun getAllReferenceTargets(): List<Pair<IReferenceLink, INode>> = TODO("Not yet implemented")
+
     override fun getAllReferenceTargetsAsFlow(): Flow<Pair<IReferenceLink, INode>> = TODO("Not yet implemented")
+
     override fun getChildren(link: IChildLink): Iterable<INode> = TODO("Not yet implemented")
+
     override fun getChildrenAsFlow(role: IChildLink): Flow<INode> = TODO("Not yet implemented")
+
     override fun getContainmentLink(): IChildLink? = TODO("Not yet implemented")
+
     override fun getDescendantsAsFlow(includeSelf: Boolean): Flow<INode> = TODO("Not yet implemented")
+
     override fun getOriginalReference(): String? = TODO("Not yet implemented")
+
     override fun getParentAsFlow(): Flow<INode> = TODO("Not yet implemented")
+
     override fun getPropertyLinks(): List<IProperty> = TODO("Not yet implemented")
+
     override fun getPropertyValue(property: IProperty): String? = TODO("Not yet implemented")
+
     override fun getPropertyValueAsFlow(role: IProperty): Flow<String?> = TODO("Not yet implemented")
+
     override fun getReferenceLinks(): List<IReferenceLink> = TODO("Not yet implemented")
+
     override fun getReferenceTarget(link: IReferenceLink): INode? = TODO("Not yet implemented")
+
     override fun getReferenceTargetAsFlow(role: IReferenceLink): Flow<INode> = TODO("Not yet implemented")
+
     override fun getReferenceTargetRef(role: IReferenceLink): INodeReference? = TODO("Not yet implemented")
+
     override fun getReferenceTargetRef(role: String): INodeReference? = TODO("Not yet implemented")
+
     override fun getReferenceTargetRefAsFlow(role: IReferenceLink): Flow<INodeReference> = TODO("Not yet implemented")
-    override fun moveChild(role: IChildLink, index: Int, child: INode): Unit = TODO("Not yet implemented")
+
+    override fun moveChild(
+        role: IChildLink,
+        index: Int,
+        child: INode,
+    ): Unit = TODO("Not yet implemented")
+
     override fun removeReference(role: IReferenceLink): Unit = TODO("Not yet implemented")
-    override fun setPropertyValue(property: IProperty, value: String?): Unit = TODO("Not yet implemented")
-    override fun setReferenceTarget(link: IReferenceLink, target: INode?): Unit = TODO("Not yet implemented")
-    override fun setReferenceTarget(role: IReferenceLink, target: INodeReference?): Unit = TODO("Not yet implemented")
-    override fun setReferenceTarget(role: String, target: INodeReference?): Unit = TODO("Not yet implemented")
+
+    override fun setPropertyValue(
+        property: IProperty,
+        value: String?,
+    ): Unit = TODO("Not yet implemented")
+
+    override fun setReferenceTarget(
+        link: IReferenceLink,
+        target: INode?,
+    ): Unit = TODO("Not yet implemented")
+
+    override fun setReferenceTarget(
+        role: IReferenceLink,
+        target: INodeReference?,
+    ): Unit = TODO("Not yet implemented")
+
+    override fun setReferenceTarget(
+        role: String,
+        target: INodeReference?,
+    ): Unit = TODO("Not yet implemented")
+
     override fun tryGetConcept(): IConcept? = TODO("Not yet implemented")
+
     override fun usesRoleIds(): Boolean = TODO("Not yet implemented")
 }
 
 class AmbiguousPendingNode(
     val alternatives: List<INode>,
 ) : PendingNodeBase() {
-    override fun commit(location: INonExistingNode): INode {
-        throw UnsupportedOperationException()
-    }
+    override fun commit(location: INonExistingNode): INode = throw UnsupportedOperationException()
 
-    override fun flattenFirstAmbiguousNode(): List<INode> {
-        return alternatives
-    }
+    override fun flattenFirstAmbiguousNode(): List<INode> = alternatives
 
-    override fun replaceAllAmbiguousWithFirst(): INode {
-        return (alternatives.first() as IPendingNode).replaceAllAmbiguousWithFirst()
-    }
+    override fun replaceAllAmbiguousWithFirst(): INode = (alternatives.first() as IPendingNode).replaceAllAmbiguousWithFirst()
 }
 
 data class PendingNode(
@@ -99,21 +191,31 @@ data class PendingNode(
     val properties: MutableMap<IProperty, String> = LinkedHashMap(),
     val references: MutableMap<IReferenceLink, INode> = LinkedHashMap(),
 ) : PendingNodeBase() {
-
     override fun flattenFirstAmbiguousNode(): List<INode> {
-        val allChildren: List<Pair<IChildLink, IPendingNode>> = children.flatMap { childrenInRole -> childrenInRole.value.map { childrenInRole.key to it } }
+        val allChildren: List<Pair<IChildLink, IPendingNode>> =
+            children.flatMap { childrenInRole ->
+                childrenInRole.value.map {
+                    childrenInRole.key to
+                        it
+                }
+            }
 
         for ((index, child) in allChildren.withIndex()) {
             val flattenedChild = child.second.flattenFirstAmbiguousNode()
             if (flattenedChild.size <= 1) continue
 
-            val allChildrenAlternatives = flattenedChild.map { alternative ->
-                allChildren.take(index) + (child.first to alternative) + allChildren.drop(index + 1)
-            }
+            val allChildrenAlternatives =
+                flattenedChild.map { alternative ->
+                    allChildren.take(index) + (child.first to alternative) + allChildren.drop(index + 1)
+                }
             return allChildrenAlternatives.map {
                 PendingNode(
                     concept = concept,
-                    children = it.groupBy { it.first }.mapValues { it.value.map { it.second as IPendingNode }.toMutableList() }.toMutableMap(),
+                    children =
+                        it
+                            .groupBy { it.first }
+                            .mapValues { it.value.map { it.second as IPendingNode }.toMutableList() }
+                            .toMutableMap(),
                     properties = properties.toMutableMap(),
                     references = references.toMutableMap()
                 )
@@ -124,7 +226,10 @@ data class PendingNode(
     }
 
     override fun replaceAllAmbiguousWithFirst(): INode {
-        val newChildren = children.mapValues { it.value.map { it.replaceAllAmbiguousWithFirst() as IPendingNode }.toMutableList() }.toMutableMap()
+        val newChildren =
+            children
+                .mapValues { it.value.map { it.replaceAllAmbiguousWithFirst() as IPendingNode }.toMutableList() }
+                .toMutableMap()
         return PendingNode(
             concept = concept,
             children = newChildren,
@@ -154,13 +259,14 @@ data class PendingNode(
         return newNode
     }
 
-    override fun getChildren(link: IChildLink): Iterable<INode> {
-        return children[link] ?: emptyList()
-    }
+    override fun getChildren(link: IChildLink): Iterable<INode> = children[link] ?: emptyList()
 
     override val reference: INodeReference get() = TODO()
 
-    override fun setPropertyValue(property: IProperty, value: String?) {
+    override fun setPropertyValue(
+        property: IProperty,
+        value: String?,
+    ) {
         if (value == null) {
             properties.remove(property)
         } else {
@@ -168,36 +274,50 @@ data class PendingNode(
         }
     }
 
-    override fun getPropertyValue(property: IProperty): String? {
-        return properties[property]
-    }
+    override fun getPropertyValue(property: IProperty): String? = properties[property]
 
-    override fun getReferenceTarget(link: IReferenceLink): INode? {
-        return references[link]
-    }
+    override fun getReferenceTarget(link: IReferenceLink): INode? = references[link]
 }
 
 interface IParseTreeToAstBuilder {
     fun currentNode(): INode
+
     fun buildNode(parseTreeNode: IParseTreeNode): List<INode>
+
     fun consumeNextToken(predicate: (IParseTreeNode) -> Boolean): IParseTreeNode?
-    fun buildChild(role: IChildLink, childParseTree: IParseTreeNode)
+
+    fun buildChild(
+        role: IChildLink,
+        childParseTree: IParseTreeNode,
+    )
+
     fun consumeTokens(tokens: List<IParseTreeNode>)
 }
 
-class ParseTreeToAstBuilder(val editorEngine: EditorEngine, var node: PendingNode, val unconsumedTokens: MutableList<IParseTreeNode>) : IParseTreeToAstBuilder {
-    override fun buildChild(role: IChildLink, childParseTree: IParseTreeNode) {
+class ParseTreeToAstBuilder(
+    val editorEngine: EditorEngine,
+    var node: PendingNode,
+    val unconsumedTokens: MutableList<IParseTreeNode>,
+) : IParseTreeToAstBuilder {
+    override fun buildChild(
+        role: IChildLink,
+        childParseTree: IParseTreeNode,
+    ) {
         val alternatives = buildNode(childParseTree)
-        node.children.getOrPut(role) { ArrayList() }.add(if (alternatives.size == 1) alternatives.single() else AmbiguousPendingNode(alternatives))
+        node.children.getOrPut(role) { ArrayList() }.add(
+            if (alternatives.size ==
+                1
+            ) {
+                alternatives.single()
+            } else {
+                AmbiguousPendingNode(alternatives)
+            }
+        )
     }
 
-    override fun currentNode(): INode {
-        return node
-    }
+    override fun currentNode(): INode = node
 
-    override fun buildNode(parseTreeNode: IParseTreeNode): List<IPendingNode> {
-        return Companion.buildNodes(editorEngine, parseTreeNode)
-    }
+    override fun buildNode(parseTreeNode: IParseTreeNode): List<IPendingNode> = Companion.buildNodes(editorEngine, parseTreeNode)
 
     override fun consumeNextToken(predicate: (IParseTreeNode) -> Boolean): IParseTreeNode? {
         val index = unconsumedTokens.indexOfFirst(predicate)
@@ -209,8 +329,11 @@ class ParseTreeToAstBuilder(val editorEngine: EditorEngine, var node: PendingNod
     }
 
     companion object {
-        fun buildNodes(editorEngine: EditorEngine, parseTreeNode: IParseTreeNode): List<IPendingNode> {
-            return when (parseTreeNode) {
+        fun buildNodes(
+            editorEngine: EditorEngine,
+            parseTreeNode: IParseTreeNode,
+        ): List<IPendingNode> =
+            when (parseTreeNode) {
                 is ParseTreeNode -> {
                     val nonTerminal = parseTreeNode.rule.head
                     when (nonTerminal) {
@@ -223,20 +346,28 @@ class ParseTreeToAstBuilder(val editorEngine: EditorEngine, var node: PendingNod
                             }
                             listOf(childNode)
                         }
+
                         is SubConceptsSymbol -> {
                             buildNodes(editorEngine, parseTreeNode.children.single())
                         }
+
                         is ListSymbol -> {
                             parseTreeNode.children.flatMap { buildNodes(editorEngine, it) }
                         }
-                        else -> throw NotImplementedError("$nonTerminal")
+
+                        else -> {
+                            throw NotImplementedError("$nonTerminal")
+                        }
                     }
                 }
+
                 is AmbiguousNode -> {
                     listOf(AmbiguousPendingNode(parseTreeNode.trees.map { buildNodes(editorEngine, it).single() }))
                 }
-                else -> throw NotImplementedError("$parseTreeNode")
+
+                else -> {
+                    throw NotImplementedError("$parseTreeNode")
+                }
             }
-        }
     }
 }

@@ -28,7 +28,11 @@ import java.util.zip.ZipInputStream
 val Project.mpsMajorVersion: String get() {
     if (project != rootProject) return rootProject.mpsMajorVersion
     return project.findProperty("mps.version.major")?.toString()?.takeIf { it.isNotEmpty() }
-        ?: project.findProperty("mps.version")?.toString()?.takeIf { it.isNotEmpty() }?.replace(Regex("""(20\d\d\.\d+).*"""), "$1")
+        ?: project
+            .findProperty("mps.version")
+            ?.toString()
+            ?.takeIf { it.isNotEmpty() }
+            ?.replace(Regex("""(20\d\d\.\d+).*"""), "$1")
         ?: "2024.1"
 }
 
@@ -65,10 +69,11 @@ val Project.mpsHomeDir: Provider<Directory> get() {
 }
 
 val Project.mpsPluginsDir: File? get() {
-    val candidates = listOfNotNull(
-        project.findProperty("mps$mpsPlatformVersion.plugins.dir")?.toString()?.let { file(it) },
-        System.getProperty("user.home")?.let { file(it).resolve("Library/Application Support/JetBrains/MPS$mpsMajorVersion/plugins/") },
-    )
+    val candidates =
+        listOfNotNull(
+            project.findProperty("mps$mpsPlatformVersion.plugins.dir")?.toString()?.let { file(it) },
+            System.getProperty("user.home")?.let { file(it).resolve("Library/Application Support/JetBrains/MPS$mpsMajorVersion/plugins/") },
+        )
     return candidates.firstOrNull { it.isDirectory }
 }
 
@@ -105,7 +110,13 @@ fun Project.copyMps(): File {
 
     // The IntelliJ gradle plugin doesn't search in jar files when reading plugin descriptors, but the IDE does.
     // Copy the XML files from the jars to the META-INF folders to fix that.
-    for (pluginFolder in (mpsHomeDir.get().asFile.resolve("plugins").listFiles() ?: emptyArray())) {
+    for (pluginFolder in (
+        mpsHomeDir
+            .get()
+            .asFile
+            .resolve("plugins")
+            .listFiles() ?: emptyArray()
+    )) {
         val jars = (pluginFolder.resolve("lib").listFiles() ?: emptyArray()).filter { it.extension == "jar" }
         for (jar in jars) {
             jar.inputStream().use {

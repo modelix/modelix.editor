@@ -6,11 +6,13 @@ import org.modelix.editor.text.shared.celltree.IMutableCellTree
 
 interface IFreezable {
     fun freeze()
+
     fun checkNotFrozen()
 }
 
 open class Freezable : IFreezable {
     private var frozen: Boolean = false
+
     override fun freeze() {
         frozen = true
     }
@@ -92,16 +94,17 @@ typealias MutableCell = IMutableCellTree.MutableCell
 // }
 
 fun ICellTree.Cell.getMaxCaretPos(): Int = getSelectableText()?.length ?: 0
+
 fun LayoutableCell.getMaxCaretPos(): Int = cell.getSelectableText()?.length ?: 0
 
-class ResettableLazy<E>(private val initializer: () -> E) : Lazy<E> {
+class ResettableLazy<E>(
+    private val initializer: () -> E,
+) : Lazy<E> {
     private var lazy: Lazy<E> = lazy(initializer)
     override val value: E
         get() = lazy.value
 
-    override fun isInitialized(): Boolean {
-        return lazy.isInitialized()
-    }
+    override fun isInitialized(): Boolean = lazy.isInitialized()
 
     fun reset() {
         lazy = lazy(initializer)

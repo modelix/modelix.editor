@@ -4,7 +4,11 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 object ReflectionUtil {
-    fun readField(cls: Class<*>, obj: Any, fieldName: String): Any {
+    fun readField(
+        cls: Class<*>,
+        obj: Any,
+        fieldName: String,
+    ): Any {
         try {
             val field = cls.getDeclaredField(fieldName)
             field.isAccessible = true
@@ -14,7 +18,12 @@ object ReflectionUtil {
         }
     }
 
-    fun writeField(cls: Class<*>, obj: Any, fieldName: String, value: Any?) {
+    fun writeField(
+        cls: Class<*>,
+        obj: Any,
+        fieldName: String,
+        value: Any?,
+    ) {
         try {
             val field = cls.getDeclaredField(fieldName)
             field.isAccessible = true
@@ -61,9 +70,7 @@ object ReflectionUtil {
         methodName: String,
         argumentTypes: Array<Class<*>?>,
         arguments: Array<Any?>,
-    ): Any {
-        return callMethod(cls, null, methodName, argumentTypes, arguments)
-    }
+    ): Any = callMethod(cls, null, methodName, argumentTypes, arguments)
 
     fun callStaticVoidMethod(
         cls: Class<*>,

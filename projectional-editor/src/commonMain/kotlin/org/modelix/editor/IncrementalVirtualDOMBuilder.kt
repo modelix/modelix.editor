@@ -6,7 +6,11 @@ import kotlinx.html.Unsafe
 import kotlinx.html.org.w3c.dom.events.Event
 import org.modelix.incremental.AtomicLong
 
-class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElement: IVirtualDom.HTMLElement?, val generatedHtmlMap: GeneratedHtmlMap) : IIncrementalTagConsumer<IVirtualDom.HTMLElement> {
+class IncrementalVirtualDOMBuilder(
+    val document: IVirtualDom,
+    existingRootElement: IVirtualDom.HTMLElement?,
+    val generatedHtmlMap: GeneratedHtmlMap,
+) : IIncrementalTagConsumer<IVirtualDom.HTMLElement> {
     private inner class StackFrame {
         var forcedReuseNext: IVirtualDom.HTMLElement? = null
         var reusableChildren: ReusableChildren? = null
@@ -34,9 +38,10 @@ class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElemen
         fun applyChildren() {
             val parent: IVirtualDom.HTMLElement? = resultingHtml
             reusableChildren?.processStillUsed(generatedChildren.mapNotNull { it.producer })
-            val generatedNodes = ArrayList(generatedChildren).map {
-                it.node ?: runProducer(it.producer!!)
-            }
+            val generatedNodes =
+                ArrayList(generatedChildren).map {
+                    it.node ?: runProducer(it.producer!!)
+                }
 
             if (parent != null) {
                 parent.childNodes.minus(generatedNodes.toSet()).forEach { parent.removeChild(it) }
@@ -88,30 +93,38 @@ class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElemen
         stack.add(frame)
         frame.tag = tag
 
-        val reusable: IVirtualDom.HTMLElement? = parentFrame.forcedReuseNext
-            ?.takeIf { it.tagName.lowercase() == tag.tagName.lowercase() }
-            ?: parentFrame.reusableChildren?.findReusable(tag)
+        val reusable: IVirtualDom.HTMLElement? =
+            parentFrame.forcedReuseNext
+                ?.takeIf { it.tagName.lowercase() == tag.tagName.lowercase() }
+                ?: parentFrame.reusableChildren?.findReusable(tag)
         parentFrame.forcedReuseNext = null
         if (reusable != null) {
             frame.reusableChildren = ReusableChildren(reusable)
         }
 
-        val element: IVirtualDom.HTMLElement = reusable ?: when {
-            tag.namespace != null -> TODO("namespaces not supported yet")
-            else -> document.createElement(tag.tagName) as IVirtualDom.HTMLElement
-        }
+        val element: IVirtualDom.HTMLElement =
+            reusable ?: when {
+                tag.namespace != null -> TODO("namespaces not supported yet")
+                else -> document.createElement(tag.tagName) as IVirtualDom.HTMLElement
+            }
 
         frame.resultingHtml = element
         parentFrame.generatedChildren.add(NodeOrProducer.node(element))
     }
 
-    override fun onTagAttributeChange(tag: Tag, attribute: String, value: String?) {
+    override fun onTagAttributeChange(
+        tag: Tag,
+        attribute: String,
+        value: String?,
+    ) {
         // handled in StackFrame.applyAttributes
     }
 
-    override fun onTagEvent(tag: Tag, event: String, value: (Event) -> Unit) {
-        throw UnsupportedOperationException("Use DelayedConsumer")
-    }
+    override fun onTagEvent(
+        tag: Tag,
+        event: String,
+        value: (Event) -> Unit,
+    ): Unit = throw UnsupportedOperationException("Use DelayedConsumer")
 
     override fun onTagEnd(tag: Tag) {
         val frame = stack.last()
@@ -129,17 +142,11 @@ class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElemen
         frame.generatedChildren.add(NodeOrProducer.node(element))
     }
 
-    override fun onTagContentEntity(entity: Entities) {
-        throw UnsupportedOperationException()
-    }
+    override fun onTagContentEntity(entity: Entities): Unit = throw UnsupportedOperationException()
 
-    override fun onTagContentUnsafe(block: Unsafe.() -> Unit) {
-        throw UnsupportedOperationException()
-    }
+    override fun onTagContentUnsafe(block: Unsafe.() -> Unit): Unit = throw UnsupportedOperationException()
 
-    override fun onTagComment(content: CharSequence) {
-        throw UnsupportedOperationException()
-    }
+    override fun onTagComment(content: CharSequence): Unit = throw UnsupportedOperationException()
 
     override fun finalize(): IVirtualDom.HTMLElement = lastClosed!!.resultingHtml!!
 
@@ -149,24 +156,38 @@ class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElemen
             reusableChildren = children.toMutableList()
         }
         constructor(parent: IVirtualDom.HTMLElement) {
-            reusableChildren = parent.childNodes
-                // .filter { it.generatedBy == null }
-                .toMutableList()
+            reusableChildren =
+                parent.childNodes
+                    // .filter { it.generatedBy == null }
+                    .toMutableList()
         }
+
         fun processStillUsed(childProducers: List<IProducesHtml>) {
-            val stillUsedElements: HashSet<IVirtualDom.HTMLElement> = childProducers.mapNotNull { generatedHtmlMap.getOutput(it) }.toHashSet()
+            val stillUsedElements: HashSet<IVirtualDom.HTMLElement> =
+                childProducers
+                    .mapNotNull {
+                        generatedHtmlMap.getOutput(
+                            it
+                        )
+                    }.toHashSet()
             reusableChildren.removeAll(stillUsedElements)
             reusableChildren.filterIsInstance<IVirtualDom.HTMLElement>().forEach { generatedHtmlMap.unassign(it) }
         }
+
         fun findReusable(tag: Tag): IVirtualDom.HTMLElement? {
             // TODO only reuse those where the element in .generatedBy was removed/replaced (this is only known after generating all children)
-            val foundIndex = reusableChildren.indexOfFirst { it is IVirtualDom.HTMLElement && generatedHtmlMap.getProducer(it) == null && it.tagName.lowercase() == tag.tagName.lowercase() }
+            val foundIndex =
+                reusableChildren.indexOfFirst {
+                    it is IVirtualDom.HTMLElement && generatedHtmlMap.getProducer(it) == null &&
+                        it.tagName.lowercase() == tag.tagName.lowercase()
+                }
             return if (foundIndex >= 0) {
                 reusableChildren.removeAt(foundIndex) as IVirtualDom.HTMLElement
             } else {
                 null
             }
         }
+
         fun findReusableTextNode(text: String): IVirtualDom.Text? {
             val foundIndex = reusableChildren.indexOfFirst { it is IVirtualDom.Text && it.textContent == text }
             return if (foundIndex >= 0) {
@@ -177,9 +198,13 @@ class IncrementalVirtualDOMBuilder(val document: IVirtualDom, existingRootElemen
         }
     }
 
-    private class NodeOrProducer(val producer: IProducesHtml?, val node: IVirtualDom.Node?) {
+    private class NodeOrProducer(
+        val producer: IProducesHtml?,
+        val node: IVirtualDom.Node?,
+    ) {
         companion object {
             fun producer(producer: IProducesHtml) = NodeOrProducer(producer, null)
+
             fun node(node: IVirtualDom.Node) = NodeOrProducer(null, node)
         }
     }
@@ -191,25 +216,33 @@ class GeneratedHtmlMap {
     private val producerIds: MutableMap<IProducesHtml, Long> = HashMap()
     private val idSequence = AtomicLong()
 
-    fun getProducerId(producer: IProducesHtml): Long {
-        return producerIds.getOrPut(producer) { idSequence.incrementAndGet() }
-    }
+    fun getProducerId(producer: IProducesHtml): Long = producerIds.getOrPut(producer) { idSequence.incrementAndGet() }
 
     private var IProducesHtml.generatedHtml: IVirtualDom.HTMLElement?
         get() = producer2element[this]
-        set(value) { if (value == null) producer2element.remove(this) else producer2element[this] = value }
+        set(value) {
+            if (value == null) producer2element.remove(this) else producer2element[this] = value
+        }
 
     private var IVirtualDom.HTMLElement.generatedBy: IProducesHtml?
         get() = element2producer[this]
-        set(value) { if (value == null) element2producer.remove(this) else element2producer[this] = value }
+        set(value) {
+            if (value == null) element2producer.remove(this) else element2producer[this] = value
+        }
 
-    fun reassign(producer: IProducesHtml, output: IVirtualDom.HTMLElement) {
+    fun reassign(
+        producer: IProducesHtml,
+        output: IVirtualDom.HTMLElement,
+    ) {
         unassign(producer)
         unassign(output)
         assign(producer, output)
     }
 
-    fun assign(producer: IProducesHtml, output: IVirtualDom.HTMLElement) {
+    fun assign(
+        producer: IProducesHtml,
+        output: IVirtualDom.HTMLElement,
+    ) {
         require(producer.generatedHtml == null)
         require(output.generatedBy == null)
         producer.generatedHtml = output
@@ -217,12 +250,17 @@ class GeneratedHtmlMap {
     }
 
     fun unassign(producer: IProducesHtml) = producer.generatedHtml?.let { unassign(producer, it) }
+
     fun unassign(output: IVirtualDom.HTMLElement) = output.generatedBy?.let { unassign(it, output) }
 
     fun getProducer(output: IVirtualDom.HTMLElement) = output.generatedBy
+
     fun getOutput(producer: IProducesHtml) = producer.generatedHtml
 
-    private fun unassign(producer: IProducesHtml, output: IVirtualDom.HTMLElement) {
+    private fun unassign(
+        producer: IProducesHtml,
+        output: IVirtualDom.HTMLElement,
+    ) {
         require(producer.generatedHtml == output)
         require(output.generatedBy == producer)
         producer.generatedHtml = null

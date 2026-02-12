@@ -1,6 +1,8 @@
 package org.modelix.parser
 
-class LRClosureTable(val grammar: Grammar) {
+class LRClosureTable(
+    val grammar: Grammar,
+) {
     val kernels = KernelsList()
 
     fun load() {
@@ -21,25 +23,26 @@ class LRClosureTable(val grammar: Grammar) {
         while (kernel.closure.size > oldSize) {
             oldSize = kernel.closure.size
 
-            kernel.closure.values.asSequence()
+            kernel.closure.values
+                .asSequence()
                 .map {
                     Pair(
                         it.nextSymbol() as? INonTerminalSymbol,
                         it.nextNextSymbol(),
                     )
-                }
-                .filter { it.first != null }
+                }.filter { it.first != null }
                 .groupBy { it.first }
                 .forEach { group ->
                     val rules = grammar.getPossibleFirstRules(group.key!!)
                     for (rule in rules) {
                         val positionInRule = PositionInRule(0, rule)
                         val existing = kernel.closure[positionInRule]
-                        kernel.closure[positionInRule] = if (existing == null) {
-                            RuleItem(positionInRule)
-                        } else {
-                            RuleItem(existing.positionInRule)
-                        }
+                        kernel.closure[positionInRule] =
+                            if (existing == null) {
+                                RuleItem(positionInRule)
+                            } else {
+                                RuleItem(existing.positionInRule)
+                            }
                     }
                 }
         }
@@ -87,7 +90,10 @@ class LRClosureTable(val grammar: Grammar) {
         fun getByItems(items: Set<RuleItem>) = kernelsMap[items]
     }
 
-    class Kernel(val index: Int, var items: Set<RuleItem>) {
+    class Kernel(
+        val index: Int,
+        var items: Set<RuleItem>,
+    ) {
         var closure: MutableMap<PositionInRule, RuleItem> = items.associateBy { it.positionInRule }.toMutableMap()
         val gotos: MutableMap<ISymbol, Int> = HashMap()
         val keys: MutableSet<ISymbol> = HashSet()
@@ -96,13 +102,12 @@ class LRClosureTable(val grammar: Grammar) {
 
 fun <T> List<T>.iterateGrowingList(): Iterator<T> = GrowingListIterator<T>(this)
 
-class GrowingListIterator<E>(private val list: List<E>) : Iterator<E> {
+class GrowingListIterator<E>(
+    private val list: List<E>,
+) : Iterator<E> {
     private var i = 0
-    override fun hasNext(): Boolean {
-        return i < list.size
-    }
 
-    override fun next(): E {
-        return list[i++]
-    }
+    override fun hasNext(): Boolean = i < list.size
+
+    override fun next(): E = list[i++]
 }

@@ -41,31 +41,50 @@ open class IncrementalLayoutAfterInsert {
     lateinit var testSuite: N_TestSuite
 
     @Test
-    fun layoutAfterInsert() = runLayoutTest {
-        editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, KnownKeys.Enter))
-        val incrementalText = editor.getRootCell().layout.toString()
-        editor.clearLayoutCache()
-        val nonIncrementalText = editor.getRootCell().layout.toString()
-        assertEquals(nonIncrementalText, incrementalText)
-    }
-
-    private fun runLayoutTest(body: suspend () -> Unit) = runTest {
-        KernelfLanguages.registerAll()
-        branch = PBranch(ModelFacade.newLocalTree(useRoleIds = false), IdGenerator.getInstance(56754)).withIncrementalComputationSupport()
-        ModelData.fromJson(modelJson).load(branch)
-
-        val engine = EditorEngine(IncrementalEngine())
-        KernelfEditor.register(engine)
-        testSuite = branch.computeRead { branch.getArea().getRoot().allChildren.ofType<N_Module>().models.rootNodes.ofType<N_TestSuite>().first() }
-        editor = FrontendEditorComponent(TextEditorServiceImpl(engine, testSuite.untyped().asWritableNode().getModel(), backgroundScope))
-        editor.editNode(testSuite.untypedReference())
-        assertTestItem = branch.computeRead { testSuite.descendants<N_AssertTestItem>().drop(1).first() }
-        editor.flushAndUpdateSelection {
-            val cell = editor.resolveNodeCell(assertTestItem)!!.firstLeaf().nextLeafs(true).first { it.isVisible() }
-            println(cell.toString())
-            CaretSelection(cell.layoutable()!!, 0)
+    fun layoutAfterInsert() =
+        runLayoutTest {
+            editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, KnownKeys.Enter))
+            val incrementalText = editor.getRootCell().layout.toString()
+            editor.clearLayoutCache()
+            val nonIncrementalText = editor.getRootCell().layout.toString()
+            assertEquals(nonIncrementalText, incrementalText)
         }
-        body()
-        KernelfLanguages.languages.forEach { it.unregister() }
-    }
+
+    private fun runLayoutTest(body: suspend () -> Unit) =
+        runTest {
+            KernelfLanguages.registerAll()
+            branch =
+                PBranch(ModelFacade.newLocalTree(useRoleIds = false), IdGenerator.getInstance(56754)).withIncrementalComputationSupport()
+            ModelData.fromJson(modelJson).load(branch)
+
+            val engine = EditorEngine(IncrementalEngine())
+            KernelfEditor.register(engine)
+            testSuite =
+                branch.computeRead {
+                    branch
+                        .getArea()
+                        .getRoot()
+                        .allChildren
+                        .ofType<N_Module>()
+                        .models.rootNodes
+                        .ofType<N_TestSuite>()
+                        .first()
+                }
+            editor =
+                FrontendEditorComponent(TextEditorServiceImpl(engine, testSuite.untyped().asWritableNode().getModel(), backgroundScope))
+            editor.editNode(testSuite.untypedReference())
+            assertTestItem = branch.computeRead { testSuite.descendants<N_AssertTestItem>().drop(1).first() }
+            editor.flushAndUpdateSelection {
+                val cell =
+                    editor
+                        .resolveNodeCell(assertTestItem)!!
+                        .firstLeaf()
+                        .nextLeafs(true)
+                        .first { it.isVisible() }
+                println(cell.toString())
+                CaretSelection(cell.layoutable()!!, 0)
+            }
+            body()
+            KernelfLanguages.languages.forEach { it.unregister() }
+        }
 }

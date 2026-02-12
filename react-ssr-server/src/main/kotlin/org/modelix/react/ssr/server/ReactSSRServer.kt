@@ -44,8 +44,19 @@ fun main() {
 }
 
 interface IRendererFactory {
-    fun createRenderer(incrementalEngine: IIncrementalEngine, nodeRef: RendererCall, parameters: Map<String, List<String>>, coroutineScope: CoroutineScope): IRenderer
-    fun createPageRenderer(incrementalEngine: IIncrementalEngine, pathParts: List<String>, parameters: Map<String, List<String>>, coroutineScope: CoroutineScope): IRenderer
+    fun createRenderer(
+        incrementalEngine: IIncrementalEngine,
+        nodeRef: RendererCall,
+        parameters: Map<String, List<String>>,
+        coroutineScope: CoroutineScope,
+    ): IRenderer
+
+    fun createPageRenderer(
+        incrementalEngine: IIncrementalEngine,
+        pathParts: List<String>,
+        parameters: Map<String, List<String>>,
+        coroutineScope: CoroutineScope,
+    ): IRenderer
 }
 
 interface IRenderer {
@@ -54,20 +65,19 @@ interface IRenderer {
     }
 
     fun <R> runRead(body: () -> R): R
+
     fun render(): ViewModel
+
     suspend fun messageReceived(message: MessageFromClient)
 }
 
 class DefaultRendererFactory : IRendererFactory {
-
     override fun createRenderer(
         incrementalEngine: IIncrementalEngine,
         nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
-    ): IRenderer {
-        return Renderer(nodeRef)
-    }
+    ): IRenderer = Renderer(nodeRef)
 
     override fun createPageRenderer(
         incrementalEngine: IIncrementalEngine,
@@ -80,24 +90,28 @@ class DefaultRendererFactory : IRendererFactory {
         return createRenderer(incrementalEngine, NodeRefRendererCall(pathParts[1]), parameters, coroutineScope)
     }
 
-    class Renderer(val nodeRef: RendererCall) : IRenderer {
-        override fun render(): ViewModel {
-            return ViewModel(
-                children = listOf(
-                    ComponentOrText(
-                        text = "No renderer defined for $nodeRef"
+    class Renderer(
+        val nodeRef: RendererCall,
+    ) : IRenderer {
+        override fun render(): ViewModel =
+            ViewModel(
+                children =
+                    listOf(
+                        ComponentOrText(
+                            text = "No renderer defined for $nodeRef"
+                        )
                     )
-                )
             )
-        }
 
         override suspend fun messageReceived(message: MessageFromClient) {}
+
         override fun <R> runRead(body: () -> R): R = body()
     }
 }
 
-class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFactory()) {
-
+class ReactSSRServer(
+    val rendererFactory: IRendererFactory = DefaultRendererFactory(),
+) {
     private val coroutinesScope = CoroutineScope(Dispatchers.Default)
     private val allUpdaters: MutableSet<() -> Unit> = Collections.synchronizedSet(HashSet())
     var knownComponents: List<String> = emptyList()
@@ -140,30 +154,38 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
             get {
                 val parts: List<String> = call.parameters.getAll("parts").orEmpty()
                 val rootPath = parts.joinToString("/") { ".." }.ifEmpty { "." }
-                val indexHtml = ReactSSRServer::class.java.classLoader.getResourceAsStream("org/modelix/react/ssr/client/index.html")
-                    .use { it.reader().readText() }
-                    .replace("<head>", "<head>\n    <base href=\"$rootPath\">")
+                val indexHtml =
+                    ReactSSRServer::class.java.classLoader
+                        .getResourceAsStream("org/modelix/react/ssr/client/index.html")
+                        .use { it.reader().readText() }
+                        .replace("<head>", "<head>\n    <base href=\"$rootPath\">")
                 call.respondText(text = indexHtml, contentType = ContentType.Text.Html)
             }
 
             webSocket {
-                val parts: List<String> = call.parameters.getAll("parts").orEmpty().filter { it.isNotEmpty() }
+                val parts: List<String> =
+                    call.parameters
+                        .getAll("parts")
+                        .orEmpty()
+                        .filter { it.isNotEmpty() }
                 val incrementalEngine = IncrementalEngine()
                 lateinit var updateFunction: () -> Unit
                 try {
                     val queryParameters = call.request.queryParameters.toMap()
-                    val createRenderer = incrementalEngine.incrementalFunction("createPageRenderer") { _ ->
-                        rendererFactory.createPageRenderer(
-                            incrementalEngine,
-                            parts,
-                            queryParameters,
-                            this
-                        )
-                    }
+                    val createRenderer =
+                        incrementalEngine.incrementalFunction("createPageRenderer") { _ ->
+                            rendererFactory.createPageRenderer(
+                                incrementalEngine,
+                                parts,
+                                queryParameters,
+                                this
+                            )
+                        }
 
                     var previousViewModel: ViewModel? = null
                     var previousText = ""
                     val mutex = Mutex()
+
                     suspend fun sendUpdate(viewModel: ViewModel) {
                         mutex.withLock {
                             if (!isActive) return@withLock
@@ -179,28 +201,31 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
                         }
                     }
 
-                    val createViewModel = incrementalEngine.incrementalFunction("createViewModel") { _ ->
-                        IRenderer.contextIncrementalEngine.computeWith(incrementalEngine) {
-                            createRenderer().render()
+                    val createViewModel =
+                        incrementalEngine.incrementalFunction("createViewModel") { _ ->
+                            IRenderer.contextIncrementalEngine.computeWith(incrementalEngine) {
+                                createRenderer().render()
+                            }
                         }
-                    }
+
                     suspend fun sendUpdate() {
                         if (!isActive) return
-                        val viewModel = try {
-                            createRenderer().runRead {
-                                if (!isActive) return@runRead null
-                                synchronized(incrementalEngine) {
-                                    if (incrementalEngine.isDisposed()) return@runRead null
-                                    createViewModel()
+                        val viewModel =
+                            try {
+                                createRenderer().runRead {
+                                    if (!isActive) return@runRead null
+                                    synchronized(incrementalEngine) {
+                                        if (incrementalEngine.isDisposed()) return@runRead null
+                                        createViewModel()
+                                    }
                                 }
-                            }
-                        } catch (ex: Exception) {
-                            buildViewModel {
-                                component("html.pre") {
-                                    text(ex.stackTraceToString())
+                            } catch (ex: Exception) {
+                                buildViewModel {
+                                    component("html.pre") {
+                                        text(ex.stackTraceToString())
+                                    }
                                 }
-                            }
-                        } ?: return
+                            } ?: return
                         sendUpdate(viewModel)
                     }
                     updateFunction = { launch { sendUpdate() } }
@@ -222,6 +247,7 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
                                     createRenderer().messageReceived(Json.decodeFromString(message))
                                     sendUpdate()
                                 }
+
                                 else -> {}
                             }
                         } catch (ex: Throwable) {
@@ -239,6 +265,9 @@ class ReactSSRServer(val rendererFactory: IRendererFactory = DefaultRendererFact
     }
 }
 
-fun IncrementalEngine.isDisposed(): Boolean {
-    return this::class.java.getDeclaredField("disposed").also { it.isAccessible = true }.get(this) as Boolean
-}
+fun IncrementalEngine.isDisposed(): Boolean =
+    this::class.java
+        .getDeclaredField("disposed")
+        .also {
+            it.isAccessible = true
+        }.get(this) as Boolean

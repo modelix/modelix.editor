@@ -12,7 +12,10 @@ sealed interface ICaretPositionPolicy {
 }
 
 @Serializable
-data class CaretPositionPolicyWithIndex(val policy: ICaretPositionPolicy, val index: Int) : ICaretPositionPolicy {
+data class CaretPositionPolicyWithIndex(
+    val policy: ICaretPositionPolicy,
+    val index: Int,
+) : ICaretPositionPolicy {
     constructor(cellReference: CellReference, index: Int) : this(setOf(cellReference), index)
     constructor(cellReferences: Set<CellReference>, index: Int) : this(
         CaretPositionPolicy(
@@ -22,12 +25,11 @@ data class CaretPositionPolicyWithIndex(val policy: ICaretPositionPolicy, val in
         index
     )
 
-    override fun getBestSelection(editor: FrontendEditorComponent): CaretSelection? {
-        return policy.getBestSelection(editor)?.let {
+    override fun getBestSelection(editor: FrontendEditorComponent): CaretSelection? =
+        policy.getBestSelection(editor)?.let {
             val expectedPos = if (index < 0) it.layoutable.getMaxCaretPos() + index + 1 else index
             if (it.end != expectedPos) CaretSelection(editor, it.layoutable, expectedPos) else it
         }
-    }
 }
 
 @Serializable
@@ -39,23 +41,31 @@ data class CaretPositionPolicy(
     constructor(preferredNode: INode) : this(NodeCellReference(preferredNode.reference))
 
     fun prefer(cellReference: CellReference) = copy(preferredCellRefs = preferredCellRefs + cellReference)
+
     fun avoid(cellReference: CellReference) = copy(avoidedCellRefs = avoidedCellRefs + cellReference)
 
-    fun merge(other: CaretPositionPolicy) = CaretPositionPolicy(
-        avoidedCellRefs + other.avoidedCellRefs,
-        preferredCellRefs + other.preferredCellRefs,
-    )
+    fun merge(other: CaretPositionPolicy) =
+        CaretPositionPolicy(
+            avoidedCellRefs + other.avoidedCellRefs,
+            preferredCellRefs + other.preferredCellRefs,
+        )
 
     override fun getBestSelection(editor: FrontendEditorComponent): CaretSelection? {
-        val candidates = preferredCellRefs
-            .flatMap { editor.cellTree.resolveCell(it) }
-            .flatMap { it.descendantsAndSelf() }
-            .mapNotNull { editor.resolveLayoutable(it) }
+        val candidates =
+            preferredCellRefs
+                .flatMap { editor.cellTree.resolveCell(it) }
+                .flatMap { it.descendantsAndSelf() }
+                .mapNotNull { editor.resolveLayoutable(it) }
 
-        val best = candidates
-            .sortedByDescending { it.cell.isTabTarget() }
-            .sortedBy { it.cell.ancestors(true).filter { isAvoided(it) }.count() }
-            .firstOrNull() ?: return null
+        val best =
+            candidates
+                .sortedByDescending { it.cell.isTabTarget() }
+                .sortedBy {
+                    it.cell
+                        .ancestors(true)
+                        .filter { isAvoided(it) }
+                        .count()
+                }.firstOrNull() ?: return null
 
         return CaretSelection(editor, best, (best.cell.getSelectableText() ?: "").length)
     }
@@ -116,8 +126,16 @@ data class SavedCaretPosition(
     }
 
     companion object {
-        fun saveAndRun(editor: FrontendEditorComponent, body: () -> Unit): SavedCaretPosition? {
-            val savedCaretPosition = editor.getSelection()?.getSelectedCells()?.firstOrNull()?.let { SavedCaretPosition(it) }
+        fun saveAndRun(
+            editor: FrontendEditorComponent,
+            body: () -> Unit,
+        ): SavedCaretPosition? {
+            val savedCaretPosition =
+                editor
+                    .getSelection()
+                    ?.getSelectedCells()
+                    ?.firstOrNull()
+                    ?.let { SavedCaretPosition(it) }
             body()
             return savedCaretPosition
         }

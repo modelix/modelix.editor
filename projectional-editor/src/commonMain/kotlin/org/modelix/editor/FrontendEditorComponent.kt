@@ -46,15 +46,17 @@ open class FrontendEditorComponent(
     private var highlightedLine: IVirtualDom.HTMLElement? = null
     private var highlightedCell: IVirtualDom.HTMLElement? = null
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-    private val uiEventQueue = coroutineScope.consume<JSUIEvent>(capacity = 100, onBufferOverflow = BufferOverflow.DROP_LATEST) { event ->
-        when (event) {
-            is JSKeyboardEvent -> processKeyEvent(event)
-            is JSMouseEvent -> processMouseEvent(event)
+    private val uiEventQueue =
+        coroutineScope.consume<JSUIEvent>(capacity = 100, onBufferOverflow = BufferOverflow.DROP_LATEST) { event ->
+            when (event) {
+                is JSKeyboardEvent -> processKeyEvent(event)
+                is JSMouseEvent -> processMouseEvent(event)
+            }
         }
-    }
-    private val uiUpdateQueue = coroutineScope.consume<Pair<() -> Unit, CompletableDeferred<Unit>>>(capacity = Channel.UNLIMITED) {
-        it.second.completeWith(runCatching { it.first.invoke() })
-    }
+    private val uiUpdateQueue =
+        coroutineScope.consume<Pair<() -> Unit, CompletableDeferred<Unit>>>(capacity = Channel.UNLIMITED) {
+            it.second.completeWith(runCatching { it.first.invoke() })
+        }
     private val updateLoop: AtomicReference<Job?> = AtomicReference(null)
     private val updateLock = Any()
 
@@ -77,21 +79,16 @@ open class FrontendEditorComponent(
         return firstUpdate
     }
 
-    suspend fun flush() {
-        return enqueueUpdate(service.flush(editorId)).await()
-    }
+    suspend fun flush() = enqueueUpdate(service.flush(editorId)).await()
 
-    suspend fun flushRemote() {
-        return enqueueUpdate(service.flush(editorId)).await()
-    }
+    suspend fun flushRemote() = enqueueUpdate(service.flush(editorId)).await()
 
-    suspend fun flushLocal() {
-        return enqueueUpdate(EditorUpdateData()).await()
-    }
+    suspend fun flushLocal() = enqueueUpdate(EditorUpdateData()).await()
 
-    fun getMainLayer(): IVirtualDom.HTMLElement? {
-        return getHtmlElement()?.childNodes?.filterIsInstance<IVirtualDom.HTMLElement>()?.find { it.getClasses().contains(MAIN_LAYER_CLASS_NAME) }
-    }
+    fun getMainLayer(): IVirtualDom.HTMLElement? =
+        getHtmlElement()?.childNodes?.filterIsInstance<IVirtualDom.HTMLElement>()?.find {
+            it.getClasses().contains(MAIN_LAYER_CLASS_NAME)
+        }
 
     suspend fun flushAndUpdateSelection(newSelection: () -> Selection?) {
         val updateData = service.flush(editorId)
@@ -120,9 +117,7 @@ open class FrontendEditorComponent(
         openNode(node.toSerialized()).await()
     }
 
-    fun enqueueUpdate(updateData: EditorUpdateData): Deferred<Unit> {
-        return enqueueUpdate { updateNow(updateData) }
-    }
+    fun enqueueUpdate(updateData: EditorUpdateData): Deferred<Unit> = enqueueUpdate { updateNow(updateData) }
 
     fun enqueueUpdate(body: () -> Unit): Deferred<Unit> {
         val result = CompletableDeferred<Unit>()
@@ -189,11 +184,12 @@ open class FrontendEditorComponent(
 
     private fun updateSelectionView() {
         if (selectionView?.selection != getSelection()) {
-            selectionView = when (val selection = getSelection()) {
-                is CaretSelection -> CaretSelectionView(selection, this)
-                is CellSelection -> CellSelectionView(selection, this)
-                else -> null
-            }
+            selectionView =
+                when (val selection = getSelection()) {
+                    is CaretSelection -> CaretSelectionView(selection, this)
+                    is CellSelection -> CellSelectionView(selection, this)
+                    else -> null
+                }
         }
     }
 
@@ -243,9 +239,7 @@ open class FrontendEditorComponent(
         return true
     }
 
-    private fun processKeyUp(event: JSKeyboardEvent): Boolean {
-        return true
-    }
+    private fun processKeyUp(event: JSKeyboardEvent): Boolean = true
 
     private suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
         try {
@@ -288,36 +282,50 @@ open class FrontendEditorComponent(
                     val cellAbsoluteBounds = htmlElement.getInnerBounds()
                     val relativeClickX = event.x - cellAbsoluteBounds.x
                     val characterWidth = cellAbsoluteBounds.width / text.length
-                    val caretPos = (relativeClickX / characterWidth).roundToInt()
-                        .coerceAtMost(layoutable.cell.getMaxCaretPos())
+                    val caretPos =
+                        (relativeClickX / characterWidth)
+                            .roundToInt()
+                            .coerceAtMost(layoutable.cell.getMaxCaretPos())
                     changeSelection(CaretSelection(this, layoutable, caretPos))
                     return true
                 }
+
                 is Layoutable -> {
                     if (selectClosestInLine(producer.getLine() ?: continue, event.x)) return true
                 }
+
                 is TextLine -> {
                     if (selectClosestInLine(producer, event.x)) return true
                 }
-                else -> continue
+
+                else -> {
+                    continue
+                }
             }
         }
         return false
     }
 
-    private fun selectClosestInLine(line: TextLine, absoluteClickX: Double): Boolean {
+    private fun selectClosestInLine(
+        line: TextLine,
+        absoluteClickX: Double,
+    ): Boolean {
         val words = line.words.filterIsInstance<LayoutableCell>()
-        val closest = words.map { it to generatedHtmlMap.getOutput(it)!! }.minByOrNull {
-            min(
-                abs(absoluteClickX - it.second.getOuterBounds().minX()),
-                abs(absoluteClickX - it.second.getOuterBounds().maxX()),
-            )
-        } ?: return false
-        val caretPos = if (absoluteClickX <= closest.second.getOuterBounds().minX()) {
-            0
-        } else {
-            closest.first.cell.getSelectableText()?.length ?: 0
-        }
+        val closest =
+            words.map { it to generatedHtmlMap.getOutput(it)!! }.minByOrNull {
+                min(
+                    abs(absoluteClickX - it.second.getOuterBounds().minX()),
+                    abs(absoluteClickX - it.second.getOuterBounds().maxX()),
+                )
+            } ?: return false
+        val caretPos =
+            if (absoluteClickX <= closest.second.getOuterBounds().minX()) {
+                0
+            } else {
+                closest.first.cell
+                    .getSelectableText()
+                    ?.length ?: 0
+            }
         changeSelection(CaretSelection(this, closest.first, caretPos))
         return true
     }

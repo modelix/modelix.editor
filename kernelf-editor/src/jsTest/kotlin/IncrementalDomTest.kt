@@ -34,10 +34,11 @@ class IncrementalDomTest {
         KernelfApiJS.updateNodeAsDom(cellTreeState, testSuites.first().unwrap(), containerElement)
         val elements2 = containerElement.descendants().toList()
         assertEquals(elements1.size, elements2.size)
-        val expectedChanges = elements1.indices.joinToString {
-            val element2 = elements2[it]
-            if (element2 is Text && element2.textContent == "changed") "C" else "-"
-        }
+        val expectedChanges =
+            elements1.indices.joinToString {
+                val element2 = elements2[it]
+                if (element2 is Text && element2.textContent == "changed") "C" else "-"
+            }
         val actualChanges = elements1.indices.joinToString { if (elements1[it] === elements2[it]) "-" else "C" }
         println(actualChanges)
         assertEquals(expectedChanges, actualChanges)
