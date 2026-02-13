@@ -27,9 +27,22 @@ object TestGrammar {
         addRule(plusExpression, SubConceptsSymbol(expression), ConstantSymbol("+"), SubConceptsSymbol(expression))
         addRule(mulExpression, SubConceptsSymbol(expression), ConstantSymbol("*"), SubConceptsSymbol(expression))
         addRule(parensExpression, ConstantSymbol("("), SubConceptsSymbol(expression), ConstantSymbol(")"))
-        addRule(listLiteral, ConstantSymbol("list"), ConstantSymbol("["), ListSymbol(SubConceptsSymbol(expression), ConstantSymbol(",")), ConstantSymbol("]"))
+        addRule(
+            listLiteral,
+            ConstantSymbol("list"),
+            ConstantSymbol("["),
+            ListSymbol(SubConceptsSymbol(expression), ConstantSymbol(",")),
+            ConstantSymbol("]")
+        )
         addRule(stringLiteral, ConstantSymbol("\""), RegexSymbol(RegexSymbol.defaultStringLiteralRegex), ConstantSymbol("\""))
-        addRule(ternaryExpression, SubConceptsSymbol(expression), ConstantSymbol("?"), SubConceptsSymbol(expression), ConstantSymbol(":"), SubConceptsSymbol(expression))
+        addRule(
+            ternaryExpression,
+            SubConceptsSymbol(expression),
+            ConstantSymbol("?"),
+            SubConceptsSymbol(expression),
+            ConstantSymbol(":"),
+            SubConceptsSymbol(expression)
+        )
 
         addRule(localVariableDeclarationStatement, SubConceptsSymbol(localVariableDeclaration), ConstantSymbol(";"))
         addRule(
@@ -45,7 +58,10 @@ object TestGrammar {
         addRule(integerType, ConstantSymbol("int"))
     }
 
-    fun getParser(startConcept: IConcept, disambiguator: IDisambiguator = IDisambiguator.default()): LRParser {
+    fun getParser(
+        startConcept: IConcept,
+        disambiguator: IDisambiguator = IDisambiguator.default(),
+    ): LRParser {
         val grammar = Grammar(startConcept, rules)
         val closureTable = LRClosureTable(grammar)
         closureTable.load()
@@ -54,7 +70,10 @@ object TestGrammar {
         return LRParser(parsingTable, disambiguator)
     }
 
-    fun addRule(concept: IConcept, vararg symbols: ISymbol) {
+    fun addRule(
+        concept: IConcept,
+        vararg symbols: ISymbol,
+    ) {
         rules.add(ProductionRule(ExactConceptSymbol(concept), symbols.toList()))
     }
 }

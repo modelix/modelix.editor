@@ -5,8 +5,10 @@ import kotlinx.html.div
 import kotlinx.html.span
 import kotlinx.html.style
 
-class CellSelectionView(selection: CellSelection, val editor: EditorComponent) : SelectionView<CellSelection>(selection) {
-
+class CellSelectionView(
+    selection: CellSelection,
+    val editor: FrontendEditorComponent,
+) : SelectionView<CellSelection>(selection) {
     override fun update() {
         val mainLayerBounds = editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO
         val selectionDom = editor.generatedHtmlMap.getOutput(this) ?: return

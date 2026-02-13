@@ -18,7 +18,9 @@ import javax.swing.SwingUtilities
 import kotlin.math.max
 import kotlin.math.min
 
-abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
+abstract class EditorChangeDetector(
+    val coroutineScope: CoroutineScope,
+) {
     var lastImage: BufferedImage? = null
         private set
     var visibleYRange: Range? = null
@@ -29,13 +31,24 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
     protected abstract val editorComponent: EditorComponent?
 
     protected abstract suspend fun handleFullChange(newImage: BufferedImage?)
-    protected abstract suspend fun handlePartialChange(newImage: BufferedImage, offsetX: Int, offsetY: Int)
 
-    fun setVisibleYRange(minY: Int, maxY: Int) {
+    protected abstract suspend fun handlePartialChange(
+        newImage: BufferedImage,
+        offsetX: Int,
+        offsetY: Int,
+    )
+
+    fun setVisibleYRange(
+        minY: Int,
+        maxY: Int,
+    ) {
         visibleYRange = Range(minY, maxY)
     }
 
-    protected suspend fun handleChange(newImage: BufferedImage?, changedRect: Rectangle?) {
+    protected suspend fun handleChange(
+        newImage: BufferedImage?,
+        changedRect: Rectangle?,
+    ) {
         if (changedRect == null) {
             handleFullChange(newImage)
         } else {
@@ -118,17 +131,19 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
                         height - 1
                     )
                 }
-                ) until (
+            ) until (
                 (
                     if (rangeY == null) {
                         height
                     } else {
                         limitValue(
-                            rangeY.end + 1, 0, height
+                            rangeY.end + 1,
+                            0,
+                            height
                         )
                     }
-                    )
-                )) {
+                )
+            )) {
                 oldImage.raster.getPixels(0, y, oldImage.width, 1, oldPixelData)
                 newImage!!.raster.getPixels(0, y, newImage!!.width, 1, newPixelData)
                 val lineChanged = !(oldPixelData.contentEquals(newPixelData))
@@ -138,7 +153,10 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
                     maxChangedY = max(maxChangedY.toDouble(), y.toDouble()).toInt()
                     var x = 0
                     while (x < oldPixelData.size) {
-                        if (oldPixelData[x] != newPixelData[x] || oldPixelData[1 + x] != newPixelData[1 + x] || oldPixelData[2 + x] != newPixelData[2 + x] || oldPixelData[3 + x] != newPixelData[3 + x]) {
+                        if (oldPixelData[x] != newPixelData[x] || oldPixelData[1 + x] != newPixelData[1 + x] ||
+                            oldPixelData[2 + x] != newPixelData[2 + x] ||
+                            oldPixelData[3 + x] != newPixelData[3 + x]
+                        ) {
                             minChangedX = min(minChangedX.toDouble(), (x / 4).toDouble()).toInt()
                             maxChangedX = max(maxChangedX.toDouble(), (x / 4).toDouble()).toInt()
                         }
@@ -163,7 +181,7 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
                                 maxChangedY - minChangedY + 1
                             )
                         }
-                        )
+                    )
                 )
             }
         }
@@ -227,7 +245,10 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
         return img
     }
 
-    class Range(start: Int, end: Int) {
+    class Range(
+        start: Int,
+        end: Int,
+    ) {
         val start: Int
         val end: Int
 
@@ -242,8 +263,10 @@ abstract class EditorChangeDetector(val coroutineScope: CoroutineScope) {
     }
 
     companion object {
-        private fun limitValue(value: Int, min: Int, max: Int): Int {
-            return max(min(value.toDouble(), max.toDouble()), min.toDouble()).toInt()
-        }
+        private fun limitValue(
+            value: Int,
+            min: Int,
+            max: Int,
+        ): Int = max(min(value.toDouble(), max.toDouble()), min.toDouble()).toInt()
     }
 }

@@ -7,11 +7,13 @@ modelix-mps-buildtools = { id = "org.modelix.mps.build-tools", version.ref = "mo
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlinx-rpc" }
 
 [versions]
 modelixCore = "18.2.0"
 modelixBuildtools="2.0.1"
 kotlin = "2.2.21"
+kotlinx-rpc = "0.10.1"
 
 [libraries]
 modelix-model-api = { group = "org.modelix", name = "model-api", version.ref = "modelixCore" }
@@ -31,3 +33,11 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.4.0" }
 playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.58.0" }
 testcontainers = { group = "org.testcontainers", name = "testcontainers", version = "2.0.3" }
+
+# krpc
+kotlinx-rpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-core", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-client", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-server", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-ktor-client = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-client", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-ktor-server = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-ktor-server", version.ref = "kotlinx-rpc" }
+kotlinx-rpc-krpc-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-rpc-krpc-serialization-json", version.ref = "kotlinx-rpc" }

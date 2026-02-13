@@ -6,6 +6,7 @@ import org.modelix.model.api.getAllConcepts
 import kotlin.collections.plusAssign
 
 private val LOG = KotlinLogging.logger { }
+
 class Grammar {
     private val rules = ArrayList<ProductionRule>()
     private val existingLists = HashSet<ListSymbol>()
@@ -19,7 +20,13 @@ class Grammar {
         // if (forCodeCompletion) modifyForCodeCompletion()
         addGoal(startConcept)
         follows = computeFollows()
-        knownConstants = rules.asSequence().flatMap { it.symbols }.filterIsInstance<ConstantSymbol>().map { it.text }.toSet()
+        knownConstants =
+            rules
+                .asSequence()
+                .flatMap { it.symbols }
+                .filterIsInstance<ConstantSymbol>()
+                .map { it.text }
+                .toSet()
     }
 
     private fun modifyForCodeCompletion() {
@@ -53,7 +60,12 @@ class Grammar {
 
     private fun addRule(rule: ProductionRule) {
         require(rule.head !is SubConceptsSymbol) { "${rule.head} is only allowed on the right hand side of a rule. Invalid rule: $rule" }
-        if (rule.symbols.asSequence().flatMap { it.leafSymbols() }.filterIsInstance<ConstantSymbol>().any { it.text.isBlank() }) {
+        if (rule.symbols
+                .asSequence()
+                .flatMap { it.leafSymbols() }
+                .filterIsInstance<ConstantSymbol>()
+                .any { it.text.isBlank() }
+        ) {
             LOG.warn { "Ignoring rule with empty constant: $rule" }
             return
         }
@@ -95,21 +107,21 @@ class Grammar {
     fun getPossibleFollowingTerminals(nonTerminal: INonTerminalSymbol): Set<ITerminalSymbol> = follows[nonTerminal] ?: emptySet()
 
     private val possibleFirstTokensCache = HashMap<INonTerminalSymbol, Set<ITerminalSymbol>>()
-    fun getPossibleFirstTerminalSymbols(nonTerminal: INonTerminalSymbol): Set<ITerminalSymbol> {
-        return possibleFirstTokensCache.getOrPut(nonTerminal) {
+
+    fun getPossibleFirstTerminalSymbols(nonTerminal: INonTerminalSymbol): Set<ITerminalSymbol> =
+        possibleFirstTokensCache.getOrPut(nonTerminal) {
             LinkedHashSet<ISymbol>()
                 .also { collectPossibleFirstSymbols(nonTerminal, HashSet(), it, HashSet()) }
                 .filterIsInstance<ITerminalSymbol>()
                 .toSet()
         }
-    }
 
     private val possibleFirstRulesCache = HashMap<INonTerminalSymbol, Set<ProductionRule>>()
-    fun getPossibleFirstRules(nonTerminal: INonTerminalSymbol): Set<ProductionRule> {
-        return possibleFirstRulesCache.getOrPut(nonTerminal) {
+
+    fun getPossibleFirstRules(nonTerminal: INonTerminalSymbol): Set<ProductionRule> =
+        possibleFirstRulesCache.getOrPut(nonTerminal) {
             LinkedHashSet<ProductionRule>().also { collectPossibleFirstSymbols(nonTerminal, HashSet(), HashSet(), it) }
         }
-    }
 
     private fun computeFollows(): Map<INonTerminalSymbol, Set<ITerminalSymbol>> {
         val result = HashMap<INonTerminalSymbol, MutableSet<ITerminalSymbol>>()
@@ -158,6 +170,7 @@ class Grammar {
                     result.add(symbol)
                     break
                 }
+
                 is INonTerminalSymbol -> {
                     val firsts = getPossibleFirstTerminalSymbols(symbol)
                     epsilonInSymbolFirsts = epsilonInSymbolFirsts || firsts.contains(EmptySymbol)
@@ -193,6 +206,7 @@ class Grammar {
                         firstSymbols.add(firstSymbol)
                         return
                     }
+
                     is INonTerminalSymbol -> {
                         val newSymbols = LinkedHashSet<ISymbol>()
                         collectPossibleFirstSymbols(firstSymbol, visited, newSymbols, firstRules)
@@ -211,20 +225,20 @@ class Grammar {
     }
 
     private val getRulesForNonTerminalCache = HashMap<INonTerminalSymbol, List<ProductionRule>>()
-    fun getRulesForNonTerminal(nonTerminal: INonTerminalSymbol): List<ProductionRule> {
-        return getRulesForNonTerminalCache.getOrPut(nonTerminal) {
+
+    fun getRulesForNonTerminal(nonTerminal: INonTerminalSymbol): List<ProductionRule> =
+        getRulesForNonTerminalCache.getOrPut(nonTerminal) {
             rules.filter {
                 it.head == nonTerminal
             }
         }
-    }
 
     private val getRulesContainingNonTerminalCache = HashMap<INonTerminalSymbol, List<ProductionRule>>()
-    fun getRulesContainingNonTerminal(nonTerminal: INonTerminalSymbol): List<ProductionRule> {
-        return getRulesContainingNonTerminalCache.getOrPut(nonTerminal) {
+
+    fun getRulesContainingNonTerminal(nonTerminal: INonTerminalSymbol): List<ProductionRule> =
+        getRulesContainingNonTerminalCache.getOrPut(nonTerminal) {
             rules.filter {
                 it.symbols.any { it == nonTerminal }
             }
         }
-    }
 }

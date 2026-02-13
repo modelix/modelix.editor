@@ -1,12 +1,24 @@
 package org.modelix.editor
 
-import org.modelix.model.api.IConceptReference
-import org.modelix.model.api.INodeReference
+import kotlinx.serialization.Serializable
+import org.modelix.model.api.ConceptReference
 
-interface ICellTemplateReference
+@Serializable
+sealed interface ICellTemplateReference
 
-data class RooCellTemplateReference(val conceptEditor: ConceptEditor, val subConcept: IConceptReference) : ICellTemplateReference
-data class ChildCellTemplateReference(val parent: ICellTemplateReference, val index: Int) : ICellTemplateReference
-data class SeparatorCellTemplateReference(val parent: ICellTemplateReference) : ICellTemplateReference
+@Serializable
+data class RooCellTemplateReference(
+    val conceptEditorId: Long,
+    val subConcept: ConceptReference,
+) : ICellTemplateReference
 
-data class TemplateCellReference(val template: ICellTemplateReference, val node: INodeReference) : CellReference()
+@Serializable
+data class ChildCellTemplateReference(
+    val parent: ICellTemplateReference,
+    val index: Int,
+) : ICellTemplateReference
+
+@Serializable
+data class SeparatorCellTemplateReference(
+    val parent: ICellTemplateReference,
+) : ICellTemplateReference

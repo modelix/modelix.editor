@@ -19,7 +19,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 class PagesTest {
-
     companion object {
         var mps: GenericContainer<*>? = null
         var playwright: Playwright? = null
@@ -28,16 +27,20 @@ class PagesTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll() {
-            mps = GenericContainer("modelix/mps-vnc-baseimage:0.9.4-mps${System.getenv("MPS_VERSION")}")
-                .withCopyFileToContainer(MountableFile.forHostPath(File(System.getenv("MODELIX_MPS_PLUGINS_PATH")).toPath()), "/mps/plugins")
-                .withCopyFileToContainer(MountableFile.forHostPath(File(System.getenv("MODELIX_TEST_LANGUAGES_PATH")).toPath()), "/mps-languages")
-                .withExposedPorts(43595)
+            mps =
+                GenericContainer("modelix/mps-vnc-baseimage:0.9.4-mps2023.2")
+                    .withCopyFileToContainer(
+                        MountableFile.forHostPath(File(System.getenv("MODELIX_MPS_PLUGINS_PATH")).toPath()),
+                        "/mps/plugins"
+                    ).withCopyFileToContainer(
+                        MountableFile.forHostPath(File(System.getenv("MODELIX_TEST_LANGUAGES_PATH")).toPath()),
+                        "/mps-languages"
+                    ).withExposedPorts(43595)
 //            .waitingFor(Wait.forListeningPort().withStartupTimeout(3.minutes.toJavaDuration()))
-                .waitingFor(Wait.forHttp("/pages/modelix/test/modules-list/").withStartupTimeout(3.minutes.toJavaDuration()))
-                .withLogConsumer {
-                    println(it.utf8StringWithoutLineEnding)
-                }
-                .also { it.start() }
+                    .waitingFor(Wait.forHttp("/pages/modelix/test/modules-list/").withStartupTimeout(3.minutes.toJavaDuration()))
+                    .withLogConsumer {
+                        println(it.utf8StringWithoutLineEnding)
+                    }.also { it.start() }
             playwright = Playwright.create()
             browser = playwright!!.chromium().launch()
         }
@@ -55,29 +58,31 @@ class PagesTest {
     }
 
     @Test
-    fun `custom page is available`() = runBrowserTest("pages/modelix/test/modules-list/") { page ->
-        page.locator("ul").waitFor()
-        val content = page.content()
-        println(content)
-        assertTrue(content.contains("""<li class="module">"""))
-        assertTrue(content.contains("""Module: org.modelix.mps.react"""))
-    }
+    fun `custom page is available`() =
+        runBrowserTest("pages/modelix/test/modules-list/") { page ->
+            page.locator("ul").waitFor()
+            val content = page.content()
+            println(content)
+            assertTrue(content.contains("""<li class="module">"""))
+            assertTrue(content.contains("""Module: org.modelix.mps.react"""))
+        }
 
     @Test
-    fun `text field is editable`() = runBrowserTest("pages/modelix/test/text-field/") { page ->
-        val textField = page.locator("input")
-        val readOnlyText = page.locator("div[class='name']")
-        textField.waitFor()
-        val content = page.content()
-        println(content)
-        assertEquals("MyClass", textField.getAttribute("value"))
-        assertEquals("MyClass", readOnlyText.textContent())
+    fun `text field is editable`() =
+        runBrowserTest("pages/modelix/test/text-field/") { page ->
+            val textField = page.locator("input")
+            val readOnlyText = page.locator("div[class='name']")
+            textField.waitFor()
+            val content = page.content()
+            println(content)
+            assertEquals("MyClass", textField.getAttribute("value"))
+            assertEquals("MyClass", readOnlyText.textContent())
 
-        textField.fill("MyChangedClass")
-        page.locator("div:has-text('MyChangedClass')[class='name']").waitFor()
-        assertEquals("MyChangedClass", textField.getAttribute("value"))
-        assertEquals("MyChangedClass", readOnlyText.textContent())
-    }
+            textField.fill("MyChangedClass")
+            page.locator("div:has-text('MyChangedClass')[class='name']").waitFor()
+            assertEquals("MyChangedClass", textField.getAttribute("value"))
+            assertEquals("MyChangedClass", readOnlyText.textContent())
+        }
 
     suspend fun Page.waitForContent(expected: String) {
         for (i in 1..10) {
@@ -87,7 +92,10 @@ class PagesTest {
         error("Content not found.\n\n${content()}")
     }
 
-    private fun runBrowserTest(path: String, body: suspend (Page) -> Unit) = runTest {
+    private fun runBrowserTest(
+        path: String,
+        body: suspend (Page) -> Unit,
+    ) = runTest {
         browser!!.newPage().use { page ->
             page.navigate("http://localhost:${mps!!.firstMappedPort}/$path")
             body(page)

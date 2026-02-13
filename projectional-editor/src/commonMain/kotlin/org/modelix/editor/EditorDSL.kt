@@ -8,16 +8,21 @@ import org.modelix.model.api.INode
 import kotlin.jvm.JvmOverloads
 
 @JvmOverloads
-fun <NodeT : ITypedNode, ConceptT : IConceptOfTypedNode<NodeT>> LanguageAspectsBuilder<*>.editor(concept: ConceptT, applicableToSubConcepts: Boolean = false, body: NotationRootCellTemplateBuilder<NodeT, ConceptT>.() -> Unit): ConceptEditor {
-    return aspects.getAspect(language, EditorAspect).conceptEditor(concept, applicableToSubConcepts = applicableToSubConcepts, body)
-}
+fun <NodeT : ITypedNode, ConceptT : IConceptOfTypedNode<NodeT>> LanguageAspectsBuilder<*>.editor(
+    concept: ConceptT,
+    applicableToSubConcepts: Boolean = false,
+    body: NotationRootCellTemplateBuilder<NodeT, ConceptT>.() -> Unit,
+): ConceptEditor = aspects.getAspect(language, EditorAspect).conceptEditor(concept, applicableToSubConcepts = applicableToSubConcepts, body)
 
 @JvmOverloads
-fun LanguageAspectsBuilder<*>.editor(concept: IConcept, applicableToSubConcepts: Boolean = false, body: NotationRootCellTemplateBuilder<INode, IConcept>.() -> Unit): ConceptEditor {
-    return aspects.getAspect(language, EditorAspect).conceptEditor(concept, applicableToSubConcepts = applicableToSubConcepts, body)
-}
+fun LanguageAspectsBuilder<*>.editor(
+    concept: IConcept,
+    applicableToSubConcepts: Boolean = false,
+    body: NotationRootCellTemplateBuilder<INode, IConcept>.() -> Unit,
+): ConceptEditor = aspects.getAspect(language, EditorAspect).conceptEditor(concept, applicableToSubConcepts = applicableToSubConcepts, body)
 
 interface ModelAccessBuilder {
     fun get(body: () -> String?)
+
     fun set(body: (String?) -> Unit)
 }

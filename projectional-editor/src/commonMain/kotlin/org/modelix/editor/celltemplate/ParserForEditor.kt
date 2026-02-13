@@ -12,24 +12,35 @@ import org.modelix.parser.LRTable
 import org.modelix.parser.ProductionRule
 import org.modelix.parser.createParseTable
 
-class ParserForEditor(val engine: EditorEngine) {
+class ParserForEditor(
+    val engine: EditorEngine,
+) {
     private var parseTables = HashMap<Pair<IConcept, Boolean>, LRTable>()
 
-    private fun getParseTable(startConcept: IConcept, forCodeCompletion: Boolean): LRTable {
-        return runSynchronized(parseTables) {
+    private fun getParseTable(
+        startConcept: IConcept,
+        forCodeCompletion: Boolean,
+    ): LRTable =
+        runSynchronized(parseTables) {
             parseTables.getOrPut(startConcept to forCodeCompletion) {
                 val rules = ArrayList<ProductionRule>()
                 loadRulesFromSubconcepts(rules, startConcept, HashSet(), engine)
                 Grammar(startConcept, rules, forCodeCompletion = forCodeCompletion).createParseTable()
             }
         }
-    }
 
-    fun getParser(startConcept: IConcept, forCodeCompletion: Boolean, disambiguator: IDisambiguator = IDisambiguator.default()): LRParser {
-        return LRParser(getParseTable(startConcept, forCodeCompletion), disambiguator)
-    }
+    fun getParser(
+        startConcept: IConcept,
+        forCodeCompletion: Boolean,
+        disambiguator: IDisambiguator = IDisambiguator.default(),
+    ): LRParser = LRParser(getParseTable(startConcept, forCodeCompletion), disambiguator)
 
-    private fun loadRulesFromSubconcepts(rules: MutableList<ProductionRule>, concept: IConcept, visited: MutableSet<IConcept>, engine: EditorEngine) {
+    private fun loadRulesFromSubconcepts(
+        rules: MutableList<ProductionRule>,
+        concept: IConcept,
+        visited: MutableSet<IConcept>,
+        engine: EditorEngine,
+    ) {
         if (visited.contains(concept)) return
         for (subConcept in concept.getInstantiatableSubConcepts()) {
             loadRules(rules, subConcept, visited, engine)
@@ -37,7 +48,12 @@ class ParserForEditor(val engine: EditorEngine) {
         visited.add(concept)
     }
 
-    private fun loadRules(rules: MutableList<ProductionRule>, concept: IConcept, visited: MutableSet<IConcept>, engine: EditorEngine) {
+    private fun loadRules(
+        rules: MutableList<ProductionRule>,
+        concept: IConcept,
+        visited: MutableSet<IConcept>,
+        engine: EditorEngine,
+    ) {
         if (visited.contains(concept)) return
         visited.add(concept)
 
@@ -49,7 +65,12 @@ class ParserForEditor(val engine: EditorEngine) {
             rules.add(rule)
         }
 
-        val childConcepts = cellModel.getGrammarSymbols().leafSymbols().filterIsInstance<ChildCellTemplate>().map { it.link.targetConcept }
+        val childConcepts =
+            cellModel
+                .getGrammarSymbols()
+                .leafSymbols()
+                .filterIsInstance<ChildCellTemplate>()
+                .map { it.link.targetConcept }
         for (childConcept in childConcepts) {
             loadRulesFromSubconcepts(rules, childConcept, visited, engine)
         }

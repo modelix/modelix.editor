@@ -11,27 +11,29 @@ import org.modelix.metamodel.setTypedPropertyValue
 import org.modelix.model.api.INode
 import org.modelix.model.api.IProperty
 
-fun INode.getBooleanPropertyValue(property: IProperty): Boolean {
-    return getTypedPropertyValue(TypedPropertyAdapter(property, MandatoryBooleanPropertySerializer))
-}
+fun INode.getBooleanPropertyValue(property: IProperty): Boolean =
+    getTypedPropertyValue(TypedPropertyAdapter(property, MandatoryBooleanPropertySerializer))
 
-fun INode.setBooleanPropertyValue(property: IProperty, value: Boolean?) {
-    return setTypedPropertyValue(TypedPropertyAdapter(property, OptionalBooleanPropertySerializer), value)
-}
+fun INode.setBooleanPropertyValue(
+    property: IProperty,
+    value: Boolean?,
+) = setTypedPropertyValue(TypedPropertyAdapter(property, OptionalBooleanPropertySerializer), value)
 
-fun INode.getIntPropertyValue(property: IProperty): Int {
-    return getTypedPropertyValue(TypedPropertyAdapter(property, MandatoryIntPropertySerializer))
-}
+fun INode.getIntPropertyValue(property: IProperty): Int =
+    getTypedPropertyValue(TypedPropertyAdapter(property, MandatoryIntPropertySerializer))
 
-fun INode.setIntPropertyValue(property: IProperty, value: Int?) {
-    return setTypedPropertyValue(TypedPropertyAdapter(property, OptionalIntPropertySerializer), value)
-}
+fun INode.setIntPropertyValue(
+    property: IProperty,
+    value: Int?,
+) = setTypedPropertyValue(TypedPropertyAdapter(property, OptionalIntPropertySerializer), value)
 
 class TypedPropertyAdapter<ValueT>(
     private val untypedProperty: IProperty,
     val serializer: IPropertyValueSerializer<ValueT>,
 ) : ITypedProperty<ValueT> {
     override fun untyped() = untypedProperty
+
     override fun serializeValue(value: ValueT) = serializer.serialize(value)
+
     override fun deserializeValue(serialized: String?) = serializer.deserialize(serialized)
 }

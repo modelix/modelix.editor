@@ -21,6 +21,7 @@ plugins {
     id("com.dorongold.task-tree") version "4.0.1"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.rpc) apply false
     id("org.jetbrains.intellij") version "1.17.4" apply false
     alias(libs.plugins.npm.publish) apply false
 }
@@ -61,7 +62,8 @@ fun computeVersion(): Any {
 }
 
 val tsModelApiPath = rootDir.parentFile.resolve("modelix.core").resolve("ts-model-api")
-val tsModelApiVersion = libs.versions.modelixCore.get() // if (tsModelApiPath.exists()) "file:${tsModelApiPath.absolutePath}" else libs.versions.modelixCore.get()
+val tsModelApiVersion = libs.versions.modelixCore.get()
+// if (tsModelApiPath.exists()) "file:${tsModelApiPath.absolutePath}" else libs.versions.modelixCore.get()
 ext.set("ts-model-api.version", tsModelApiVersion)
 
 subprojects {
@@ -83,11 +85,12 @@ allprojects {
             if (project.hasProperty("artifacts.itemis.cloud.user")) {
                 maven {
                     name = "itemis"
-                    url = if (version.toString().contains("SNAPSHOT")) {
-                        uri("https://artifacts.itemis.cloud/repository/maven-mps-snapshots/")
-                    } else {
-                        uri("https://artifacts.itemis.cloud/repository/maven-mps-releases/")
-                    }
+                    url =
+                        if (version.toString().contains("SNAPSHOT")) {
+                            uri("https://artifacts.itemis.cloud/repository/maven-mps-snapshots/")
+                        } else {
+                            uri("https://artifacts.itemis.cloud/repository/maven-mps-releases/")
+                        }
                     credentials {
                         username = project.findProperty("artifacts.itemis.cloud.user").toString()
                         password = project.findProperty("artifacts.itemis.cloud.pw").toString()
@@ -151,7 +154,7 @@ rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlu
 copyMps()
 
 // make all 'packJsPackage' tasks depend on all 'kotlinNodeJsSetup' tasks, because gradle complained about this being missing
-tasks.register("setupNodeEverywhere") {
+tasks.register<Task>("setupNodeEverywhere") {
     dependsOn(":kernelf-apigen:kotlinNodeJsSetup")
     dependsOn(":kernelf-editor:kotlinNodeJsSetup")
     dependsOn(":parser:kotlinNodeJsSetup")

@@ -64,11 +64,12 @@ tasks {
 
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
-        val installMpsPlugin = register<Sync>("installMpsPlugin") {
-            dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
-            into(pluginDir.resolve(project.name))
-        }
+        val installMpsPlugin =
+            register<Sync>("installMpsPlugin") {
+                dependsOn(prepareSandbox)
+                from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+                into(pluginDir.resolve(project.name))
+            }
         register("installMpsDevPlugins") {
             dependsOn(installMpsPlugin)
         }
@@ -82,7 +83,14 @@ tasks {
             .from(patchPluginXml.flatMap { it.outputFiles })
 
         doLast {
-            val jarsInBasePlugin = defaultDestinationDir.get().resolve(project(":editor-common-mps").name).resolve("lib").list()?.toHashSet() ?: emptySet<String>()
+            val jarsInBasePlugin =
+                defaultDestinationDir
+                    .get()
+                    .resolve(project(":editor-common-mps").name)
+                    .resolve("lib")
+                    .list()
+                    ?.toHashSet()
+                    ?: emptySet<String>()
             defaultDestinationDir.get().resolve(project.name).resolve("lib").listFiles()?.forEach {
                 if (jarsInBasePlugin.contains(it.name)) it.delete()
             }

@@ -4,11 +4,14 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.classes
 import kotlinx.html.div
 import kotlinx.html.style
+import org.modelix.editor.text.frontend.getVisibleText
 import kotlin.math.max
 import kotlin.math.min
 
-class CaretSelectionView(selection: CaretSelection, val editor: EditorComponent) : SelectionView<CaretSelection>(selection) {
-
+class CaretSelectionView(
+    selection: CaretSelection,
+    val editor: FrontendEditorComponent,
+) : SelectionView<CaretSelection>(selection) {
     private fun hasRange() = selection.start != selection.end
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
@@ -21,7 +24,10 @@ class CaretSelectionView(selection: CaretSelection, val editor: EditorComponent)
             }
             div("caret own") {
                 style = "position: absolute"
-                val textLength = selection.layoutable.cell.getVisibleText()?.length ?: 0
+                val textLength =
+                    selection.layoutable.cell
+                        .getVisibleText()
+                        ?.length ?: 0
                 if (textLength == 0) {
                     // A typical case is a StringLiteral editor for an empty string.
                     // There is no space around the empty text cell.
@@ -55,11 +61,21 @@ class CaretSelectionView(selection: CaretSelection, val editor: EditorComponent)
     }
 
     companion object {
-        fun updateCaretBounds(textElement: IVirtualDom.HTMLElement, caretPos: Int, coordinatesElement: IVirtualDom.HTMLElement?, caretDom: IVirtualDom.HTMLElement) {
+        fun updateCaretBounds(
+            textElement: IVirtualDom.HTMLElement,
+            caretPos: Int,
+            coordinatesElement: IVirtualDom.HTMLElement?,
+            caretDom: IVirtualDom.HTMLElement,
+        ) {
             updateCaretBounds(textElement, caretPos, coordinatesElement?.getOuterBounds() ?: Bounds.ZERO, caretDom)
         }
 
-        fun updateCaretBounds(textElement: IVirtualDom.HTMLElement, caretPos: Int, relativeTo: Bounds, caretDom: IVirtualDom.HTMLElement) {
+        fun updateCaretBounds(
+            textElement: IVirtualDom.HTMLElement,
+            caretPos: Int,
+            relativeTo: Bounds,
+            caretDom: IVirtualDom.HTMLElement,
+        ) {
             val textBoundsUtil = TextBoundsUtil(textElement, relativeTo)
             val textBounds = textBoundsUtil.getTextBounds()
             val text = textBoundsUtil.getText()
@@ -74,21 +90,33 @@ class CaretSelectionView(selection: CaretSelection, val editor: EditorComponent)
     }
 }
 
-private class TextBoundsUtil(val dom: IVirtualDom.HTMLElement, val relativeTo: Bounds = Bounds.ZERO) {
+private class TextBoundsUtil(
+    val dom: IVirtualDom.HTMLElement,
+    val relativeTo: Bounds = Bounds.ZERO,
+) {
     fun getText(): String = dom.innerText()
+
     fun getTextLength() = getText().length
+
     fun getTextBounds() = dom.getInnerBounds().relativeTo(relativeTo)
+
     fun getTextWidth() = getTextBounds().width
+
     fun getTextHeight() = getTextBounds().height
+
     fun getCharWidth() = getTextWidth() / getTextLength()
-    fun getCaretX(pos: Int) = getTextBounds().let {
-        val charWidth = it.width / getTextLength()
-        it.x + pos * charWidth
-    }
-    fun getSubstringBounds(range: IntRange) = getTextBounds().let {
-        val charWidth = it.width / getTextLength()
-        val minX = it.x + range.first * charWidth
-        val maxX = it.x + (range.last + 1) * charWidth
-        it.copy(x = minX, width = maxX - minX)
-    }
+
+    fun getCaretX(pos: Int) =
+        getTextBounds().let {
+            val charWidth = it.width / getTextLength()
+            it.x + pos * charWidth
+        }
+
+    fun getSubstringBounds(range: IntRange) =
+        getTextBounds().let {
+            val charWidth = it.width / getTextLength()
+            val minX = it.x + range.first * charWidth
+            val maxX = it.x + (range.last + 1) * charWidth
+            it.copy(x = minX, width = maxX - minX)
+        }
 }

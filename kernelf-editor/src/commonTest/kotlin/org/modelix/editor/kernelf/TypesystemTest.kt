@@ -45,9 +45,17 @@ class TypesystemTest {
         branch = PBranch(ModelFacade.newLocalTree(useRoleIds = false), IdGenerator.getInstance(56754)).withIncrementalComputationSupport()
         ModelData.fromJson(modelJson2).load(branch)
 
-        testSuite = branch.computeRead {
-            branch.getArea().getRoot().allChildren.ofType<N_Module>().models.rootNodes.ofType<N_TestSuite>().first()
-        }
+        testSuite =
+            branch.computeRead {
+                branch
+                    .getArea()
+                    .getRoot()
+                    .allChildren
+                    .ofType<N_Module>()
+                    .models.rootNodes
+                    .ofType<N_TestSuite>()
+                    .first()
+            }
         recordMemberRef = branch.computeRead { testSuite.descendants<N_PathElement>().first() }
     }
 

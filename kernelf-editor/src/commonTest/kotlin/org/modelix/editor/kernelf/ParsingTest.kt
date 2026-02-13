@@ -12,7 +12,6 @@ import kotlin.test.assertTrue
 import kotlin.time.measureTime
 
 class ParsingTest {
-
     @Test fun test() = runParsingTest("1+2")
 
     @Test fun test2() = runParsingTest("1 + 2")
@@ -99,8 +98,13 @@ class ParsingTest {
     @Test fun completion12() = runCompletionTest("""(1 * ᚹ""")
 
     private fun runCompletionTest(inputString: String) = runTest(inputString, true)
+
     private fun runParsingTest(inputString: String) = runTest(inputString, false)
-    private fun runTest(inputString: String, complete: Boolean = false) {
+
+    private fun runTest(
+        inputString: String,
+        complete: Boolean = false,
+    ) {
         KernelfLanguages.registerAll()
 
         val engine = EditorEngine(IncrementalEngine())
@@ -112,9 +116,10 @@ class ParsingTest {
         KernelfLanguages.languages.forEach { it.unregister() }
 
         val parseTrees: List<IParseTreeNode>
-        val time = measureTime {
-            parseTrees = parser.parseForest(inputString, complete).toList()
-        }
+        val time =
+            measureTime {
+                parseTrees = parser.parseForest(inputString, complete).toList()
+            }
         // repeat(100) { parser.parseForest(inputString, complete).toList() }
         println(time)
         assertTrue(parseTrees.isNotEmpty())

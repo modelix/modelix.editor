@@ -24,26 +24,36 @@ import org.modelix.model.persistent.MapBasedStore
 import org.modelix.model.withIncrementalComputationSupport
 import kotlin.time.Duration.Companion.seconds
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit =
+    io.ktor.server.netty.EngineMain
+        .main(args)
 
 fun Application.module() {
     val store = ObjectStoreCache(MapBasedStore())
-    val tree = CLTree.builder(store).repositoryId("ssr-demo").useRoleIds(false).build()
+    val tree =
+        CLTree
+            .builder(store)
+            .repositoryId("ssr-demo")
+            .useRoleIds(false)
+            .build()
     val branch = PBranch(tree, IdGenerator.newInstance(0x8888)).withIncrementalComputationSupport()
-    val modelData = ModelData.fromJson(
-        javaClass.getResourceAsStream("/test.in.expr.os.strings@tests.json")!!.use { it.reader().readText() },
-    )
+    val modelData =
+        ModelData.fromJson(
+            javaClass.getResourceAsStream("/test.in.expr.os.strings@tests.json")!!.use { it.reader().readText() },
+        )
     modelData.load(branch)
-    val rootNodeRefs = branch.computeRead {
-        branch.getRootNode()
-            .getChildren(IChildLink.fromName("modules"))
-            .flatMap { it.getChildren(IChildLink.fromName("models")) }
-            .flatMap { it.getChildren(IChildLink.fromName("rootNodes")) }
-            .map { it.getPropertyValue(IProperty.fromName("name")) + ": " + it.reference.serialize() }
-    }
+    val rootNodeRefs =
+        branch.computeRead {
+            branch
+                .getRootNode()
+                .getChildren(IChildLink.fromName("modules"))
+                .flatMap { it.getChildren(IChildLink.fromName("models")) }
+                .flatMap { it.getChildren(IChildLink.fromName("rootNodes")) }
+                .map { it.getPropertyValue(IProperty.fromName("name")) + ": " + it.reference.serialize() }
+        }
     println("Root node references: \n" + rootNodeRefs.joinToString("\n"))
 
-    val ssrServer = ModelixSSRServer(branch.getArea())
+    val ssrServer = ModelixSSRServer(branch.getArea().asModel())
     KernelfEditor.register(ssrServer.editorEngine)
     KernelfLanguages.registerAll()
 

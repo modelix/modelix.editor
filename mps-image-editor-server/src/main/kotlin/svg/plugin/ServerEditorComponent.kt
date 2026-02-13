@@ -27,59 +27,42 @@ import java.awt.geom.AffineTransform
 import java.awt.image.ColorModel
 import javax.swing.JFrame
 
-open class ServerEditorComponent(node: SNode?, project: Project) :
-    EditorComponent(project.repository, EditorConfigurationBuilder().showErrorsGutter(true).build()) {
+open class ServerEditorComponent(
+    node: SNode?,
+    project: Project,
+) : EditorComponent(project.repository, EditorConfigurationBuilder().showErrorsGutter(true).build()) {
     private val mpsProject: Project
-    val dataContext: DataContext = object : DataContext {
-        override fun getData(key: String): Any? {
-            return this@ServerEditorComponent.getData(key)
+    val dataContext: DataContext =
+        object : DataContext {
+            override fun getData(key: String): Any? = this@ServerEditorComponent.getData(key)
         }
-    }
     private val highlighter: Highlighter
-    private val gc: GraphicsConfiguration = object : GraphicsConfiguration() {
-        private val graphicsConfig: GraphicsConfiguration = this
-        private val device: GraphicsDevice = object : GraphicsDevice() {
-            override fun getType(): Int {
-                return TYPE_RASTER_SCREEN
-            }
+    private val gc: GraphicsConfiguration =
+        object : GraphicsConfiguration() {
+            private val graphicsConfig: GraphicsConfiguration = this
+            private val device: GraphicsDevice =
+                object : GraphicsDevice() {
+                    override fun getType(): Int = TYPE_RASTER_SCREEN
 
-            override fun getIDstring(): String {
-                return "Modelix EditorComponent"
-            }
+                    override fun getIDstring(): String = "Modelix EditorComponent"
 
-            override fun getConfigurations(): Array<GraphicsConfiguration> {
-                return arrayOf(graphicsConfig)
-            }
+                    override fun getConfigurations(): Array<GraphicsConfiguration> = arrayOf(graphicsConfig)
 
-            override fun getDefaultConfiguration(): GraphicsConfiguration {
-                return graphicsConfig
-            }
+                    override fun getDefaultConfiguration(): GraphicsConfiguration = graphicsConfig
+                }
+
+            override fun getBounds(): Rectangle = Rectangle(0, 0, 1000, 1000)
+
+            override fun getColorModel(): ColorModel = ColorModel.getRGBdefault()
+
+            override fun getColorModel(transparency: Int): ColorModel = ColorModel.getRGBdefault()
+
+            override fun getDefaultTransform(): AffineTransform = AffineTransform()
+
+            override fun getDevice(): GraphicsDevice = device
+
+            override fun getNormalizingTransform(): AffineTransform = AffineTransform()
         }
-
-        override fun getBounds(): Rectangle {
-            return Rectangle(0, 0, 1000, 1000)
-        }
-
-        override fun getColorModel(): ColorModel {
-            return ColorModel.getRGBdefault()
-        }
-
-        override fun getColorModel(transparency: Int): ColorModel {
-            return ColorModel.getRGBdefault()
-        }
-
-        override fun getDefaultTransform(): AffineTransform {
-            return AffineTransform()
-        }
-
-        override fun getDevice(): GraphicsDevice {
-            return device
-        }
-
-        override fun getNormalizingTransform(): AffineTransform {
-            return AffineTransform()
-        }
-    }
     private var frame: JFrame? = null
 
     init {
@@ -108,62 +91,50 @@ open class ServerEditorComponent(node: SNode?, project: Project) :
                     private val headlessPatternEditor: NodeSubstitutePatternEditor =
                         object : NodeSubstitutePatternEditor() {
                             private var active = false
+
                             override fun setText(text: String) {
                             }
 
-                            override fun getText(): String {
-                                return ""
-                            }
+                            override fun getText(): String = ""
 
                             override fun setCaretPosition(caretPosition: Int) {
                             }
 
-                            override fun getCaretPosition(): Int {
-                                return 0
-                            }
+                            override fun getCaretPosition(): Int = 0
 
-                            override fun isActivated(): Boolean {
-                                return active
-                            }
+                            override fun isActivated(): Boolean = active
 
-                            override fun processKeyPressed(keyEvent: KeyEvent): Boolean {
-                                return false
-                            }
+                            override fun processKeyPressed(keyEvent: KeyEvent): Boolean = false
 
                             override fun toggleReplaceMode() {
                             }
 
-                            override fun processKeyTyped(keyEvent: KeyEvent): Boolean {
-                                return false
-                            }
+                            override fun processKeyTyped(keyEvent: KeyEvent): Boolean = false
 
-                            override fun processTextChanged(textChangeEvent: TextChangeEvent): Boolean {
-                                return false
-                            }
+                            override fun processTextChanged(textChangeEvent: TextChangeEvent): Boolean = false
 
-                            override fun getPattern(): String {
-                                return ""
-                            }
+                            override fun getPattern(): String = ""
 
-                            override fun activate(owner: Window, location: Point, size: Dimension, show: Boolean) {
+                            override fun activate(
+                                owner: Window,
+                                location: Point,
+                                size: Dimension,
+                                show: Boolean,
+                            ) {
                                 active = true
                             }
 
                             override fun setLocation(point: Point) {
                             }
 
-                            override fun getLeftBottomPosition(): Point {
-                                return Point(0, 0)
-                            }
+                            override fun getLeftBottomPosition(): Point = Point(0, 0)
 
                             override fun done() {
                                 active = false
                             }
                         }
 
-                    override fun getPatternEditor(): NodeSubstitutePatternEditor {
-                        return headlessPatternEditor
-                    }
+                    override fun getPatternEditor(): NodeSubstitutePatternEditor = headlessPatternEditor
                 }
             )
         }
@@ -180,9 +151,7 @@ open class ServerEditorComponent(node: SNode?, project: Project) :
     }
 
     @Suppress("removal")
-    override fun hasFocus(): Boolean {
-        return true
-    }
+    override fun hasFocus(): Boolean = true
 
     override fun getData(dataId: @NonNls String): Any? {
         if (CommonDataKeys.PROJECT.`is`(dataId)) {

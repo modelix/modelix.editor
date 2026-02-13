@@ -5,7 +5,6 @@ class Scanner(
     private var position: Int = 0,
     private var knownConstants: Set<String> = emptySet(),
 ) {
-
     private val whitespaceRegex = Regex("\\s+")
     private val expectedNextTerminals: MutableSet<ITerminalSymbol> = HashSet()
 
@@ -31,7 +30,8 @@ class Scanner(
     private fun matchNextTokens(): List<IToken> {
         if (isAtEnd()) return listOf(EndOfInputToken)
         check(expectedNextTerminals.isNotEmpty()) { "Possible terminal symbols unknown" }
-        return expectedNextTerminals.asSequence()
+        return expectedNextTerminals
+            .asSequence()
             .map { matchInput(it) }
             .plus(matchRegex(whitespaceRegex) { WhitespaceToken(it, position) })
             .filterNotNull()
@@ -56,8 +56,8 @@ class Scanner(
         expectedNextTerminals.add(terminal)
     }
 
-    private fun matchInput(symbol: ITerminalSymbol): IToken? {
-        return when (symbol) {
+    private fun matchInput(symbol: ITerminalSymbol): IToken? =
+        when (symbol) {
             is ConstantSymbol -> {
                 if (input.startsWith(symbol.text, position)) {
                     Token(symbol.text, position, symbol)
@@ -65,19 +65,29 @@ class Scanner(
                     null
                 }
             }
+
             is RegexSymbol -> {
                 matchRegex(symbol.regex) { Token(it, position, symbol) }
             }
+
             EndOfInputSymbol -> {
                 if (isAtEnd()) EndOfInputToken else null
             }
-            EmptySymbol -> EmptyToken
-            else -> throw UnsupportedOperationException("Unknown symbol: $symbol")
-        }
-    }
 
-    private fun matchRegex(regex: Regex?, createToken: (String) -> IToken): IToken? {
-        return if (regex != null) {
+            EmptySymbol -> {
+                EmptyToken
+            }
+
+            else -> {
+                throw UnsupportedOperationException("Unknown symbol: $symbol")
+            }
+        }
+
+    private fun matchRegex(
+        regex: Regex?,
+        createToken: (String) -> IToken,
+    ): IToken? =
+        if (regex != null) {
             val match = regex.matchAt(input, position)
             if (match != null) {
                 check(match.range.first == position)
@@ -94,13 +104,13 @@ class Scanner(
                 null
             }
         }
-    }
 
-    private fun findNextConstants(): List<Pair<String, Int>> {
-        return knownConstants.asSequence().plus(" ")
+    private fun findNextConstants(): List<Pair<String, Int>> =
+        knownConstants
+            .asSequence()
+            .plus(" ")
             .map { it to input.indexOf(it, position) }
             .filter { it.second != -1 }
             .toList()
             .sortedBy { it.second }
-    }
 }

@@ -12,7 +12,7 @@ class JSKeyboardEvent(
     val location: KeyLocation = KeyLocation.STANDARD,
     val repeat: Boolean = false,
     val composing: Boolean = false,
-) {
+) : JSUIEvent {
     constructor(eventType: JSKeyboardEventType, knownKey: KnownKeys) :
         this(eventType, null, knownKey, knownKey.name, Modifiers.NONE, KeyLocation.STANDARD, false, false)
 }

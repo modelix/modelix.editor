@@ -26,22 +26,24 @@ tasks.named("assemble") {
     dependsOn("npm_run_build")
 }
 
-val updateTsModelApiVersion = tasks.create("updateTsModelApiVersion") {
-    doLast {
-        val localPath = rootDir.parentFile.resolve("modelix.core").resolve("ts-model-api")
-        val packageJsonFile = projectDir.resolve("package.json")
-        var text = packageJsonFile.readText()
-        println("ts-model-api path: $localPath")
-        val replacement = if (localPath.exists()) {
-            """"@modelix/ts-model-api": "file:${localPath.relativeTo(projectDir).toString().replace("\\", "\\\\")}""""
-        } else {
-            """"@modelix/ts-model-api": "${rootProject.property("ts-model-api.version")}""""
+val updateTsModelApiVersion =
+    tasks.create("updateTsModelApiVersion") {
+        doLast {
+            val localPath = rootDir.parentFile.resolve("modelix.core").resolve("ts-model-api")
+            val packageJsonFile = projectDir.resolve("package.json")
+            var text = packageJsonFile.readText()
+            println("ts-model-api path: $localPath")
+            val replacement =
+                if (localPath.exists()) {
+                    """"@modelix/ts-model-api": "file:${localPath.relativeTo(projectDir).toString().replace("\\", "\\\\")}""""
+                } else {
+                    """"@modelix/ts-model-api": "${rootProject.property("ts-model-api.version")}""""
+                }
+            println("ts-model-api version: $replacement")
+            text = text.replace(Regex(""""@modelix/ts-model-api": ".*""""), { replacement })
+            packageJsonFile.writeText(text)
         }
-        println("ts-model-api version: $replacement")
-        text = text.replace(Regex(""""@modelix/ts-model-api": ".*""""), { replacement })
-        packageJsonFile.writeText(text)
     }
-}
 
 tasks.withType<NpmSetupTask> {
     dependsOn(updateTsModelApiVersion)
@@ -49,9 +51,10 @@ tasks.withType<NpmSetupTask> {
     dependsOn(":kernelf-editor:packJsPackage")
 }
 
-val updateTask = tasks.register<NpmTask>("updateOwnDependencies") {
-    args = listOf("update", "@modelix/kernelf-editor")
-}
+val updateTask =
+    tasks.register<NpmTask>("updateOwnDependencies") {
+        args = listOf("update", "@modelix/kernelf-editor")
+    }
 
 tasks.withType<NpmInstallTask> {
     dependsOn(updateTask)

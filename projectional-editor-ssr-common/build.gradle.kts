@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    alias(libs.plugins.kotlin.rpc)
     `maven-publish`
 }
 
@@ -13,33 +14,36 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(coreLibs.kotlin.serialization.json)
                 api(project(":projectional-editor"))
                 api(libs.modelix.model.api)
+                api(coreLibs.kotlin.serialization.json)
+                api(coreLibs.kotlin.coroutines.core)
+                api(libs.kotlinx.rpc.core)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test"))
             }

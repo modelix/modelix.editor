@@ -39,8 +39,10 @@ import org.w3c.dom.Node
 import org.w3c.dom.asList
 import org.w3c.dom.get
 
-class ModelixSSRClient(private val httpClient: HttpClient, private val url: String) {
-
+class ModelixSSRClient(
+    private val httpClient: HttpClient,
+    private val url: String,
+) {
     companion object {
         private val LOG = KotlinLogging.logger {}
     }
@@ -68,7 +70,10 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
                 for (wsMessage in incoming) {
                     try {
                         when (wsMessage) {
-                            is Frame.Text -> processMessage(MessageFromServer.fromJson(wsMessage.readText()))
+                            is Frame.Text -> {
+                                processMessage(MessageFromServer.fromJson(wsMessage.readText()))
+                            }
+
                             else -> {}
                         }
                     } catch (ex: Throwable) {
@@ -79,7 +84,10 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
         }
     }
 
-    fun createEditor(rootNodeReference: INodeReference, existingContainerElement: HTMLDivElement? = null): HTMLElement {
+    fun createEditor(
+        rootNodeReference: INodeReference,
+        existingContainerElement: HTMLDivElement? = null,
+    ): HTMLElement {
         val editorId = "modelix-editor-" + nextEditorId++.toString()
         LOG.trace { "Trying to create new editor $editorId" }
         val ws = checkNotNull(websocketSession) { "Not connected" }
@@ -109,14 +117,20 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
         }
     }
 
-    private inner class EditorSession(val editorId: String, rootNodeReference: INodeReference, existingContainerElement: HTMLDivElement? = null) {
-        val containerElement: HTMLDivElement = (existingContainerElement ?: document.create.div("modelix-text-editor")).also {
-            it.tabIndex = -1 // allows setting the keyboard focus
-        }
-        val editorElement: HTMLDivElement = containerElement.append.div {
-            id = editorId
-            +"Loading ..."
-        }
+    private inner class EditorSession(
+        val editorId: String,
+        rootNodeReference: INodeReference,
+        existingContainerElement: HTMLDivElement? = null,
+    ) {
+        val containerElement: HTMLDivElement =
+            (existingContainerElement ?: document.create.div("modelix-text-editor")).also {
+                it.tabIndex = -1 // allows setting the keyboard focus
+            }
+        val editorElement: HTMLDivElement =
+            containerElement.append.div {
+                id = editorId
+                +"Loading ..."
+            }
         private val elementMap: MutableMap<String, Element> = HashMap<String, Element>().also { it[editorId] = editorElement }
         private val pendingUpdates: MutableMap<String, IElementUpdateData> = HashMap()
         private val possiblyDetachedElements: MutableSet<String> = HashSet<String>()
@@ -148,11 +162,16 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
         fun computeBoundsUpdate(): Map<String, HTMLElementBoundsUpdate>? {
             // TODO performance
             val origin = containerElement.getAbsoluteBounds()
-            val latest = elementMap.entries.associate {
-                val outer = it.value.getAbsoluteBounds().relativeTo(origin)
-                val inner = it.value.getAbsoluteInnerBounds().relativeTo(origin).takeIf { it != outer }
-                it.key to HTMLElementBoundsUpdate(outer = outer, inner = inner)
-            }
+            val latest =
+                elementMap.entries.associate {
+                    val outer = it.value.getAbsoluteBounds().relativeTo(origin)
+                    val inner =
+                        it.value
+                            .getAbsoluteInnerBounds()
+                            .relativeTo(origin)
+                            .takeIf { it != outer }
+                    it.key to HTMLElementBoundsUpdate(outer = outer, inner = inner)
+                }
             val changesOnly = latest.filter { boundsOnServer[it.key] != it.value }
             boundsOnServer = latest
             return changesOnly.takeIf { it.isNotEmpty() }
@@ -199,33 +218,40 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
             sendBoundsUpdate()
         }
 
-        private fun updateNode(data: INodeUpdateData): Node {
-            return when (data) {
-                is TextNodeUpdateData -> document.createTextNode(data.text)
+        private fun updateNode(data: INodeUpdateData): Node =
+            when (data) {
+                is TextNodeUpdateData -> {
+                    document.createTextNode(data.text)
+                }
+
                 is HTMLElementUpdateData -> {
                     pendingUpdates.remove(data.id)
-                    val element = elementMap[data.id]?.takeIf { it.tagName.lowercase() == data.tagName.lowercase() }
-                        ?: document.createElement(data.tagName).also { element ->
-                            data.id?.let { elementId ->
-                                element.id = elementId
-                                elementMap[elementId] = element
+                    val element =
+                        elementMap[data.id]?.takeIf { it.tagName.lowercase() == data.tagName.lowercase() }
+                            ?: document.createElement(data.tagName).also { element ->
+                                data.id?.let { elementId ->
+                                    element.id = elementId
+                                    elementMap[elementId] = element
+                                }
+                                syncAttributes(element, data)
+                                syncChildren(element, data)
                             }
-                            syncAttributes(element, data)
-                            syncChildren(element, data)
-                        }
                     syncAttributes(element, data)
                     syncChildren(element, data)
                     element
                 }
+
                 is ElementReference -> {
                     pendingUpdates[data.id]?.let { updateNode(it) }
                         ?: elementMap[data.id]
                         ?: throw NoSuchElementException("$editorId: element not found: ${data.id}")
                 }
             }
-        }
 
-        private fun syncAttributes(element: Element, updateData: HTMLElementUpdateData) {
+        private fun syncAttributes(
+            element: Element,
+            updateData: HTMLElementUpdateData,
+        ) {
             val attributesToRemove = element.getAttributeNames().toMutableSet()
             for (attributeData in updateData.attributes) {
                 if (element.getAttribute(attributeData.key) != attributeData.value) {
@@ -240,7 +266,10 @@ class ModelixSSRClient(private val httpClient: HttpClient, private val url: Stri
             attributesToRemove.forEach(element::removeAttribute)
         }
 
-        private fun syncChildren(element: Element, updateData: HTMLElementUpdateData) {
+        private fun syncChildren(
+            element: Element,
+            updateData: HTMLElementUpdateData,
+        ) {
             val existingChildren: () -> List<Node> = { element.childNodes.asList() }
             val expectedChildren: List<Node> = updateData.children.map { updateNode(it) }
             if (existingChildren() == expectedChildren) return

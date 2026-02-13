@@ -48,8 +48,9 @@ import javax.swing.Icon
 import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class ReactSSRServerForMPSProject(private val project: Project) : Disposable {
-
+class ReactSSRServerForMPSProject(
+    private val project: Project,
+) : Disposable {
     init {
         ApplicationManager.getApplication().service<ReactSSRServerForMPS>().registerProject(project)
     }
@@ -61,7 +62,6 @@ class ReactSSRServerForMPSProject(private val project: Project) : Disposable {
 
 @Service(Service.Level.APP)
 class ReactSSRServerForMPS : Disposable {
-
     companion object {
         fun getInstance() = ApplicationManager.getApplication().getService(ReactSSRServerForMPS::class.java)
     }
@@ -71,11 +71,12 @@ class ReactSSRServerForMPS : Disposable {
     private var rendererFactory: MPSRendererFactory? = null
     private val projects: MutableSet<Project> = Collections.synchronizedSet(HashSet())
     private val changeTranslator = MPSChangeTranslator()
-    private val commandLister = object : org.jetbrains.mps.openapi.repository.CommandListener {
-        override fun commandFinished() {
-            ssrServer?.updateAll()
+    private val commandLister =
+        object : org.jetbrains.mps.openapi.repository.CommandListener {
+            override fun commandFinished() {
+                ssrServer?.updateAll()
+            }
         }
-    }
 
     fun getKnownComponents(): List<String> = ssrServer?.knownComponents ?: emptyList()
 
@@ -92,21 +93,19 @@ class ReactSSRServerForMPS : Disposable {
         projects.remove(project)
     }
 
-    private fun getMPSProjects(): List<MPSProject> {
-        return runSynchronized(projects) {
+    private fun getMPSProjects(): List<MPSProject> =
+        runSynchronized(projects) {
             projects.mapNotNull { it.getComponent(MPSProject::class.java) }
         }
-    }
 
-    private fun getRepository(): SRepository {
-        return getMPSProjects().asSequence().map {
-            it.repository
-        }.firstOrNull() ?: MPSModuleRepository.getInstance()
-    }
+    private fun getRepository(): SRepository =
+        getMPSProjects()
+            .asSequence()
+            .map {
+                it.repository
+            }.firstOrNull() ?: MPSModuleRepository.getInstance()
 
-    private fun getRootNode(): INode {
-        return MPSRepositoryAsNode(getRepository()).asLegacyNode()
-    }
+    private fun getRootNode(): INode = MPSRepositoryAsNode(getRepository()).asLegacyNode()
 
     fun ensureStarted() {
         runSynchronized(this) {
@@ -121,9 +120,10 @@ class ReactSSRServerForMPS : Disposable {
             MPSModuleRepository.getInstance().modelAccess.addCommandListener(commandLister)
             this.ssrServer = ssrServer
 
-            ktorServer = org.modelix.mps.editor.common.embeddedServer(port = 43595, classLoader = this.javaClass.classLoader) {
-                initKtorServer(ssrServer)
-            }
+            ktorServer =
+                org.modelix.mps.editor.common.embeddedServer(port = 43595, classLoader = this.javaClass.classLoader) {
+                    initKtorServer(ssrServer)
+                }
 
             ktorServer!!.start()
         }
@@ -203,15 +203,20 @@ fun <R> ModelAccess.computeRead(body: () -> R): R {
 suspend fun ApplicationCall.respondIcon(icon: Icon) {
     val image = BufferedImage(icon.iconWidth, icon.iconHeight, BufferedImage.TYPE_INT_ARGB)
     icon.paintIcon(null, image.graphics, 0, 0)
-    val bytes = ByteArrayOutputStream().also {
-        it.use {
-            ImageIO.write(image, "png", it)
-        }
-    }.toByteArray()
+    val bytes =
+        ByteArrayOutputStream()
+            .also {
+                it.use {
+                    ImageIO.write(image, "png", it)
+                }
+            }.toByteArray()
     respondBytes(bytes = bytes, contentType = ContentType.Image.PNG)
 }
 
-private fun resolveIcon(cls: Class<*>, path: List<String>): Icon? {
+private fun resolveIcon(
+    cls: Class<*>,
+    path: List<String>,
+): Icon? {
     val remainingPath: List<String> = path.drop(1)
     if (Sequence.fromIterable(remainingPath).isNotEmpty) {
         val nestedClasses = cls.declaredClasses

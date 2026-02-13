@@ -19,18 +19,21 @@ fun main() {
     KotlinLoggingConfiguration.logLevel = Level.TRACE
     LOG.info { "App started" }
 
-    val httpClient = HttpClient() {
-        install(WebSockets)
-    }
+    val httpClient =
+        HttpClient {
+            install(WebSockets)
+        }
 
     LOG.trace { "Coroutine in GlobalScope started" }
     val currentUrl = document.location!!
-    val wsUrl = URLBuilder().apply {
-        protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
-        host = currentUrl.hostname
-        port = currentUrl.port.toIntOrNull() ?: DEFAULT_PORT
-        pathSegments = listOf("ws")
-    }.buildString()
+    val wsUrl =
+        URLBuilder()
+            .apply {
+                protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
+                host = currentUrl.hostname
+                port = currentUrl.port.toIntOrNull() ?: DEFAULT_PORT
+                pathSegments = listOf("ws")
+            }.buildString()
     val client = ModelixSSRClient(httpClient, wsUrl)
     client.connect {
         LOG.trace { "Connected" }

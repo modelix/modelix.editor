@@ -2,7 +2,8 @@ package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
-import org.modelix.editor.CellData
+import org.modelix.editor.CellSpec
+import org.modelix.editor.CellSpecBase
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.IActionOrProvider
@@ -17,15 +18,13 @@ import org.modelix.parser.INonTerminalToken
 import org.modelix.parser.OptionalSymbol
 import org.modelix.parser.ParseTreeNode
 
-class OptionalCellTemplate(concept: IConcept) : CellTemplate(concept), IOptionalSymbol {
+class OptionalCellTemplate(
+    concept: IConcept,
+) : CellTemplate(concept),
+    IOptionalSymbol {
+    override fun toParserSymbol(): OptionalSymbol = OptionalSymbol(getChildSymbols().map { it.toParserSymbol() }.toList())
 
-    override fun toParserSymbol(): OptionalSymbol {
-        return OptionalSymbol(getChildSymbols().map { it.toParserSymbol() }.toList())
-    }
-
-    override fun toCompletionToken(): ICompletionTokenOrList? {
-        return null
-    }
+    override fun toCompletionToken(): ICompletionTokenOrList? = null
 
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
@@ -34,16 +33,24 @@ class OptionalCellTemplate(concept: IConcept) : CellTemplate(concept), IOptional
             is ParseTreeNode -> {
                 builder.consumeTokens(token.children)
             }
-            else -> TODO()
+
+            else -> {
+                TODO()
+            }
         }
     }
 
-    override fun createCell(context: CellCreationContext, node: INode): CellData {
-        return CellData()
-    }
+    override fun createCell(
+        context: CellCreationContext,
+        node: INode,
+    ): CellSpecBase = CellSpec()
 
-    override fun applyChildren(context: CellCreationContext, node: INode, cell: CellData): List<CellData> {
-        fun forceShow() = context.editorState.forceShowOptionals[createCellReference(node)] == true
+    override fun applyChildren(
+        context: CellCreationContext,
+        node: INode,
+        cell: CellSpecBase,
+    ): List<CellSpecBase> {
+        fun forceShow() = context.cellTreeState.forceShowOptionals[createCellReference(node)] == true
 
         val symbols = getChildren().asSequence().flatMap { it.getGrammarSymbols() }
         val conditionSymbol = symbols.filterIsInstance<IGrammarConditionSymbol>().firstOrNull()
@@ -67,15 +74,17 @@ class OptionalCellTemplate(concept: IConcept) : CellTemplate(concept), IOptional
         }
     }
 
-    override fun getInstantiationActions(location: INonExistingNode, parameters: CodeCompletionParameters): List<IActionOrProvider>? {
+    override fun getInstantiationActions(
+        location: INonExistingNode,
+        parameters: CodeCompletionParameters,
+    ): List<IActionOrProvider>? {
         return null // skip optional. Don't search in children.
     }
 
-    override fun getChildSymbols(): Sequence<IGrammarSymbol> {
-        return getChildren().asSequence().flatMap { it.getGrammarSymbols() }
-    }
+    override fun getChildSymbols(): Sequence<IGrammarSymbol> = getChildren().asSequence().flatMap { it.getGrammarSymbols() }
 
-    override fun getSymbolTransformationAction(node: INode, optionalCell: TemplateCellReference): IActionOrProvider? {
-        return null
-    }
+    override fun getSymbolTransformationAction(
+        node: INode,
+        optionalCell: TemplateCellReference,
+    ): IActionOrProvider? = null
 }

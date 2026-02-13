@@ -14,10 +14,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 class OpenNodeInWebEditorAction : DumbAwareAction() {
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.EDT
-    }
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
@@ -26,17 +23,20 @@ class OpenNodeInWebEditorAction : DumbAwareAction() {
         val nodeFile = NodeVirtualFileSystem.getInstance().getFileFor(mpsProject.repository, node)
 
         fun urlEncode(input: String) = URLEncoder.encode(input, StandardCharsets.UTF_8)
+
         fun concatUrl(nodeRef: String) = "http://localhost:43595/nodes/${urlEncode(nodeRef)}/client/"
+
         fun parseUrl(url: String) = Urls.parse(url, false)!!
         val nodeRef = ModelixNodeAsMPSNode.toModelixNode(node).reference.serialize()
         val expectedUrl = concatUrl(nodeRef)
         val parsedUrl = parseUrl(expectedUrl)
-        val workaroundUrl = if (parsedUrl.toExternalForm() == expectedUrl) {
-            parsedUrl
-        } else {
-            // double encode to work around a bug in IntelliJ
-            parseUrl(concatUrl(urlEncode(nodeRef)))
-        }
+        val workaroundUrl =
+            if (parsedUrl.toExternalForm() == expectedUrl) {
+                parsedUrl
+            } else {
+                // double encode to work around a bug in IntelliJ
+                parseUrl(concatUrl(urlEncode(nodeRef)))
+            }
 
         val file = WebPreviewVirtualFile(nodeFile, workaroundUrl)
         FileEditorManagerEx.getInstanceEx(project).openFile(

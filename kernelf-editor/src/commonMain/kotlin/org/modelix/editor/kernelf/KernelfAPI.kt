@@ -7,8 +7,10 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.consumers.DelayedConsumer
 import kotlinx.html.stream.HTMLStreamBuilder
 import org.iets3.core.expr.tests.N_TestSuite
+import org.modelix.editor.CellTreeState
 import org.modelix.editor.EditorEngine
-import org.modelix.editor.EditorState
+import org.modelix.editor.text.frontend.layout
+import org.modelix.editor.text.frontend.runLayoutOnCell
 import org.modelix.editor.toHtml
 import org.modelix.kernelf.KernelfLanguages
 import org.modelix.metamodel.ITypedNode
@@ -27,7 +29,9 @@ import org.modelix.model.repositoryconcepts.N_Module
 import org.modelix.model.withIncrementalComputationSupport
 
 object KernelfAPI {
-    private val LOG = io.github.oshai.kotlinlogging.KotlinLogging.logger { }
+    private val LOG =
+        io.github.oshai.kotlinlogging.KotlinLogging
+            .logger { }
     val editorEngine = EditorEngine()
 
     init {
@@ -35,9 +39,7 @@ object KernelfAPI {
         KernelfEditor.register(editorEngine)
     }
 
-    fun renderJsonAsHtmlText(json: String): String {
-        return renderModelAsHtmlText(ModelData.fromJson(json))
-    }
+    fun renderJsonAsHtmlText(json: String): String = renderModelAsHtmlText(ModelData.fromJson(json))
 
     fun loadModelFromJson(json: String): INode = loadModelsFromJson(arrayOf(json))
 
@@ -51,7 +53,13 @@ object KernelfAPI {
         return rootNode
     }
 
-    fun connectToModelServer(url: String? = null, initialJsonData: Array<String> = emptyArray(), callback: (INode) -> Unit, errorCallback: (Exception) -> Unit = {}) {
+    fun connectToModelServer(
+        url: String? = null,
+        initialJsonData: Array<String> = emptyArray(),
+        callback: (INode) -> Unit,
+        errorCallback: (Exception) -> Unit = {
+        },
+    ) {
         GlobalScope.launch {
             try {
                 if (url != null && (url.endsWith("/v2") || url.endsWith("/v2/"))) {
@@ -63,7 +71,10 @@ object KernelfAPI {
                     if (!repositoryExisted) {
                         client.initRepository(repositoryId)
                     }
-                    val model: ReplicatedModel = client.getReplicatedModel(repositoryId.getBranchReference(), { ModelixIdGenerator(client.getIdGenerator(), it) })
+                    val model: ReplicatedModel =
+                        client.getReplicatedModel(repositoryId.getBranchReference(), {
+                            ModelixIdGenerator(client.getIdGenerator(), it)
+                        })
                     model.start()
                     TODO("Migration of IncrementalBranch to IMutableModelTree is needed")
 //                    val branch = model.getVersionedModelTree().withIncrementalComputationSupport()
@@ -103,24 +114,31 @@ object KernelfAPI {
         }
     }
 
-    fun renderNodeAsHtmlText(rootNode: INode): String {
-        return renderTypedNodeAsHtmlText(rootNode.typed())
-    }
+    fun renderNodeAsHtmlText(rootNode: INode): String = renderTypedNodeAsHtmlText(rootNode.typed())
 
     fun renderTypedNodeAsHtmlText(rootNode: ITypedNode): String {
         val sb = StringBuilder()
-        renderTypedNode(EditorState(), rootNode, DelayedConsumer(HTMLStreamBuilder(out = sb, prettyPrint = true, xhtmlCompatible = true)))
+        renderTypedNode(CellTreeState(), rootNode, DelayedConsumer(HTMLStreamBuilder(out = sb, prettyPrint = true, xhtmlCompatible = true)))
         return sb.toString()
     }
 
-    fun <T> renderNode(editorState: EditorState, rootNode: INode, tagConsumer: TagConsumer<T>) {
-        renderTypedNode(editorState, rootNode.typed(), tagConsumer)
+    fun <T> renderNode(
+        cellTreeState: CellTreeState,
+        rootNode: INode,
+        tagConsumer: TagConsumer<T>,
+    ) {
+        renderTypedNode(cellTreeState, rootNode.typed(), tagConsumer)
     }
 
-    fun <T> renderTypedNode(editorState: EditorState, rootNode: ITypedNode, tagConsumer: TagConsumer<T>) {
+    fun <T> renderTypedNode(
+        cellTreeState: CellTreeState,
+        rootNode: ITypedNode,
+        tagConsumer: TagConsumer<T>,
+    ) {
         ModelFacade.readNode(rootNode.unwrap()) {
-            val cell = editorEngine.createCell(editorState, rootNode.unwrap())
-            cell.layout.toHtml(tagConsumer)
+            val cell = editorEngine.createCell(cellTreeState, rootNode.unwrap())
+            val layout = runLayoutOnCell(cell)
+            layout.toHtml(tagConsumer)
         }
     }
 
@@ -134,34 +152,39 @@ object KernelfAPI {
     }
 
     fun nodeToString(node: Any): String {
-        val typedNode = when (node) {
-            is ITypedNode -> node
-            is INode -> node.typed()
-            else -> throw IllegalArgumentException("Unsupported node type: $node")
-        }
+        val typedNode =
+            when (node) {
+                is ITypedNode -> node
+                is INode -> node.typed()
+                else -> throw IllegalArgumentException("Unsupported node type: $node")
+            }
         return (if (typedNode is N_INamedConcept) typedNode.name else null) ?: typedNode.untypedConcept().getLongName()
     }
 
-    fun findTestSuites(rootNode: INode): Array<N_TestSuite> {
-        return ModelFacade.readNode(rootNode) {
-            val modules = rootNode.getChildren("modules")
-                .map { TypedLanguagesRegistry.wrapNode(it) }
-                .filterIsInstance<N_Module>()
-            modules.flatMap { it.models }.flatMap { it.rootNodes }
+    fun findTestSuites(rootNode: INode): Array<N_TestSuite> =
+        ModelFacade.readNode(rootNode) {
+            val modules =
+                rootNode
+                    .getChildren("modules")
+                    .map { TypedLanguagesRegistry.wrapNode(it) }
+                    .filterIsInstance<N_Module>()
+            modules
+                .flatMap { it.models }
+                .flatMap { it.rootNodes }
                 .filterIsInstance<N_TestSuite>()
                 .toTypedArray()
         }
-    }
 
-    fun getModules(rootNode: INode): Array<INode> {
-        return ModelFacade.readNode(rootNode) {
-            val modules = rootNode.getChildren("modules")
-                .map { TypedLanguagesRegistry.wrapNode(it) }
-                .filterIsInstance<N_Module>()
-                .map { it.unwrap() }
+    fun getModules(rootNode: INode): Array<INode> =
+        ModelFacade.readNode(rootNode) {
+            val modules =
+                rootNode
+                    .getChildren("modules")
+                    .map { TypedLanguagesRegistry.wrapNode(it) }
+                    .filterIsInstance<N_Module>()
+                    .map { it.unwrap() }
             modules.toTypedArray()
         }
-    }
 
     fun unwrapNode(node: Any): Any {
         if (node is INode) return node
