@@ -10,3 +10,6 @@ kotlin_gen
 **/.ideaconfig
 **/.mpsconfig
 node_modules
+/.intellijPlatform
+/.kotlin
+/version.txt

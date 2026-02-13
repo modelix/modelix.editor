@@ -24,6 +24,7 @@ dependencies {
     testImplementation(project(":projectional-editor"), excludeMPSLibraries)
     testImplementation(libs.modelix.mps.model.adapters, excludeMPSLibraries)
     testImplementation(libs.playwright, excludeMPSLibraries)
+    testImplementation(coreLibs.kotlin.coroutines.test, excludeMPSLibraries)
     modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
 }
 
