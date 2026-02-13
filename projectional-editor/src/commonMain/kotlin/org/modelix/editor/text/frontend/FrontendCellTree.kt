@@ -6,7 +6,6 @@ import org.modelix.editor.ECellType
 import org.modelix.editor.FrontendEditorComponent
 import org.modelix.editor.LayoutableCell
 import org.modelix.editor.LayoutedText
-import org.modelix.editor.ResettableLazy
 import org.modelix.editor.TextCellProperties
 import org.modelix.editor.TextLayouter
 import org.modelix.editor.text.backend.TextEditorServiceImpl
@@ -20,6 +19,7 @@ import org.modelix.editor.text.shared.celltree.CellTreeBase
 import org.modelix.editor.text.shared.celltree.CellTreeOp
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.editor.text.shared.celltree.IMutableCellTree
+import org.modelix.editor.text.shared.celltree.IRecursiveCachableComputation
 import org.modelix.editor.text.shared.celltree.MoveCellOp
 import org.modelix.editor.text.shared.celltree.MoveCellToOp
 import org.modelix.editor.text.shared.celltree.NewCellOp
@@ -56,24 +56,11 @@ class FrontendCellTree(
         id: CellInstanceId,
         parent: FrontendCellImpl?,
     ) : CellImpl(id, parent) {
-        private var cachedLayout =
-            ResettableLazy<LayoutedText> {
-                runLayoutOnCell(this) { it.layout }
-            }
         val layout: LayoutedText
-            get() = cachedLayout.value
+            get() = compute(LayoutComputation)
 
         fun clearCachedLayout() {
-            withTreeLock {
-                cachedLayout.reset()
-            }
-        }
-
-        fun invalidateLayout() {
-            withTreeLock {
-                cachedLayout.reset()
-                getParent()?.invalidateLayout()
-            }
+            invalidateComputations()
         }
 
         fun getEditorComponent() = this@FrontendCellTree.editorComponent
@@ -85,63 +72,11 @@ class FrontendCellTree(
                 require(key.frontend) { "Property ${key.name} is not available in the frontend" }
                 if (properties.containsKey(key.name)) key.fromSerializableValue(properties[key.name]) else key.defaultValue
             }
-
-        override fun <T> setProperty(
-            key: CellPropertyKey<T>,
-            newValue: T,
-        ) {
-            withTreeLock {
-                super.setProperty(key, newValue)
-                invalidateLayout()
-            }
-        }
-
-        override fun removeProperty(key: CellPropertyKey<*>) {
-            withTreeLock {
-                super.removeProperty(key)
-                invalidateLayout()
-            }
-        }
-
-        override fun addNewChild(index: Int): IMutableCellTree.MutableCell =
-            withTreeLock {
-                super.addNewChild(index).also {
-                    invalidateLayout()
-                }
-            }
-
-        override fun moveCell(index: Int) {
-            withTreeLock {
-                super.moveCell(index)
-                invalidateLayout()
-            }
-        }
-
-        override fun moveCell(
-            targetParent: IMutableCellTree.MutableCell,
-            index: Int,
-        ) {
-            withTreeLock {
-                invalidateLayout()
-                super.moveCell(targetParent, index)
-                invalidateLayout()
-            }
-        }
-
-        override fun detach() {
-            withTreeLock {
-                invalidateLayout()
-                super.detach()
-            }
-        }
-
-        override fun delete() {
-            withTreeLock {
-                invalidateLayout()
-                super.delete()
-            }
-        }
     }
+}
+
+object LayoutComputation : IRecursiveCachableComputation<LayoutedText> {
+    override fun compute(cell: ICellTree.Cell): LayoutedText = runLayoutOnCell(cell) { it.layout }
 }
 
 val ICellTree.Cell.type: ECellType get() = getProperty(CommonCellProperties.type)

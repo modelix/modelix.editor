@@ -28,7 +28,7 @@ data class CellSelection(
                     cell
                         .ancestors()
                         .firstOrNull { it.getProperty(CommonCellProperties.selectable) }
-                        ?.let { editor.changeSelection(CellSelection(editor, it, directionLeft, this)) }
+                        ?.let { editor.doChangeSelection(CellSelection(editor, it, directionLeft, this)) }
                 } else {
                     unwrapCaretSelection()?.selectNextPreviousLine(false)
                 }
@@ -36,7 +36,7 @@ data class CellSelection(
 
             KnownKeys.ArrowDown -> {
                 if (event.modifiers == Modifiers.META && previousSelection != null) {
-                    editor.changeSelection(previousSelection)
+                    editor.doChangeSelection(previousSelection)
                 } else {
                     unwrapCaretSelection()?.selectNextPreviousLine(true)
                 }
@@ -49,26 +49,26 @@ data class CellSelection(
                         cell
                             .ancestors()
                             .firstOrNull { it.isSelectable() }
-                            ?.let { editor.changeSelection(CellSelection(editor, it, directionLeft, this)) }
+                            ?.let { editor.doChangeSelection(CellSelection(editor, it, directionLeft, this)) }
                     } else {
-                        previousSelection?.let { editor.changeSelection(it) }
+                        previousSelection?.let { editor.doChangeSelection(it) }
                     }
                 } else {
                     val caretSelection = unwrapCaretSelection()
                     if (caretSelection != null) {
-                        editor.changeSelection(CaretSelection(editor, caretSelection.layoutable, caretSelection.start))
+                        editor.doChangeSelection(CaretSelection(editor, caretSelection.layoutable, caretSelection.start))
                     } else {
                         val tabTargets = cell.descendantsAndSelf().filter { it.isTabTarget() }
                         if (event.knownKey == KnownKeys.ArrowLeft) {
                             tabTargets
                                 .firstOrNull()
                                 ?.layoutable()
-                                ?.let { editor.changeSelection(CaretSelection(editor, it, 0)) }
+                                ?.let { editor.doChangeSelection(CaretSelection(editor, it, 0)) }
                         } else {
                             tabTargets
                                 .lastOrNull()
                                 ?.layoutable()
-                                ?.let { editor.changeSelection(CaretSelection(editor, it, it.cell.getSelectableText()?.length ?: 0)) }
+                                ?.let { editor.doChangeSelection(CaretSelection(editor, it, it.cell.getSelectableText()?.length ?: 0)) }
                         }
                     }
                 }

@@ -3,12 +3,10 @@ package org.modelix.editor.text.shared.celltree
 import org.modelix.editor.Cell
 import org.modelix.editor.CellPropertyKey
 import org.modelix.editor.CellReference
-import org.modelix.editor.CommonCellProperties
-import org.modelix.editor.ResettableLazy
+import org.modelix.editor.text.shared.celltree.CellTreeBase.CellImpl
 import org.modelix.incremental.IncrementalIndex
 import org.modelix.incremental.IncrementalList
 import org.modelix.model.api.runSynchronized
-import kotlin.getValue
 import kotlin.jvm.Synchronized
 
 open class CellTreeBase : IMutableCellTree {
@@ -71,17 +69,23 @@ open class CellTreeBase : IMutableCellTree {
     ) : IMutableCellTree.MutableCell {
         protected val properties: MutableMap<String, Any?> = HashMap()
         private val children: MutableList<CellImpl> = ArrayList()
+        private val cachedComputations: MutableMap<IRecursiveCachableComputation<Any?>, Any?> = HashMap()
+        val referencesIndexList: IncrementalList<Pair<CellReference, CellInstanceId>>
+            get() = compute(ReferencesIndexListComputation)
 
-        private val cachedReferencesIndexList =
-            ResettableLazy {
-                withTreeLock {
-                    IncrementalList.concat(
-                        IncrementalList.of(this.cellReferences.map { it to id }),
-                        IncrementalList.concat(getChildren().map { (it as CellImpl).referencesIndexList }),
-                    )
-                }
+        fun <T> compute(computation: IRecursiveCachableComputation<T>): T =
+            withTreeLock {
+                cachedComputations.getOrPut(computation as IRecursiveCachableComputation<Any?>) {
+                    computation.compute(this)
+                } as T
             }
-        val referencesIndexList: IncrementalList<Pair<CellReference, CellInstanceId>> by cachedReferencesIndexList
+
+        fun invalidateComputations() {
+            withTreeLock {
+                cachedComputations.clear()
+                parent?.invalidateComputations()
+            }
+        }
 
         override fun getTree(): IMutableCellTree = this@CellTreeBase
 
@@ -102,6 +106,7 @@ open class CellTreeBase : IMutableCellTree {
         ) {
             withTreeLock {
                 properties[key] = newValue?.value
+                invalidateComputations()
             }
         }
 
@@ -113,7 +118,7 @@ open class CellTreeBase : IMutableCellTree {
             withTreeLock {
                 require(newValue !is CellPropertyKey<*>)
                 properties[key.name] = newValue
-                if (key == CommonCellProperties.cellReferences) cachedReferencesIndexList.reset()
+                invalidateComputations()
             }
         }
 
@@ -126,7 +131,7 @@ open class CellTreeBase : IMutableCellTree {
         override fun removeProperty(key: CellPropertyKey<*>) {
             withTreeLock {
                 properties.remove(key.name)
-                if (key == CommonCellProperties.cellReferences) cachedReferencesIndexList.reset()
+                invalidateComputations()
             }
         }
 
@@ -141,16 +146,16 @@ open class CellTreeBase : IMutableCellTree {
             childId: CellInstanceId,
         ): IMutableCellTree.MutableCell =
             withTreeLock {
-                newCellInstance(childId, this).also {
-                    children.add(index, it)
-                    registerCell(it)
-                }
+                newCellInstance(childId, this)
+                    .also {
+                        children.add(index, it)
+                        registerCell(it)
+                    }.also { invalidateComputations() }
             }
 
         override fun addNewChild(index: Int): IMutableCellTree.MutableCell =
             withTreeLock {
-                cachedReferencesIndexList.reset()
-                addNewChild(index, CellInstanceId(nextId++))
+                addNewChild(index, CellInstanceId(nextId++)).also { invalidateComputations() }
             }
 
         override fun moveCell(index: Int) {
@@ -158,6 +163,7 @@ open class CellTreeBase : IMutableCellTree {
                 val parent = requireNotNull(parent)
                 parent.children.remove(this)
                 parent.children.add(index, this)
+                invalidateComputations()
             }
         }
 
@@ -168,19 +174,19 @@ open class CellTreeBase : IMutableCellTree {
             withTreeLock {
                 targetParent as CellImpl
                 require(targetParent != parent) { "Use moveCell(index: Int)" }
-                parent?.cachedReferencesIndexList?.reset()
-                targetParent.cachedReferencesIndexList.reset()
+                invalidateComputations()
                 val oldParent = parent
                 oldParent?.children?.remove(this)
                 targetParent.children.add(index, this)
                 parent = targetParent
                 detachedCells.remove(id)
+                invalidateComputations()
             }
         }
 
         override fun detach() {
             withTreeLock {
-                parent?.cachedReferencesIndexList?.reset()
+                invalidateComputations()
                 detachedCells.add(id)
                 parent?.children?.remove(this)
                 parent = null
@@ -189,7 +195,7 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun delete() {
             withTreeLock {
-                parent?.cachedReferencesIndexList?.reset()
+                invalidateComputations()
                 children.toList().forEach { it.delete() }
                 parent?.children?.remove(this)
                 parent = null
@@ -206,4 +212,16 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun toString(): String = id.id.toString()
     }
+}
+
+interface IRecursiveCachableComputation<E> {
+    fun compute(cell: ICellTree.Cell): E
+}
+
+object ReferencesIndexListComputation : IRecursiveCachableComputation<IncrementalList<Pair<CellReference, CellInstanceId>>> {
+    override fun compute(cell: ICellTree.Cell): IncrementalList<Pair<CellReference, CellInstanceId>> =
+        IncrementalList.concat(
+            IncrementalList.of(cell.cellReferences.map { it to cell.getId() }),
+            IncrementalList.concat(cell.getChildren().map { (it as CellImpl).referencesIndexList }),
+        )
 }
