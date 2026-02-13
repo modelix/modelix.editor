@@ -62,12 +62,11 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         mpsIntegration.init(mpsProject.repository)
         coroutineScope = CoroutineScope(Dispatchers.Default)
         service = TextEditorServiceImpl(editorEngine, MPSArea(mpsProject.repository).asModel(), coroutineScope)
+        editor = FrontendEditorComponent(service)
         runBlocking {
-            editor =
-                FrontendEditorComponent(service).also {
-                    it.openNode(classNode.getNodeReference()).await()
-                }
+            editor.openNode(classNode.getNodeReference()).await()
             editor.flush()
+            println(editor.getRootCell().layout.toString())
         }
     }
 
@@ -99,7 +98,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         assertEquals(expected.trimIndent(), editor.getRootCell().layout.toString())
     }
 
-    fun placeCaretAtEnd(node: INode) {
+    suspend fun placeCaretAtEnd(node: INode) {
         val cell = editor.resolveCell(NodeCellReference(node.reference)).first()
         val lastLeafCell = cell.lastLeaf()
         editor.changeSelection(CaretSelection(lastLeafCell.layoutable()!!, lastLeafCell.getMaxCaretPos()))
@@ -110,27 +109,25 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         position: Int = -1,
     ) {
         val cell = editor.getRootCell().descendantsAndSelf().first { it.getVisibleText() == text }
-        editor.changeSelection(CaretSelection(cell.layoutable()!!, if (position == -1) cell.getMaxCaretPos() else position))
+        editor.doChangeSelection(CaretSelection(cell.layoutable()!!, if (position == -1) cell.getMaxCaretPos() else position))
     }
 
-    fun pressEnter() = pressKey(KnownKeys.Enter)
+    suspend fun pressEnter() = pressKey(KnownKeys.Enter)
 
-    fun pressKey(key: KnownKeys) {
-        runBlocking { editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key)) }
+    suspend fun pressKey(key: KnownKeys) {
+        editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key))
     }
 
-    fun typeText(text: CharSequence) {
+    suspend fun typeText(text: CharSequence) {
         for (c in text) {
-            runBlocking {
-                editor.processKeyEvent(
-                    JSKeyboardEvent(
-                        eventType = JSKeyboardEventType.KEYDOWN,
-                        typedText = c.toString(),
-                        knownKey = null,
-                        rawKey = c.toString(),
-                    ),
-                )
-            }
+            editor.processKeyEvent(
+                JSKeyboardEvent(
+                    eventType = JSKeyboardEventType.KEYDOWN,
+                    typedText = c.toString(),
+                    knownKey = null,
+                    rawKey = c.toString(),
+                ),
+            )
         }
     }
 
@@ -162,11 +159,12 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
     }
 
-    fun `test inserting new line into class`() {
-        val lastMember = readAction { classNode.getAllChildren().last { it.getContainmentLink().getSimpleName() == "member" } }
-        placeCaretAtEnd(lastMember.asLegacyNode())
-        pressEnter()
-        assertFinalEditorText("""
+    fun `test inserting new line into class`() =
+        kotlinx.coroutines.test.runTest {
+            val lastMember = readAction { classNode.getAllChildren().last { it.getContainmentLink().getSimpleName() == "member" } }
+            placeCaretAtEnd(lastMember.asLegacyNode())
+            pressEnter()
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 <no statement>
@@ -174,87 +172,92 @@ class BaseLanguageTests : TestBase("SimpleProject") {
               
             }
         """)
-    }
+        }
 
-    fun `test creating LocalVariableDeclarationStatement by typing a type`() {
-        placeCaretIntoCellWithText("<no statement>")
-        val actions = getCodeCompletionEntries("int")
-        assertEquals(
-            listOf(
-                "int <name>; | LocalVariableDeclarationStatement[LocalVariableDeclaration[IntegerType]]",
-                "int.class; | ExpressionStatement[PrimitiveClassExpression[IntegerType]]",
-                "int[].class; | ExpressionStatement[ArrayClassExpression[ArrayType[IntegerType]]]",
-            ),
-            actions.map { it.getCompletionPattern() + " | " + it.getDescription() },
-        )
-        typeText("int ")
-        assertFinalEditorText("""
+    fun `test creating LocalVariableDeclarationStatement by typing a type`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            val actions = getCodeCompletionEntries("int")
+            assertEquals(
+                listOf(
+                    "int <name>; | LocalVariableDeclarationStatement[LocalVariableDeclaration[IntegerType]]",
+                    "int.class; | ExpressionStatement[PrimitiveClassExpression[IntegerType]]",
+                    "int[].class; | ExpressionStatement[ArrayClassExpression[ArrayType[IntegerType]]]",
+                ),
+                actions.map { it.getCompletionPattern() + " | " + it.getDescription() },
+            )
+            typeText("int ")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int <no name>;
               }
             }
         """)
-    }
+        }
 
-    fun `test naming LocalVariableDeclaration`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        assertFinalEditorText("""
+    fun `test naming LocalVariableDeclaration`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc;
               }
             }
         """)
-    }
+        }
 
-    fun `test showing initializer of LocalVariableDeclaration using side transformation`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        typeText("=")
-        assertEditorText("""
+    fun `test showing initializer of LocalVariableDeclaration using side transformation`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            typeText("=")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = <no initializer>;
               }
             }
         """)
-        assertCaretPosition("|<no initializer>")
-    }
+            assertCaretPosition("|<no initializer>")
+        }
 
-    fun `test showing initializer of LocalVariableDeclaration using TAB`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        pressKey(KnownKeys.Tab)
-        assertEditorText("""
+    fun `test showing initializer of LocalVariableDeclaration using TAB`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            pressKey(KnownKeys.Tab)
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = <no initializer>;
               }
             }
         """)
-        assertCaretPosition("|<no initializer>")
-    }
+            assertCaretPosition("|<no initializer>")
+        }
 
-    fun `test previous optional is hidden when TABing to next`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        pressKey(KnownKeys.Enter)
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("def")
-        placeCaretIntoCellWithText("abc")
+    fun `test previous optional is hidden when TABing to next`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            pressKey(KnownKeys.Enter)
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("def")
+            placeCaretIntoCellWithText("abc")
 
-        assertEditorText("""
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc;
@@ -263,8 +266,8 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             }
         """)
 
-        pressKey(KnownKeys.Tab)
-        assertEditorText("""
+            pressKey(KnownKeys.Tab)
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = <no initializer>;
@@ -272,12 +275,12 @@ class BaseLanguageTests : TestBase("SimpleProject") {
               }
             }
         """)
-        assertCaretPosition("|<no initializer>")
+            assertCaretPosition("|<no initializer>")
 
-        pressKey(KnownKeys.Tab)
-        assertCaretPosition("|def")
-        pressKey(KnownKeys.Tab)
-        assertEditorText("""
+            pressKey(KnownKeys.Tab)
+            assertCaretPosition("|def")
+            pressKey(KnownKeys.Tab)
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc;
@@ -285,92 +288,96 @@ class BaseLanguageTests : TestBase("SimpleProject") {
               }
             }
         """)
-        assertCaretPosition("|<no initializer>")
-    }
+            assertCaretPosition("|<no initializer>")
+        }
 
-    fun `test adding initializer to LocalVariableDeclaration`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        typeText("=")
-        typeText("10")
-        assertFinalEditorText("""
+    fun `test adding initializer to LocalVariableDeclaration`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            typeText("=")
+            typeText("10")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = 10;
               }
             }
         """)
-    }
+        }
 
-    fun `test adding second parameter to InstanceMethodDeclaration by pressing ENTER`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        pressKey(KnownKeys.Enter)
-        assertEditorText("""
+    fun `test adding second parameter to InstanceMethodDeclaration by pressing ENTER`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            pressKey(KnownKeys.Enter)
+            assertEditorText("""
             public class Class1 {
               public void method1(int p1, <choose parameter>) {
                 <no statement>
               }
             }
         """)
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p2")
-        assertFinalEditorText("""
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p2")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p2) {
                 <no statement>
               }
             }
         """)
-    }
+        }
 
-    fun `test adding second parameter to InstanceMethodDeclaration by typing separator after last`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        typeText(",")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p2")
-        assertFinalEditorText("""
+    fun `test adding second parameter to InstanceMethodDeclaration by typing separator after last`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            typeText(",")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p2")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p2) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("p2|")
-    }
+            assertCaretPosition("p2|")
+        }
 
-    fun `test adding second parameter to InstanceMethodDeclaration by typing separator after first`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        typeText(",")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p2")
-        placeCaretIntoCellWithText("p1")
-        typeText(",")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p3")
-        assertFinalEditorText("""
+    fun `test adding second parameter to InstanceMethodDeclaration by typing separator after first`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            typeText(",")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p2")
+            placeCaretIntoCellWithText("p1")
+            typeText(",")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p3")
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p3, int p2) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("p3|")
-    }
+            assertCaretPosition("p3|")
+        }
 
 /*    fun `test adding second parameter to InstanceMethodDeclaration by typing separator before last`() {
         placeCaretIntoCellWithText("<no parameter>")
@@ -395,133 +402,137 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
     }*/
 
-    fun `test deleting parameter using BACKSPACE`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        assertEditorText("""
+    fun `test deleting parameter using BACKSPACE`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            assertEditorText("""
             public class Class1 {
               public void method1(int p1) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("p1|")
-        pressKey(KnownKeys.ArrowLeft)
-        assertCaretPosition("p|1")
-        pressKey(KnownKeys.ArrowLeft)
-        assertCaretPosition("|p1")
-        pressKey(KnownKeys.Backspace)
-        assertFinalEditorText("""
+            assertCaretPosition("p1|")
+            pressKey(KnownKeys.ArrowLeft)
+            assertCaretPosition("p|1")
+            pressKey(KnownKeys.ArrowLeft)
+            assertCaretPosition("|p1")
+            pressKey(KnownKeys.Backspace)
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("|<no parameter>")
-    }
+            assertCaretPosition("|<no parameter>")
+        }
 
-    fun `test deleting parameter using DELETE`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        assertEditorText("""
+    fun `test deleting parameter using DELETE`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            assertEditorText("""
             public class Class1 {
               public void method1(int p1) {
                 <no statement>
               }
             }
         """)
-        pressKey(KnownKeys.Delete)
-        assertFinalEditorText("""
+            pressKey(KnownKeys.Delete)
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("|<no parameter>")
-    }
+            assertCaretPosition("|<no parameter>")
+        }
 
-    fun `test deleting placeholder`() {
-        placeCaretIntoCellWithText("<no parameter>")
-        typeText("int")
-        pressKey(KnownKeys.Tab)
-        typeText("p1")
-        pressKey(KnownKeys.Enter)
-        assertEditorText("""
+    fun `test deleting placeholder`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no parameter>")
+            typeText("int")
+            pressKey(KnownKeys.Tab)
+            typeText("p1")
+            pressKey(KnownKeys.Enter)
+            assertEditorText("""
             public class Class1 {
               public void method1(int p1, <choose parameter>) {
                 <no statement>
               }
             }
         """)
-        pressKey(KnownKeys.Backspace)
-        assertFinalEditorText("""
+            pressKey(KnownKeys.Backspace)
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1) {
                 <no statement>
               }
             }
         """)
-        assertCaretPosition("p1|")
-    }
+            assertCaretPosition("p1|")
+        }
 
-    fun `test typing plus expression`() {
-        placeCaretIntoCellWithText("<no statement>")
-        typeText("int ")
-        assertEditorText("""
+    fun `test typing plus expression`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("int ")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int <no name>;
               }
             }
         """)
-        pressKey(KnownKeys.Tab)
-        typeText("abc")
-        assertEditorText("""
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc;
               }
             }
         """)
-        typeText("=")
-        assertEditorText("""
+            typeText("=")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = <no initializer>;
               }
             }
         """)
-        typeText("10")
-        assertEditorText("""
+            typeText("10")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = 10;
               }
             }
         """)
-        typeText("+")
-        typeText("20")
-        assertEditorText("""
+            typeText("+")
+            typeText("20")
+            assertEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = 10 + 20;
               }
             }
         """)
-        assertFinalEditorText("""
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 int abc = 10 + 20;
               }
             }
         """)
-    }
+        }
 
     private fun runParsingTest(input: String) = runParsingTest(input, false)
 
@@ -534,7 +545,6 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         readAction {
             println("Running test ...")
             placeCaretIntoCellWithText("<no statement>")
-
             val layoutable = (editor.getSelection() as CaretSelection).layoutable
             val node =
                 layoutable.cell

@@ -46,17 +46,7 @@ open class FrontendEditorComponent(
     private var highlightedLine: IVirtualDom.HTMLElement? = null
     private var highlightedCell: IVirtualDom.HTMLElement? = null
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-    private val uiEventQueue =
-        coroutineScope.consume<JSUIEvent>(capacity = 100, onBufferOverflow = BufferOverflow.DROP_LATEST) { event ->
-            when (event) {
-                is JSKeyboardEvent -> processKeyEvent(event)
-                is JSMouseEvent -> processMouseEvent(event)
-            }
-        }
-    private val uiUpdateQueue =
-        coroutineScope.consume<Pair<() -> Unit, CompletableDeferred<Unit>>>(capacity = Channel.UNLIMITED) {
-            it.second.completeWith(runCatching { it.first.invoke() })
-        }
+    private val eventQueue = UIEventDispatcher(coroutineScope)
     private val updateLoop: AtomicReference<Job?> = AtomicReference(null)
     private val updateLock = Any()
 
@@ -79,7 +69,7 @@ open class FrontendEditorComponent(
         return firstUpdate
     }
 
-    suspend fun flush() = enqueueUpdate(service.flush(editorId)).await()
+    suspend fun flush() = flushRemote()
 
     suspend fun flushRemote() = enqueueUpdate(service.flush(editorId)).await()
 
@@ -92,9 +82,9 @@ open class FrontendEditorComponent(
 
     suspend fun flushAndUpdateSelection(newSelection: () -> Selection?) {
         val updateData = service.flush(editorId)
-        enqueueUpdate {
+        enqueueUpdate<Unit> {
             updateNow(updateData)
-            newSelection()?.let { changeSelection(it) }
+            newSelection()?.let { doChangeSelection(it) }
         }.await()
     }
 
@@ -119,11 +109,7 @@ open class FrontendEditorComponent(
 
     fun enqueueUpdate(updateData: EditorUpdateData): Deferred<Unit> = enqueueUpdate { updateNow(updateData) }
 
-    fun enqueueUpdate(body: () -> Unit): Deferred<Unit> {
-        val result = CompletableDeferred<Unit>()
-        uiUpdateQueue.trySend(body to result).getOrThrow()
-        return result
-    }
+    fun <R> enqueueUpdate(body: suspend () -> R): Deferred<R> = eventQueue.invokeLater(body)
 
     fun updateNow(update: EditorUpdateData? = null) {
         runSynchronized(updateLock) {
@@ -200,11 +186,20 @@ open class FrontendEditorComponent(
             ?: selection?.update(this)
     }
 
-    open fun changeSelection(newSelection: Selection) {
+    suspend fun changeSelection(newSelection: Selection) {
+        changeSelectionLater(newSelection).await()
+    }
+
+    fun doChangeSelection(newSelection: Selection) {
         selection = newSelection
         codeCompletionMenu = null
         updateNow()
     }
+
+    fun changeSelectionLater(newSelection: Selection): Deferred<Unit> =
+        eventQueue.invokeLater {
+            doChangeSelection(newSelection)
+        }
 
     fun getSelection(): Selection? = selection
 
@@ -214,19 +209,20 @@ open class FrontendEditorComponent(
         entries: List<CompletionMenuEntryData>,
         pattern: String = "",
         caretPosition: Int? = null,
-    ) {
-        codeCompletionMenu = CodeCompletionMenu(this, anchor, position, entries, pattern, caretPosition)
-        updateNow()
-    }
+    ): Deferred<Unit> =
+        eventQueue.invokeLater {
+            codeCompletionMenu = CodeCompletionMenu(this, anchor, position, entries, pattern, caretPosition)
+            updateNow()
+        }
 
-    fun closeCodeCompletionMenu() {
-        codeCompletionMenu = null
-        updateNow()
-    }
+    fun closeCodeCompletionMenu(): Deferred<Unit> =
+        eventQueue.invokeLater {
+            codeCompletionMenu = null
+            updateNow()
+        }
 
     fun dispose() {
-        uiEventQueue.close()
-        uiUpdateQueue.close()
+        eventQueue.dispose()
         updateLoop.getAndUpdate { currentJob ->
             currentJob?.cancel("disposed")
             null
@@ -235,7 +231,12 @@ open class FrontendEditorComponent(
     }
 
     fun enqueueUIEvent(event: JSUIEvent): Boolean {
-        uiEventQueue.trySend(event).onFailure { LOG.error(it) { "UI event ignored: $event" } }
+        eventQueue.invokeLater {
+            when (event) {
+                is JSKeyboardEvent -> processKeyEvent(event)
+                is JSMouseEvent -> processMouseEvent(event)
+            }
+        }
         return true
     }
 
@@ -286,7 +287,7 @@ open class FrontendEditorComponent(
                         (relativeClickX / characterWidth)
                             .roundToInt()
                             .coerceAtMost(layoutable.cell.getMaxCaretPos())
-                    changeSelection(CaretSelection(this, layoutable, caretPos))
+                    doChangeSelection(CaretSelection(this, layoutable, caretPos))
                     return true
                 }
 
@@ -326,7 +327,7 @@ open class FrontendEditorComponent(
                     .getSelectableText()
                     ?.length ?: 0
             }
-        changeSelection(CaretSelection(this, closest.first, caretPos))
+        doChangeSelection(CaretSelection(this, closest.first, caretPos))
         return true
     }
 
@@ -351,8 +352,8 @@ open class FrontendEditorComponent(
     suspend fun <R> serviceCall(call: suspend TextEditorService.() -> R): R {
         val result = call(service)
         when (result) {
-            is EditorUpdateData -> enqueueUpdate(result)
-            is ServiceCallResult<*> -> result.updateData?.let { enqueueUpdate(it) }
+            is EditorUpdateData -> enqueueUpdate(result).await()
+            is ServiceCallResult<*> -> result.updateData?.let { enqueueUpdate(it).await() }
         }
         return result
     }
@@ -366,4 +367,25 @@ open class FrontendEditorComponent(
 
 interface IKeyboardHandler {
     suspend fun processKeyDown(event: JSKeyboardEvent): Boolean
+}
+
+class UIEventDispatcher(
+    val coroutineScope: CoroutineScope,
+) {
+    private val eventQueue =
+        coroutineScope.consume<Pair<suspend () -> Any?, CompletableDeferred<Any?>>>(capacity = Channel.UNLIMITED) {
+            it.second.completeWith(runCatching { it.first.invoke() })
+        }
+
+    fun <R> invokeLater(body: suspend () -> R): Deferred<R> {
+        val result = CompletableDeferred<R>()
+        eventQueue.trySend(body to result as CompletableDeferred<Any?>).getOrThrow()
+        return result
+    }
+
+    suspend fun <R> invokeAndWait(body: () -> R): R = invokeLater(body).await()
+
+    fun dispose() {
+        eventQueue.close()
+    }
 }

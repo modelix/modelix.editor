@@ -58,9 +58,9 @@ class CaretSelection(
             KnownKeys.ArrowLeft -> {
                 if (end > 0) {
                     if (event.modifiers.shift) {
-                        editor.changeSelection(CaretSelection(editor, layoutable, start, end - 1))
+                        editor.doChangeSelection(CaretSelection(editor, layoutable, start, end - 1))
                     } else {
-                        editor.changeSelection(CaretSelection(editor, layoutable, end - 1))
+                        editor.doChangeSelection(CaretSelection(editor, layoutable, end - 1))
                     }
                 } else {
                     val previous =
@@ -72,9 +72,9 @@ class CaretSelection(
                         if (event.modifiers.shift) {
                             val commonAncestor = layoutable.cell.commonAncestor(previous.cell)
                             val selectableAncestor = commonAncestor.ancestors(true).filter { it.isSelectable() }.firstOrNull()
-                            selectableAncestor?.let { editor.changeSelection(CellSelection(editor, it, true, this)) }
+                            selectableAncestor?.let { editor.doChangeSelection(CellSelection(editor, it, true, this)) }
                         } else {
-                            editor.changeSelection(CaretSelection(editor, previous, previous.cell.getMaxCaretPos()))
+                            editor.doChangeSelection(CaretSelection(editor, previous, previous.cell.getMaxCaretPos()))
                         }
                     }
                 }
@@ -83,9 +83,9 @@ class CaretSelection(
             KnownKeys.ArrowRight -> {
                 if (end < (layoutable.cell.getSelectableText()?.length ?: 0)) {
                     if (event.modifiers.shift) {
-                        editor.changeSelection(CaretSelection(editor, layoutable, start, end + 1))
+                        editor.doChangeSelection(CaretSelection(editor, layoutable, start, end + 1))
                     } else {
-                        editor.changeSelection(CaretSelection(editor, layoutable, end + 1))
+                        editor.doChangeSelection(CaretSelection(editor, layoutable, end + 1))
                     }
                 } else {
                     val next =
@@ -97,9 +97,9 @@ class CaretSelection(
                         if (event.modifiers.shift) {
                             val commonAncestor = layoutable.cell.commonAncestor(next.cell)
                             val selectableAncestor = commonAncestor.ancestors(true).filter { it.isSelectable() }.firstOrNull()
-                            selectableAncestor?.let { editor.changeSelection(CellSelection(editor, it, false, this)) }
+                            selectableAncestor?.let { editor.doChangeSelection(CellSelection(editor, it, false, this)) }
                         } else {
-                            editor.changeSelection(CaretSelection(editor, next, 0))
+                            editor.doChangeSelection(CaretSelection(editor, next, 0))
                         }
                     }
                 }
@@ -111,7 +111,7 @@ class CaretSelection(
 
             KnownKeys.ArrowUp -> {
                 if (event.modifiers.meta) {
-                    layoutable.cell.let { editor.changeSelection(CellSelection(editor, it, true, this)) }
+                    layoutable.cell.let { editor.doChangeSelection(CellSelection(editor, it, true, this)) }
                 } else {
                     selectNextPreviousLine(false)
                 }
@@ -171,7 +171,7 @@ class CaretSelection(
 
     fun selectNextPreviousLine(next: Boolean) {
         createNextPreviousLineSelection(next, desiredXPosition ?: getAbsoluteX())
-            ?.let { editor?.changeSelection(it) }
+            ?.let { editor?.doChangeSelection(it) }
     }
 
     fun getAbsoluteX() = layoutable.getX() + end

@@ -120,7 +120,7 @@ class CodeCompletionTest {
     fun actionsOnNameProperty() =
         runCompletionTest {
             val namePropertyCell = editor.getRootCell().descendants().find { it.getVisibleText() == "stringTests" }!!
-            editor.changeSelection(CaretSelection(editor, namePropertyCell.layoutable()!!, 0))
+            editor.changeSelectionLater(CaretSelection(editor, namePropertyCell.layoutable()!!, 0))
 
             val firstLeaf = namePropertyCell.firstLeaf()
             assertEquals("stringTests", firstLeaf.getVisibleText())
