@@ -4,7 +4,7 @@ default_install_hook_types:
   - commit-msg
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
 #      - id: end-of-file-fixer # disabled, because it modifies MPS XML files
       - id: check-toml
