@@ -16,7 +16,6 @@ jobs:
       matrix:
         version:
           # also adjust the compatibility version range of the MPS plugin
-          - "2023.2"
           - "2023.3"
           - "2024.1"
     steps:
