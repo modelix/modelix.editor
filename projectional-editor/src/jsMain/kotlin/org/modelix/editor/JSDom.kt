@@ -27,7 +27,10 @@ class JSDom(
     override fun getElementsAt(
         x: Double,
         y: Double,
-    ): List<IVirtualDom.Element> = doc.elementsFromPoint(x, y).map { it.wrap() }
+    ): List<IVirtualDom.Element> {
+        val origin = getOrigin()
+        return doc.elementsFromPoint(origin.x + x, origin.y + y).map { it.wrap() }
+    }
 
     override fun getElementById(id: String): IVirtualDom.Element? = doc.getElementById(id)?.wrap()
 

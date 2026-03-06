@@ -983,5 +983,15 @@
       <ref role="20lvS9" node="6eUjE42hnWB" resolve="VariablePagePathPart" />
     </node>
   </node>
+  <node concept="1TIwiD" id="szQzwtmcUX">
+    <property role="EcuMT" value="514494716995751613" />
+    <property role="3GE5qa" value="pages" />
+    <property role="TrG5h" value="StringPageParameterType" />
+    <property role="34LRSv" value="string" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="PrWs8" id="szQzwtmcUY" role="PzmwI">
+      <ref role="PrY4T" node="6eUjE42h0Dq" resolve="IPageParameterType" />
+    </node>
+  </node>
 </model>
 

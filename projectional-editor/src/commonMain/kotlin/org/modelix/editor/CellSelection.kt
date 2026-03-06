@@ -80,9 +80,13 @@ data class CellSelection(
                     val anchor = getLayoutables().filterIsInstance<LayoutableCell>().firstOrNull()
                     if (anchor != null) {
                         if (typedText == " " && event.modifiers == Modifiers.CTRL) {
-                            editor.serviceCall { triggerCodeCompletion(editor.editorId, anchor.cell.getId(), 0) }
+                            editor.serviceCall {
+                                triggerCodeCompletion(editor.editorId, anchor.cell.getId(), 0)
+                            }
                         } else {
-                            editor.serviceCall { triggerCodeCompletion(editor.editorId, anchor.cell.getId(), typedText.length) }
+                            editor.serviceCall {
+                                triggerCodeCompletion(editor.editorId, anchor.cell.getId(), typedText.length)
+                            }
                         }
                     }
                 }

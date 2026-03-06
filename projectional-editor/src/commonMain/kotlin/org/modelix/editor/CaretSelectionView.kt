@@ -1,5 +1,6 @@
 package org.modelix.editor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.TagConsumer
 import kotlinx.html.classes
 import kotlinx.html.div
@@ -7,6 +8,8 @@ import kotlinx.html.style
 import org.modelix.editor.text.frontend.getVisibleText
 import kotlin.math.max
 import kotlin.math.min
+
+private val LOG = KotlinLogging.logger { }
 
 class CaretSelectionView(
     selection: CaretSelection,
@@ -42,10 +45,11 @@ class CaretSelectionView(
     }
 
     override fun update() {
-        val textDom = editor.generatedHtmlMap.getOutput(selection.layoutable) ?: return
+        LOG.trace { "CaretSelectionView.update" }
+        val textDom = editor.getHtmlElement(selection.layoutable) ?: return
         val mainLayerBounds = editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO
         val textBoundsUtil = TextBoundsUtil(textDom)
-        val selectionDom = editor.generatedHtmlMap.getOutput(this) ?: return
+        val selectionDom = editor.getHtmlElement(this) ?: return
         val selectionBounds = textBoundsUtil.getTextBounds().expanded(1.0)
         selectionDom.setBounds(selectionBounds.relativeTo(mainLayerBounds))
         val caretDom = selectionDom.childNodes.filterIsInstance<IVirtualDom.HTMLElement>().lastOrNull() ?: return

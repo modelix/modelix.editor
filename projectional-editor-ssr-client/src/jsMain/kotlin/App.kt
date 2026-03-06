@@ -7,11 +7,13 @@ import io.ktor.http.DEFAULT_PORT
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import kotlinx.browser.document
+import kotlinx.rpc.krpc.ktor.client.installKrpc
 import org.modelix.editor.ssr.client.ModelixSSRClient
 import org.modelix.model.api.NodeReference
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.asList
 import org.w3c.dom.get
+import kotlin.js.json
 
 private val LOG = KotlinLogging.logger { }
 
@@ -22,6 +24,9 @@ fun main() {
     val httpClient =
         HttpClient {
             install(WebSockets)
+            installKrpc {
+                serialization { json() }
+            }
         }
 
     LOG.trace { "Coroutine in GlobalScope started" }
@@ -32,7 +37,7 @@ fun main() {
                 protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
                 host = currentUrl.hostname
                 port = currentUrl.port.toIntOrNull() ?: DEFAULT_PORT
-                pathSegments = listOf("ws")
+                pathSegments = listOf("rpc")
             }.buildString()
     val client = ModelixSSRClient(httpClient, wsUrl)
     client.connect {

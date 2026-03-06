@@ -9,9 +9,11 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.util.PlatformUtils
 import kotlinx.browser.document
+import kotlinx.rpc.krpc.ktor.client.installKrpc
 import org.modelix.model.api.NodeReference
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import kotlin.js.json
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
@@ -41,6 +43,9 @@ object ClientSideEditorsAPI {
         val httpClient =
             HttpClient(Js) {
                 install(WebSockets)
+                installKrpc {
+                    serialization { json() }
+                }
             }
         client = ModelixSSRClient(httpClient, url)
     }

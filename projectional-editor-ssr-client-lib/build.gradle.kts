@@ -1,4 +1,5 @@
 import dev.petuska.npm.publish.task.NpmPackTask
+import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 
 plugins {
     kotlin("multiplatform")
@@ -8,6 +9,9 @@ plugins {
 
 kotlin {
     js(IR) {
+        compilerOptions {
+            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_INLINING
+        }
         browser {
             commonWebpackConfig {
                 cssSupport {
@@ -25,9 +29,9 @@ kotlin {
             dependencies {
                 implementation(project(":projectional-editor"))
                 implementation(project(":projectional-editor-ssr-common"))
-                implementation(coreLibs.ktor.client.core)
-                implementation(coreLibs.ktor.client.websockets)
-                implementation(coreLibs.ktor.client.js)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.websockets)
+                implementation(libs.ktor.client.js)
                 implementation(libs.kotlin.html)
                 implementation(libs.modelix.model.api)
                 implementation(libs.kotlin.logging)

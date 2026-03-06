@@ -1283,5 +1283,31 @@
       <ref role="1YaFvo" to="8xo1:7GLg2tFt7ht" resolve="PrimitivePropertyValue" />
     </node>
   </node>
+  <node concept="1YbPZF" id="szQzwtngIM">
+    <property role="TrG5h" value="typeof_PagePathVariableReference" />
+    <property role="3GE5qa" value="pages" />
+    <node concept="3clFbS" id="szQzwtngIN" role="18ibNy">
+      <node concept="1Z5TYs" id="szQzwtngTd" role="3cqZAp">
+        <node concept="mw_s8" id="szQzwtngTp" role="1ZfhKB">
+          <node concept="2pJPEk" id="szQzwtngTl" role="mwGJk">
+            <node concept="2pJPED" id="szQzwtngTn" role="2pJPEn">
+              <ref role="2pJxaS" to="tpee:hP7QB7G" resolve="StringType" />
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="szQzwtngTg" role="1ZfhK$">
+          <node concept="1Z2H0r" id="szQzwtngJE" role="mwGJk">
+            <node concept="1YBJjd" id="szQzwtngJR" role="1Z2MuG">
+              <ref role="1YBMHb" node="szQzwtngIP" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="szQzwtngIP" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="8xo1:2UuChTN9p$I" resolve="PagePathVariableReference" />
+    </node>
+  </node>
 </model>
 

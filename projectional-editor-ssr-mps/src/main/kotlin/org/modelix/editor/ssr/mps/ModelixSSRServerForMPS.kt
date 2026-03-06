@@ -52,6 +52,7 @@ import kotlinx.html.link
 import kotlinx.html.script
 import kotlinx.html.title
 import kotlinx.html.ul
+import kotlinx.rpc.krpc.ktor.server.Krpc
 import org.jetbrains.mps.openapi.language.SAbstractConcept
 import org.jetbrains.mps.openapi.language.SConcept
 import org.jetbrains.mps.openapi.language.SContainmentLink
@@ -149,12 +150,7 @@ class ModelixSSRServerForMPS : Disposable {
     }
 
     private fun Application.initKtorServer(ssrServer: ModelixSSRServer) {
-        install(WebSockets) {
-            pingPeriod = 15.seconds
-            timeout = 15.seconds
-            maxFrameSize = Long.MAX_VALUE
-            masking = false
-        }
+        install(Krpc)
         routing {
             get("/") {
                 call.respondHtml {

@@ -44,6 +44,7 @@ fun FrontendEditorComponent.resolvePropertyCell(
     node: ITypedNode,
 ): Cell? = resolvePropertyCell(property.untyped(), node.untyped())
 
+@Serializable
 data class NodeCellReference(
     val nodeRef: INodeReference,
 ) : CellReference()

@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":projectional-editor"), excludeMPSLibraries)
     implementation(project(":projectional-editor-ssr-server"), excludeMPSLibraries)
     implementation(libs.slf4j.api, excludeMPSLibraries)
+    implementation(libs.kotlinx.rpc.krpc.ktor.server, excludeMPSLibraries)
 }
 
 tasks.processResources {

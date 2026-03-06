@@ -612,7 +612,7 @@
     <property role="3GE5qa" value="pages" />
     <ref role="1M2myG" to="8xo1:2UuChTN9p$I" resolve="PagePathVariableReference" />
     <node concept="1N5Pfh" id="2UuChTN9p$L" role="1Mr941">
-      <ref role="1N5Vy1" to="8xo1:2UuChTN9p$J" />
+      <ref role="1N5Vy1" to="8xo1:2UuChTN9p$J" resolve="decl" />
       <node concept="3dgokm" id="2UuChTN9pH6" role="1N6uqs">
         <node concept="3clFbS" id="2UuChTN9pH7" role="2VODD2">
           <node concept="3clFbF" id="2UuChTN9yDp" role="3cqZAp">

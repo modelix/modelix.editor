@@ -212,7 +212,7 @@
       </concept>
     </language>
     <language id="c7b55726-1795-47bd-aa21-714ac1e30f21" name="org.modelix.mps.notation">
-      <concept id="737165568294088373" name="org.modelix.mps.notation.structure.WithIdentCell" flags="ng" index="2OUTUo">
+      <concept id="737165568294088373" name="org.modelix.mps.notation.structure.WithIndentCell" flags="ng" index="2OUTUo">
         <child id="737165568294090056" name="cells" index="2OUSl_" />
       </concept>
       <concept id="8310867745953158874" name="org.modelix.mps.notation.structure.ConstantCell" flags="ng" index="3JB3jO" />
@@ -2038,7 +2038,7 @@
       </node>
     </node>
     <node concept="3aamgX" id="2QtC6yZ3g2L" role="3acgRq">
-      <ref role="30HIoZ" to="f8gn:CUW2QYOmUP" resolve="WithIdentCell" />
+      <ref role="30HIoZ" to="f8gn:CUW2QYOmUP" resolve="WithIndentCell" />
       <node concept="1Koe21" id="2QtC6yZ3g2M" role="1lVwrX">
         <node concept="2OqwBi" id="2QtC6yZ3g2N" role="1Koe22">
           <node concept="2ShNRf" id="2QtC6yZ3g2O" role="2Oq$k0">
