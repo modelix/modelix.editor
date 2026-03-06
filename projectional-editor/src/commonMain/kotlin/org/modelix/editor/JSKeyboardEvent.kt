@@ -3,7 +3,7 @@ package org.modelix.editor
 import kotlinx.serialization.Serializable
 
 @Serializable
-class JSKeyboardEvent(
+data class JSKeyboardEvent(
     val eventType: JSKeyboardEventType,
     val typedText: String?,
     val knownKey: KnownKeys?,

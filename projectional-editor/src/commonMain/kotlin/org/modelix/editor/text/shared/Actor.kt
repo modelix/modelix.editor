@@ -20,14 +20,18 @@ fun <E> CoroutineScope.consume(
     val channel = Channel<E>(capacity = capacity, onBufferOverflow = onBufferOverflow)
     launch {
         channel.consumeEach {
+            LOG.trace { "consuming $it" }
             try {
                 consumer(it)
+                LOG.trace { "consumed $it" }
             } catch (ex: CancellationException) {
+                LOG.warn(ex) { "Consuming canceled" }
                 throw ex
             } catch (ex: Throwable) {
                 LOG.error(ex) { "UI event processing failed" }
             }
         }
+        LOG.trace { "consuming done" }
     }
     return channel
 }

@@ -26,9 +26,9 @@ class EditorKeyboardTest {
                         "777",
                         "888"
                     ),
-                    editor.cellTree
+                    editor.getCellTree()
                 )
-            rootCell.moveCell(editor.cellTree.getRoot(), 0)
+            rootCell.moveCell(editor.getRootCell(), 0)
             val findByText: (String) -> LayoutableCell = { text ->
                 val cell = rootCell.descendants().find { it.getVisibleText() == text }!!
                 cell.layoutable()!!
@@ -61,9 +61,9 @@ class EditorKeyboardTest {
             val rootCell =
                 EditorTestUtils.buildCells(
                     listOf("111", "222", EditorTestUtils.newLine, "333", "444", "555", EditorTestUtils.newLine, "666", "777", "888"),
-                    editor.cellTree
+                    editor.getCellTree()
                 )
-            rootCell.moveCell(editor.cellTree.getRoot(), 0)
+            rootCell.moveCell(editor.getRootCell(), 0)
             val findByText: (String) -> LayoutableCell = { text ->
                 val cell = rootCell.descendants().find { it.getVisibleText() == text }!!
                 cell.layoutable()!!
@@ -99,6 +99,7 @@ class EditorKeyboardTest {
         expectedPosition: Int,
     ) {
         editor.processKeyEvent(JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, key))
+        editor.flush()
         val layoutable =
             editor
                 .getRootCell()

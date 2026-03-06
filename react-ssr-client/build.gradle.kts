@@ -17,6 +17,7 @@ tasks.withType(YarnSetupTask::class.java) {
 }
 
 tasks.named("yarn_run_build") {
+    dependsOn("yarnSetup")
     inputs.dir("src")
     inputs.file("package.json")
     inputs.file("yarn.lock")
@@ -26,4 +27,16 @@ tasks.named("yarn_run_build") {
 
 tasks.named("assemble") {
     dependsOn("yarn_run_build")
+}
+
+val deleteDistFolder =
+    tasks.register<Delete>("cleanDistFolder") {
+        delete(
+            layout.projectDirectory.dir("dist"),
+            layout.projectDirectory.dir("node_modules/@modelix"),
+        )
+    }
+
+tasks.clean {
+    dependsOn(deleteDistFolder)
 }

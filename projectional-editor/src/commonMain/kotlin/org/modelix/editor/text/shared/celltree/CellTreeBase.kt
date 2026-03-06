@@ -25,7 +25,11 @@ open class CellTreeBase : IMutableCellTree {
 
     override fun getRoot(): CellImpl = root
 
-    override fun getCell(id: CellInstanceId): CellImpl = withTreeLock { allCells[id] ?: throw NoSuchElementException("Cell ID: ${id.id}") }
+    override fun getCell(id: CellInstanceId): CellImpl =
+        withTreeLock {
+            allCells[id]
+                ?: throw NoSuchElementException("Cell ID: ${id.id}")
+        }
 
     final override fun createCell(): IMutableCellTree.MutableCell = createCell(CellInstanceId(nextId++))
 

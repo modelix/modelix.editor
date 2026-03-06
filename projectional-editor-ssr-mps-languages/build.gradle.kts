@@ -25,6 +25,7 @@ dependencies {
     testImplementation(libs.modelix.mps.model.adapters, excludeMPSLibraries)
     testImplementation(libs.playwright, excludeMPSLibraries)
     testImplementation(coreLibs.kotlin.coroutines.test, excludeMPSLibraries)
+    testImplementation(coreLibs.logback.classic, excludeMPSLibraries)
     modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
 }
 

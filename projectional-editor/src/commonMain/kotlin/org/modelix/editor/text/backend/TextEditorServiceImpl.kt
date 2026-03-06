@@ -180,9 +180,11 @@ class TextEditorServiceImpl(
     override suspend fun processTypedText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
     ): EditorUpdateData {
+        val range = IntRange(rangeStart, rangeEnd)
         return runWithCell(editorId, cellId) { updateChannel, cell ->
             val oldText = cell.getSelectableText() ?: ""
             val textLength = oldText.length
@@ -359,10 +361,12 @@ class TextEditorServiceImpl(
     override suspend fun replaceText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
         triggerCompletion: Boolean,
     ): ServiceCallResult<Boolean> {
+        val range = IntRange(rangeStart, rangeEnd)
         return runWithCell(editorId, cellId) { updateChannel, cell ->
             val editor = updateChannel.editor
             val oldText = cell.getSelectableText() ?: ""

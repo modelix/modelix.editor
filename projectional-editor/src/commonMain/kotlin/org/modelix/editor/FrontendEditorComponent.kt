@@ -1,58 +1,62 @@
 package org.modelix.editor
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.onFailure
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.completeWith
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlinx.html.TagConsumer
 import kotlinx.html.div
 import org.modelix.editor.text.backend.AtomicReference
 import org.modelix.editor.text.frontend.FrontendCellTree
 import org.modelix.editor.text.frontend.getSelectableText
 import org.modelix.editor.text.shared.CompletionMenuEntryData
+import org.modelix.editor.text.shared.CompletionMenuTrigger
 import org.modelix.editor.text.shared.EditorId
 import org.modelix.editor.text.shared.EditorUpdateData
 import org.modelix.editor.text.shared.ServiceCallResult
 import org.modelix.editor.text.shared.TextEditorService
-import org.modelix.editor.text.shared.consume
+import org.modelix.editor.text.shared.celltree.CellInstanceId
+import org.modelix.editor.text.shared.celltree.CellTreeOp
 import org.modelix.incremental.IncrementalIndex
 import org.modelix.kotlin.utils.AtomicLong
+import org.modelix.kotlin.utils.ContextValue
+import org.modelix.kotlin.utils.JvmSynchronized
 import org.modelix.model.api.INodeReference
 import org.modelix.model.api.runSynchronized
 import org.modelix.model.api.toSerialized
+import kotlin.collections.orEmpty
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.seconds
+
+private val LOG = KotlinLogging.logger { }
 
 open class FrontendEditorComponent(
     private val service: TextEditorService,
     val virtualDom: IVirtualDom = IVirtualDom.newInstance(),
 ) : IProducesHtml {
     val editorId: EditorId = idSequence.incrementAndGet().toInt()
-    val cellTree = FrontendCellTree(this)
-    private var selection: Selection? = null
-    private val layoutablesIndex: IncrementalIndex<Cell, LayoutableCell> = IncrementalIndex()
-    protected var codeCompletionMenu: CodeCompletionMenu? = null
-    private var selectionView: SelectionView<*>? = null
-    val generatedHtmlMap = GeneratedHtmlMap()
-    private var highlightedLine: IVirtualDom.HTMLElement? = null
-    private var highlightedCell: IVirtualDom.HTMLElement? = null
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
     private val eventQueue = UIEventDispatcher(coroutineScope)
-    private val updateLoop: AtomicReference<Job?> = AtomicReference(null)
-    private val updateLock = Any()
+    private val state =
+        FrontendEditorComponentState(this, onHtmlInvalidation = {
+            eventQueue.enqueue(UIEventType.Html, { getHtmlElement() })
+        })
+    private val remoteUpdatesLoop: AtomicReference<Job?> = AtomicReference(null)
 
     fun openNode(rootNode: INodeReference): Deferred<EditorUpdateData> {
         val firstUpdate = CompletableDeferred<EditorUpdateData>()
-        updateLoop.getAndUpdate { currentJob ->
+        remoteUpdatesLoop.getAndUpdate { currentJob ->
             currentJob?.cancel("root node changed")
             val updateFlow = service.openNode(editorId, rootNode.toSerialized())
             coroutineScope.launch {
@@ -71,9 +75,28 @@ open class FrontendEditorComponent(
 
     suspend fun flush() = flushRemote()
 
-    suspend fun flushRemote() = enqueueUpdate(service.flush(editorId)).await()
+    suspend fun flushRemote() {
+        flushRemoteLater()
+        flushLocal()
+    }
 
-    suspend fun flushLocal() = enqueueUpdate(EditorUpdateData()).await()
+    suspend fun flushRemoteLater() = enqueueUpdate(service.flush(editorId))
+
+    suspend fun flushLocal() {
+        flushLocalLater().await()
+    }
+
+    fun flushLocalLater() = eventQueue.enqueue(UIEventType.UserInput, {})
+
+    fun <R> afterFlushLocal(body: suspend () -> R): UIEventDispatcher.Event<R> {
+        flushLocalLater()
+        return enqueueUpdate(body)
+    }
+
+    suspend fun <R> afterFlushRemote(body: suspend () -> R): UIEventDispatcher.Event<R> {
+        flushRemoteLater()
+        return enqueueUpdate(body)
+    }
 
     fun getMainLayer(): IVirtualDom.HTMLElement? =
         getHtmlElement()?.childNodes?.filterIsInstance<IVirtualDom.HTMLElement>()?.find {
@@ -81,127 +104,80 @@ open class FrontendEditorComponent(
         }
 
     suspend fun flushAndUpdateSelection(newSelection: () -> Selection?) {
-        val updateData = service.flush(editorId)
-        enqueueUpdate<Unit> {
-            updateNow(updateData)
-            newSelection()?.let { doChangeSelection(it) }
-        }.await()
+        flushRemoteLater().await()
+        newSelection()?.let { doChangeSelection(it) }
     }
 
-    fun resolveCell(reference: CellReference): List<Cell> = cellTree.resolveCell(reference)
+    fun resolveCell(reference: CellReference): List<Cell> = state.resolveCell(reference)
 
-    fun resolveLayoutable(cell: Cell): LayoutableCell? {
-        updateLayoutablesIndex()
-        return layoutablesIndex.lookup(cell).firstOrNull()
-    }
+    fun resolveLayoutable(cell: Cell): LayoutableCell? = state.resolveLayoutable(cell)
 
-    private fun updateLayoutablesIndex() {
-        layoutablesIndex.update(cellTree.getRoot().layout.layoutablesIndexList)
-    }
+    fun getHtmlElement(producer: IProducesHtml) = state.getHtmlElement(producer)
 
     override fun isHtmlOutputValid(): Boolean = false
 
-    fun getHtmlElement(): IVirtualDom.HTMLElement? = generatedHtmlMap.getOutput(this)
+    fun getHtmlElement(): IVirtualDom.HTMLElement? = state.getHtmlElement(this)
 
     suspend fun editNode(node: INodeReference) {
         openNode(node.toSerialized()).await()
     }
 
-    fun enqueueUpdate(updateData: EditorUpdateData): Deferred<Unit> = enqueueUpdate { updateNow(updateData) }
+    fun enqueueUpdate() = enqueueUpdate(EditorUpdateData())
 
-    fun <R> enqueueUpdate(body: suspend () -> R): Deferred<R> = eventQueue.invokeLater(body)
-
-    fun updateNow(update: EditorUpdateData? = null) {
-        runSynchronized(updateLock) {
-            if (update != null) {
-                cellTree.applyChanges(update.cellTreeChanges)
+    fun enqueueUpdate(updateData: EditorUpdateData): UIEventDispatcher.Event<Unit> {
+        LOG.trace { "enqueueUpdate $updateData" }
+        runSynchronized(state) {
+            state.updateCellTree(updateData.cellTreeChanges)
+            if (updateData.completionMenuTrigger != null) {
+                state.triggerCodeCompletionMenu(updateData.completionMenuTrigger)
             }
-            update?.selectionChange?.getBestSelection(this)?.let { selection = it }
-            updateSelection()
-            updateSelectionView()
-            update?.completionMenuTrigger?.let {
-                val layoutable = cellTree.getCell(it.anchor).layoutable() ?: return@let
-                showCodeCompletionMenu(
-                    layoutable,
-                    it.completionPosition,
-                    update.completionEntries.orEmpty(),
-                    it.pattern,
-                    it.caretPosition,
-                )
+            if (updateData.completionEntries != null) {
+                state.updateCompletionEntries(updateData.completionEntries)
             }
-            update?.completionEntries?.let { newEntries ->
-                codeCompletionMenu?.loadEntries(newEntries)
+            if (updateData.selectionChange != null) {
+                state.setSelection(updateData.selectionChange)
             }
-            updateHtml()
-            selectionView?.update()
-            codeCompletionMenu?.let { CodeCompletionMenuUI(it, this).updateBounds() }
+            return eventQueue.enqueue(UIEventType.Html) {
+                state.updateHtml()
+            }
         }
+    }
+
+    fun <R> enqueueUpdate(body: suspend () -> R): UIEventDispatcher.Event<R> = eventQueue.enqueue(UIEventType.Generic, body)
+
+    suspend fun updateNow(update: EditorUpdateData? = null) {
+        enqueueUpdate(update ?: EditorUpdateData()).await()
     }
 
     suspend fun resetState() {
         serviceCall { resetState(editorId) }
     }
 
-    protected open fun editorElementChanged(newElement: IVirtualDom.HTMLElement) {}
+    open fun editorElementChanged(newElement: IVirtualDom.HTMLElement) {}
 
     fun updateHtml() {
-        val oldEditorElement = generatedHtmlMap.getOutput(this)
-        val newEditorElement = IncrementalVirtualDOMBuilder(virtualDom, oldEditorElement, generatedHtmlMap).produce(this)()
-        if (newEditorElement != oldEditorElement) {
-            editorElementChanged(newEditorElement)
-        }
-
-        val selectedLayoutable = (getSelection() as? CaretSelection)?.layoutable
-
-        val newHighlightedLine = selectedLayoutable?.getLine()?.let { generatedHtmlMap.getOutput(it) }
-        if (newHighlightedLine != highlightedLine) {
-            highlightedLine?.removeClass("highlighted")
-        }
-        newHighlightedLine?.addClass("highlighted")
-        highlightedLine = newHighlightedLine
-
-        val newHighlightedCell = selectedLayoutable?.let { generatedHtmlMap.getOutput(it) }
-        if (newHighlightedCell != highlightedCell) {
-            highlightedCell?.removeClass("highlighted-cell")
-        }
-        newHighlightedCell?.addClass("highlighted-cell")
-        highlightedCell = newHighlightedCell
+        state.updateHtml()
     }
 
-    private fun updateSelectionView() {
-        if (selectionView?.selection != getSelection()) {
-            selectionView =
-                when (val selection = getSelection()) {
-                    is CaretSelection -> CaretSelectionView(selection, this)
-                    is CellSelection -> CellSelectionView(selection, this)
-                    else -> null
-                }
-        }
-    }
+    fun getCellTree() = state.getCellTree()
 
-    fun getRootCell() = cellTree.getRoot()
-
-    private fun updateSelection() {
-        selection = selection?.takeIf { it.isValid() }
-            ?: selection?.update(this)
-    }
+    fun getRootCell() = state.getRootCell()
 
     suspend fun changeSelection(newSelection: Selection) {
-        changeSelectionLater(newSelection).await()
+        doChangeSelection(newSelection)
     }
 
     fun doChangeSelection(newSelection: Selection) {
-        selection = newSelection
-        codeCompletionMenu = null
-        updateNow()
+        state.setSelection(newSelection)
+        state.closeCompletionMenu()
     }
 
-    fun changeSelectionLater(newSelection: Selection): Deferred<Unit> =
-        eventQueue.invokeLater {
+    fun changeSelectionLater(newSelection: Selection): UIEventDispatcher.Event<Unit> =
+        eventQueue.enqueue(UIEventType.Selection) {
             doChangeSelection(newSelection)
         }
 
-    fun getSelection(): Selection? = selection
+    fun getSelection(): Selection? = state.getSelection()
 
     fun showCodeCompletionMenu(
         anchor: LayoutableCell,
@@ -209,35 +185,33 @@ open class FrontendEditorComponent(
         entries: List<CompletionMenuEntryData>,
         pattern: String = "",
         caretPosition: Int? = null,
-    ): Deferred<Unit> =
-        eventQueue.invokeLater {
-            codeCompletionMenu = CodeCompletionMenu(this, anchor, position, entries, pattern, caretPosition)
-            updateNow()
-        }
+    ) = eventQueue.invokeLater {
+        state.showCodeCompletionMenu(anchor, position, entries, pattern, caretPosition)
+    }
 
-    fun closeCodeCompletionMenu(): Deferred<Unit> =
+    fun closeCodeCompletionMenu() =
         eventQueue.invokeLater {
-            codeCompletionMenu = null
-            updateNow()
+            state.closeCompletionMenu()
         }
 
     fun dispose() {
         eventQueue.dispose()
-        updateLoop.getAndUpdate { currentJob ->
+        remoteUpdatesLoop.getAndUpdate { currentJob ->
             currentJob?.cancel("disposed")
             null
         }
         coroutineScope.cancel("disposed")
     }
 
-    fun enqueueUIEvent(event: JSUIEvent): Boolean {
-        eventQueue.invokeLater {
+    fun enqueueUIEvent(event: JSUIEvent): UIEventDispatcher.Event<Unit> {
+        LOG.trace { "enqueueUIEvent $event" }
+        return eventQueue.enqueue(UIEventType.UserInput) {
+            LOG.trace { "process event: $event" }
             when (event) {
                 is JSKeyboardEvent -> processKeyEvent(event)
                 is JSMouseEvent -> processMouseEvent(event)
             }
         }
-        return true
     }
 
     private fun processKeyUp(event: JSKeyboardEvent): Boolean = true
@@ -249,12 +223,12 @@ open class FrontendEditorComponent(
                 // state.reset()
                 return true
             }
-            for (handler in listOfNotNull(codeCompletionMenu, selection)) {
+            for (handler in listOfNotNull(state.getCodeCompletionMenu(), state.getSelection())) {
                 if (handler.processKeyDown(event)) return true
             }
             return false
         } finally {
-            flushLocal()
+            flushLocalLater()
         }
     }
 
@@ -273,9 +247,10 @@ open class FrontendEditorComponent(
 
     suspend fun processClick(event: JSMouseEvent): Boolean {
         val targets = virtualDom.ui.getElementsAt(event.x, event.y)
+        LOG.trace { "targets: $targets" }
         for (target in targets) {
             val htmlElement = target as? IVirtualDom.HTMLElement
-            val producer: IProducesHtml = htmlElement?.let { generatedHtmlMap.getProducer(it) } ?: continue
+            val producer: IProducesHtml = htmlElement?.let { state.getProducer(it) } ?: continue
             when (producer) {
                 is LayoutableCell -> {
                     val layoutable = producer as? LayoutableCell ?: continue
@@ -313,7 +288,7 @@ open class FrontendEditorComponent(
     ): Boolean {
         val words = line.words.filterIsInstance<LayoutableCell>()
         val closest =
-            words.map { it to generatedHtmlMap.getOutput(it)!! }.minByOrNull {
+            words.map { it to state.getHtmlElement(it)!! }.minByOrNull {
                 min(
                     abs(absoluteClickX - it.second.getOuterBounds().minX()),
                     abs(absoluteClickX - it.second.getOuterBounds().maxX()),
@@ -332,7 +307,7 @@ open class FrontendEditorComponent(
     }
 
     fun clearLayoutCache() {
-        cellTree.getRoot().descendantsAndSelf().forEach { (it as FrontendCellTree.FrontendCellImpl).clearCachedLayout() }
+        state.getRootCell().descendantsAndSelf().forEach { (it as FrontendCellTree.FrontendCellImpl).clearCachedLayout() }
     }
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
@@ -341,19 +316,29 @@ open class FrontendEditorComponent(
                 produceChild(getRootCell().layout)
             }
             div("selection-layer relative-layer") {
-                produceChild(selectionView)
+                produceChild(state.getSelectionView())
             }
             div("popup-layer relative-layer") {
-                produceChild(codeCompletionMenu)
+                produceChild(state.getCodeCompletionMenu())
             }
         }
+    }
+
+    suspend fun updateCodeCompletionActions(
+        anchorCell: Cell,
+        pattern: String,
+    ) {
+        serviceCall {
+            this.updateCodeCompletionActions(editorId, anchorCell.getId(), pattern)
+        }
+        state.getCodeCompletionMenu() // flus pending updates of completion entries
     }
 
     suspend fun <R> serviceCall(call: suspend TextEditorService.() -> R): R {
         val result = call(service)
         when (result) {
-            is EditorUpdateData -> enqueueUpdate(result).await()
-            is ServiceCallResult<*> -> result.updateData?.let { enqueueUpdate(it).await() }
+            is EditorUpdateData -> enqueueUpdate(result)
+            is ServiceCallResult<*> -> result.updateData?.let { enqueueUpdate(it) }
         }
         return result
     }
@@ -372,20 +357,408 @@ interface IKeyboardHandler {
 class UIEventDispatcher(
     val coroutineScope: CoroutineScope,
 ) {
-    private val eventQueue =
-        coroutineScope.consume<Pair<suspend () -> Any?, CompletableDeferred<Any?>>>(capacity = Channel.UNLIMITED) {
-            it.second.completeWith(runCatching { it.first.invoke() })
-        }
+    private val eventQueue = Channel<Event<*>>(capacity = Channel.UNLIMITED)
+    private val pendingEvents = ArrayList<Event<*>>()
+    private val isInsideEvent = ContextValue<Event<*>>()
 
-    fun <R> invokeLater(body: suspend () -> R): Deferred<R> {
-        val result = CompletableDeferred<R>()
-        eventQueue.trySend(body to result as CompletableDeferred<Any?>).getOrThrow()
-        return result
+    init {
+        coroutineScope.launch {
+            eventQueue.consumeEach {
+                runSynchronized(pendingEvents) {
+                    pendingEvents.add(it)
+                }
+                while (processNextEvent()) {}
+            }
+            LOG.trace { "consuming done" }
+        }
     }
 
-    suspend fun <R> invokeAndWait(body: () -> R): R = invokeLater(body).await()
+    private fun drainEvents() {
+        while (true) {
+            val event = eventQueue.tryReceive().getOrNull() ?: break
+            pendingEvents.add(event)
+        }
+    }
+
+    private suspend fun processNextEvent(): Boolean {
+        val event =
+            runSynchronized(pendingEvents) {
+                drainEvents()
+                if (pendingEvents.isEmpty()) return false
+                pendingEvents.sortBy { it.type }
+                pendingEvents.removeFirst()
+            }
+        try {
+            event.process()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (ex: Throwable) {
+            LOG.error(ex) { "UI event processing failed" }
+        }
+        return true
+    }
+
+    fun <R> enqueue(
+        type: UIEventType,
+        body: suspend () -> R,
+    ): Event<R> {
+        val event: Event<R> = Event(type, body)
+        LOG.trace { "Enqueuing $event" }
+        check(eventQueue.trySend(event).isSuccess) {
+            "Enqueuing event failed"
+        }
+        return event
+    }
+
+    fun <R> invokeLater(
+        type: UIEventType = UIEventType.Generic,
+        body: suspend () -> R,
+    ): Event<R> = enqueue(type, body)
+
+    suspend fun <R> invokeAndWait(
+        type: UIEventType = UIEventType.Generic,
+        body: () -> R,
+    ): R = enqueue(type, body).await()
 
     fun dispose() {
         eventQueue.close()
+    }
+
+    inner class Event<out E>(
+        val type: UIEventType,
+        val body: suspend () -> E,
+    ) {
+        private val returnValue = CompletableDeferred<E>()
+
+        fun getReturnValue(): Deferred<E> = returnValue
+
+        override fun toString(): String = "event:$type:$body"
+
+        suspend fun process() {
+            LOG.trace { "Processing $this" }
+            returnValue.completeWith(
+                runCatching {
+                    try {
+                        withTimeout(5.seconds) {
+                            isInsideEvent.runInCoroutine(this@Event) {
+                                body.invoke()
+                            }
+                        }
+                    } catch (ex: Throwable) {
+                        LOG.error(ex) { "Event processing failed" }
+                        throw ex
+                    }
+                }
+            )
+            LOG.trace { "Processed $this" }
+        }
+
+        suspend fun await(): E = returnValue.await()
+    }
+}
+
+enum class UIEventType {
+    Generic,
+    Selection,
+    Html,
+    UserInput,
+}
+
+class FrontendEditorComponentState(
+    val editorComponent: FrontendEditorComponent,
+    val onHtmlInvalidation: () -> Unit,
+) {
+    private val cellTree =
+        Substate(CellTreeState(FrontendCellTree(editorComponent), emptyList())) {
+            it.cellTree.applyChanges(it.pendingChanges)
+            it.copy(pendingChanges = emptyList())
+        }
+    private val selection =
+        Substate<SelectionState>(SelectionState()) { oldState ->
+            var newSelection: Selection? = null
+            for (policy in oldState.pendingSelectionUpdates.asReversed()) {
+                val s = policy.getBestSelection(editorComponent)
+                if (s != null) {
+                    newSelection = s
+                    break
+                }
+            }
+
+            if (newSelection == null) {
+                newSelection = oldState.selection?.takeIf { it.isValid() }
+                    ?: oldState.selection?.update(editorComponent)
+            }
+
+            LOG.trace { "selection ${oldState.selection} -> $newSelection" }
+
+            oldState.copy(
+                selection = newSelection,
+                pendingSelectionUpdates = emptyList()
+            )
+        }
+    private val layoutablesIndex =
+        Substate(IncrementalIndex<Cell, LayoutableCell>()) {
+            it.update(
+                cellTree
+                    .getValidState()
+                    .cellTree
+                    .getRoot()
+                    .layout.layoutablesIndexList
+            )
+            it
+        }.also {
+            it.addDependency(cellTree)
+        }
+    private val codeCompletionMenu =
+        Substate<CompletionMenuState>(CompletionMenuState()) { oldState ->
+            for (trigger in oldState.pendingTriggers.asReversed()) {
+                val anchor = getCell(trigger.anchor).layoutable() ?: continue
+                return@Substate oldState.copy(
+                    menu =
+                        CodeCompletionMenu(
+                            editorComponent,
+                            anchor,
+                            trigger.completionPosition,
+                            oldState.pendingEntriesUpdate.orEmpty(),
+                            trigger.pattern,
+                            trigger.caretPosition,
+                        ),
+                    pendingTriggers = emptyList(),
+                    pendingEntriesUpdate = null
+                )
+            }
+
+            if (oldState.pendingEntriesUpdate != null) {
+                oldState.menu?.loadEntries(oldState.pendingEntriesUpdate)
+                return@Substate oldState.copy(pendingEntriesUpdate = null)
+            }
+
+            return@Substate oldState
+        }
+    private val selectionView =
+        Substate<SelectionView<*>?>(null) {
+            if (it?.selection != selection.getValidState().selection) {
+                when (val selection = selection.getValidState().selection) {
+                    is CaretSelection -> CaretSelectionView(selection, editorComponent)
+                    is CellSelection -> CellSelectionView(selection, editorComponent)
+                    else -> null
+                }
+            } else {
+                it
+            }
+        }.also {
+            it.addDependency(selection)
+        }
+    private val htmlState =
+        Substate(HtmlState(), onInvalidation = onHtmlInvalidation) { oldState ->
+            val oldEditorElement = oldState.generatedHtmlMap.getOutput(editorComponent)
+            val newEditorElement =
+                IncrementalVirtualDOMBuilder(
+                    editorComponent.virtualDom,
+                    oldEditorElement,
+                    oldState.generatedHtmlMap
+                ).produce(editorComponent)()
+            if (newEditorElement != oldEditorElement) {
+                editorComponent.editorElementChanged(newEditorElement)
+            }
+
+            val selectedLayoutable = (selection.getValidState().selection as? CaretSelection)?.layoutable
+
+            val newHighlightedLine = selectedLayoutable?.getLine()?.let { oldState.generatedHtmlMap.getOutput(it) }
+            if (newHighlightedLine != oldState.highlightedLine) {
+                oldState.highlightedLine?.removeClass("highlighted")
+            }
+            newHighlightedLine?.addClass("highlighted")
+
+            val newHighlightedCell = selectedLayoutable?.let { oldState.generatedHtmlMap.getOutput(it) }
+            if (newHighlightedCell != oldState.highlightedCell) {
+                oldState.highlightedCell?.removeClass("highlighted-cell")
+            }
+            newHighlightedCell?.addClass("highlighted-cell")
+
+            selectionView.getValidState()?.update()
+            codeCompletionMenu.getValidState().menu?.let { CodeCompletionMenuUI(it, editorComponent).updateBounds() }
+
+            oldState.copy(
+                highlightedLine = newHighlightedLine,
+                highlightedCell = newHighlightedCell,
+            )
+        }.also {
+            it.addDependency(selection)
+            it.addDependency(selectionView)
+            it.addDependency(codeCompletionMenu)
+        }
+
+    @JvmSynchronized
+    fun getProducer(element: IVirtualDom.HTMLElement) = htmlState.getValidState().generatedHtmlMap.getProducer(element)
+
+    @JvmSynchronized
+    fun getRootCell() = cellTree.getValidState().cellTree.getRoot()
+
+    @JvmSynchronized
+    fun getCellTree() = cellTree.getValidState().cellTree
+
+    @JvmSynchronized
+    fun updateHtml() {
+        htmlState.getValidState()
+    }
+
+    @JvmSynchronized
+    fun resolveCell(reference: CellReference): List<Cell> = cellTree.getValidState().cellTree.resolveCell(reference)
+
+    @JvmSynchronized
+    fun getCell(id: CellInstanceId) = cellTree.getValidState().cellTree.getCell(id)
+
+    @JvmSynchronized
+    fun resolveLayoutable(cell: Cell): LayoutableCell? = layoutablesIndex.getValidState().lookup(cell).firstOrNull()
+
+    @JvmSynchronized
+    fun getHtmlElement(producer: IProducesHtml): IVirtualDom.HTMLElement? = htmlState.getValidState().generatedHtmlMap.getOutput(producer)
+
+    @JvmSynchronized
+    fun updateCellTree(changes: List<CellTreeOp>) {
+        if (changes.isEmpty()) return
+        cellTree.changeState {
+            it.copy(pendingChanges = it.pendingChanges + changes)
+        }
+    }
+
+    @JvmSynchronized
+    fun getCodeCompletionMenu() = codeCompletionMenu.getValidState().menu
+
+    @JvmSynchronized
+    fun getSelectionView() = selectionView.getValidState()
+
+    @JvmSynchronized
+    fun setSelection(newSelection: Selection) {
+        selection.changeState {
+            it.copy(selection = newSelection, pendingSelectionUpdates = emptyList())
+        }
+    }
+
+    @JvmSynchronized
+    fun setSelection(policy: ICaretPositionPolicy) {
+        selection.changeState {
+            it.copy(pendingSelectionUpdates = it.pendingSelectionUpdates + policy)
+        }
+    }
+
+    @JvmSynchronized
+    fun getSelection() = selection.getValidState().selection
+
+    @JvmSynchronized
+    fun closeCompletionMenu() {
+        codeCompletionMenu.changeState { CompletionMenuState() }
+    }
+
+    @JvmSynchronized
+    fun showCodeCompletionMenu(
+        anchor: LayoutableCell,
+        position: CompletionPosition,
+        entries: List<CompletionMenuEntryData>,
+        pattern: String = "",
+        caretPosition: Int? = null,
+    ) {
+        codeCompletionMenu.setState(
+            CompletionMenuState(
+                menu = CodeCompletionMenu(editorComponent, anchor, position, entries, pattern, caretPosition)
+            )
+        )
+    }
+
+    @JvmSynchronized
+    fun triggerCodeCompletionMenu(trigger: CompletionMenuTrigger) {
+        codeCompletionMenu.changeState { it.copy(pendingTriggers = it.pendingTriggers + trigger) }
+    }
+
+    @JvmSynchronized
+    fun updateCompletionEntries(newEntries: List<CompletionMenuEntryData>) {
+        codeCompletionMenu.changeState { it.copy(pendingEntriesUpdate = newEntries) }
+    }
+
+    data class CellTreeState(
+        val cellTree: FrontendCellTree,
+        val pendingChanges: List<CellTreeOp>,
+    )
+
+    data class HtmlState(
+        val generatedHtmlMap: GeneratedHtmlMap = GeneratedHtmlMap(),
+        val highlightedLine: IVirtualDom.HTMLElement? = null,
+        val highlightedCell: IVirtualDom.HTMLElement? = null,
+    )
+
+    data class SelectionState(
+        val selection: Selection? = null,
+        val pendingSelectionUpdates: List<ICaretPositionPolicy> = emptyList(),
+    )
+
+    data class CompletionMenuState(
+        val menu: CodeCompletionMenu? = null,
+        val pendingTriggers: List<CompletionMenuTrigger> = emptyList(),
+        val pendingEntriesUpdate: List<CompletionMenuEntryData>? = null,
+    )
+}
+
+class Substate<S>(
+    initial: S,
+    val onInvalidation: (() -> Unit)? = null,
+    val updater: ((S) -> S)? = null,
+) {
+    private var state: S = initial
+    private var isValid = false
+    private var validating = false
+    private val dependsOn = LinkedHashSet<Substate<*>>()
+    private val inverseDependencies = LinkedHashSet<Substate<*>>()
+
+    @JvmSynchronized
+    fun setState(newState: S) {
+        invalidate()
+        state = newState
+    }
+
+    @JvmSynchronized
+    fun changeState(updater: (S) -> S): S {
+        dependsOn.forEach { it.validate() }
+        val newState = updater(state)
+        if (newState == state) return state
+        state = newState
+        invalidate()
+        return newState
+    }
+
+    @JvmSynchronized
+    fun getState() = state
+
+    @JvmSynchronized
+    fun getValidState(): S {
+        validate()
+        return state
+    }
+
+    @JvmSynchronized
+    fun addDependency(dep: Substate<*>) {
+        dependsOn.add(dep)
+        dep.inverseDependencies.add(this)
+    }
+
+    @JvmSynchronized
+    fun invalidate() {
+        if (!isValid) return
+        isValid = false
+        inverseDependencies.forEach { it.invalidate() }
+        onInvalidation?.invoke()
+    }
+
+    @JvmSynchronized
+    fun validate() {
+        if (isValid || validating) return
+        try {
+            validating = true
+            dependsOn.forEach { it.validate() }
+            if (updater != null) state = updater(state)
+            isValid = true
+        } finally {
+            validating = false
+        }
     }
 }

@@ -53,7 +53,7 @@ data class CaretPositionPolicy(
     override fun getBestSelection(editor: FrontendEditorComponent): CaretSelection? {
         val candidates =
             preferredCellRefs
-                .flatMap { editor.cellTree.resolveCell(it) }
+                .flatMap { editor.resolveCell(it) }
                 .flatMap { it.descendantsAndSelf() }
                 .mapNotNull { editor.resolveLayoutable(it) }
 

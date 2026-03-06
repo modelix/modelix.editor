@@ -37,7 +37,8 @@ interface TextEditorService {
     suspend fun processTypedText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
     ): EditorUpdateData
 
@@ -67,7 +68,8 @@ interface TextEditorService {
     suspend fun replaceText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
         triggerCompletion: Boolean,
     ): ServiceCallResult<Boolean>
@@ -110,7 +112,8 @@ class NullTextEditorService : TextEditorService {
     override suspend fun processTypedText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
     ): EditorUpdateData {
         TODO("Not yet implemented")
@@ -150,7 +153,8 @@ class NullTextEditorService : TextEditorService {
     override suspend fun replaceText(
         editorId: Int,
         cellId: CellInstanceId,
-        range: IntRange,
+        rangeStart: Int,
+        rangeEnd: Int,
         replacement: String,
         triggerCompletion: Boolean,
     ): ServiceCallResult<Boolean> {
@@ -161,9 +165,7 @@ class NullTextEditorService : TextEditorService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun flush(editorId: Int): EditorUpdateData {
-        TODO("Not yet implemented")
-    }
+    override suspend fun flush(editorId: Int): EditorUpdateData = EditorUpdateData()
 }
 
 @Serializable

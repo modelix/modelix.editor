@@ -1,11 +1,14 @@
 package org.modelix.editor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelix.editor.text.frontend.editorComponent
 import org.modelix.editor.text.frontend.getSelectableText
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.editor.text.shared.celltree.cellReferences
 import kotlin.math.max
 import kotlin.math.min
+
+private val LOG = KotlinLogging.logger { }
 
 class CaretSelection(
     val editor: FrontendEditorComponent,
@@ -34,6 +37,7 @@ class CaretSelection(
     override fun getSelectedCells(): List<ICellTree.Cell> = listOf(layoutable.cell)
 
     override fun isValid(): Boolean {
+        if (!layoutable.cell.isAttached()) return false
         val visibleText = editor.getRootCell().layout
         val ownText = layoutable.getLine()?.getText()
         return visibleText === ownText
@@ -53,6 +57,7 @@ class CaretSelection(
     }
 
     override suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
+        LOG.trace { "CaretSelection.processKeyDown $event" }
         val knownKey = event.knownKey
         when (knownKey) {
             KnownKeys.ArrowLeft -> {
@@ -118,7 +123,9 @@ class CaretSelection(
             }
 
             KnownKeys.Tab -> {
-                editor.serviceCall { navigateTab(editor.editorId, layoutable.cell.getId(), forward = !event.modifiers.shift) }
+                editor.serviceCall {
+                    navigateTab(editor.editorId, layoutable.cell.getId(), forward = !event.modifiers.shift)
+                }
             }
 
             KnownKeys.Delete, KnownKeys.Backspace -> {
@@ -154,19 +161,27 @@ class CaretSelection(
                 val typedText = event.typedText
                 if (!typedText.isNullOrEmpty()) {
                     if (typedText == " " && event.modifiers.ctrl) {
-                        editor.serviceCall { triggerCodeCompletion(editor.editorId, layoutable.cell.getId(), min(start, end)) }
+                        editor.serviceCall {
+                            triggerCodeCompletion(editor.editorId, layoutable.cell.getId(), min(start, end))
+                        }
                     } else {
-                        editor.serviceCall { processTypedText(editor.editorId, layoutable.cell.getId(), getSelectedTextRange(), typedText) }
+                        val range = getSelectedTextRange()
+                        editor.serviceCall {
+                            processTypedText(editor.editorId, layoutable.cell.getId(), range.start, range.endInclusive, typedText)
+                        }
                     }
                 }
             }
         }
-
+        LOG.trace { "CaretSelection.processKeyDown done $event" }
         return true
     }
 
     suspend fun processTypedText(typedText: String) {
-        editor.serviceCall { processTypedText(editor.editorId, layoutable.cell.getId(), getSelectedTextRange(), typedText) }
+        editor.serviceCall {
+            val range = getSelectedTextRange()
+            processTypedText(editor.editorId, layoutable.cell.getId(), range.start, range.endInclusive, typedText)
+        }
     }
 
     fun selectNextPreviousLine(next: Boolean) {
@@ -190,7 +205,7 @@ class CaretSelection(
     ): Boolean =
         editor
             .serviceCall {
-                replaceText(editor.editorId, layoutable.cell.getId(), range, replacement, triggerCompletion)
+                replaceText(editor.editorId, layoutable.cell.getId(), range.start, range.endInclusive, replacement, triggerCompletion)
             }.result
 
     override fun equals(other: Any?): Boolean {

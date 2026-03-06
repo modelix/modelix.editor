@@ -24,7 +24,7 @@ class ClientSideEditors(
         val editorElementId = "modelix-editor-" + nextEditorId++.toString()
         LOG.trace { "Trying to create new editor $editorElementId" }
 
-        val editorComponent = JsEditorComponent(service)
+        val editorComponent = JsEditorComponent(service, existingContainerElement)
         editorComponent.openNode(rootNodeReference)
 
         val editorSession =

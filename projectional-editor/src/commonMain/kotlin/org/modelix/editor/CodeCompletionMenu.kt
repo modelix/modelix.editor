@@ -7,10 +7,32 @@ import kotlinx.html.td
 import kotlinx.html.tr
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.text.shared.CompletionMenuEntryData
+import org.modelix.editor.text.shared.celltree.cellReferences
+
+class ReresolvableLayoutable(
+    initial: LayoutableCell,
+) {
+    private var current: LayoutableCell = initial
+    private var references = initial.cell.cellReferences
+
+    fun get(editor: FrontendEditorComponent): LayoutableCell {
+        if (!current.cell.isAttached()) {
+            val resolvedCell =
+                checkNotNull(references.firstNotNullOfOrNull { editor.resolveCell(it).firstOrNull() }) {
+                    "Cell not found: $references"
+                }
+            current =
+                checkNotNull(editor.resolveLayoutable(resolvedCell)) {
+                    "Layoutable not found for cell $resolvedCell"
+                }
+        }
+        return current
+    }
+}
 
 class CodeCompletionMenu(
     val editor: FrontendEditorComponent,
-    val anchor: LayoutableCell,
+    anchor: LayoutableCell,
     val completionPosition: CompletionPosition,
     initialEntries: List<CompletionMenuEntryData>,
     initialPattern: String = "",
@@ -21,10 +43,13 @@ class CodeCompletionMenu(
     private var selectedIndex: Int = 0
     private var allEntries: List<CompletionMenuEntryData> = initialEntries
     private var filteredEntries: List<CompletionMenuEntryData> = allEntries
+    private val anchor = ReresolvableLayoutable(anchor)
 
     init {
         applyFilter()
     }
+
+    fun getAnchor() = anchor.get(editor)
 
     override fun isHtmlOutputValid(): Boolean = false
 
@@ -39,7 +64,7 @@ class CodeCompletionMenu(
     }
 
     suspend fun updateActions() {
-        editor.serviceCall { this.updateCodeCompletionActions(editor.editorId, anchor.cell.getId(), patternEditor.pattern) }
+        editor.updateCodeCompletionActions(getAnchor().cell, patternEditor.pattern)
     }
 
     fun selectNext() {
@@ -96,13 +121,15 @@ class CodeCompletionMenu(
                 }
             }
         }
-        editor.flushLocal()
+        editor.flushLocalLater()
         return true
     }
 
     private suspend fun CompletionMenuEntryData.execute() {
         val entry = this
-        editor.serviceCall { executeCodeCompletionAction(editor.editorId, entry.id) }
+        editor.serviceCall {
+            executeCodeCompletionAction(editor.editorId, entry.id)
+        }
         editor.closeCodeCompletionMenu()
     }
 
@@ -175,13 +202,16 @@ class CodeCompletionMenu(
 
             val exactMatches = allEntries.filter { it.matchesExactly(oldTextBeforeCaret) }
             if (exactMatches.size == 1 &&
-                !editor.serviceCall { hasCodeCompletionActions(editor.editorId, anchor.cell.getId(), newTextBeforeCaret) }
+                !editor.serviceCall {
+                    hasCodeCompletionActions(editor.editorId, getAnchor().cell.getId(), newTextBeforeCaret)
+                }
             ) {
                 exactMatches.single().execute()
                 editor.closeCodeCompletionMenu()
                 if (remainingText.isNotEmpty()) {
-                    editor.flushLocal()
-                    (editor.getSelection() as? CaretSelection)?.processTypedText(remainingText)
+                    editor.enqueueUpdate {
+                        (editor.getSelection() as CaretSelection).processTypedText(remainingText)
+                    }
                 }
             } else {
                 updateActions()

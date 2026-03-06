@@ -1,13 +1,18 @@
 package org.modelix.editor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val LOG = KotlinLogging.logger { }
+
 class CodeCompletionMenuUI(
     val ccmenu: CodeCompletionMenu,
     val editor: FrontendEditorComponent,
 ) {
     fun updateBounds() {
-        val ccContainerElement = editor.generatedHtmlMap.getOutput(ccmenu) ?: return
-        val layoutable = ccmenu.anchor
-        val anchorElement = editor.generatedHtmlMap.getOutput(layoutable) ?: return
+        LOG.trace { "CodeCompletionMenuUI.updateBounds()" }
+        val ccContainerElement = editor.getHtmlElement(ccmenu) ?: return
+        val layoutable = ccmenu.getAnchor()
+        val anchorElement = editor.getHtmlElement(layoutable) ?: return
         val anchorAbsoluteBounds = anchorElement.getOuterBounds()
         val anchorRelativeBounds =
             anchorAbsoluteBounds.relativeTo(editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO)

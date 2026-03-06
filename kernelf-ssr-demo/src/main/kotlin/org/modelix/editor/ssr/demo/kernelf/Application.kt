@@ -5,9 +5,7 @@ import io.ktor.server.application.install
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import io.ktor.server.websocket.WebSockets
-import io.ktor.server.websocket.pingPeriod
-import io.ktor.server.websocket.timeout
+import kotlinx.rpc.krpc.ktor.server.Krpc
 import org.modelix.editor.kernelf.KernelfEditor
 import org.modelix.editor.ssr.server.ModelixSSRServer
 import org.modelix.kernelf.KernelfLanguages
@@ -22,7 +20,6 @@ import org.modelix.model.lazy.CLTree
 import org.modelix.model.lazy.ObjectStoreCache
 import org.modelix.model.persistent.MapBasedStore
 import org.modelix.model.withIncrementalComputationSupport
-import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain
@@ -57,12 +54,7 @@ fun Application.module() {
     KernelfEditor.register(ssrServer.editorEngine)
     KernelfLanguages.registerAll()
 
-    install(WebSockets) {
-        pingPeriod = 15.seconds
-        timeout = 15.seconds
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
-    }
+    install(Krpc)
     routing {
         get("/") {
             call.respondText("Hello, world!")

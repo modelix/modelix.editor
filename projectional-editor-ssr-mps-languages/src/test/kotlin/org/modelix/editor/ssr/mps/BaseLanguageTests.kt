@@ -1,5 +1,6 @@
 package org.modelix.editor.ssr.mps
 
+import com.intellij.openapi.diagnostic.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -26,7 +27,6 @@ import org.modelix.editor.lastLeaf
 import org.modelix.editor.layoutable
 import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.editor.text.frontend.getVisibleText
-import org.modelix.editor.text.shared.celltree.CellTreeBase
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.model.api.INode
@@ -82,11 +82,11 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     private fun ICellTree.Cell.backend() = service.getEditorBackend(editor.editorId).tree.getCell(getId())
 
-    fun assertFinalEditorText(expected: String) {
+    suspend fun assertFinalEditorText(expected: String) {
         assertEditorText(expected)
 
         // Reset all editor state to ensure the typed text triggered a model transformation.
-        runBlocking { editor.resetState() }
+        editor.resetState()
         assertEditorText(expected)
     }
 
@@ -96,7 +96,8 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         assertEquals(cellTextWithCaret, selection.toString())
     }
 
-    fun assertEditorText(expected: String) {
+    suspend fun assertEditorText(expected: String) {
+        editor.flush()
         assertEquals(expected.trimIndent(), editor.getRootCell().layout.toString())
     }
 
@@ -128,14 +129,17 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     suspend fun typeText(text: CharSequence) {
         for (c in text) {
-            editor.processKeyEvent(
-                JSKeyboardEvent(
-                    eventType = JSKeyboardEventType.KEYDOWN,
-                    typedText = c.toString(),
-                    knownKey = null,
-                    rawKey = c.toString(),
-                ),
-            )
+            LOG.debug { "type: $c" }
+            editor
+                .enqueueUIEvent(
+                    JSKeyboardEvent(
+                        eventType = JSKeyboardEventType.KEYDOWN,
+                        typedText = c.toString(),
+                        knownKey = null,
+                        rawKey = c.toString(),
+                    ),
+                ).await()
+            editor.flushLocalLater().await()
         }
     }
 
@@ -157,15 +161,16 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             sortedActions
         }
 
-    fun `test initial editor`() {
-        assertFinalEditorText("""
+    fun `test initial editor`() =
+        kotlinx.coroutines.test.runTest {
+            assertFinalEditorText("""
             public class Class1 {
               public void method1(<no parameter>) {
                 <no statement>
               }
             }
         """)
-    }
+        }
 
     fun `test inserting new line into class`() =
         kotlinx.coroutines.test.runTest {
@@ -493,53 +498,53 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             placeCaretIntoCellWithText("<no statement>")
             typeText("int ")
             assertEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int <no name>;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int <no name>;
+                  }
+                }
+            """)
             pressKey(KnownKeys.Tab)
             typeText("abc")
             assertEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int abc;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int abc;
+                  }
+                }
+            """)
             typeText("=")
             assertEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int abc = <no initializer>;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int abc = <no initializer>;
+                  }
+                }
+            """)
             typeText("10")
             assertEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int abc = 10;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int abc = 10;
+                  }
+                }
+            """)
             typeText("+")
-            typeText("20")
+            typeText("25")
             assertEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int abc = 10 + 20;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int abc = 10 + 25;
+                  }
+                }
+            """)
             assertFinalEditorText("""
-            public class Class1 {
-              public void method1(<no parameter>) {
-                int abc = 10 + 20;
-              }
-            }
-        """)
+                public class Class1 {
+                  public void method1(<no parameter>) {
+                    int abc = 10 + 25;
+                  }
+                }
+            """)
         }
 
     private fun runParsingTest(input: String) = runParsingTest(input, false)

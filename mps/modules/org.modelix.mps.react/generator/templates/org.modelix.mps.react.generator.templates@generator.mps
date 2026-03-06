@@ -3295,7 +3295,7 @@
                                       <node concept="2OqwBi" id="7wAWjxnzzu2" role="3clFbG">
                                         <node concept="30H73N" id="7wAWjxnzyQA" role="2Oq$k0" />
                                         <node concept="3Tsc0h" id="7wAWjxnz$ec" role="2OqNvi">
-                                          <ref role="3TtcxE" to="8xo1:4Dhs5NhX4av" />
+                                          <ref role="3TtcxE" to="8xo1:4Dhs5NhX4av" resolve="parameterValues" />
                                         </node>
                                       </node>
                                     </node>
@@ -3422,7 +3422,7 @@
                                     <node concept="2OqwBi" id="2TLaMlBg7x3" role="1iwH7V">
                                       <node concept="30H73N" id="2TLaMlBg7x4" role="2Oq$k0" />
                                       <node concept="3TrEf2" id="2TLaMlBg7x5" role="2OqNvi">
-                                        <ref role="3Tt5mk" to="8xo1:1hCkroLrV8H" />
+                                        <ref role="3Tt5mk" to="8xo1:1hCkroLrV8H" resolve="decl" />
                                       </node>
                                     </node>
                                   </node>

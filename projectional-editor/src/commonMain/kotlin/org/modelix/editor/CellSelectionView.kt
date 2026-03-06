@@ -11,7 +11,7 @@ class CellSelectionView(
 ) : SelectionView<CellSelection>(selection) {
     override fun update() {
         val mainLayerBounds = editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO
-        val selectionDom = editor.generatedHtmlMap.getOutput(this) ?: return
+        val selectionDom = editor.getHtmlElement(this) ?: return
         val lines: Map<TextLine, List<Layoutable>> = selection.getLayoutables().groupBy { it.getLine()!! }
         val lineSelectionDoms = selectionDom.childNodes.filterIsInstance<IVirtualDom.HTMLElement>()
 
@@ -22,7 +22,7 @@ class CellSelectionView(
             val wordSelectionDoms = lineSelectionDom.childNodes.filterIsInstance<IVirtualDom.HTMLElement>()
             var lineBounds: Bounds? = null
             for ((word, wordSelectionDom) in words.zip(wordSelectionDoms)) {
-                val wordDom = editor.generatedHtmlMap.getOutput(word) ?: continue
+                val wordDom = editor.getHtmlElement(word) ?: continue
                 val wordBounds = wordDom.getOuterBounds().relativeTo(mainLayerBounds)
                 lineBounds = lineBounds.union(wordBounds)
                 applyBounds += {

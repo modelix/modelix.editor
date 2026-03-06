@@ -31,7 +31,8 @@ class BackendCellTree : CellTreeBase() {
             try {
                 body()
                 deleteDetachedCells()
-                return@withTreeLock getPendingChanges()
+                val pendingChanges = getPendingChanges()
+                return@withTreeLock pendingChanges
             } finally {
                 updating = false
             }
