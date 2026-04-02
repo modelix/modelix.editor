@@ -25,6 +25,7 @@
     <import index="zxfz" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:org.modelix.model.mpsadapters(org.modelix.mps.editor.common.stubs/)" />
     <import index="jks5" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:org.modelix.model.api(org.modelix.mps.editor.common.stubs/)" />
     <import index="1ut2" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:org.modelix.model.mpsadapters.tomps(org.modelix.mps.editor.common.stubs/)" />
+    <import index="i8bi" ref="r:c3548bac-30eb-4a2a-937c-0111d5697309(jetbrains.mps.lang.smodel.generator.smodelAdapter)" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
     <import index="wsib" ref="r:d1d5cd51-6710-43f8-bd5b-f958da6e1ca2(org.modelix.mps.notation.behavior)" implicit="true" />
     <import index="tpee" ref="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" implicit="true" />
@@ -1848,24 +1849,6 @@
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ1MIH" role="1bW5cS">
                           <node concept="3cpWs6" id="2QtC6yZ2wwd" role="3cqZAp">
-                            <node concept="2OqwBi" id="2QtC6yZ2yBt" role="3cqZAk">
-                              <node concept="37vLTw" id="2QtC6yZ2xHX" role="2Oq$k0">
-                                <ref role="3cqZAo" node="2QtC6yZ1MIF" resolve="referenceTarget" />
-                              </node>
-                              <node concept="liA8E" id="2QtC6yZ2$M$" role="2OqNvi">
-                                <ref role="37wK5l" to="jks5:~INode.getPropertyValue(org.modelix.model.api.IProperty)" resolve="getPropertyValue" />
-                                <node concept="2ShNRf" id="2QtC6yZ2_F_" role="37wK5m">
-                                  <node concept="1pGfFk" id="2QtC6yZ2B4I" role="2ShVmc">
-                                    <property role="373rjd" value="true" />
-                                    <ref role="37wK5l" to="zxfz:~MPSProperty.&lt;init&gt;(org.jetbrains.mps.openapi.language.SProperty)" resolve="MPSProperty" />
-                                    <node concept="355D3s" id="2QtC6yZ2BPz" role="37wK5m">
-                                      <ref role="355D3t" to="tpck:h0TrEE$" resolve="INamedConcept" />
-                                      <ref role="355D3u" to="tpck:h0TrG11" resolve="name" />
-                                    </node>
-                                  </node>
-                                </node>
-                              </node>
-                            </node>
                             <node concept="1W57fq" id="2QtC6yZ2F3s" role="lGtFl">
                               <node concept="3IZrLx" id="2QtC6yZ2F3t" role="3IZSJc">
                                 <node concept="3clFbS" id="2QtC6yZ2F3u" role="2VODD2">
@@ -1881,6 +1864,26 @@
                                     </node>
                                   </node>
                                 </node>
+                              </node>
+                            </node>
+                            <node concept="2YIFZM" id="6GdlvdUGl0Y" role="3cqZAk">
+                              <ref role="37wK5l" to="i8bi:5IkW5anFfnY" resolve="getString" />
+                              <ref role="1Pybhc" to="i8bi:5IkW5anFfnn" resolve="SPropertyOperations" />
+                              <node concept="2OqwBi" id="6GdlvdUGl0Z" role="37wK5m">
+                                <node concept="10M0yZ" id="6GdlvdUGl10" role="2Oq$k0">
+                                  <ref role="3cqZAo" to="1ut2:~ModelixNodeAsMPSNode.Companion" resolve="Companion" />
+                                  <ref role="1PxDUh" to="1ut2:~ModelixNodeAsMPSNode" resolve="ModelixNodeAsMPSNode" />
+                                </node>
+                                <node concept="liA8E" id="6GdlvdUGl11" role="2OqNvi">
+                                  <ref role="37wK5l" to="1ut2:~ModelixNodeAsMPSNode$Companion.toMPSNode(org.modelix.model.api.INode)" resolve="toMPSNode" />
+                                  <node concept="37vLTw" id="6GdlvdUGl12" role="37wK5m">
+                                    <ref role="3cqZAo" node="2QtC6yZ1MIF" resolve="referenceTarget" />
+                                  </node>
+                                </node>
+                              </node>
+                              <node concept="355D3s" id="6GdlvdUGl13" role="37wK5m">
+                                <ref role="355D3t" to="tpck:h0TrEE$" resolve="INamedConcept" />
+                                <ref role="355D3u" to="tpck:h0TrG11" resolve="name" />
                               </node>
                             </node>
                           </node>
