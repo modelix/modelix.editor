@@ -28,7 +28,7 @@ class JSDom(
         x: Double,
         y: Double,
     ): List<IVirtualDom.Element> {
-        val origin = getOrigin()
+        val origin = originElement?.getBoundingClientRect()?.toBounds() ?: (Bounds.ZERO)
         return doc.elementsFromPoint(origin.x + x, origin.y + y).map { it.wrap() }
     }
 

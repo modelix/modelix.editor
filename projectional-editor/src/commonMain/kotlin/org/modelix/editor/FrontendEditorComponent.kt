@@ -336,6 +336,12 @@ open class FrontendEditorComponent(
 
     fun invalidateCompletionMenu() = state.invalidateCompletionMenu()
 
+    fun scrollIntoViewLater(element: () -> IVirtualDom.HTMLElement?) {
+        eventQueue.invokeLater { element()?.let { scrollIntoView(it) } }
+    }
+
+    open fun scrollIntoView(element: IVirtualDom.HTMLElement) {}
+
     suspend fun <R> serviceCall(call: suspend TextEditorService.() -> R): R {
         val result = call(service)
         when (result) {
