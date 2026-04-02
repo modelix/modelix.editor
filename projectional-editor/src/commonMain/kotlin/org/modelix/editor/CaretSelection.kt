@@ -138,7 +138,7 @@ class CaretSelection(
                         }
                     val legalRange = 0 until (layoutable.cell.getSelectableText()?.length ?: 0)
                     if (legalRange.contains(posToDelete)) {
-                        replaceText(posToDelete until posToDelete, "", editor, true)
+                        replaceText(posToDelete..posToDelete, "", editor, true)
                     } else {
                         val savedCaretPosition = SavedCaretPosition(layoutable.cell)
                         editor.serviceCall {
