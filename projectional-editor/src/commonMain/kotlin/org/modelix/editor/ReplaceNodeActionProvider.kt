@@ -1,10 +1,13 @@
 package org.modelix.editor
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelix.constraints.ConstraintsAspect
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.IReferenceLink
 import org.modelix.model.api.getAllSubConcepts
 import org.modelix.scopes.ScopeAspect
+
+private val LOG = KotlinLogging.logger {}
 
 data class ReplaceNodeActionProvider(
     val location: INonExistingNode,
@@ -18,7 +21,9 @@ data class ReplaceNodeActionProvider(
                 .filterNot { it.isAbstract() }
                 .filter { concept ->
                     val newNode = location.replacement(concept)
-                    ConstraintsAspect.canCreate(newNode)
+                    runCatching { ConstraintsAspect.canCreate(newNode) }
+                        .onFailure { LOG.error(it) { "Constraints evaluation failed" } }
+                        .getOrElse { true }
                 }
         val cellModels =
             allowedConcepts.map { concept ->
