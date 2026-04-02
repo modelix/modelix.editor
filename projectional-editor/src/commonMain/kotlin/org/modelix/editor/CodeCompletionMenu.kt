@@ -116,10 +116,11 @@ class CodeCompletionMenu(
             }
 
             else -> {
-                if (!event.typedText.isNullOrEmpty()) {
-                    patternEditor.insertText(event.typedText)
+                if (event.typedText.isNullOrEmpty()) return false
+                if (event.typedText == " " && event.modifiers.ctrl) {
+                    patternEditor.moveCaret(-patternEditor.caretPos)
                 } else {
-                    return false
+                    patternEditor.insertText(event.typedText)
                 }
             }
         }
