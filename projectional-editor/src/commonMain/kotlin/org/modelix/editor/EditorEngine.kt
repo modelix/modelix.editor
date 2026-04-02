@@ -4,6 +4,7 @@ import org.modelix.editor.celltemplate.CellTemplate
 import org.modelix.editor.celltemplate.ParserForEditor
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.text.shared.celltree.IMutableCellTree
+import org.modelix.editor.text.shared.celltree.cellReferences
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.IConcept
@@ -34,8 +35,8 @@ class EditorEngine(
     }
 
     private val createCellIncremental: (CellTreeState, CellCreationCall) -> IMutableCellTree.MutableCell =
-        this.incrementalEngine.incrementalFunction("createCell") { _, editorState, call ->
-            val cell = doCreateCell(editorState, call)
+        this.incrementalEngine.incrementalFunction("createCell") { context, editorState, call ->
+            val cell = doCreateCell(editorState, call, context.readOwnStateVariable().getOrNull())
             LOG.trace { "Cell created for $call: $cell" }
             cell
         }
@@ -99,36 +100,50 @@ class EditorEngine(
     private fun doCreateCell(
         cellTreeState: CellTreeState,
         call: CellCreationCall,
+        reusableCell: IMutableCellTree.MutableCell?,
     ): IMutableCellTree.MutableCell =
-        dataToCell(cellTreeState, createCellSpecIncremental(cellTreeState, call), cellTreeState.cellTree.createCell())
+        dataToCell(cellTreeState, createCellSpecIncremental(cellTreeState, call), reusableCell ?: cellTreeState.cellTree.createCell())
 
     private fun dataToCell(
         cellTreeState: CellTreeState,
         data: CellSpecBase,
         cell: IMutableCellTree.MutableCell,
     ): IMutableCellTree.MutableCell {
+        val propertiesToRemove = cell.getPropertyNames().toMutableSet()
+
+        fun <T> setProperty(
+            key: CellPropertyKey<T>,
+            newValue: T,
+        ) {
+            cell.setProperty(key, newValue)
+            propertiesToRemove.remove(key.name)
+        }
+
         data.cellReferences.takeIf { it.isNotEmpty() }?.let {
-            cell.setProperty(CommonCellProperties.cellReferences, it.toList())
+            setProperty(CommonCellProperties.cellReferences, it.toList())
         }
         for (key in data.properties.getKeys()) {
-            cell.setProperty(key as CellPropertyKey<Any?>, data.properties[key])
+            setProperty(key as CellPropertyKey<Any?>, data.properties[key])
         }
+
+        val unusedChildren = cell.getChildren().toMutableSet()
         when (data) {
             is CellSpec -> {
-                cell.setProperty(CommonCellProperties.type, ECellType.COLLECTION)
+                setProperty(CommonCellProperties.type, ECellType.COLLECTION)
             }
 
             is TextCellSpec -> {
-                cell.setProperty(CommonCellProperties.type, ECellType.TEXT)
-                cell.setProperty(TextCellProperties.text, data.text)
-                cell.setProperty(TextCellProperties.placeholderText, data.placeholderText)
+                setProperty(CommonCellProperties.type, ECellType.TEXT)
+                setProperty(TextCellProperties.text, data.text)
+                setProperty(TextCellProperties.placeholderText, data.placeholderText)
             }
         }
         for ((index, childRef) in data.children.withIndex()) {
             val childCell =
                 when (childRef) {
                     is CellSpecBase -> {
-                        dataToCell(cellTreeState, childRef, cell.addNewChild(index))
+                        val reusableCell = unusedChildren.find { it.cellReferences == childRef.cellReferences }
+                        dataToCell(cellTreeState, childRef, reusableCell ?: cell.addNewChild(index))
                     }
 
                     is ChildSpecReference -> {
@@ -140,8 +155,17 @@ class EditorEngine(
             } else if (cell.getChildAt(index) != childCell) {
                 childCell.moveCell(index)
             }
+            unusedChildren.remove(childCell)
         }
-        cell.getChildren().drop(data.children.size).forEach { it.detach() }
+
+        unusedChildren.forEach {
+            // It may have been used elsewhere during the recursive call.
+            if (it.getParent() == cell) {
+                it.detach()
+            }
+        }
+        propertiesToRemove.forEach { cell.removeProperty(it) }
+
         return cell
     }
 

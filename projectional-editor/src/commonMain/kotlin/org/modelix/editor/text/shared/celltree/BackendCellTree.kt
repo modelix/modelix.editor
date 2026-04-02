@@ -58,6 +58,14 @@ class BackendCellTree : CellTreeBase() {
             }
         }
 
+        override fun removeProperty(name: String) {
+            withTreeLock {
+                if (!hasProperty(name)) return@withTreeLock
+                super.removeProperty(name)
+                operations += CellPropertyRemoveOp(getId(), name)
+            }
+        }
+
         override fun removeProperty(key: CellPropertyKey<*>) {
             withTreeLock {
                 if (!hasProperty(key)) return@withTreeLock

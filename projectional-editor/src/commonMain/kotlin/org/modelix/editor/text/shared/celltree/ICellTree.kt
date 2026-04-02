@@ -20,7 +20,11 @@ interface ICellTree {
 
         fun getId(): CellInstanceId
 
+        fun getPropertyNames(): Set<String>
+
         fun <T> getProperty(key: CellPropertyKey<T>): T
+
+        fun hasProperty(name: String): Boolean
 
         fun hasProperty(key: CellPropertyKey<*>): Boolean
 
@@ -56,6 +60,8 @@ interface IMutableCellTree : ICellTree {
         )
 
         fun removeProperty(key: CellPropertyKey<*>)
+
+        fun removeProperty(name: String)
 
         override fun getChildren(): List<MutableCell>
 

@@ -99,6 +99,8 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun isAttached(): Boolean = withTreeLock { this == root || parent?.isAttached() == true }
 
+        override fun getPropertyNames(): Set<String> = properties.keys.toSet()
+
         override fun <T> getProperty(key: CellPropertyKey<T>): T =
             withTreeLock {
                 if (properties.containsKey(key.name)) properties[key.name] as T else key.defaultValue
@@ -126,9 +128,9 @@ open class CellTreeBase : IMutableCellTree {
             }
         }
 
-        fun removeProperty(key: String) {
+        override fun removeProperty(name: String) {
             withTreeLock {
-                properties.remove(key)
+                properties.remove(name)
             }
         }
 
@@ -139,7 +141,9 @@ open class CellTreeBase : IMutableCellTree {
             }
         }
 
-        override fun hasProperty(key: CellPropertyKey<*>): Boolean = withTreeLock { properties.containsKey(key.name) }
+        override fun hasProperty(key: CellPropertyKey<*>): Boolean = hasProperty(key.name)
+
+        override fun hasProperty(name: String): Boolean = withTreeLock { properties.containsKey(name) }
 
         override fun getChildren(): List<IMutableCellTree.MutableCell> = withTreeLock { children }
 
