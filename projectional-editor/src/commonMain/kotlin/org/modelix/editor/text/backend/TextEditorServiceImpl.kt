@@ -233,52 +233,8 @@ class TextEditorServiceImpl(
                     )
                 }
             }
-            replaceText(cell, range, replacement, updateChannel, true) ?: updateChannel.createUpdate()
+            replaceText(cell, range, replacement, updateChannel, true).updateData ?: updateChannel.createUpdate()
         }
-    }
-
-    private fun replaceText(
-        cell: ICellTree.Cell,
-        range: IntRange,
-        replacement: String,
-        updateChannel: EditorUpdateChannel,
-        triggerCompletion: Boolean,
-    ): EditorUpdateData? {
-        val editor = updateChannel.editor
-        val oldText = cell.getSelectableText() ?: ""
-        val newText = oldText.replaceRange(range, replacement)
-
-        if (triggerCompletion) {
-            // complete immediately if there is a single matching action
-            val providers = cell.getSubstituteActions()
-            val params = CodeCompletionParameters(editor, newText)
-            val actions = editor.runRead { providers.flatMap { it.flattenApplicableActions(params) }.toList() }
-            val matchingActions =
-                actions
-                    .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
-                    .applyShadowing()
-            val singleAction = matchingActions.singleOrNull()
-            if (singleAction != null) {
-                val caretPolicy =
-                    editor.runWrite {
-                        singleAction.execute(editor).also {
-                            editor.state.clearTextReplacement(cell)
-                        }
-                    }
-                return updateChannel.createSelection(caretPolicy)
-            }
-        }
-
-        val replaceTextActions = cell.centerAlignedHierarchy().mapNotNull { it.getProperty(CellActionProperties.replaceText) }
-        for (action in replaceTextActions) {
-            if (action.isValid(newText) && action.replaceText(editor.state, range, replacement, newText)) {
-                val cellReferences = cell.cellReferences.toSet()
-                return updateChannel
-                    .createUpdate()
-                    .copy(selectionChange = CaretPositionPolicyWithIndex(cellReferences, range.first + replacement.length))
-            }
-        }
-        return null
     }
 
     override suspend fun triggerCodeCompletion(
@@ -359,6 +315,60 @@ class TextEditorServiceImpl(
             }
         }
 
+    private fun replaceText(
+        cell: ICellTree.Cell,
+        range: IntRange,
+        replacement: String,
+        updateChannel: EditorUpdateChannel,
+        triggerCompletion: Boolean,
+    ): ServiceCallResult<Boolean> {
+        val editor = updateChannel.editor
+        val oldText = cell.getSelectableText() ?: ""
+        val newText = oldText.replaceRange(range, replacement)
+
+        if (triggerCompletion) {
+            // complete immediately if there is a single matching action
+            val providers = cell.getSubstituteActions()
+            val params = CodeCompletionParameters(editor, newText)
+            val actions = editor.runRead { providers.flatMap { it.flattenApplicableActions(params) }.toList() }
+            val matchingActions =
+                actions
+                    .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
+                    .applyShadowing()
+            val singleAction = matchingActions.singleOrNull()
+            if (singleAction != null) {
+                editor.runWrite<Unit> {
+                    singleAction.executeAndUpdateSelection(updateChannel)
+                    editor.state.clearTextReplacement(cell)
+                }
+                return ServiceCallResult(
+                    updateData = updateChannel.createUpdate(),
+                    result = true
+                )
+            }
+        }
+
+        val replaceTextActions = cell.centerAlignedHierarchy().mapNotNull { it.getProperty(CellActionProperties.replaceText) }
+        for (action in replaceTextActions) {
+            val newCaretPosition =
+                CaretPositionPolicyWithIndex(
+                    CaretPositionPolicy(avoidedCellRefs = emptySet(), preferredCellRefs = cell.cellReferences.toSet()),
+                    range.first + replacement.length
+                )
+            if (action.isValid(newText) && action.replaceText(editor.state, range, replacement, newText)) {
+                return ServiceCallResult(
+                    updateData =
+                        updateChannel.createUpdate().copy(
+                            selectionChange = newCaretPosition
+                        ),
+                    result = true
+                )
+            }
+        }
+
+        return ServiceCallResult(false)
+    }
+
     override suspend fun replaceText(
         editorId: Int,
         cellId: CellInstanceId,
@@ -369,50 +379,7 @@ class TextEditorServiceImpl(
     ): ServiceCallResult<Boolean> {
         val range = IntRange(rangeStart, rangeEnd)
         return runWithCell(editorId, cellId) { updateChannel, cell ->
-            val editor = updateChannel.editor
-            val oldText = cell.getSelectableText() ?: ""
-            val newText = oldText.replaceRange(range, replacement)
-
-            if (triggerCompletion) {
-                // complete immediately if there is a single matching action
-                val providers = cell.getSubstituteActions()
-                val params = CodeCompletionParameters(editor, newText)
-                val actions = editor.runRead { providers.flatMap { it.flattenApplicableActions(params) }.toList() }
-                val matchingActions =
-                    actions
-                        .filter { it.getTokens().consumeForAutoApply(newText)?.length == 0 }
-                        .applyShadowing()
-                val singleAction = matchingActions.singleOrNull()
-                if (singleAction != null) {
-                    editor.runWrite<Unit> {
-                        singleAction.executeAndUpdateSelection(updateChannel)
-                        editor.state.clearTextReplacement(cell)
-                    }
-                    return@runWithCell ServiceCallResult(
-                        updateData = updateChannel.createUpdate(),
-                        result = true
-                    )
-                }
-            }
-
-            val replaceTextActions = cell.centerAlignedHierarchy().mapNotNull { it.getProperty(CellActionProperties.replaceText) }
-            for (action in replaceTextActions) {
-                val newCaretPosition =
-                    CaretPositionPolicyWithIndex(
-                        CaretPositionPolicy(avoidedCellRefs = emptySet(), preferredCellRefs = cell.cellReferences.toSet()),
-                        range.first + replacement.length
-                    )
-                if (action.isValid(newText) && action.replaceText(editor.state, range, replacement, newText)) {
-                    return@runWithCell ServiceCallResult(
-                        updateData =
-                            updateChannel.createUpdate().copy(
-                                selectionChange = newCaretPosition
-                            ),
-                        result = true
-                    )
-                }
-            }
-            return@runWithCell ServiceCallResult(false)
+            replaceText(cell, range, replacement, updateChannel, triggerCompletion)
         }
     }
 
@@ -429,7 +396,9 @@ class TextEditorServiceImpl(
         channel.createSelection(execute(channel.editor))
 
     private fun ICodeCompletionAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData =
-        channel.createSelection(execute(channel.editor))
+        channel.editor.runWrite {
+            channel.createSelection(execute(channel.editor))
+        }
 
     fun triggerUpdates() {
         validator.invalidate()
