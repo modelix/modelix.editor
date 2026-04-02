@@ -24,6 +24,10 @@
       <concept id="1225194691553" name="jetbrains.mps.lang.behavior.structure.ThisNodeExpression" flags="nn" index="13iPFW" />
     </language>
     <language id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage">
+      <concept id="1215693861676" name="jetbrains.mps.baseLanguage.structure.BaseAssignmentExpression" flags="nn" index="d038R">
+        <child id="1068498886297" name="rValue" index="37vLTx" />
+        <child id="1068498886295" name="lValue" index="37vLTJ" />
+      </concept>
       <concept id="1197027756228" name="jetbrains.mps.baseLanguage.structure.DotExpression" flags="nn" index="2OqwBi">
         <child id="1197027771414" name="operand" index="2Oq$k0" />
         <child id="1197027833540" name="operation" index="2OqNvi" />
@@ -32,6 +36,7 @@
         <child id="1137022507850" name="body" index="2VODD2" />
       </concept>
       <concept id="1070534644030" name="jetbrains.mps.baseLanguage.structure.BooleanType" flags="in" index="10P_77" />
+      <concept id="1068498886294" name="jetbrains.mps.baseLanguage.structure.AssignmentExpression" flags="nn" index="37vLTI" />
       <concept id="1068580123132" name="jetbrains.mps.baseLanguage.structure.BaseMethodDeclaration" flags="ng" index="3clF44">
         <child id="1068580123133" name="returnType" index="3clF45" />
         <child id="1068580123135" name="body" index="3clF47" />
@@ -52,6 +57,20 @@
         <child id="1178549979242" name="visibility" index="1B3o_S" />
       </concept>
       <concept id="1146644602865" name="jetbrains.mps.baseLanguage.structure.PublicVisibility" flags="nn" index="3Tm1VV" />
+    </language>
+    <language id="c7b55726-1795-47bd-aa21-714ac1e30f21" name="org.modelix.mps.notation">
+      <concept id="737165568293140349" name="org.modelix.mps.notation.structure.StaticCollectionCell" flags="ng" index="2OY0tg">
+        <child id="737165568293140783" name="cells" index="2OY0$2" />
+      </concept>
+      <concept id="635805674430285347" name="org.modelix.mps.notation.structure.RemoveSpace" flags="ng" index="1yiDf7" />
+      <concept id="8310867745953158874" name="org.modelix.mps.notation.structure.ConstantCell" flags="ng" index="3JB3jO">
+        <property id="8310867745953159745" name="text" index="3JB3xJ" />
+      </concept>
+    </language>
+    <language id="3a13115c-633c-4c5c-bbcc-75c4219e9555" name="jetbrains.mps.lang.quotation">
+      <concept id="1196350785113" name="jetbrains.mps.lang.quotation.structure.Quotation" flags="nn" index="2c44tf">
+        <child id="1196350785114" name="quotedNode" index="2c44tc" />
+      </concept>
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
       <concept id="1179409122411" name="jetbrains.mps.lang.smodel.structure.Node_ConceptMethodCall" flags="nn" index="2qgKlT" />
@@ -137,6 +156,31 @@
     <ref role="13h7C2" to="f8gn:22f9nDgOIIh" resolve="BL_ReferenceTargetExpression" />
     <node concept="13hLZK" id="1edLqv8PzNN" role="13h7CW">
       <node concept="3clFbS" id="1edLqv8PzNO" role="2VODD2" />
+    </node>
+  </node>
+  <node concept="13h7C7" id="6GdlvdUZcWQ">
+    <ref role="13h7C2" to="f8gn:CUW2QYMiki" resolve="ChildrenCollectionCell" />
+    <node concept="13hLZK" id="6GdlvdUZcWR" role="13h7CW">
+      <node concept="3clFbS" id="6GdlvdUZcWS" role="2VODD2">
+        <node concept="3clFbF" id="6GdlvdUZcZ2" role="3cqZAp">
+          <node concept="37vLTI" id="6GdlvdUZdPG" role="3clFbG">
+            <node concept="2OqwBi" id="6GdlvdUZdb6" role="37vLTJ">
+              <node concept="13iPFW" id="6GdlvdUZcZ1" role="2Oq$k0" />
+              <node concept="3TrEf2" id="6GdlvdUZdpc" role="2OqNvi">
+                <ref role="3Tt5mk" to="f8gn:6xJrM0NrOsd" resolve="separatorCell" />
+              </node>
+            </node>
+            <node concept="2c44tf" id="6GdlvdUZeed" role="37vLTx">
+              <node concept="2OY0tg" id="6GdlvdUZcWL" role="2c44tc">
+                <node concept="1yiDf7" id="6GdlvdUZcWM" role="2OY0$2" />
+                <node concept="3JB3jO" id="6GdlvdUZcWO" role="2OY0$2">
+                  <property role="3JB3xJ" value="," />
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
     </node>
   </node>
 </model>
