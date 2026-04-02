@@ -158,6 +158,7 @@ object ElementAttributeDelegate {
 }
 
 var IVirtualDom.Element.id by ElementAttributeDelegate
+var IVirtualDom.Element.`class` by ElementAttributeDelegate
 var VirtualDomStyle.position by StyleAttributeDelegate
 var VirtualDomStyle.left by StyleAttributeDelegate
 var VirtualDomStyle.right by StyleAttributeDelegate

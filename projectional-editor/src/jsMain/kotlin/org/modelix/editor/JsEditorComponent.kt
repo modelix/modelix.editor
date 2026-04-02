@@ -48,4 +48,9 @@ class JsEditorComponent(
         containerElement.childNodes.forEach { it.remove() }
         containerElement.appendChild(newElement)
     }
+
+    override fun scrollIntoView(element: IVirtualDom.HTMLElement) {
+        val element = element as? JSDom.HTMLElementWrapper ?: return
+        element.unwrap().scrollIntoView(js("""{block: "nearest"}"""))
+    }
 }
