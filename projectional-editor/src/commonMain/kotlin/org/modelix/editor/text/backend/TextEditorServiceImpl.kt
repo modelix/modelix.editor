@@ -337,14 +337,11 @@ class TextEditorServiceImpl(
                     .applyShadowing()
             val singleAction = matchingActions.singleOrNull()
             if (singleAction != null) {
-                editor.runWrite<Unit> {
-                    singleAction.executeAndUpdateSelection(updateChannel)
-                    editor.state.clearTextReplacement(cell)
-                }
-                return ServiceCallResult(
-                    updateData = updateChannel.createUpdate(),
-                    result = true
-                )
+                return editor
+                    .runWrite<EditorUpdateData> {
+                        editor.state.clearTextReplacement(cell)
+                        singleAction.executeAndUpdateSelection(updateChannel)
+                    }.let { ServiceCallResult(updateData = it, result = true) }
             }
         }
 
