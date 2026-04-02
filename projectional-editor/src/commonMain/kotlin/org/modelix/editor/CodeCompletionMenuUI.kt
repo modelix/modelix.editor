@@ -47,9 +47,12 @@ class CodeCompletionMenuUI(
             caretElement,
         )
 
-        // TODO
-//        ccContainerElement.descendants().filterIsInstance<IVirtualDom.HTMLElement>()
-//            .firstOrNull { it.classList.contains("ccSelectedEntry") }
-//            ?.scrollIntoView(js("""{block: "nearest"}"""))
+        editor.scrollIntoViewLater {
+            editor
+                .getHtmlElement(ccmenu)
+                ?.descendants()
+                ?.filterIsInstance<IVirtualDom.HTMLElement>()
+                ?.firstOrNull { it.`class`.orEmpty().contains("ccSelectedEntry") }
+        }
     }
 }

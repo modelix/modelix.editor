@@ -470,6 +470,7 @@ enum class UIEventType {
     Selection,
     Html,
     UserInput,
+    Scroll,
 }
 
 class FrontendEditorComponentState(
@@ -609,6 +610,11 @@ class FrontendEditorComponentState(
     @JvmSynchronized
     fun updateHtml() {
         htmlState.getValidState()
+    }
+
+    @JvmSynchronized
+    fun invalidateCompletionMenu() {
+        codeCompletionMenu.invalidate()
     }
 
     @JvmSynchronized
