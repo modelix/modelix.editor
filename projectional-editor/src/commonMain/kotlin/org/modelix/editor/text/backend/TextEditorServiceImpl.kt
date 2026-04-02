@@ -287,14 +287,15 @@ class TextEditorServiceImpl(
         caretPosition: Int,
     ): EditorUpdateData =
         runWithCell(editorId, cellId) { updateChannel, cell ->
-            val pattern = cell.getSelectableText().orEmpty().take(caretPosition)
+            val fullPattern = cell.getSelectableText().orEmpty()
+            val pattern = fullPattern.take(caretPosition)
             val providers = cell.getSubstituteActions().toList()
             updateChannel.createUpdate().copy(
                 completionMenuTrigger =
                     CompletionMenuTrigger(
                         anchor = cell.getId(),
                         completionPosition = CompletionPosition.CENTER,
-                        pattern = pattern,
+                        pattern = fullPattern,
                         caretPosition = caretPosition
                     ),
                 completionEntries =
