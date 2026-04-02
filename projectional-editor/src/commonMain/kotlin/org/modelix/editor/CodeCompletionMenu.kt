@@ -59,12 +59,12 @@ class CodeCompletionMenu(
     }
 
     fun applyFilter() {
-        val pattern = patternEditor.pattern
+        val pattern = patternEditor.getTextBeforeCaret()
         filteredEntries = allEntries.filter { it.matches(pattern) }
     }
 
     suspend fun updateActions() {
-        editor.updateCodeCompletionActions(getAnchor().cell, patternEditor.pattern)
+        editor.updateCodeCompletionActions(getAnchor().cell, patternEditor.getTextBeforeCaret())
     }
 
     fun selectNext() {
@@ -164,7 +164,7 @@ class CodeCompletionMenu(
 
     suspend fun executeIfSingleAction() {
         val singleEntry = filteredEntries.singleOrNull() ?: return
-        if (singleEntry.matchesExactly(patternEditor.pattern)) {
+        if (singleEntry.matchesExactly(patternEditor.getTextBeforeCaret())) {
             singleEntry.execute()
         }
     }
