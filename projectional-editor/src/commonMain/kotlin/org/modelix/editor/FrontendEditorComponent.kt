@@ -334,6 +334,8 @@ open class FrontendEditorComponent(
         state.getCodeCompletionMenu() // flus pending updates of completion entries
     }
 
+    fun invalidateCompletionMenu() = state.invalidateCompletionMenu()
+
     suspend fun <R> serviceCall(call: suspend TextEditorService.() -> R): R {
         val result = call(service)
         when (result) {

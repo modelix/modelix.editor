@@ -70,11 +70,13 @@ class CodeCompletionMenu(
     fun selectNext() {
         selectedIndex++
         if (selectedIndex >= filteredEntries.size) selectedIndex = 0
+        editor.invalidateCompletionMenu()
     }
 
     fun selectPrevious() {
         selectedIndex--
         if (selectedIndex < 0) selectedIndex = (filteredEntries.size - 1).coerceAtLeast(0)
+        editor.invalidateCompletionMenu()
     }
 
     fun getSelectedEntry(): CompletionMenuEntryData? = filteredEntries.getOrNull(selectedIndex)
