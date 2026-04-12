@@ -54,6 +54,7 @@ import org.modelix.react.ssr.server.ViewModel
 import org.modelix.react.ssr.server.buildComponent
 import org.modelix.react.ssr.server.buildJsonObject
 import org.modelix.react.ssr.server.buildViewModel
+import org.modelix.react.ssr.server.unwrap
 
 class InterpretedMPSRenderer(
     incrementalEngine: IIncrementalEngine,
@@ -236,7 +237,7 @@ class InterpretedMPSRenderer(
                         for (member in value.members) {
                             property(member.key, createJsonElement(contextNode, member.value.get()))
                         }
-                    }
+                    }.unwrap()
                 }
 
                 is N_JsonArray -> {

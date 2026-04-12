@@ -1,6 +1,5 @@
 package org.modelix.react.ssr.server
 
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -81,7 +80,7 @@ class ComponentBuilder(
         Component(
             type = type,
             key = key,
-            properties = propertiesBuilder.build().takeIf { it.isNotEmpty() },
+            properties = propertiesBuilder.build().unwrap().takeIf { it.isNotEmpty() },
             children = buildComponents().takeIf { it.isNotEmpty() },
             customMessageHandlers = customHandlers.takeIf { it.isNotEmpty() }
         )
@@ -173,6 +172,11 @@ interface IJsonObjectBuilder {
     fun property(
         name: String,
         value: JsonElement,
+    ) = property(name, value.wrap())
+
+    fun property(
+        name: String,
+        value: IJsonElement,
     )
 
     fun property(
@@ -223,7 +227,7 @@ interface IJsonObjectBuilder {
     )
 }
 
-fun buildJsonObject(body: JsonObjectBuilder.() -> Unit): JsonObject = JsonObjectBuilder().apply(body).build()
+fun buildJsonObject(body: JsonObjectBuilder.() -> Unit): IJsonObject = JsonObjectBuilder().apply(body).build()
 
 class JsonObjectBuilder : IJsonObjectBuilder {
     private val properties: MutableMap<String, JsonElement> = LinkedHashMap()
@@ -251,9 +255,9 @@ class JsonObjectBuilder : IJsonObjectBuilder {
 
     override fun property(
         name: String,
-        value: JsonElement,
+        value: IJsonElement,
     ) {
-        properties[name] = value
+        properties[name] = value.unwrap()
     }
 
     override fun property(
@@ -323,10 +327,10 @@ class JsonObjectBuilder : IJsonObjectBuilder {
         jsCodeProperty(name, buildMessageSendingHandler(messageId, body))
     }
 
-    fun build(): JsonObject = JsonObject(properties)
+    fun build(): IJsonObject = JsonObject(properties).wrap()
 }
 
-fun buildJsonArray(body: JsonArrayBuilder.() -> Unit): JsonArray = JsonArrayBuilder().apply(body).build()
+fun buildJsonArray(body: JsonArrayBuilder.() -> Unit): IJsonArray = JsonArrayBuilder().apply(body).build()
 
 class JsonArrayBuilder {
     private val elements: MutableList<JsonElement> = ArrayList()
@@ -343,15 +347,15 @@ class JsonArrayBuilder {
         elements.add(JsonPrimitive(value))
     }
 
-    fun element(value: JsonElement) {
-        elements.add(value)
+    fun element(value: IJsonElement) {
+        elements.add(value.unwrap())
     }
 
     fun jsonObject(body: JsonObjectBuilder.() -> Unit) {
-        elements.add(buildJsonObject(body))
+        elements.add(buildJsonObject(body).unwrap())
     }
 
-    fun build(): JsonArray = JsonArray(elements)
+    fun build(): IJsonArray = JsonArray(elements).wrap()
 }
 
 fun buildMessageSendingHandler(

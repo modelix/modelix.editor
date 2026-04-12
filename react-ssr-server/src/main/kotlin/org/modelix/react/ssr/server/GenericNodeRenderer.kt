@@ -109,7 +109,7 @@ abstract class GenericNodeRenderer(
                                 return buildJsonObject {
                                     property("label", label)
                                     property("target", target.reference.serialize())
-                                }
+                                }.unwrap()
                             }
                             val target = node.getReferenceTarget(link)
                             val entries = listOfNotNull(target).map { createEntry(it) }
