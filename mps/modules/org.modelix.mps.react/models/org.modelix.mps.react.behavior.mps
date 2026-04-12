@@ -922,5 +922,25 @@
       <node concept="17QB3L" id="6eUjE42pq8x" role="3clF45" />
     </node>
   </node>
+  <node concept="13h7C7" id="1NezOVo4s5g">
+    <property role="3GE5qa" value="json" />
+    <ref role="13h7C2" to="8xo1:1NezOVo3fcC" resolve="JsonArrayElementExpression" />
+    <node concept="13hLZK" id="1NezOVo4s5h" role="13h7CW">
+      <node concept="3clFbS" id="1NezOVo4s5i" role="2VODD2" />
+    </node>
+    <node concept="13i0hz" id="1NezOVo4s7r" role="13h7CS">
+      <property role="TrG5h" value="isLegalAsStatement" />
+      <ref role="13i0hy" to="tpek:i26MfYG" resolve="isLegalAsStatement" />
+      <node concept="3Tm1VV" id="1NezOVo4s7s" role="1B3o_S" />
+      <node concept="3clFbS" id="1NezOVo4s7J" role="3clF47">
+        <node concept="3clFbF" id="1NezOVo4sOk" role="3cqZAp">
+          <node concept="3clFbT" id="1NezOVo4sOj" role="3clFbG">
+            <property role="3clFbU" value="true" />
+          </node>
+        </node>
+      </node>
+      <node concept="10P_77" id="1NezOVo4s7K" role="3clF45" />
+    </node>
+  </node>
 </model>
 

@@ -112,3 +112,8 @@ data class ComponentOrText(
 data class JsCode(
     val jsCode: String,
 )
+
+@Serializable
+data class ComponentConstructorRef(
+    val componentConstructor: String,
+)

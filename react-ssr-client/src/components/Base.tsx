@@ -35,11 +35,22 @@ function jsonToProps(json: Record<string, any> | undefined): Record<string, any>
                     ...result,
                     [key]: code
                 }
+            } else if (typeof value.componentConstructor == "string") {
+                const compName: string = value.componentConstructor;
+                result = {
+                    ...result,
+                    [key]: componentConstructors.get(compName) ?? compName
+                }
             } else if (typeof value.type == "string") {
                 const comp = createComponentFromJson(value)
                 result = {
                     ...result,
                     [key]: comp
+                }
+            } else {
+                result = {
+                    ...result,
+                    [key]: jsonToProps(value)
                 }
             }
         }

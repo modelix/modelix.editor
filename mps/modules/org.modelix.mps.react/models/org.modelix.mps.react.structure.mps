@@ -358,6 +358,9 @@
     <node concept="PrWs8" id="7FW3vHxyY0G" role="PzmwI">
       <ref role="PrY4T" node="7GLg2tFt7hf" resolve="IPropertyValue" />
     </node>
+    <node concept="PrWs8" id="2OgefISOXI5" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFvHlb" resolve="IJsonValue" />
+    </node>
   </node>
   <node concept="1TIwiD" id="1DfG1xprjRC">
     <property role="EcuMT" value="1895927586772303336" />
@@ -991,6 +994,131 @@
     <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="PrWs8" id="szQzwtmcUY" role="PzmwI">
       <ref role="PrY4T" node="6eUjE42h0Dq" resolve="IPageParameterType" />
+    </node>
+  </node>
+  <node concept="PlHQZ" id="N3U3jU_StN">
+    <property role="EcuMT" value="919834063153891187" />
+    <property role="TrG5h" value="IComponentContent" />
+    <property role="3GE5qa" value="componentContent" />
+  </node>
+  <node concept="1TIwiD" id="N3U3jU_Sx4">
+    <property role="EcuMT" value="919834063153891396" />
+    <property role="TrG5h" value="GenericAttributeDefinition" />
+    <property role="3GE5qa" value="componentContent" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="PrWs8" id="N3U3jU_SyX" role="PzmwI">
+      <ref role="PrY4T" node="N3U3jU_StN" resolve="IComponentContent" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="N3U3jU_S$n">
+    <property role="EcuMT" value="919834063153891607" />
+    <property role="3GE5qa" value="componentContent" />
+    <property role="TrG5h" value="StyleComponentContent" />
+    <property role="34LRSv" value="style" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="N3U3jU_SCa" role="1TKVEi">
+      <property role="IQ2ns" value="919834063153891850" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="definition" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="N3U3jU_SCb" resolve="StyleAttributeDefinition" />
+    </node>
+    <node concept="PrWs8" id="N3U3jU_SAg" role="PzmwI">
+      <ref role="PrY4T" node="N3U3jU_StN" resolve="IComponentContent" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="N3U3jU_SAh">
+    <property role="EcuMT" value="919834063153891729" />
+    <property role="3GE5qa" value="componentContent" />
+    <property role="TrG5h" value="ColorStyleAttribute" />
+    <property role="R5$K7" value="true" />
+    <ref role="1TJDcQ" node="N3U3jU_SCb" resolve="StyleAttributeDefinition" />
+    <node concept="1TJgyi" id="N3U3jU_SE4" role="1TKVEl">
+      <property role="IQ2nx" value="919834063153891972" />
+      <property role="TrG5h" value="colorValue" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="N3U3jU_SCb">
+    <property role="EcuMT" value="919834063153891851" />
+    <property role="3GE5qa" value="componentContent" />
+    <property role="TrG5h" value="StyleAttributeDefinition" />
+    <property role="R5$K7" value="true" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+  </node>
+  <node concept="1TIwiD" id="N3U3jU_SE5">
+    <property role="EcuMT" value="919834063153891973" />
+    <property role="3GE5qa" value="componentContent" />
+    <property role="TrG5h" value="Style_color" />
+    <property role="34LRSv" value="color" />
+    <ref role="1TJDcQ" node="N3U3jU_SAh" resolve="ColorStyleAttribute" />
+  </node>
+  <node concept="1TIwiD" id="N3U3jUBW2V">
+    <property role="EcuMT" value="919834063154430139" />
+    <property role="3GE5qa" value="componentContent" />
+    <property role="TrG5h" value="ChildComponentContent" />
+    <property role="34LRSv" value="child" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="N3U3jUBW4P" role="1TKVEi">
+      <property role="IQ2ns" value="919834063154430261" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="child" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="7GLg2tFqfT1" resolve="IReactComponent" />
+    </node>
+    <node concept="PrWs8" id="N3U3jUBW4O" role="PzmwI">
+      <ref role="PrY4T" node="N3U3jU_StN" resolve="IComponentContent" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="5Liq5ZTct6">
+    <property role="EcuMT" value="103945224390494022" />
+    <property role="TrG5h" value="ComponentConstructurValue" />
+    <property role="34LRSv" value="componentConstructur" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyi" id="5Liq5ZTct9" role="1TKVEl">
+      <property role="IQ2nx" value="103945224390494025" />
+      <property role="TrG5h" value="componentType" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+    <node concept="PrWs8" id="5Liq5ZTct7" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFt7hf" resolve="IPropertyValue" />
+    </node>
+    <node concept="PrWs8" id="5Liq5ZTct8" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFvHlb" resolve="IJsonValue" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="1NezOVo3f8D">
+    <property role="EcuMT" value="2075754047059325481" />
+    <property role="TrG5h" value="JsonArrayBuilder" />
+    <property role="34LRSv" value="buildArray" />
+    <property role="3GE5qa" value="json" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <node concept="1TJgyj" id="1NezOVo3fa$" role="1TKVEi">
+      <property role="IQ2ns" value="2075754047059325604" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="body" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpee:fzclF80" resolve="StatementList" />
+    </node>
+    <node concept="PrWs8" id="1NezOVo3fay" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFvHlb" resolve="IJsonValue" />
+    </node>
+    <node concept="PrWs8" id="1NezOVo3faz" role="PzmwI">
+      <ref role="PrY4T" node="7GLg2tFt7hf" resolve="IPropertyValue" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="1NezOVo3fcC">
+    <property role="EcuMT" value="2075754047059325736" />
+    <property role="3GE5qa" value="json" />
+    <property role="TrG5h" value="JsonArrayElementExpression" />
+    <property role="34LRSv" value="arrayElement" />
+    <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
+    <node concept="1TJgyj" id="1NezOVo3fgG" role="1TKVEi">
+      <property role="IQ2ns" value="2075754047059325996" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="value" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
     </node>
   </node>
 </model>
