@@ -33,6 +33,10 @@
         <child id="1078153129734" name="inspectedCellModel" index="6VMZX" />
       </concept>
       <concept id="1176897764478" name="jetbrains.mps.lang.editor.structure.QueryFunction_NodeFactory" flags="in" index="4$FPG" />
+      <concept id="1198489924438" name="jetbrains.mps.lang.editor.structure.CellModel_Block" flags="sg" stub="8104358048506730066" index="b$f91">
+        <child id="1198489985045" name="header" index="b$u42" />
+        <child id="1198489993734" name="body" index="b$wch" />
+      </concept>
       <concept id="1140524381322" name="jetbrains.mps.lang.editor.structure.CellModel_ListWithRole" flags="ng" index="2czfm3">
         <property id="1140524450557" name="separatorText" index="2czwfO" />
         <child id="1176897874615" name="nodeFactory" index="4_6I_" />
@@ -60,6 +64,7 @@
         <child id="1080736633877" name="cellModel" index="2wV5jI" />
       </concept>
       <concept id="795210086017940429" name="jetbrains.mps.lang.editor.structure.ReadOnlyStyleClassItem" flags="lg" index="xShMh" />
+      <concept id="6718020819487620876" name="jetbrains.mps.lang.editor.structure.TransformationMenuReference_Default" flags="ng" index="A1WHr" />
       <concept id="1239814640496" name="jetbrains.mps.lang.editor.structure.CellLayout_VerticalGrid" flags="nn" index="2EHx9g" />
       <concept id="1160493135005" name="jetbrains.mps.lang.editor.structure.CellMenuPart_PropertyValues_GetValues" flags="in" index="MLZmj" />
       <concept id="1164824717996" name="jetbrains.mps.lang.editor.structure.CellMenuDescriptor" flags="ng" index="OXEIz">
@@ -155,6 +160,7 @@
       </concept>
       <concept id="1073389214265" name="jetbrains.mps.lang.editor.structure.EditorCellModel" flags="ng" index="3EYTF0">
         <child id="1164826688380" name="menuDescriptor" index="P5bDN" />
+        <child id="4202667662392416064" name="transformationMenu" index="3vIgyS" />
       </concept>
       <concept id="1073389446423" name="jetbrains.mps.lang.editor.structure.CellModel_Collection" flags="sn" stub="3013115976261988961" index="3EZMnI">
         <property id="1160590353935" name="usesFolding" index="S$Qs1" />
@@ -2455,6 +2461,121 @@
     <ref role="1XX52x" to="8xo1:szQzwtmcUX" resolve="StringPageParameterType" />
     <node concept="PMmxH" id="szQzwtmcV1" role="2wV5jI">
       <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="N3U3jU_SFY">
+    <property role="3GE5qa" value="componentContent" />
+    <ref role="1XX52x" to="8xo1:N3U3jU_SAh" resolve="ColorStyleAttribute" />
+    <node concept="3EZMnI" id="N3U3jU_SHS" role="2wV5jI">
+      <node concept="PMmxH" id="N3U3jU_SHY" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+        <node concept="A1WHr" id="N3U3jUBifN" role="3vIgyS">
+          <ref role="2ZyFGn" to="8xo1:N3U3jU_SCb" resolve="StyleAttributeDefinition" />
+        </node>
+      </node>
+      <node concept="3F0ifn" id="N3U3jU_SI0" role="3EZMnx">
+        <property role="3F0ifm" value=":" />
+      </node>
+      <node concept="3F0A7n" id="N3U3jU_SI3" role="3EZMnx">
+        <ref role="1NtTu8" to="8xo1:N3U3jU_SE4" resolve="colorValue" />
+      </node>
+      <node concept="l2Vlx" id="N3U3jU_SHV" role="2iSdaV" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="N3U3jUADa0">
+    <property role="3GE5qa" value="componentContent" />
+    <ref role="1XX52x" to="8xo1:N3U3jU_S$n" resolve="StyleComponentContent" />
+    <node concept="3EZMnI" id="N3U3jUADbU" role="2wV5jI">
+      <node concept="PMmxH" id="N3U3jUADc0" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F1sOY" id="N3U3jUADc2" role="3EZMnx">
+        <ref role="1NtTu8" to="8xo1:N3U3jU_SCa" resolve="definition" />
+      </node>
+      <node concept="l2Vlx" id="N3U3jUADbX" role="2iSdaV" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="N3U3jUBW7A">
+    <property role="3GE5qa" value="componentContent" />
+    <ref role="1XX52x" to="8xo1:N3U3jUBW2V" resolve="ChildComponentContent" />
+    <node concept="3EZMnI" id="N3U3jUBW9w" role="2wV5jI">
+      <node concept="PMmxH" id="N3U3jUBW9A" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F1sOY" id="N3U3jUBW9C" role="3EZMnx">
+        <ref role="1NtTu8" to="8xo1:N3U3jUBW4P" resolve="child" />
+      </node>
+      <node concept="l2Vlx" id="N3U3jUBW9z" role="2iSdaV" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="5Liq5ZTcGG">
+    <ref role="1XX52x" to="8xo1:5Liq5ZTct6" resolve="ComponentConstructurValue" />
+    <node concept="3EZMnI" id="5Liq5ZTcGI" role="2wV5jI">
+      <node concept="PMmxH" id="5Liq5ZTcGJ" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+        <ref role="1k5W1q" node="2vPZMAnOoz_" resolve="RComponent" />
+      </node>
+      <node concept="3F0A7n" id="5Liq5ZTcGK" role="3EZMnx">
+        <ref role="1NtTu8" to="8xo1:5Liq5ZTct9" resolve="componentType" />
+        <node concept="OXEIz" id="5Liq5ZTcGL" role="P5bDN">
+          <node concept="PvTIS" id="5Liq5ZTcGM" role="OY2wv">
+            <node concept="MLZmj" id="5Liq5ZTcGN" role="PvTIR">
+              <node concept="3clFbS" id="5Liq5ZTcGO" role="2VODD2">
+                <node concept="3clFbF" id="5Liq5ZTcGP" role="3cqZAp">
+                  <node concept="2YIFZM" id="5Liq5ZTcGQ" role="3clFbG">
+                    <ref role="37wK5l" node="2vPZMAn8x4O" resolve="listOfReactComponentNames" />
+                    <ref role="1Pybhc" node="2vPZMAn8x2M" resolve="ReactComponentProvider" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2iRfu4" id="5Liq5ZTcGT" role="2iSdaV" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="1NezOVo3fa_">
+    <property role="3GE5qa" value="json" />
+    <ref role="1XX52x" to="8xo1:1NezOVo3f8D" resolve="JsonArrayBuilder" />
+    <node concept="b$f91" id="1NezOVo3fcv" role="2wV5jI">
+      <node concept="3F1sOY" id="1NezOVo3fcA" role="b$wch">
+        <ref role="1NtTu8" to="8xo1:1NezOVo3fa$" resolve="body" />
+      </node>
+      <node concept="3EZMnI" id="1NezOVo3fcz" role="b$u42">
+        <node concept="2iRfu4" id="1NezOVo3fc$" role="2iSdaV" />
+        <node concept="PMmxH" id="1NezOVo3fc_" role="3EZMnx">
+          <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="24kQdi" id="1NezOVo3fex">
+    <property role="3GE5qa" value="json" />
+    <ref role="1XX52x" to="8xo1:1NezOVo3fcC" resolve="JsonArrayElementExpression" />
+    <node concept="3EZMnI" id="1NezOVo3fgw" role="2wV5jI">
+      <node concept="PMmxH" id="1NezOVo3fg$" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F0ifn" id="1NezOVo3fgA" role="3EZMnx">
+        <property role="3F0ifm" value="(" />
+        <node concept="11L4FC" id="1NezOVo3mcQ" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+        <node concept="11LMrY" id="1NezOVo3mcS" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="3F1sOY" id="1NezOVo3fgH" role="3EZMnx">
+        <ref role="1NtTu8" to="8xo1:1NezOVo3fgG" resolve="value" />
+      </node>
+      <node concept="3F0ifn" id="1NezOVo3fgD" role="3EZMnx">
+        <property role="3F0ifm" value=")" />
+        <node concept="11LMrY" id="1NezOVo3mcU" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="l2Vlx" id="1NezOVo3fgz" role="2iSdaV" />
     </node>
   </node>
 </model>

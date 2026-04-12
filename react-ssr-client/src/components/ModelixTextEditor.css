@@ -1,5 +1,6 @@
-.editor {
+.modelix-text-editor {
     font-family: monospace;
+    counter-reset: line-number;
     /*border: 1px solid #D1D1D1;*/
     position: relative;
 }
@@ -8,17 +9,37 @@
     background-color: rgba(128, 217, 38, 0.15);
 }
 
+.modelix-text-editor .line.highlighted:before {
+    background-color: rgba(128, 217, 38, 0.15);
+}
+
 .modelix-text-editor:focus .line .highlighted-cell {
     background-color: #DBE5FD;
 }
 
-.editor .relative-layer {
+.modelix-text-editor .line {
+    counter-increment: line-number;
+}
+
+.modelix-text-editor .line:before {
+    content: counter(line-number);
+    padding-right: 10px;
+    margin-right: 10px;
+    min-width: 30pt;
+    text-align: right;
+    display: inline-block;
+    background: #F2F2F2;
+    color: #ADADAD;
+    border-right: 1px solid #d1d1d1;
+}
+
+.modelix-text-editor .relative-layer {
     position: absolute;
     left: 0;
     top: 0;
 }
 
-.editor .caret {
+.modelix-text-editor .caret {
     position: absolute;
     border-left: 2px solid;
     width: 3px;
@@ -26,7 +47,7 @@
     display: block;
 }
 
-.editor .caret.own {
+.modelix-text-editor .caret.own {
     display: none;
 }
 
@@ -35,13 +56,13 @@
     animation: blinker 1s linear infinite;
 }
 
-.editor .caret.leftend {
+.modelix-text-editor .caret.leftend {
     width: 3px;
     border-bottom: 1px solid;
     border-top: 1px solid;
 }
 
-.editor .caret.rightend {
+.modelix-text-editor .caret.rightend {
     width: 3px;
     background-color: transparent;
     border-left: none;
@@ -50,25 +71,25 @@
     border-top: 1px solid;
 }
 
-.editor .selection {
+.modelix-text-editor .selection {
     border-width: 1px;
     border-style: solid;
     position: absolute;
 }
 
-.editor .ccmenu-container {
+.modelix-text-editor .ccmenu-container {
     position: absolute;
     white-space: nowrap;
     z-index: 1;
 }
 
-.editor .ccmenu-container .ccmenu-pattern {
+.modelix-text-editor .ccmenu-container .ccmenu-pattern {
     background-color: white;
     border: 1px solid #ccc;
     display: inline-block;
 }
 
-.editor .ccmenu-container .ccmenu {
+.modelix-text-editor .ccmenu-container .ccmenu {
     background-color: white;
     border: 1px solid black;
     overflow-y: scroll;
@@ -76,22 +97,22 @@
     box-shadow: 5px 5px 40px 0 rgba(0, 0, 0, 0.5);
 }
 
-.editor .ccmenu-container .ccmenu .ccSelectedEntry {
+.modelix-text-editor .ccmenu-container .ccmenu .ccSelectedEntry {
     background-color: #5373af;
     color: #fff;
 }
 
-.editor .ccmenu-container .ccmenu .matchingText {
+.modelix-text-editor .ccmenu-container .ccmenu .matchingText {
     padding: 0 10px 0 3px;
     white-space: nowrap;
 }
 
-.editor .ccmenu-container .ccmenu .description {
+.modelix-text-editor .ccmenu-container .ccmenu .description {
     padding: 0 3px 0 10px;
     white-space: nowrap;
 }
 
-.editor .ccmenu-container .ccmenu th, .editor .ccmenu-container .ccmenu td {
+.modelix-text-editor .ccmenu-container .ccmenu th, .modelix-text-editor .ccmenu-container .ccmenu td {
     border: none;
     padding: 3px 6px;
 }

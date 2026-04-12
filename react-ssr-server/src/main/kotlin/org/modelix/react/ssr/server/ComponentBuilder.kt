@@ -15,7 +15,18 @@ fun buildViewModel(body: ViewModelBuilder.() -> Unit): ViewModel = ViewModelBuil
 fun buildComponent(
     type: String,
     body: ComponentBuilder.() -> Unit,
-): Component = ComponentBuilder(type).apply(body).build()
+): Component =
+    try {
+        ComponentBuilder(type).apply(body).build()
+    } catch (ex: Exception) {
+        ComponentBuilder("mui.Alert")
+            .apply {
+                property("severity", "error")
+                component("html.pre") {
+                    text(ex.stackTraceToString())
+                }
+            }.build()
+    }
 
 abstract class ComponentContainerBuilder {
     private val children: MutableList<ComponentOrText> = ArrayList()
@@ -179,6 +190,11 @@ interface IJsonObjectBuilder {
         value: JsCode,
     )
 
+    fun property(
+        name: String,
+        value: ComponentConstructorRef,
+    )
+
     fun jsonObjectProperty(
         name: String,
         body: IJsonObjectBuilder.() -> Unit,
@@ -193,6 +209,11 @@ interface IJsonObjectBuilder {
     fun jsCodeProperty(
         name: String,
         @Language("JavaScript") code: String,
+    )
+
+    fun componentConstructorProperty(
+        name: String,
+        componentName: String,
     )
 
     fun messageSendingHandler(
@@ -257,6 +278,13 @@ class JsonObjectBuilder : IJsonObjectBuilder {
         properties[name] = Json.encodeToJsonElement(value)
     }
 
+    override fun property(
+        name: String,
+        value: ComponentConstructorRef,
+    ) {
+        properties[name] = Json.encodeToJsonElement(value)
+    }
+
     override fun jsonObjectProperty(
         name: String,
         body: IJsonObjectBuilder.() -> Unit,
@@ -278,6 +306,13 @@ class JsonObjectBuilder : IJsonObjectBuilder {
         @Language("JavaScript") code: String,
     ) {
         properties[name] = Json.encodeToJsonElement(JsCode(code))
+    }
+
+    override fun componentConstructorProperty(
+        name: String,
+        componentName: String,
+    ) {
+        properties[name] = Json.encodeToJsonElement(ComponentConstructorRef(componentName))
     }
 
     override fun messageSendingHandler(

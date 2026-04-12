@@ -8,7 +8,7 @@ import * as primeComponents from "./PrimeReactComponents.ts";
 import * as primeIcons from "./PrimeReactIcons.ts";
 import { DataGrid } from '@mui/x-data-grid';
 import Grid2 from "@mui/material/Unstable_Grid2"
-import { SimpleTreeView, RichTreeView, TreeItem, TreeItem2 } from '@mui/x-tree-view';
+import * as treeView from '@mui/x-tree-view';
 import {ReferenceTargetChooser} from "./ReferenceTargetChooser.tsx";
 import {Dropdown} from "./Dropdown.tsx";
 import {ModelixTextField} from "./ModelixTextField.tsx";
@@ -86,12 +86,16 @@ export function registerDefaultComponents() {
     registerAllComponents(primeComponents, "primereact.")
     registerAllComponents(primeIcons, "primereact.icons.")
 
+    registerAllComponents(treeView, "mui.treeview.")
+    // legacy
+    registerComponentConstructor("mui.SimpleTreeView", treeView.SimpleTreeView)
+    registerComponentConstructor("mui.RichTreeView", treeView.RichTreeView)
+    registerComponentConstructor("mui.TreeItem", treeView.TreeItem)
+    registerComponentConstructor("mui.TreeItem", treeView.TreeItem)
+    registerComponentConstructor("mui.TreeItem2", treeView.TreeItem2)
+
     registerComponentConstructor("mui.DataGrid", DataGrid)
     registerComponentConstructor("mui.Grid2", Grid2)
-    registerComponentConstructor("mui.SimpleTreeView", SimpleTreeView)
-    registerComponentConstructor("mui.RichTreeView", RichTreeView)
-    registerComponentConstructor("mui.TreeItem", TreeItem)
-    registerComponentConstructor("mui.TreeItem2", TreeItem2)
     registerComponentConstructor("modelix.Dropdown", Dropdown)
     registerComponentConstructor("modelix.ReferenceTargetChooser", ReferenceTargetChooser)
     registerComponentConstructor("modelix.TextField", ModelixTextField)
