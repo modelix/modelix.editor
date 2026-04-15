@@ -1,5 +1,7 @@
 package org.modelix.react.ssr.mps
 
+import jetbrains.mps.smodel.adapter.structure.concept.SAbstractConceptAdapter
+import org.jetbrains.mps.openapi.language.SAbstractConcept
 import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.model.SNodeReference
 import org.modelix.kotlin.utils.urlEncode
@@ -117,4 +119,7 @@ object ReactFacade {
 
     @JvmStatic
     fun serializeAndEscapeRef(node: SNode): String = serializeRef(node).urlEncode()
+
+    @JvmStatic
+    fun serializeAndEscape(concept: SAbstractConcept): String = (concept as SAbstractConceptAdapter).serialize().urlEncode()
 }
