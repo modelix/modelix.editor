@@ -32,6 +32,7 @@
       <concept id="1225194691553" name="jetbrains.mps.lang.behavior.structure.ThisNodeExpression" flags="nn" index="13iPFW" />
     </language>
     <language id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage">
+      <concept id="1080223426719" name="jetbrains.mps.baseLanguage.structure.OrExpression" flags="nn" index="22lmx$" />
       <concept id="4836112446988635817" name="jetbrains.mps.baseLanguage.structure.UndefinedType" flags="in" index="2jxLKc" />
       <concept id="1202948039474" name="jetbrains.mps.baseLanguage.structure.InstanceMethodCallOperation" flags="nn" index="liA8E" />
       <concept id="1197027756228" name="jetbrains.mps.baseLanguage.structure.DotExpression" flags="nn" index="2OqwBi">
@@ -91,6 +92,9 @@
         <child id="1068581242865" name="localVariableDeclaration" index="3cpWs9" />
       </concept>
       <concept id="1068581242863" name="jetbrains.mps.baseLanguage.structure.LocalVariableDeclaration" flags="nr" index="3cpWsn" />
+      <concept id="1079359253375" name="jetbrains.mps.baseLanguage.structure.ParenthesizedExpression" flags="nn" index="1eOMI4">
+        <child id="1079359253376" name="expression" index="1eOMHV" />
+      </concept>
       <concept id="1204053956946" name="jetbrains.mps.baseLanguage.structure.IMethodCall" flags="ngI" index="1ndlxa">
         <reference id="1068499141037" name="baseMethodDeclaration" index="37wK5l" />
         <child id="1068499141038" name="actualArgument" index="37wK5m" />
@@ -684,8 +688,15 @@
             </node>
           </node>
           <node concept="1Wc70l" id="6Ddb4_fPg1W" role="3clFbw">
-            <node concept="iy1fb" id="6Ddb4_fPnAL" role="3uHU7w">
-              <ref role="iy1sa" to="8xo1:7GLg2tFrln8" resolve="children" />
+            <node concept="1eOMI4" id="2rFw46ID4XW" role="3uHU7w">
+              <node concept="22lmx$" id="2rFw46ID6kl" role="1eOMHV">
+                <node concept="iy1fb" id="2rFw46ID6ua" role="3uHU7w">
+                  <ref role="iy1sa" to="8xo1:7GLg2tFrlna" />
+                </node>
+                <node concept="iy1fb" id="6Ddb4_fPnAL" role="3uHU7B">
+                  <ref role="iy1sa" to="8xo1:7GLg2tFrln8" resolve="children" />
+                </node>
+              </node>
             </node>
             <node concept="2OqwBi" id="6Ddb4_fPdY$" role="3uHU7B">
               <node concept="37vLTw" id="6Ddb4_fPdq4" role="2Oq$k0">
