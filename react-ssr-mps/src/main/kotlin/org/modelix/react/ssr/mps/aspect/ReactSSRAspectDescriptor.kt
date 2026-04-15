@@ -105,10 +105,20 @@ interface IRenderContext {
         defaultValue: String?,
     ): String?
 
+    fun <T> getState(
+        id: String,
+        defaultValue: T,
+    ): T?
+
     fun setState(
         id: String,
         value: String?,
     ): String?
+
+    fun <T> setState(
+        id: String,
+        value: T,
+    ): T
 
     fun getState(
         id: String,

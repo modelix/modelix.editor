@@ -1005,7 +1005,7 @@
     <property role="EcuMT" value="919834063153891396" />
     <property role="TrG5h" value="GenericAttributeDefinition" />
     <property role="3GE5qa" value="componentContent" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="PrWs8" id="N3U3jU_SyX" role="PzmwI">
       <ref role="PrY4T" node="N3U3jU_StN" resolve="IComponentContent" />
     </node>
@@ -1015,7 +1015,7 @@
     <property role="3GE5qa" value="componentContent" />
     <property role="TrG5h" value="StyleComponentContent" />
     <property role="34LRSv" value="style" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="N3U3jU_SCa" role="1TKVEi">
       <property role="IQ2ns" value="919834063153891850" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
@@ -1044,7 +1044,7 @@
     <property role="3GE5qa" value="componentContent" />
     <property role="TrG5h" value="StyleAttributeDefinition" />
     <property role="R5$K7" value="true" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
   </node>
   <node concept="1TIwiD" id="N3U3jU_SE5">
     <property role="EcuMT" value="919834063153891973" />
@@ -1058,7 +1058,7 @@
     <property role="3GE5qa" value="componentContent" />
     <property role="TrG5h" value="ChildComponentContent" />
     <property role="34LRSv" value="child" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="N3U3jUBW4P" role="1TKVEi">
       <property role="IQ2ns" value="919834063154430261" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
@@ -1074,7 +1074,7 @@
     <property role="EcuMT" value="103945224390494022" />
     <property role="TrG5h" value="ComponentConstructurValue" />
     <property role="34LRSv" value="componentConstructur" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyi" id="5Liq5ZTct9" role="1TKVEl">
       <property role="IQ2nx" value="103945224390494025" />
       <property role="TrG5h" value="componentType" />
@@ -1092,7 +1092,7 @@
     <property role="TrG5h" value="JsonArrayBuilder" />
     <property role="34LRSv" value="buildArray" />
     <property role="3GE5qa" value="json" />
-    <ref role="1TJDcQ" to="tpck:gw2VY9q" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="1TJgyj" id="1NezOVo3fa$" role="1TKVEi">
       <property role="IQ2ns" value="2075754047059325604" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />

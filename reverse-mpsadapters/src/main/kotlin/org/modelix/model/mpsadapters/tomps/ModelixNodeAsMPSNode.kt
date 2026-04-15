@@ -131,9 +131,7 @@ data class ModelixNodeAsMPSNode(
 
     override fun isInstanceOfConcept(superConcept: SAbstractConcept): Boolean = node.getConcept().isSubConceptOf(MPSConcept(superConcept))
 
-    override fun getPresentation(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getPresentation(): String = getName() ?: node.toString()
 
     override fun getName(): String? = getProperty(SNodeUtil.property_INamedConcept_name)
 

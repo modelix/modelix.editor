@@ -2,9 +2,12 @@ package org.modelix.react.ssr.mps
 
 import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.model.SNodeReference
+import org.modelix.kotlin.utils.urlEncode
+import org.modelix.model.api.IModel
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
 import org.modelix.model.api.IReadableNode
+import org.modelix.model.api.NodeReference
 import org.modelix.model.mpsadapters.toMPS
 import org.modelix.model.mpsadapters.toModelix
 import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
@@ -65,7 +68,10 @@ object ReactFacade {
             .buildMessageSendingHandler(messageId, body)
 
     @JvmStatic
-    fun toModelix(node: SNode?) = ModelixNodeAsMPSNode.toModelixNode(node)
+    fun toModelix(node: SNode) = ModelixNodeAsMPSNode.toModelixNode(node)
+
+    @JvmStatic
+    fun toModelixNullable(node: SNode?) = ModelixNodeAsMPSNode.toModelixNode(node)
 
     @JvmStatic
     fun toModelix(nodeRef: SNodeReference): INodeReference = nodeRef.toModelix()
@@ -74,8 +80,41 @@ object ReactFacade {
     fun toMPS(nodeRef: INodeReference): SNodeReference = MPSNodeReference.convert(nodeRef).toMPS()
 
     @JvmStatic
-    fun toMPS(node: INode?) = ModelixNodeAsMPSNode.toMPSNode(node)
+    fun toMPS(node: INode) = ModelixNodeAsMPSNode.toMPSNode(node)
 
     @JvmStatic
-    fun toMPS(node: IReadableNode?) = ModelixNodeAsMPSNode.toMPSNode(node)
+    fun toMPSNullable(node: INode?) = ModelixNodeAsMPSNode.toMPSNode(node)
+
+    @JvmStatic
+    fun toMPS(node: IReadableNode) = ModelixNodeAsMPSNode.toMPSNode(node)
+
+    @JvmStatic
+    fun toMPSNullable(node: IReadableNode?) = ModelixNodeAsMPSNode.toMPSNode(node)
+
+    @JvmStatic
+    fun deserializeModelixNodeReference(serialized: String): INodeReference = NodeReference(serialized)
+
+    @JvmStatic
+    fun resolve(node: INodeReference): IReadableNode = IModel.resolveNode(node)
+
+    @JvmStatic
+    fun resolveMPSNode(node: INodeReference): SNode = toMPS(IModel.resolveNode(node))
+
+    @JvmStatic
+    fun tryResolve(node: INodeReference): IReadableNode? = IModel.tryResolveNode(node)
+
+    @JvmStatic
+    fun serializeRef(node: INodeReference): String = node.serialize()
+
+    @JvmStatic
+    fun serializeRef(node: INode): String = node.reference.serialize()
+
+    @JvmStatic
+    fun serializeRef(node: IReadableNode): String = node.getNodeReference().serialize()
+
+    @JvmStatic
+    fun serializeRef(node: SNode): String = serializeRef(toModelix(node))
+
+    @JvmStatic
+    fun serializeAndEscapeRef(node: SNode): String = serializeRef(node).urlEncode()
 }

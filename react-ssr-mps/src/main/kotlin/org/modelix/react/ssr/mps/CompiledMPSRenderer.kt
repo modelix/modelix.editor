@@ -14,6 +14,7 @@ import org.modelix.incremental.IIncrementalEngine
 import org.modelix.incremental.TrackableValue
 import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.ConceptReference
+import org.modelix.model.api.IModel
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeResolutionScope
 import org.modelix.model.api.NodeReference
@@ -77,21 +78,29 @@ class MPSRendererFactory(
         val parameters: Map<String, List<String>>,
         val coroutineScope: CoroutineScope,
     ) : IRenderer {
-        override fun <R> runRead(body: () -> R): R = repository().computeRead(body)
-
-        fun createRootRenderer(): IRenderer? {
-            val repository = repository()
-            val pages = descriptors.findDescriptors(repository).flatMap { it.getPages() }
-            for (page in pages) {
-                val match = page.getPath().match(pathParts) ?: continue
-                return repository.modelAccess.computeRead {
-                    INodeResolutionScope.runWithAdditionalScope(MPSArea(repository)) {
-                        createRenderer(incrementalEngine, page.getRoot(MPSRepositoryAsNode(repository), match), parameters, coroutineScope)
+        private val createRootRendererIncremental =
+            incrementalEngine.incrementalFunction("createRootRenderer") { context ->
+                val repository = repository()
+                val pages = descriptors.findDescriptors(repository).flatMap { it.getPages() }
+                for (page in pages) {
+                    val match = page.getPath().match(pathParts) ?: continue
+                    return@incrementalFunction repository.modelAccess.computeRead {
+                        INodeResolutionScope.runWithAdditionalScope(MPSArea(repository)) {
+                            createRenderer(
+                                incrementalEngine,
+                                page.getRoot(MPSRepositoryAsNode(repository), match),
+                                parameters,
+                                coroutineScope
+                            )
+                        }
                     }
                 }
+                return@incrementalFunction null
             }
-            return null
-        }
+
+        override fun <R> runRead(body: () -> R): R = repository().computeRead(body)
+
+        fun createRootRenderer(): IRenderer? = createRootRendererIncremental.invoke()
 
         override fun render(): ViewModel {
             val renderer = createRootRenderer()
@@ -120,17 +129,24 @@ class CompiledMPSRenderer(
     override suspend fun <R> runWrite(body: () -> R): R {
         var result: R? = null
         withContext(Dispatchers.EDT) {
-            repository().modelAccess.executeCommand {
-                result = body()
+            val repository = repository()
+            repository.modelAccess.executeCommand {
+                IModel.CONTEXT_MODEL.computeWith(MPSArea(repository).asModel()) {
+                    result = body()
+                }
             }
         }
         return result as R
     }
 
-    override fun <R> runRead(body: () -> R): R =
-        repository().modelAccess.computeRead {
-            body()
+    override fun <R> runRead(body: () -> R): R {
+        val repository = repository()
+        return repository.modelAccess.computeRead {
+            IModel.CONTEXT_MODEL.computeWith(MPSArea(repository).asModel()) {
+                body()
+            }
         }
+    }
 
     fun getDescriptor() = CompositeReactSSRAspectDescriptor(descriptors.findDescriptors(repository()).toSet())
 
@@ -206,6 +222,11 @@ class CompiledMPSRenderer(
                         defaultValue: String?,
                     ): String? = (allStates[id] as? JsonPrimitive)?.content ?: defaultValue
 
+                    override fun <T> getState(
+                        id: String,
+                        defaultValue: T,
+                    ): T = (allStates[id] as T?) ?: defaultValue
+
                     override fun setState(
                         id: String,
                         value: String?,
@@ -223,6 +244,18 @@ class CompiledMPSRenderer(
                         value: Boolean,
                     ): Boolean {
                         allStates[id] = JsonPrimitive(value)
+                        return value
+                    }
+
+                    override fun <T> setState(
+                        id: String,
+                        value: T,
+                    ): T {
+                        if (value == null) {
+                            allStates.remove(id)
+                        } else {
+                            allStates[id] = value
+                        }
                         return value
                     }
                 }
