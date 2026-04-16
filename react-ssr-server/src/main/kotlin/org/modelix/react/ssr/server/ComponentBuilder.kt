@@ -40,11 +40,13 @@ abstract class ComponentContainerBuilder {
             )
     }
 
-    fun component(component: Component) {
+    fun component(component: Component?) {
+        if (component == null) return
         children += ComponentOrText(component = component)
     }
 
-    fun child(child: ComponentOrText) {
+    fun child(child: ComponentOrText?) {
+        if (child == null) return
         children += child
     }
 
@@ -52,7 +54,8 @@ abstract class ComponentContainerBuilder {
         this.children += children
     }
 
-    fun child(children: IComponentOrList) {
+    fun child(children: IComponentOrList?) {
+        if (children == null) return
         this.children += children.flatten()
     }
 
@@ -186,6 +189,11 @@ interface IJsonObjectBuilder {
 
     fun property(
         name: String,
+        value: IComponentOrList,
+    )
+
+    fun property(
+        name: String,
         value: Component,
     )
 
@@ -273,6 +281,32 @@ class JsonObjectBuilder : IJsonObjectBuilder {
     ) {
         value.component?.let { properties[name] = Json.encodeToJsonElement(it) }
         value.text?.let { properties[name] = JsonPrimitive(it) }
+    }
+
+    override fun property(
+        name: String,
+        value: IComponentOrList,
+    ) {
+        val components = value.flatten()
+        when (components.size) {
+            0 -> {}
+
+            1 -> {
+                property(name, components.single())
+            }
+
+            else -> {
+                property(
+                    name,
+                    ComponentBuilder("html.div")
+                        .apply {
+                            for (comp in components) {
+                                child(comp)
+                            }
+                        }.build()
+                )
+            }
+        }
     }
 
     override fun property(
