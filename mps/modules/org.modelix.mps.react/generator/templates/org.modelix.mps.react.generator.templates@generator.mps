@@ -37,6 +37,7 @@
   </imports>
   <registry>
     <language id="67accce2-9676-4728-9e9c-8b15ea30d924" name="org.modelix.mps.react">
+      <concept id="3522652784677145695" name="org.modelix.mps.react.structure.NullComponent" flags="ng" index="9mzpk" />
       <concept id="8876946878573903439" name="org.modelix.mps.react.structure.GenericReactComponent" flags="ng" index="gmrTC">
         <property id="8876946878573977569" name="componentType" index="gmPZ6" />
       </concept>
@@ -3214,9 +3215,7 @@
               </node>
             </node>
           </node>
-          <node concept="gmrTC" id="cqTc8IVTLa" role="1nAWFW">
-            <property role="gmPZ6" value="html.div" />
-          </node>
+          <node concept="9mzpk" id="5iFwBISA0IR" role="1nAWFW" />
         </node>
       </node>
     </node>
