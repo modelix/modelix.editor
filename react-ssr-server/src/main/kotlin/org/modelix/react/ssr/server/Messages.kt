@@ -8,8 +8,9 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 data class MessageFromClient(
-    val messageId: String,
+    val messageId: String? = null,
     val parameters: Map<String, JsonElement>? = null,
+    val urlPath: String? = null,
 ) {
     fun getStringProperty(name: String): String? = parameters?.get(name)?.jsonPrimitive?.content
 }

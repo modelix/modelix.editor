@@ -10,14 +10,12 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.longOrNull
 import org.modelix.incremental.TrackableMap
 
-abstract class RendererBase : IRenderer {
-    protected val allStates = TrackableMap<String, Any>()
-    private val messageHandlers: MutableMap<String, suspend (MessageFromClient) -> Unit> = HashMap()
-    protected var lastViewModel: ViewModel? = null
-
+abstract class RendererBase(
+    val session: RenderSession,
+) : IRenderer {
     init {
         registerMessageHandler("callCustomHandler") { message ->
-            val viewModel = lastViewModel ?: return@registerMessageHandler
+            val viewModel = session.lastViewModel ?: return@registerMessageHandler
             val handlerId = message.getStringProperty("customHandlerId") ?: return@registerMessageHandler
             val parameters = (message.parameters?.get("customParameters") as? JsonObject) ?: JsonObject(emptyMap())
             val handler = viewModel.findHandler(handlerId) ?: return@registerMessageHandler
@@ -50,9 +48,9 @@ abstract class RendererBase : IRenderer {
                     }
                 }
             if (value == null) {
-                allStates.remove(key)
+                session.allStates.remove(key)
             } else {
-                allStates[key] = value
+                session.allStates[key] = value
             }
         }
     }
@@ -63,14 +61,15 @@ abstract class RendererBase : IRenderer {
         id: String,
         impl: suspend (MessageFromClient) -> Unit,
     ) {
-        messageHandlers[id] = impl
+        session.messageHandlers[id] = impl
     }
 
     override suspend fun messageReceived(message: MessageFromClient) {
-        messageHandlers[message.messageId]?.invoke(message)
+        val messageId = message.messageId ?: return
+        session.messageHandlers[messageId]?.invoke(message)
     }
 
-    final override fun render(): ViewModel = doRender().also { lastViewModel = it }
+    final override fun render(): ViewModel = doRender().also { session.lastViewModel = it }
 
     protected abstract fun doRender(): ViewModel
 }

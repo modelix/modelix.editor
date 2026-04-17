@@ -16,7 +16,8 @@ abstract class GenericNodeRenderer(
     val incremenentalEngine: IIncrementalEngine,
     private val nodeRef: RendererCall,
     val coroutineScope: CoroutineScope,
-) : RendererBase() {
+    session: RenderSession,
+) : RendererBase(session) {
     init {
         registerMessageHandler("changeProperty") { message ->
             val serializedNodeRef = message.getStringProperty("node")!!
@@ -81,7 +82,7 @@ abstract class GenericNodeRenderer(
 
             val nodeId = node.reference.serialize()
             val stateId = "accordion-expanded-" + nodeId
-            val isExpanded = (allStates[stateId] as? JsonPrimitive)?.booleanOrNull ?: false
+            val isExpanded = (session.allStates[stateId] as? JsonPrimitive)?.booleanOrNull ?: false
 
             return@incrementalFunction buildComponent("mui.Accordion") {
                 key(nodeId)

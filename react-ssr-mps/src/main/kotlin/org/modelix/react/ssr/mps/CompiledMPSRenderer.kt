@@ -37,6 +37,7 @@ import org.modelix.react.ssr.server.NamedRendererCall
 import org.modelix.react.ssr.server.NamedRendererSignature
 import org.modelix.react.ssr.server.NodeRefRendererCall
 import org.modelix.react.ssr.server.NodeRendererCall
+import org.modelix.react.ssr.server.RenderSession
 import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.ViewModel
 import org.modelix.react.ssr.server.buildViewModel
@@ -55,11 +56,12 @@ class MPSRendererFactory(
         nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): GenericNodeRenderer =
         if (useInterpreter.getValue()) {
-            InterpretedMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope)
+            InterpretedMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope, session)
         } else {
-            CompiledMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope, descriptors)
+            CompiledMPSRenderer(incrementalEngine, repository, nodeRef, coroutineScope, descriptors, session)
         }
 
     override fun createPageRenderer(
@@ -67,9 +69,10 @@ class MPSRendererFactory(
         pathParts: List<String>,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): IRenderer {
         // Don't do any model access here because it will result in deadlocks.
-        return PageRenderer(incrementalEngine, pathParts, parameters, coroutineScope)
+        return PageRenderer(incrementalEngine, pathParts, parameters, coroutineScope, session)
     }
 
     inner class PageRenderer(
@@ -77,6 +80,7 @@ class MPSRendererFactory(
         val pathParts: List<String>,
         val parameters: Map<String, List<String>>,
         val coroutineScope: CoroutineScope,
+        val session: RenderSession,
     ) : IRenderer {
         private val createRootRendererIncremental =
             incrementalEngine.incrementalFunction("createRootRenderer") { context ->
@@ -90,7 +94,8 @@ class MPSRendererFactory(
                                 incrementalEngine,
                                 page.getRoot(MPSRepositoryAsNode(repository), match),
                                 parameters,
-                                coroutineScope
+                                coroutineScope,
+                                session,
                             )
                         }
                     }
@@ -123,7 +128,8 @@ class CompiledMPSRenderer(
     root: RendererCall,
     coroutineScope: CoroutineScope,
     val descriptors: ReactSSRAspectDescriptors,
-) : GenericNodeRenderer(incrementalEngine, root, coroutineScope) {
+    session: RenderSession,
+) : GenericNodeRenderer(incrementalEngine, root, coroutineScope, session) {
     override fun resolveNode(nodeRef: NodeReference): INode? = MPSArea(repository()).resolveNode(nodeRef)
 
     override suspend fun <R> runWrite(body: () -> R): R {
@@ -215,26 +221,26 @@ class CompiledMPSRenderer(
                     override fun getState(
                         id: String,
                         defaultValue: Boolean,
-                    ): Boolean = (allStates[id] as? JsonPrimitive)?.booleanOrNull ?: defaultValue
+                    ): Boolean = (session.allStates[id] as? JsonPrimitive)?.booleanOrNull ?: defaultValue
 
                     override fun getState(
                         id: String,
                         defaultValue: String?,
-                    ): String? = (allStates[id] as? JsonPrimitive)?.content ?: defaultValue
+                    ): String? = (session.allStates[id] as? JsonPrimitive)?.content ?: defaultValue
 
                     override fun <T> getState(
                         id: String,
                         defaultValue: T,
-                    ): T = (allStates[id] as T?) ?: defaultValue
+                    ): T = (session.allStates[id] as T?) ?: defaultValue
 
                     override fun setState(
                         id: String,
                         value: String?,
                     ): String? {
                         if (value == null) {
-                            allStates.remove(id)
+                            session.allStates.remove(id)
                         } else {
-                            allStates[id] = JsonPrimitive(value)
+                            session.allStates[id] = JsonPrimitive(value)
                         }
                         return value
                     }
@@ -243,7 +249,7 @@ class CompiledMPSRenderer(
                         id: String,
                         value: Boolean,
                     ): Boolean {
-                        allStates[id] = JsonPrimitive(value)
+                        session.allStates[id] = JsonPrimitive(value)
                         return value
                     }
 
@@ -252,9 +258,9 @@ class CompiledMPSRenderer(
                         value: T,
                     ): T {
                         if (value == null) {
-                            allStates.remove(id)
+                            session.allStates.remove(id)
                         } else {
-                            allStates[id] = value
+                            session.allStates[id] = value
                         }
                         return value
                     }

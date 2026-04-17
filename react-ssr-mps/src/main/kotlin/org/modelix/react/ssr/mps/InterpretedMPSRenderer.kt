@@ -49,6 +49,7 @@ import org.modelix.react.ssr.server.GenericNodeRenderer
 import org.modelix.react.ssr.server.IComponentOrList
 import org.modelix.react.ssr.server.JsCode
 import org.modelix.react.ssr.server.NodeRendererCall
+import org.modelix.react.ssr.server.RenderSession
 import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.ViewModel
 import org.modelix.react.ssr.server.buildComponent
@@ -61,7 +62,8 @@ class InterpretedMPSRenderer(
     val repository: () -> SRepository,
     nodeRef: RendererCall,
     coroutineScope: CoroutineScope,
-) : GenericNodeRenderer(incrementalEngine, nodeRef, coroutineScope) {
+    session: RenderSession,
+) : GenericNodeRenderer(incrementalEngine, nodeRef, coroutineScope, session) {
     override fun resolveNode(nodeRef: NodeReference): INode? = MPSArea(repository()).resolveNode(nodeRef)
 
     override suspend fun <R> runWrite(body: () -> R): R {

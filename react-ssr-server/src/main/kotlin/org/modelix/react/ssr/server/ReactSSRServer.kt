@@ -32,8 +32,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.modelix.incremental.IIncrementalEngine
 import org.modelix.incremental.IncrementalEngine
+import org.modelix.incremental.TrackableValue
 import org.modelix.incremental.incrementalFunction
 import org.modelix.kotlin.utils.ContextValue
+import org.modelix.kotlin.utils.urlDecode
 import java.util.Collections
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -49,6 +51,7 @@ interface IRendererFactory {
         nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): IRenderer
 
     fun createPageRenderer(
@@ -56,6 +59,7 @@ interface IRendererFactory {
         pathParts: List<String>,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): IRenderer
 }
 
@@ -77,6 +81,7 @@ class DefaultRendererFactory : IRendererFactory {
         nodeRef: RendererCall,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): IRenderer = Renderer(nodeRef)
 
     override fun createPageRenderer(
@@ -84,10 +89,11 @@ class DefaultRendererFactory : IRendererFactory {
         pathParts: List<String>,
         parameters: Map<String, List<String>>,
         coroutineScope: CoroutineScope,
+        session: RenderSession,
     ): IRenderer {
         require(pathParts.size == 2)
         require(pathParts[0] == "nodes")
-        return createRenderer(incrementalEngine, NodeRefRendererCall(pathParts[1]), parameters, coroutineScope)
+        return createRenderer(incrementalEngine, NodeRefRendererCall(pathParts[1]), parameters, coroutineScope, session)
     }
 
     class Renderer(
@@ -163,11 +169,14 @@ class ReactSSRServer(
             }
 
             webSocket {
-                val parts: List<String> =
-                    call.parameters
-                        .getAll("parts")
-                        .orEmpty()
-                        .filter { it.isNotEmpty() }
+                val parts: TrackableValue<List<String>> =
+                    TrackableValue(
+                        call.parameters
+                            .getAll("parts")
+                            .orEmpty()
+                            .filter { it.isNotEmpty() }
+                    )
+                val renderSession = RenderSession()
                 val incrementalEngine = IncrementalEngine()
                 lateinit var updateFunction: () -> Unit
                 try {
@@ -176,9 +185,10 @@ class ReactSSRServer(
                         incrementalEngine.incrementalFunction("createPageRenderer") { _ ->
                             rendererFactory.createPageRenderer(
                                 incrementalEngine,
-                                parts,
+                                parts.read(),
                                 queryParameters,
-                                this
+                                this,
+                                renderSession
                             )
                         }
 
@@ -244,7 +254,18 @@ class ReactSSRServer(
                                 is Frame.Text -> {
                                     val message = wsMessage.readText()
                                     LOG.debug { "Received message: $message" }
-                                    createRenderer().messageReceived(Json.decodeFromString(message))
+                                    val decodedMessage = Json.decodeFromString<MessageFromClient>(message)
+                                    decodedMessage.urlPath?.let {
+                                        val newParts =
+                                            it
+                                                .split("/")
+                                                .map { it.urlDecode() }
+                                                .filterNotNull()
+                                                .filter { it.isNotEmpty() }
+                                                .dropWhile { it == "pages" }
+                                        parts.setValue(newParts)
+                                    }
+                                    createRenderer().messageReceived(decodedMessage)
                                     sendUpdate()
                                 }
 
