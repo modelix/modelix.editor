@@ -1,6 +1,7 @@
 import {componentConstructors, registerComponentConstructor} from "./Base.tsx";
 import * as mui from "@mui/material";
 import * as router from "react-router";
+import * as splitpane from 'react-split-pane';
 import * as icons from "@mui/icons-material";
 import * as joy from "@mui/joy";
 import * as joyStyles from "@mui/joy/styles";
@@ -87,6 +88,7 @@ export function registerDefaultComponents() {
     registerAllComponents(antd, "antd.")
     registerAllComponents(primeComponents, "primereact.")
     registerAllComponents(primeIcons, "primereact.icons.")
+    registerAllComponents(splitpane, "splitpane.")
 
     registerAllComponents(treeView, "mui.treeview.")
     // legacy
