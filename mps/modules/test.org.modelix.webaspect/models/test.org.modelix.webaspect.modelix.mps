@@ -1946,62 +1946,39 @@
             </node>
           </node>
         </node>
-        <node concept="gmrTC" id="3uZ5ZhGndDS" role="gn1nJ">
-          <property role="gmPZ6" value="mui.Grid" />
-          <node concept="2o1qlL" id="3uZ5ZhGndDT" role="2o1qk1">
-            <property role="TrG5h" value="selectedNode" />
-            <node concept="3uibUv" id="3uZ5ZhGndDU" role="2o1qlE">
-              <ref role="3uigEE" to="jks5:~INodeReference" resolve="INodeReference" />
-            </node>
-            <node concept="10Nm6u" id="3uZ5ZhGndDV" role="2o1p2P" />
-          </node>
-          <node concept="gn1nE" id="3uZ5ZhGndDW" role="gn1nH">
-            <property role="gn1nW" value="container" />
-            <node concept="ghjhU" id="3uZ5ZhGndDX" role="gn1nU">
-              <node concept="3clFbT" id="3uZ5ZhGndDY" role="ghjhc">
-                <property role="3clFbU" value="true" />
-              </node>
-            </node>
-          </node>
-          <node concept="gn1nE" id="3uZ5ZhGndDZ" role="gn1nH">
-            <property role="gn1nW" value="spacing" />
-            <node concept="ghjhU" id="3uZ5ZhGndE0" role="gn1nU">
-              <node concept="3cmrfG" id="3uZ5ZhGndE1" role="ghjhc">
-                <property role="3cmrfH" value="1" />
-              </node>
-            </node>
-          </node>
-          <node concept="gmrTC" id="3uZ5ZhGndE2" role="gn1nJ">
-            <property role="gmPZ6" value="mui.Grid" />
-            <node concept="2rDjb8" id="3uZ5ZhGndE3" role="gn1nJ">
+        <node concept="gmrTC" id="6YzOfzDHZW9" role="gn1nJ">
+          <property role="gmPZ6" value="splitpane.SplitPane" />
+          <node concept="gmrTC" id="6YzOfzDI2nz" role="gn1nJ">
+            <property role="gmPZ6" value="splitpane.Pane" />
+            <node concept="2rDjb8" id="6YzOfzDI7BU" role="gn1nJ">
               <ref role="2rDjb1" node="7nrA7MorVtg" resolve="projectView" />
-              <node concept="2rHscw" id="3uZ5ZhGndE4" role="2rDjb3">
+              <node concept="2rHscw" id="6YzOfzDI7BV" role="2rDjb3">
                 <ref role="2rHscx" node="3uZ5ZhGndEn" resolve="repository" />
               </node>
             </node>
-            <node concept="gn1nE" id="3uZ5ZhGndE7" role="gn1nH">
-              <property role="gn1nW" value="size" />
-              <node concept="ghjhU" id="3uZ5ZhGndE8" role="gn1nU">
-                <node concept="3cmrfG" id="3uZ5ZhGndE9" role="ghjhc">
-                  <property role="3cmrfH" value="4" />
+            <node concept="gn1nE" id="6YzOfzDI77C" role="gn1nH">
+              <property role="gn1nW" value="defaultSize" />
+              <node concept="ghjhU" id="6YzOfzDI7ap" role="gn1nU">
+                <node concept="Xl_RD" id="6YzOfzDI7AH" role="ghjhc">
+                  <property role="Xl_RC" value="25%" />
                 </node>
               </node>
             </node>
           </node>
-          <node concept="gmrTC" id="3uZ5ZhGndEa" role="gn1nJ">
-            <property role="gmPZ6" value="mui.Grid" />
-            <node concept="2rDjb8" id="3uZ5ZhGtJT7" role="gn1nJ">
+          <node concept="gmrTC" id="6YzOfzDI4Jr" role="gn1nJ">
+            <property role="gmPZ6" value="splitpane.Pane" />
+            <node concept="2rDjb8" id="6YzOfzDI7C0" role="gn1nJ">
               <ref role="2rDjb1" node="3uZ5ZhGndEs" resolve="mainEditor" />
-              <node concept="2rHscw" id="3uZ5ZhGtJTk" role="2rDjb3">
+              <node concept="2rHscw" id="6YzOfzDI7C1" role="2rDjb3">
                 <ref role="2rHscx" node="3uZ5ZhGndEp" resolve="rootNode" />
               </node>
             </node>
-            <node concept="gn1nE" id="3uZ5ZhGndEk" role="gn1nH">
-              <property role="gn1nW" value="size" />
-              <node concept="ghjhU" id="3uZ5ZhGndEl" role="gn1nU">
-                <node concept="3cmrfG" id="3uZ5ZhGndEm" role="ghjhc">
-                  <property role="3cmrfH" value="8" />
-                </node>
+          </node>
+          <node concept="gn1nE" id="6YzOfzDHZWb" role="gn1nH">
+            <property role="gn1nW" value="direction" />
+            <node concept="ghjhU" id="6YzOfzDI2mk" role="gn1nU">
+              <node concept="Xl_RD" id="6YzOfzDI2mj" role="ghjhc">
+                <property role="Xl_RC" value="horizontal" />
               </node>
             </node>
           </node>
