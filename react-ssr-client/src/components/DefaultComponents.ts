@@ -1,5 +1,6 @@
 import {componentConstructors, registerComponentConstructor} from "./Base.tsx";
 import * as mui from "@mui/material";
+import * as router from "react-router";
 import * as icons from "@mui/icons-material";
 import * as joy from "@mui/joy";
 import * as joyStyles from "@mui/joy/styles";
@@ -79,6 +80,7 @@ export function registerDefaultComponents() {
     }
 
     registerAllComponents(mui, "mui.")
+    registerAllComponents(router, "router.")
     registerAllComponents(icons, "mui.icons.")
     registerAllComponents(joy, "joy.")
     registerAllComponents(joyStyles, "joy.styles.")

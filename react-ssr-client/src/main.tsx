@@ -9,6 +9,7 @@ import {
     ModelixSpreadsheetProperties
 } from "./components/ModelixSpreadsheet.tsx";
 import * as textEditor from "@modelix/projectional-editor-ssr-client-lib";
+import {BrowserRouter, Route, Routes} from "react-router";
 
 
 const spreadSheetModel: ModelixSpreadsheetProperties = {
@@ -66,7 +67,11 @@ textEditor.org.modelix.editor.ssr.client.ClientSideEditorsAPI.init()
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {/*<ModelixSpreadsheet {...spreadSheetModel} />*/}
-    <App />
+      <BrowserRouter>
+        <Routes>
+            <Route path="*" element={<App/>} />
+        </Routes>
+      </BrowserRouter>
   </React.StrictMode>,
 )
 
