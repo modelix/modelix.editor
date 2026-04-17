@@ -1,4 +1,4 @@
-import com.github.gradle.node.yarn.task.YarnSetupTask
+import com.github.gradle.node.pnpm.task.PnpmSetupTask
 
 plugins {
     base
@@ -12,21 +12,21 @@ node {
     download.set(!isCIBuild)
 }
 
-tasks.withType(YarnSetupTask::class.java) {
+tasks.withType(PnpmSetupTask::class.java) {
     dependsOn(":projectional-editor-ssr-client-lib:packJsPackage")
 }
 
-tasks.named("yarn_run_build") {
-    dependsOn("yarnSetup")
+tasks.named("pnpm_run_build") {
+    dependsOn("pnpmSetup")
     inputs.dir("src")
     inputs.file("package.json")
-    inputs.file("yarn.lock")
+    inputs.file("pnpm-lock.yaml")
 
     outputs.dir("dist")
 }
 
 tasks.named("assemble") {
-    dependsOn("yarn_run_build")
+    dependsOn("pnpm_run_build")
 }
 
 val deleteDistFolder =

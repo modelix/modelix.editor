@@ -20,7 +20,7 @@ kotlin {
 
 val copyClient =
     tasks.register("copyClient", Sync::class.java) {
-        dependsOn(project(":react-ssr-client").tasks.named("yarn_run_build"))
+        dependsOn(project(":react-ssr-client").tasks.named("pnpm_run_build"))
         from(project(":react-ssr-client").layout.projectDirectory.dir("dist"))
         into(project.layout.buildDirectory.dir("client/org/modelix/react/ssr/client"))
     }
