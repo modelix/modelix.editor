@@ -3840,6 +3840,38 @@
                         </node>
                       </node>
                     </node>
+                    <node concept="1W57fq" id="6YzOfzDDtBm" role="lGtFl">
+                      <node concept="3IZrLx" id="6YzOfzDDtBn" role="3IZSJc">
+                        <node concept="3clFbS" id="6YzOfzDDtBo" role="2VODD2">
+                          <node concept="3clFbF" id="6YzOfzDDv4r" role="3cqZAp">
+                            <node concept="2OqwBi" id="6YzOfzDDwKb" role="3clFbG">
+                              <node concept="2OqwBi" id="6YzOfzDDv4t" role="2Oq$k0">
+                                <node concept="2OqwBi" id="6YzOfzDDv4u" role="2Oq$k0">
+                                  <node concept="30H73N" id="6YzOfzDDv4v" role="2Oq$k0" />
+                                  <node concept="2Xjw5R" id="6YzOfzDDv4w" role="2OqNvi">
+                                    <node concept="1xMEDy" id="6YzOfzDDv4x" role="1xVPHs">
+                                      <node concept="chp4Y" id="6YzOfzDDv4y" role="ri$Ld">
+                                        <ref role="cht4Q" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                                <node concept="2qgKlT" id="6YzOfzDDv4z" role="2OqNvi">
+                                  <ref role="37wK5l" to="zdk4:fDKzOGEzgw" resolve="getActualCustomHandlerBuilder" />
+                                </node>
+                              </node>
+                              <node concept="3x8VRR" id="6YzOfzDDxvi" role="2OqNvi" />
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                      <node concept="gft3U" id="6YzOfzDDxyo" role="UU_$l">
+                        <node concept="2YIFZM" id="6YzOfzDDCdQ" role="gfFT$">
+                          <ref role="37wK5l" to="r9la:~ICustomHandlerBuilder.getNULL_BUILDER()" resolve="getNULL_BUILDER" />
+                          <ref role="1Pybhc" to="r9la:~ICustomHandlerBuilder" resolve="ICustomHandlerBuilder" />
+                        </node>
+                      </node>
+                    </node>
                   </node>
                   <node concept="liA8E" id="2B4$FFbwX1F" role="2OqNvi">
                     <ref role="37wK5l" to="r9la:~ICustomHandlerBuilder.registerHandlers(org.modelix.react.ssr.server.ReturnValueWithCustomHandlers)" resolve="registerHandlers" />

@@ -128,6 +128,23 @@ interface ICustomHandlerBuilder {
         registerHandlers(returnValue.handlers)
         return returnValue.value
     }
+
+    companion object {
+        @JvmStatic
+        val NULL_BUILDER =
+            object : ICustomHandlerBuilder {
+                override fun buildCustomHandler(
+                    builderBody: CustomHandlerBuilder.() -> Unit,
+                    serverSideHandler: ICustomMessageHandler,
+                ): JsCode = throw IllegalStateException("Not allowed in this context")
+
+                override fun registerHandlers(h: Map<String, ICustomMessageHandler>) {
+                    if (h.isNotEmpty()) {
+                        throw IllegalStateException("Not allowed in this context")
+                    }
+                }
+            }
+    }
 }
 
 data class ReturnValueWithCustomHandlers<R>(
