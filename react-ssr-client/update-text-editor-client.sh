@@ -9,4 +9,4 @@ set -e
 )
 
 rm -rf node_modules/@modelix/projectional-editor-ssr-client-lib
-yarn install --check-files
+pnpm install

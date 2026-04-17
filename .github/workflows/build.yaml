@@ -32,6 +32,10 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
           scope: '<@modelix>'
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install dependencies
+        run: pnpm install
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Build
