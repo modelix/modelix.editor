@@ -35,6 +35,9 @@
       <concept id="1137021947720" name="jetbrains.mps.baseLanguage.structure.ConceptFunction" flags="in" index="2VMwT0">
         <child id="1137022507850" name="body" index="2VODD2" />
       </concept>
+      <concept id="1070475926800" name="jetbrains.mps.baseLanguage.structure.StringLiteral" flags="nn" index="Xl_RD">
+        <property id="1070475926801" name="value" index="Xl_RC" />
+      </concept>
       <concept id="1070534644030" name="jetbrains.mps.baseLanguage.structure.BooleanType" flags="in" index="10P_77" />
       <concept id="1068498886294" name="jetbrains.mps.baseLanguage.structure.AssignmentExpression" flags="nn" index="37vLTI" />
       <concept id="1068580123132" name="jetbrains.mps.baseLanguage.structure.BaseMethodDeclaration" flags="ng" index="3clF44">
@@ -58,18 +61,27 @@
       </concept>
       <concept id="1146644602865" name="jetbrains.mps.baseLanguage.structure.PublicVisibility" flags="nn" index="3Tm1VV" />
     </language>
-    <language id="c7b55726-1795-47bd-aa21-714ac1e30f21" name="org.modelix.mps.notation">
-      <concept id="737165568293140349" name="org.modelix.mps.notation.structure.StaticCollectionCell" flags="ng" index="2OY0tg">
-        <child id="737165568293140783" name="cells" index="2OY0$2" />
-      </concept>
-      <concept id="635805674430285347" name="org.modelix.mps.notation.structure.RemoveSpace" flags="ng" index="1yiDf7" />
-      <concept id="8310867745953158874" name="org.modelix.mps.notation.structure.ConstantCell" flags="ng" index="3JB3jO">
-        <property id="8310867745953159745" name="text" index="3JB3xJ" />
-      </concept>
-    </language>
     <language id="3a13115c-633c-4c5c-bbcc-75c4219e9555" name="jetbrains.mps.lang.quotation">
-      <concept id="1196350785113" name="jetbrains.mps.lang.quotation.structure.Quotation" flags="nn" index="2c44tf">
-        <child id="1196350785114" name="quotedNode" index="2c44tc" />
+      <concept id="5455284157994012186" name="jetbrains.mps.lang.quotation.structure.NodeBuilderInitLink" flags="ng" index="2pIpSj">
+        <reference id="5455284157994012188" name="link" index="2pIpSl" />
+        <child id="1595412875168045827" name="initValue" index="28nt2d" />
+      </concept>
+      <concept id="5455284157993911077" name="jetbrains.mps.lang.quotation.structure.NodeBuilderInitProperty" flags="ng" index="2pJxcG">
+        <reference id="5455284157993911078" name="property" index="2pJxcJ" />
+        <child id="1595412875168045201" name="initValue" index="28ntcv" />
+      </concept>
+      <concept id="5455284157993863837" name="jetbrains.mps.lang.quotation.structure.NodeBuilder" flags="nn" index="2pJPEk">
+        <child id="5455284157993863838" name="quotedNode" index="2pJPEn" />
+      </concept>
+      <concept id="5455284157993863840" name="jetbrains.mps.lang.quotation.structure.NodeBuilderNode" flags="nn" index="2pJPED">
+        <reference id="5455284157993910961" name="concept" index="2pJxaS" />
+        <child id="5455284157993911099" name="values" index="2pJxcM" />
+      </concept>
+      <concept id="6985522012210254362" name="jetbrains.mps.lang.quotation.structure.NodeBuilderPropertyExpression" flags="nn" index="WxPPo">
+        <child id="6985522012210254363" name="expression" index="WxPPp" />
+      </concept>
+      <concept id="8182547171709738802" name="jetbrains.mps.lang.quotation.structure.NodeBuilderList" flags="nn" index="36be1Y">
+        <child id="8182547171709738803" name="nodes" index="36be1Z" />
       </concept>
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
@@ -170,11 +182,27 @@
                 <ref role="3Tt5mk" to="f8gn:6xJrM0NrOsd" resolve="separatorCell" />
               </node>
             </node>
-            <node concept="2c44tf" id="6GdlvdUZeed" role="37vLTx">
-              <node concept="2OY0tg" id="6GdlvdUZcWL" role="2c44tc">
-                <node concept="1yiDf7" id="6GdlvdUZcWM" role="2OY0$2" />
-                <node concept="3JB3jO" id="6GdlvdUZcWO" role="2OY0$2">
-                  <property role="3JB3xJ" value="," />
+            <node concept="2pJPEk" id="4BiPpBnM5tg" role="37vLTx">
+              <node concept="2pJPED" id="4BiPpBnM5t8" role="2pJPEn">
+                <ref role="2pJxaS" to="f8gn:CUW2QYKJtX" resolve="StaticCollectionCell" />
+                <node concept="2pIpSj" id="4BiPpBnM5te" role="2pJxcM">
+                  <ref role="2pIpSl" to="f8gn:CUW2QYKJ$J" resolve="cells" />
+                  <node concept="36be1Y" id="4BiPpBnM5tf" role="28nt2d">
+                    <node concept="2pJPED" id="4BiPpBnM5t9" role="36be1Z">
+                      <ref role="2pJxaS" to="f8gn:ziPuhEA4oz" resolve="RemoveSpace" />
+                    </node>
+                    <node concept="2pJPED" id="4BiPpBnM5ta" role="36be1Z">
+                      <ref role="2pJxaS" to="f8gn:7dm8yUsMxrq" resolve="ConstantCell" />
+                      <node concept="2pJxcG" id="4BiPpBnM5tb" role="2pJxcM">
+                        <ref role="2pJxcJ" to="f8gn:7dm8yUsMxD1" />
+                        <node concept="WxPPo" id="4BiPpBnM5tc" role="28ntcv">
+                          <node concept="Xl_RD" id="4BiPpBnM5td" role="WxPPp">
+                            <property role="Xl_RC" value="," />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
                 </node>
               </node>
             </node>
