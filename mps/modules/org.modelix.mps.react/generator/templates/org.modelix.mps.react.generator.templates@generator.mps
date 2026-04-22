@@ -284,6 +284,7 @@
         <child id="1722980698497626405" name="actualArgument" index="v9R3O" />
       </concept>
       <concept id="1167087469898" name="jetbrains.mps.lang.generator.structure.CreateRootRule" flags="lg" index="2VPoh5">
+        <reference id="1200923511980" name="label" index="2sBCQV" />
         <reference id="1167087469901" name="templateNode" index="2VPoh2" />
       </concept>
       <concept id="5133195082121471908" name="jetbrains.mps.lang.generator.structure.LabelMacro" flags="ln" index="2ZBi8u">
@@ -368,6 +369,9 @@
       <concept id="1216860049627" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextOp_GetOutputByLabelAndInput" flags="nn" index="1iwH70">
         <reference id="1216860049628" name="label" index="1iwH77" />
         <child id="1216860049632" name="inputNode" index="1iwH7V" />
+      </concept>
+      <concept id="1216860049622" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextOp_GetOutputByLabel" flags="nn" index="1iwH7d">
+        <reference id="1216860049623" name="label" index="1iwH7c" />
       </concept>
       <concept id="1216860049635" name="jetbrains.mps.lang.generator.generationContext.structure.TemplateFunctionParameter_generationContext" flags="nn" index="1iwH7S" />
       <concept id="1048903277984174662" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextOp_VarRef2" flags="nn" index="1psM6Z">
@@ -3509,8 +3513,8 @@
                               </node>
                               <node concept="30H73N" id="7KGHflxUw4w" role="2Oq$k0" />
                             </node>
-                            <node concept="3TrEf2" id="7KGHflxUxgS" role="2OqNvi">
-                              <ref role="3Tt5mk" to="8xo1:4Dhs5NhRRr2" resolve="type" />
+                            <node concept="2qgKlT" id="6YzOfzDNh5O" role="2OqNvi">
+                              <ref role="37wK5l" to="zdk4:6YzOfzDMY3U" resolve="getValidType" />
                             </node>
                           </node>
                         </node>
@@ -3879,6 +3883,38 @@
                       <node concept="10M0yZ" id="2TLaMlBfRJH" role="2Oq$k0">
                         <ref role="3cqZAo" node="1IthLrFRk_R" resolve="INSTANCE" />
                         <ref role="1PxDUh" node="7GLg2tFvIV_" resolve="ReactDescriptor" />
+                        <node concept="1ZhdrF" id="6YzOfzDPA6z" role="lGtFl">
+                          <property role="2qtEX8" value="variableDeclaration" />
+                          <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                          <node concept="3$xsQk" id="6YzOfzDPA6$" role="3$ytzL">
+                            <node concept="3clFbS" id="6YzOfzDPA6_" role="2VODD2">
+                              <node concept="3clFbF" id="6YzOfzDPBAH" role="3cqZAp">
+                                <node concept="2OqwBi" id="6YzOfzDPBOA" role="3clFbG">
+                                  <node concept="1iwH7S" id="6YzOfzDPBAG" role="2Oq$k0" />
+                                  <node concept="1iwH7d" id="6YzOfzDPCbi" role="2OqNvi">
+                                    <ref role="1iwH7c" node="6YzOfzDOEhs" resolve="reactDescriptorInstance" />
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                        <node concept="1ZhdrF" id="6YzOfzDQbSr" role="lGtFl">
+                          <property role="2qtEX8" value="classifier" />
+                          <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1070533707846/1144433057691" />
+                          <node concept="3$xsQk" id="6YzOfzDQbSs" role="3$ytzL">
+                            <node concept="3clFbS" id="6YzOfzDQbSt" role="2VODD2">
+                              <node concept="3clFbF" id="6YzOfzDQdDI" role="3cqZAp">
+                                <node concept="2OqwBi" id="6YzOfzDQdXC" role="3clFbG">
+                                  <node concept="1iwH7S" id="6YzOfzDQdDH" role="2Oq$k0" />
+                                  <node concept="1iwH7d" id="6YzOfzDQe5e" role="2OqNvi">
+                                    <ref role="1iwH7c" node="6YzOfzDPFPA" resolve="reactDescriptorClass" />
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
                       </node>
                       <node concept="liA8E" id="2TLaMlBg2Iz" role="2OqNvi">
                         <ref role="37wK5l" node="1hCkroL_N27" resolve="polymorphicFunction_xxx" />
@@ -4306,6 +4342,7 @@
     </node>
     <node concept="2VPoh5" id="7GLg2tFvII0" role="2VS0gm">
       <ref role="2VPoh2" node="7GLg2tFvIV_" resolve="ReactDescriptor" />
+      <ref role="2sBCQV" node="6YzOfzDPFPA" resolve="reactDescriptorClass" />
     </node>
     <node concept="2rT7sh" id="39MS3mQnym2" role="2rTMjI">
       <property role="TrG5h" value="conceptRenderer" />
@@ -4321,6 +4358,14 @@
       <property role="TrG5h" value="componentBuilder" />
       <ref role="2rTdP9" to="8xo1:fDKzOGAvlK" resolve="IGeneratesCustomHandlerBuilder" />
       <ref role="2rZz_L" to="tpee:fz3uBXI" resolve="VariableDeclaration" />
+    </node>
+    <node concept="2rT7sh" id="6YzOfzDOEhs" role="2rTMjI">
+      <property role="TrG5h" value="reactDescriptorInstance" />
+      <ref role="2rZz_L" to="tpee:f$Wx3kv" resolve="StaticFieldDeclaration" />
+    </node>
+    <node concept="2rT7sh" id="6YzOfzDPFPA" role="2rTMjI">
+      <property role="TrG5h" value="reactDescriptorClass" />
+      <ref role="2rZz_L" to="tpee:fz12cDA" resolve="ClassConcept" />
     </node>
     <node concept="3lhOvk" id="39MS3mQn5PW" role="3lj3bC">
       <ref role="30HIoZ" to="8xo1:7GLg2tFqfQu" resolve="ConceptRenderer" />
@@ -4345,6 +4390,9 @@
         <node concept="1pGfFk" id="1IthLrFReh_" role="2ShVmc">
           <ref role="37wK5l" node="5AvELKNnrNJ" resolve="ReactDescriptor" />
         </node>
+      </node>
+      <node concept="2ZBi8u" id="6YzOfzDPalb" role="lGtFl">
+        <ref role="2rW$FS" node="6YzOfzDOEhs" resolve="reactDescriptorInstance" />
       </node>
     </node>
     <node concept="3clFbW" id="5AvELKNnrNJ" role="jymVt">
@@ -7744,10 +7792,6 @@
         </node>
         <node concept="3clFbF" id="2JgfSuw9pxj" role="3cqZAp">
           <node concept="2OqwBi" id="2JgfSuw9r4f" role="3clFbG">
-            <node concept="10M0yZ" id="2JgfSuw9qb9" role="2Oq$k0">
-              <ref role="3cqZAo" node="1IthLrFRk_R" resolve="INSTANCE" />
-              <ref role="1PxDUh" node="7GLg2tFvIV_" resolve="ReactDescriptor" />
-            </node>
             <node concept="liA8E" id="2JgfSuw9rWl" role="2OqNvi">
               <ref role="37wK5l" node="4Dhs5NhXCVj" resolve="namedRenderer_xxx" />
               <node concept="10QFUN" id="2JgfSuwa0ZB" role="37wK5m">
@@ -7806,6 +7850,42 @@
               </node>
               <node concept="37vLTw" id="2JgfSuw9wQb" role="37wK5m">
                 <ref role="3cqZAo" node="2JgfSuw9aq0" resolve="context" />
+              </node>
+            </node>
+            <node concept="10M0yZ" id="6YzOfzDQf_r" role="2Oq$k0">
+              <ref role="3cqZAo" node="1IthLrFRk_R" resolve="INSTANCE" />
+              <ref role="1PxDUh" node="7GLg2tFvIV_" resolve="ReactDescriptor" />
+              <node concept="1ZhdrF" id="6YzOfzDQf_s" role="lGtFl">
+                <property role="2qtEX8" value="variableDeclaration" />
+                <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                <node concept="3$xsQk" id="6YzOfzDQf_t" role="3$ytzL">
+                  <node concept="3clFbS" id="6YzOfzDQf_u" role="2VODD2">
+                    <node concept="3clFbF" id="6YzOfzDQf_v" role="3cqZAp">
+                      <node concept="2OqwBi" id="6YzOfzDQf_w" role="3clFbG">
+                        <node concept="1iwH7S" id="6YzOfzDQf_x" role="2Oq$k0" />
+                        <node concept="1iwH7d" id="6YzOfzDQf_y" role="2OqNvi">
+                          <ref role="1iwH7c" node="6YzOfzDOEhs" resolve="reactDescriptorInstance" />
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+              <node concept="1ZhdrF" id="6YzOfzDQf_z" role="lGtFl">
+                <property role="2qtEX8" value="classifier" />
+                <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1070533707846/1144433057691" />
+                <node concept="3$xsQk" id="6YzOfzDQf_$" role="3$ytzL">
+                  <node concept="3clFbS" id="6YzOfzDQf__" role="2VODD2">
+                    <node concept="3clFbF" id="6YzOfzDQf_A" role="3cqZAp">
+                      <node concept="2OqwBi" id="6YzOfzDQf_B" role="3clFbG">
+                        <node concept="1iwH7S" id="6YzOfzDQf_C" role="2Oq$k0" />
+                        <node concept="1iwH7d" id="6YzOfzDQf_D" role="2OqNvi">
+                          <ref role="1iwH7c" node="6YzOfzDPFPA" resolve="reactDescriptorClass" />
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
               </node>
             </node>
           </node>
