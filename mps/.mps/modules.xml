@@ -4,6 +4,7 @@
     <projectModules>
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation.impl.baseLanguage/org.modelix.mps.notation.impl.baseLanguage.msd" folder="text" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation/org.modelix.mps.notation.mpl" folder="text" />
+      <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react.componentslib/org.modelix.mps.react.componentslib.msd" folder="react" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react.ide/org.modelix.mps.react.ide.msd" folder="react" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react/org.modelix.mps.react.mpl" folder="react" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.webaspect.devkit/org.modelix.mps.webaspect.devkit.devkit" folder="aspect" />
