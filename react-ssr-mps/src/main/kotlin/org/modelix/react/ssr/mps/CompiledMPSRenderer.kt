@@ -13,6 +13,7 @@ import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.incremental.IIncrementalEngine
 import org.modelix.incremental.TrackableValue
 import org.modelix.incremental.incrementalFunction
+import org.modelix.kotlin.utils.urlEncode
 import org.modelix.model.api.ConceptReference
 import org.modelix.model.api.IModel
 import org.modelix.model.api.INode
@@ -28,6 +29,7 @@ import org.modelix.react.ssr.mps.aspect.IReactNodeRenderer
 import org.modelix.react.ssr.mps.aspect.IReactSSRAspectDescriptor
 import org.modelix.react.ssr.mps.aspect.IRenderContext
 import org.modelix.react.ssr.mps.aspect.ReactSSRAspectDescriptors
+import org.modelix.react.ssr.mps.aspect.StaticPagePathPart
 import org.modelix.react.ssr.server.GenericNodeRenderer
 import org.modelix.react.ssr.server.IComponentOrList
 import org.modelix.react.ssr.server.IRenderer
@@ -40,6 +42,7 @@ import org.modelix.react.ssr.server.NodeRendererCall
 import org.modelix.react.ssr.server.RenderSession
 import org.modelix.react.ssr.server.RendererCall
 import org.modelix.react.ssr.server.ViewModel
+import org.modelix.react.ssr.server.ViewModelBuilder
 import org.modelix.react.ssr.server.buildViewModel
 
 class MPSRendererFactory(
@@ -108,11 +111,38 @@ class MPSRendererFactory(
         fun createRootRenderer(): IRenderer? = createRootRendererIncremental.invoke()
 
         override fun render(): ViewModel {
+            if (pathParts.isEmpty()) {
+                return buildViewModel { buildPagesIndex() }
+            }
+
             val renderer = createRootRenderer()
             return if (renderer == null) {
                 buildViewModel { text("Page not found: $pathParts") }
             } else {
                 renderer.render()
+            }
+        }
+
+        private fun ViewModelBuilder.buildPagesIndex() {
+            component("html.ul") {
+                val repository = repository()
+                val pages = descriptors.findDescriptors(repository).flatMap { it.getPages() }
+                for (pageDescriptor in pages) {
+                    component("html.li") {
+                        component("html.a") {
+                            if (pageDescriptor.getPath().parts.all { it is StaticPagePathPart }) {
+                                property(
+                                    "href",
+                                    "pages/" +
+                                        pageDescriptor.getPath().parts.joinToString("/") {
+                                            it.toString().urlEncode()
+                                        } + "/"
+                                )
+                            }
+                            text("pages/${pageDescriptor.getPath()}/")
+                        }
+                    }
+                }
             }
         }
 
