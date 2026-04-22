@@ -16,6 +16,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
 import io.ktor.server.engine.EmbeddedServer
+import io.ktor.server.html.respondHtml
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondText
@@ -30,6 +31,9 @@ import jetbrains.mps.ide.icons.IdeIcons
 import jetbrains.mps.internal.collections.runtime.Sequence
 import jetbrains.mps.project.MPSProject
 import jetbrains.mps.smodel.MPSModuleRepository
+import kotlinx.html.a
+import kotlinx.html.body
+import kotlinx.html.div
 import org.jetbrains.mps.openapi.module.ModelAccess
 import org.jetbrains.mps.openapi.module.SRepository
 import org.jetbrains.mps.openapi.persistence.PersistenceFacade
@@ -140,6 +144,15 @@ class ReactSSRServerForMPS : Disposable {
             ssrServer.install(this)
 
             get {
+                call.respondHtml {
+                    body {
+                        div {
+                            a(href = "pages/") {
+                                +"Pages"
+                            }
+                        }
+                    }
+                }
                 call.respond(this@ReactSSRServerForMPS::class.qualifiedName ?: "")
             }
 
