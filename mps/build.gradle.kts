@@ -42,6 +42,7 @@ mpsBuild {
     publication("editor-devkit") {
         module("org.modelix.mps.notation")
         module("org.modelix.mps.react")
+        module("org.modelix.mps.react.componentslib")
         module("org.modelix.mps.react.ide")
         module("org.modelix.mps.webaspect.devkit")
         module("org.modelix.mps.webaspect.genplan")
