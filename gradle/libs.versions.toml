@@ -10,7 +10,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlinx-rpc" }
 
 [versions]
-modelixCore = "18.6.1"
+modelixCore = "18.7.0"
 modelixBuildtools="2.0.1"
 kotlin = "2.2.21"
 kotlinx-rpc = "0.10.1"
