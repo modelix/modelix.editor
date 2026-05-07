@@ -639,62 +639,6 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtimZt" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtimZu" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtimZl" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtimZm" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtimZn" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtimZo" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtimZp" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtimZq" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtimZr" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtimZs" role="2Ry0An">
-                            <property role="2Ry0Am" value="reverse-mpsadapters-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtimZB" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtimZC" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtimZv" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtimZw" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtimZx" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtimZy" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtimZz" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtimZ$" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtimZ_" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtimZA" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-adapters-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtimZL" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtimZM" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtimZD" role="1BurEY">
@@ -825,118 +769,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtin0o" role="2Ry0An">
                             <property role="2Ry0Am" value="ktor-server-core-jvm-3.3.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin0z" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin0$" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin0r" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin0s" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin0t" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin0u" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin0v" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin0w" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin0x" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin0y" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-api-gen-runtime-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin0H" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin0I" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin0_" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin0A" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin0B" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin0C" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin0D" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin0E" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin0F" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin0G" role="2Ry0An">
-                            <property role="2Ry0Am" value="mps-multiplatform-lib-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin0R" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin0S" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin0J" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin0K" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin0L" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin0M" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin0N" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin0O" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin0P" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin0Q" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-datastructure-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin11" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin12" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin0T" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin0U" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin0V" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin0W" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin0X" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin0Y" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin0Z" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin10" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-api-jvm-18.6.1.jar" />
                           </node>
                         </node>
                       </node>
@@ -1385,90 +1217,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtin3w" role="2Ry0An">
                             <property role="2Ry0Am" value="kotlinx-html-jvm-0.12.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin3F" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin3G" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin3z" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin3$" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin3_" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin3A" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin3B" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin3C" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin3D" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin3E" role="2Ry0An">
-                            <property role="2Ry0Am" value="datastructures-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin3P" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin3Q" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin3H" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin3I" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin3J" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin3K" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin3L" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin3M" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin3N" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin3O" role="2Ry0An">
-                            <property role="2Ry0Am" value="streams-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin3Z" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin40" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin3R" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin3S" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin3T" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin3U" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin3V" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin3W" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin3X" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin3Y" role="2Ry0An">
-                            <property role="2Ry0Am" value="kotlin-utils-jvm-18.6.1.jar" />
                           </node>
                         </node>
                       </node>
@@ -2263,34 +2011,6 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtin8x" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin8y" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin8p" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin8q" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin8r" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin8s" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin8t" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin8u" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin8v" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin8w" role="2Ry0An">
-                            <property role="2Ry0Am" value="guava-33.5.0-jre.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtin8F" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtin8G" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtin8z" role="1BurEY">
@@ -2421,34 +2141,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtin9i" role="2Ry0An">
                             <property role="2Ry0Am" value="jspecify-1.0.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtin9t" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtin9u" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtin9l" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtin9m" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtin9n" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtin9o" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtin9p" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtin9q" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtin9r" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtin9s" role="2Ry0An">
-                            <property role="2Ry0Am" value="error_prone_annotations-2.41.0.jar" />
                           </node>
                         </node>
                       </node>
@@ -2823,34 +2515,6 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtinbD" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinbE" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinbx" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinby" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinbz" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinb$" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinb_" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinbA" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinbB" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinbC" role="2Ry0An">
-                            <property role="2Ry0Am" value="editor-common-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtinbN" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtinbO" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtinbF" role="1BurEY">
@@ -3103,62 +2767,6 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtindd" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinde" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtind5" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtind6" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtind7" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtind8" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtind9" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinda" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtindb" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtindc" role="2Ry0An">
-                            <property role="2Ry0Am" value="reverse-mpsadapters-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtindn" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtindo" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtindf" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtindg" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtindh" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtindi" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtindj" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtindk" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtindl" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtindm" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-adapters-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtindx" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtindy" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtindp" role="1BurEY">
@@ -3289,118 +2897,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtine8" role="2Ry0An">
                             <property role="2Ry0Am" value="ktor-server-core-jvm-3.3.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinej" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinek" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtineb" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinec" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtined" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinee" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinef" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtineg" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtineh" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinei" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-api-gen-runtime-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinet" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtineu" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinel" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinem" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinen" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtineo" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinep" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtineq" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiner" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtines" role="2Ry0An">
-                            <property role="2Ry0Am" value="mps-multiplatform-lib-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtineB" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtineC" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinev" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinew" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinex" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiney" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinez" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtine$" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtine_" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtineA" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-datastructure-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtineL" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtineM" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtineD" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtineE" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtineF" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtineG" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtineH" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtineI" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtineJ" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtineK" role="2Ry0An">
-                            <property role="2Ry0Am" value="model-api-jvm-18.6.1.jar" />
                           </node>
                         </node>
                       </node>
@@ -3849,90 +3345,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtinhg" role="2Ry0An">
                             <property role="2Ry0Am" value="kotlinx-html-jvm-0.12.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinhr" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinhs" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinhj" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinhk" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinhl" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinhm" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinhn" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinho" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinhp" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinhq" role="2Ry0An">
-                            <property role="2Ry0Am" value="datastructures-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinh_" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinhA" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinht" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinhu" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinhv" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinhw" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinhx" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinhy" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinhz" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinh$" role="2Ry0An">
-                            <property role="2Ry0Am" value="streams-jvm-18.6.1.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinhJ" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinhK" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinhB" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinhC" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinhD" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinhE" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinhF" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinhG" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinhH" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinhI" role="2Ry0An">
-                            <property role="2Ry0Am" value="kotlin-utils-jvm-18.6.1.jar" />
                           </node>
                         </node>
                       </node>
@@ -4727,34 +4139,6 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtinmh" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinmi" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinm9" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinma" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinmb" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinmc" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinmd" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinme" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinmf" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinmg" role="2Ry0An">
-                            <property role="2Ry0Am" value="guava-33.5.0-jre.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtinmr" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtinms" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtinmj" role="1BurEY">
@@ -4885,34 +4269,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtinn2" role="2Ry0An">
                             <property role="2Ry0Am" value="jspecify-1.0.0.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtinnd" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinne" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinn5" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinn6" role="iGT6I">
-                <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinn7" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinn8" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinn9" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinna" role="2Ry0An">
-                        <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinnb" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinnc" role="2Ry0An">
-                            <property role="2Ry0Am" value="error_prone_annotations-2.41.0.jar" />
                           </node>
                         </node>
                       </node>
@@ -5287,24 +4643,668 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtinpp" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtinpq" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtinph" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjX41" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX42" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX3T" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtinpi" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjX3U" role="iGT6I">
                 <property role="2Ry0Am" value="editor-common-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtinpj" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjX3V" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtinpk" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjX3W" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtinpl" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjX3X" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtinpm" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjX3Y" role="2Ry0An">
                         <property role="2Ry0Am" value="editor-common-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtinpn" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjX3Z" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtinpo" role="2Ry0An">
-                            <property role="2Ry0Am" value="editor-common-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX40" role="2Ry0An">
+                            <property role="2Ry0Am" value="reverse-mpsadapters-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX4b" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX4c" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX43" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX44" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX45" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX46" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX47" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX48" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX49" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX4a" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-adapters-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX4X" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX4Y" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX4P" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX4Q" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX4R" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX4S" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX4T" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX4U" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX4V" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX4W" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-api-gen-runtime-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX57" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX58" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX4Z" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX50" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX51" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX52" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX53" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX54" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX55" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX56" role="2Ry0An">
+                            <property role="2Ry0Am" value="mps-multiplatform-lib-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX5h" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX5i" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX59" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX5a" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX5b" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX5c" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX5d" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX5e" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX5f" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX5g" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-datastructure-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX5r" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX5s" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX5j" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX5k" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX5l" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX5m" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX5n" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX5o" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX5p" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX5q" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-api-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX7_" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX7A" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX7t" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX7u" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX7v" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX7w" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX7x" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX7y" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX7z" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX7$" role="2Ry0An">
+                            <property role="2Ry0Am" value="datastructures-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX7J" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX7K" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX7B" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX7C" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX7D" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX7E" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX7F" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX7G" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX7H" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX7I" role="2Ry0An">
+                            <property role="2Ry0Am" value="streams-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjX7T" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjX7U" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjX7L" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjX7M" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjX7N" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjX7O" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjX7P" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjX7Q" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjX7R" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjX7S" role="2Ry0An">
+                            <property role="2Ry0Am" value="kotlin-utils-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXbz" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXb$" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXbr" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXbs" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXbt" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXbu" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXbv" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXbw" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXbx" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXby" role="2Ry0An">
+                            <property role="2Ry0Am" value="guava-33.6.0-jre.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXcl" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXcm" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXcd" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXce" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXcf" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXcg" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXch" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXci" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXcj" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXck" role="2Ry0An">
+                            <property role="2Ry0Am" value="error_prone_annotations-2.47.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXe7" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXe8" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXdZ" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXe0" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXe1" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXe2" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXe3" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXe4" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXe5" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXe6" role="2Ry0An">
+                            <property role="2Ry0Am" value="editor-common-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXfp" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXfq" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXfh" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXfi" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXfj" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXfk" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXfl" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXfm" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXfn" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXfo" role="2Ry0An">
+                            <property role="2Ry0Am" value="reverse-mpsadapters-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXfz" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXf$" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXfr" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXfs" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXft" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXfu" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXfv" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXfw" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXfx" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXfy" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-adapters-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXgl" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXgm" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXgd" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXge" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXgf" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXgg" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXgh" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXgi" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXgj" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXgk" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-api-gen-runtime-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXgv" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXgw" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXgn" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXgo" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXgp" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXgq" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXgr" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXgs" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXgt" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXgu" role="2Ry0An">
+                            <property role="2Ry0Am" value="mps-multiplatform-lib-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXgD" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXgE" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXgx" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXgy" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXgz" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXg$" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXg_" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXgA" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXgB" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXgC" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-datastructure-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXgN" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXgO" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXgF" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXgG" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXgH" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXgI" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXgJ" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXgK" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXgL" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXgM" role="2Ry0An">
+                            <property role="2Ry0Am" value="model-api-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXiX" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXiY" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXiP" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXiQ" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXiR" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXiS" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXiT" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXiU" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXiV" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXiW" role="2Ry0An">
+                            <property role="2Ry0Am" value="datastructures-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXj7" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXj8" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXiZ" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXj0" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXj1" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXj2" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXj3" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXj4" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXj5" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXj6" role="2Ry0An">
+                            <property role="2Ry0Am" value="streams-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXjh" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXji" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXj9" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXja" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXjb" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXjc" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXjd" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXje" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXjf" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXjg" role="2Ry0An">
+                            <property role="2Ry0Am" value="kotlin-utils-jvm-18.7.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXmV" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXmW" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXmN" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXmO" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXmP" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXmQ" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXmR" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXmS" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXmT" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXmU" role="2Ry0An">
+                            <property role="2Ry0Am" value="guava-33.6.0-jre.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXnH" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXnI" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXn_" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXnA" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXnB" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXnC" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXnD" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXnE" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXnF" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXnG" role="2Ry0An">
+                            <property role="2Ry0Am" value="error_prone_annotations-2.47.0.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXpv" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXpw" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXpn" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXpo" role="iGT6I">
+                <property role="2Ry0Am" value="editor-common-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXpp" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXpq" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXpr" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXps" role="2Ry0An">
+                        <property role="2Ry0Am" value="editor-common-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXpt" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXpu" role="2Ry0An">
+                            <property role="2Ry0Am" value="editor-common-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5386,24 +5386,24 @@
             <ref role="3bR37D" to="ffeo:1H905DlDUSw" resolve="MPS.OpenAPI" />
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHm4" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHm5" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHlW" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXpD" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXpE" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXpx" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHlX" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXpy" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHlY" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXpz" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHlZ" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXp$" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHm0" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXp_" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHm1" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXpA" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHm2" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXpB" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHm3" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-server-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXpC" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-server-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5414,24 +5414,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHme" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHmf" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHm6" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXpN" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXpO" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXpF" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHm7" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXpG" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHm8" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXpH" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHm9" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXpI" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHma" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXpJ" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHmb" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXpK" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmc" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXpL" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmd" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-common-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXpM" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-common-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5442,24 +5442,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHmo" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHmp" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHmg" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXpX" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXpY" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXpP" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHmh" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXpQ" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHmi" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXpR" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHmj" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXpS" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHmk" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXpT" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHml" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXpU" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmm" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXpV" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmn" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXpW" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5470,24 +5470,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHmy" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHmz" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHmq" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXq7" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXq8" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXpZ" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHmr" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXq0" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHms" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXq1" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHmt" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXq2" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHmu" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXq3" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHmv" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXq4" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmw" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXq5" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmx" role="2Ry0An">
-                            <property role="2Ry0Am" value="parser-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXq6" role="2Ry0An">
+                            <property role="2Ry0Am" value="parser-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5498,24 +5498,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHmG" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHmH" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHm$" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXqh" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXqi" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXq9" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHm_" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqa" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHmA" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXqb" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHmB" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqc" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHmC" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqd" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHmD" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXqe" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmE" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXqf" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmF" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXqg" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5526,24 +5526,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHmQ" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHmR" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHmI" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXqr" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXqs" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXqj" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHmJ" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqk" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHmK" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXql" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHmL" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqm" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHmM" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqn" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHmN" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXqo" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmO" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXqp" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmP" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-server-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXqq" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-server-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5554,24 +5554,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHn0" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHn1" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHmS" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXq_" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXqA" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXqt" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHmT" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqu" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHmU" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXqv" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHmV" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqw" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHmW" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqx" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHmX" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXqy" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHmY" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXqz" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHmZ" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-common-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXq$" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-common-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5582,24 +5582,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHna" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHnb" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHn2" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXqJ" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXqK" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXqB" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHn3" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqC" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHn4" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXqD" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHn5" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqE" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHn6" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqF" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHn7" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXqG" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHn8" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXqH" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHn9" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXqI" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5610,24 +5610,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHnk" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHnl" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHnc" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXqT" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXqU" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXqL" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHnd" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqM" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHne" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXqN" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHnf" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqO" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHng" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqP" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHnh" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXqQ" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHni" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXqR" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHnj" role="2Ry0An">
-                            <property role="2Ry0Am" value="parser-jvm-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXqS" role="2Ry0An">
+                            <property role="2Ry0Am" value="parser-jvm-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5638,24 +5638,24 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiHnu" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiHnv" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiHnm" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXr3" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXr4" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXqV" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiHnn" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXqW" role="iGT6I">
                 <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiHno" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXqX" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiHnp" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXqY" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiHnq" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXqZ" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiHnr" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXr0" role="2Ry0An">
                         <property role="2Ry0Am" value="projectional-editor-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiHns" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXr1" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiHnt" role="2Ry0An">
-                            <property role="2Ry0Am" value="projectional-editor-ssr-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXr2" role="2Ry0An">
+                            <property role="2Ry0Am" value="projectional-editor-ssr-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5826,34 +5826,6 @@
             <ref role="3bR37D" node="5DFJIKtieTK" resolve="org.modelix.mps.editor.common.stubs" />
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiyDb" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiyDc" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiyD3" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiyD4" role="iGT6I">
-                <property role="2Ry0Am" value="react-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiyD5" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiyD6" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiyD7" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiyD8" role="2Ry0An">
-                        <property role="2Ry0Am" value="react-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiyD9" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiyDa" role="2Ry0An">
-                            <property role="2Ry0Am" value="react-ssr-server-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="1SiIV0" id="5DFJIKtiyDl" role="3bR37C">
           <node concept="1BurEX" id="5DFJIKtiyDm" role="1SiIV1">
             <node concept="398BVA" id="5DFJIKtiyDd" role="1BurEY">
@@ -5872,62 +5844,6 @@
                           <property role="2Ry0Am" value="lib" />
                           <node concept="2Ry0Ak" id="5DFJIKtiyDk" role="2Ry0An">
                             <property role="2Ry0Am" value="kotlin-reflect-2.2.10.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtiyDv" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiyDw" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiyDn" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiyDo" role="iGT6I">
-                <property role="2Ry0Am" value="react-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiyDp" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiyDq" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiyDr" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiyDs" role="2Ry0An">
-                        <property role="2Ry0Am" value="react-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiyDt" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiyDu" role="2Ry0An">
-                            <property role="2Ry0Am" value="react-ssr-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
-                          </node>
-                        </node>
-                      </node>
-                    </node>
-                  </node>
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
-        <node concept="1SiIV0" id="5DFJIKtiyDD" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiyDE" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiyDx" role="1BurEY">
-              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiyDy" role="iGT6I">
-                <property role="2Ry0Am" value="react-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiyDz" role="2Ry0An">
-                  <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiyD$" role="2Ry0An">
-                    <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiyD_" role="2Ry0An">
-                      <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiyDA" role="2Ry0An">
-                        <property role="2Ry0Am" value="react-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiyDB" role="2Ry0An">
-                          <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiyDC" role="2Ry0An">
-                            <property role="2Ry0Am" value="react-ssr-server-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
@@ -5966,24 +5882,108 @@
             </node>
           </node>
         </node>
-        <node concept="1SiIV0" id="5DFJIKtiyDX" role="3bR37C">
-          <node concept="1BurEX" id="5DFJIKtiyDY" role="1SiIV1">
-            <node concept="398BVA" id="5DFJIKtiyDP" role="1BurEY">
+        <node concept="1SiIV0" id="5DFJIKtjXrs" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXrt" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXrk" role="1BurEY">
               <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
-              <node concept="2Ry0Ak" id="5DFJIKtiyDQ" role="iGT6I">
+              <node concept="2Ry0Ak" id="5DFJIKtjXrl" role="iGT6I">
                 <property role="2Ry0Am" value="react-ssr-mps" />
-                <node concept="2Ry0Ak" id="5DFJIKtiyDR" role="2Ry0An">
+                <node concept="2Ry0Ak" id="5DFJIKtjXrm" role="2Ry0An">
                   <property role="2Ry0Am" value="build" />
-                  <node concept="2Ry0Ak" id="5DFJIKtiyDS" role="2Ry0An">
+                  <node concept="2Ry0Ak" id="5DFJIKtjXrn" role="2Ry0An">
                     <property role="2Ry0Am" value="idea-sandbox" />
-                    <node concept="2Ry0Ak" id="5DFJIKtiyDT" role="2Ry0An">
+                    <node concept="2Ry0Ak" id="5DFJIKtjXro" role="2Ry0An">
                       <property role="2Ry0Am" value="plugins" />
-                      <node concept="2Ry0Ak" id="5DFJIKtiyDU" role="2Ry0An">
+                      <node concept="2Ry0Ak" id="5DFJIKtjXrp" role="2Ry0An">
                         <property role="2Ry0Am" value="react-ssr-mps" />
-                        <node concept="2Ry0Ak" id="5DFJIKtiyDV" role="2Ry0An">
+                        <node concept="2Ry0Ak" id="5DFJIKtjXrq" role="2Ry0An">
                           <property role="2Ry0Am" value="lib" />
-                          <node concept="2Ry0Ak" id="5DFJIKtiyDW" role="2Ry0An">
-                            <property role="2Ry0Am" value="react-ssr-mps-1.10.0-20-g33d5a61-dirty-SNAPSHOT.jar" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXrr" role="2Ry0An">
+                            <property role="2Ry0Am" value="react-ssr-server-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXrI" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXrJ" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXrA" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXrB" role="iGT6I">
+                <property role="2Ry0Am" value="react-ssr-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXrC" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXrD" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXrE" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXrF" role="2Ry0An">
+                        <property role="2Ry0Am" value="react-ssr-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXrG" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXrH" role="2Ry0An">
+                            <property role="2Ry0Am" value="react-ssr-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXrS" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXrT" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXrK" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXrL" role="iGT6I">
+                <property role="2Ry0Am" value="react-ssr-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXrM" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXrN" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXrO" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXrP" role="2Ry0An">
+                        <property role="2Ry0Am" value="react-ssr-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXrQ" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXrR" role="2Ry0An">
+                            <property role="2Ry0Am" value="react-ssr-server-0.0.0-MODELIX-SNAPSHOT.jar" />
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="1SiIV0" id="5DFJIKtjXsa" role="3bR37C">
+          <node concept="1BurEX" id="5DFJIKtjXsb" role="1SiIV1">
+            <node concept="398BVA" id="5DFJIKtjXs2" role="1BurEY">
+              <ref role="398BVh" node="5DFJIKtijNt" resolve="modelix.editor" />
+              <node concept="2Ry0Ak" id="5DFJIKtjXs3" role="iGT6I">
+                <property role="2Ry0Am" value="react-ssr-mps" />
+                <node concept="2Ry0Ak" id="5DFJIKtjXs4" role="2Ry0An">
+                  <property role="2Ry0Am" value="build" />
+                  <node concept="2Ry0Ak" id="5DFJIKtjXs5" role="2Ry0An">
+                    <property role="2Ry0Am" value="idea-sandbox" />
+                    <node concept="2Ry0Ak" id="5DFJIKtjXs6" role="2Ry0An">
+                      <property role="2Ry0Am" value="plugins" />
+                      <node concept="2Ry0Ak" id="5DFJIKtjXs7" role="2Ry0An">
+                        <property role="2Ry0Am" value="react-ssr-mps" />
+                        <node concept="2Ry0Ak" id="5DFJIKtjXs8" role="2Ry0An">
+                          <property role="2Ry0Am" value="lib" />
+                          <node concept="2Ry0Ak" id="5DFJIKtjXs9" role="2Ry0An">
+                            <property role="2Ry0Am" value="react-ssr-mps-0.0.0-MODELIX-SNAPSHOT.jar" />
                           </node>
                         </node>
                       </node>
