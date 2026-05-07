@@ -12,7 +12,7 @@ kotlin-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlinx-r
 [versions]
 modelixCore = "18.7.0"
 modelixBuildtools="2.0.1"
-kotlin = "2.2.21"
+kotlin = "2.3.21"
 kotlinx-rpc = "0.10.1"
 ktor="3.3.0"
 
