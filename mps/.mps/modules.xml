@@ -2,6 +2,7 @@
 <project version="4">
   <component name="MPSProject">
     <projectModules>
+      <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.editor.build/org.modelix.mps.editor.build.msd" folder="" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation.impl.baseLanguage/org.modelix.mps.notation.impl.baseLanguage.msd" folder="text" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.notation/org.modelix.mps.notation.mpl" folder="text" />
       <modulePath path="$PROJECT_DIR$/modules/org.modelix.mps.react.componentslib/org.modelix.mps.react.componentslib.msd" folder="react" />

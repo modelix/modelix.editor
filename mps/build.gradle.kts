@@ -40,6 +40,7 @@ mpsBuild {
         module("org.modelix.mps.notation.impl.baseLanguage")
     }
     publication("editor-devkit") {
+        module("org.modelix.mps.editor.build")
         module("org.modelix.mps.notation")
         module("org.modelix.mps.react")
         module("org.modelix.mps.react.componentslib")
