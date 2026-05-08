@@ -22,42 +22,7 @@ val extractRepositoryConcepts =
         into(repositoryConceptsFolder)
     }
 
-val patchBuildSolution by tasks.registering {
-    dependsOn(":editor-common-mps:buildPlugin")
-    dependsOn(":projectional-editor-ssr-mps:buildPlugin")
-    dependsOn(":react-ssr-mps:buildPlugin")
-    doLast {
-        val jarFolders =
-            listOf(
-                project(":editor-common-mps")
-                    .layout.buildDirectory
-                    .get()
-                    .asFile
-                    .resolve("idea-sandbox/plugins/editor-common-mps/lib"),
-                project(
-                    ":projectional-editor-ssr-mps",
-                ).layout.buildDirectory.get().asFile.resolve("idea-sandbox/plugins/projectional-editor-ssr-mps/lib"),
-                project(":react-ssr-mps")
-                    .layout.buildDirectory
-                    .get()
-                    .asFile
-                    .resolve("idea-sandbox/plugins/react-ssr-mps/lib"),
-            )
-        val jarFiles = jarFolders.flatMap { it.listFiles().toList() }.filter { it.isFile && it.extension == "jar" }
-        val buildModel =
-            project.layout.projectDirectory.asFile.resolve(
-                "modules/org.modelix.mps.editor.build/models/org.modelix.mps.editor.build.mps",
-            )
-        val xml =
-            Regex(""""[^"]*-[^"]*\d[^"]*\.jar"""").replace(buildModel.readText()) { match ->
-                jarFiles.map { "\"${it.name}\"" }.maxBy { it.commonPrefixWith(match.value).length }
-            }
-        buildModel.writeText(xml)
-    }
-}
-
 mpsBuild {
-    dependsOn(patchBuildSolution)
     dependsOn(extractRepositoryConcepts)
     dependsOn(":editor-common-mps:buildPlugin")
     dependsOn(":projectional-editor-ssr-mps:buildPlugin")
@@ -75,7 +40,6 @@ mpsBuild {
         module("org.modelix.mps.notation.impl.baseLanguage")
     }
     publication("editor-devkit") {
-        module("org.modelix.mps.editor.build")
         module("org.modelix.mps.notation")
         module("org.modelix.mps.react")
         module("org.modelix.mps.react.componentslib")
