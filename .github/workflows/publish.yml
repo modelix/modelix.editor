@@ -27,7 +27,7 @@ jobs:
           registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
           scope: '<@modelix>'
       - name: Set up pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        uses: pnpm/action-setup@739bfe42ca9233c5e6aca07c1a25a9d34aca49b0 # v6.0.7
       - name: Install dependencies
         run: pnpm install
       - name: Set up Gradle
