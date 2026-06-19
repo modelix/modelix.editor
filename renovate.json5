@@ -54,5 +54,13 @@
       matchUpdateTypes: ['major'],
       dependencyDashboardApproval: true,
     },
+    {
+      // Only library updates (Gradle/npm dependencies) ship in the published
+      // artifacts, so only those should cut a release via "fix". Tooling
+      // updates stay "build" (hidden, no version bump).
+      description: 'Tooling updates should not trigger a release.',
+      matchManagers: ['gradle-wrapper', 'nvm', 'pre-commit', 'custom.regex'],
+      semanticCommitType: 'build',
+    },
   ],
 }
