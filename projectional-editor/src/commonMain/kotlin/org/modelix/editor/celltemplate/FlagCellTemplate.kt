@@ -60,7 +60,11 @@ class FlagCellTemplate(
         location: INonExistingNode,
         parameters: CodeCompletionParameters,
     ): List<IActionOrProvider>? {
-        // TODO
-        return listOf()
+        // We could offer the flag for instantiating a new node, but it's always possible to set the
+        // flag later. There are often multiple concepts starting with the same flag, and having
+        // these duplicate entries that need to be distinguished by reading the description doesn't
+        // provide a better user experience compared to having to set the flag after creating the
+        // node. Maybe we will find a good solution for that later, but for now we keep it simple.
+        return null
     }
 }
