@@ -42,7 +42,7 @@ modelix-build-tools-lib = { group = "org.modelix.mps", name = "build-tools-lib",
 
 kotlin-html = "org.jetbrains.kotlinx:kotlinx-html:0.12.0"
 
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.14" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "8.0.4" }
 
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 
