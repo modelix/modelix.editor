@@ -19,21 +19,6 @@
     'npm',
     'pre-commit',
     'nvm',
-    'custom.regex',
-  ],
-  customManagers: [
-    {
-      depNameTemplate: 'Node.js',
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^gradle/libs.versions.toml$/',
-      ],
-      matchStrings: [
-        'node="(?<currentValue>.*?)"',
-      ],
-      datasourceTemplate: 'node-version',
-      versioningTemplate: 'node',
-    },
   ],
   packageRules: [
     {
@@ -59,7 +44,7 @@
       // artifacts, so only those should cut a release via "fix". Tooling
       // updates stay "build" (hidden, no version bump).
       description: 'Tooling updates should not trigger a release.',
-      matchManagers: ['gradle-wrapper', 'nvm', 'pre-commit', 'custom.regex'],
+      matchManagers: ['gradle-wrapper', 'nvm', 'pre-commit'],
       semanticCommitType: 'build',
     },
   ],
