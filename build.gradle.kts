@@ -6,18 +6,15 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import org.modelix.copyMps
-import org.semver.Version
 
 buildscript {
     dependencies {
-        classpath(coreLibs.semver)
         classpath(libs.modelix.build.tools.lib)
     }
 }
 
 plugins {
     `maven-publish`
-    id("com.palantir.git-version") version "5.0.0"
     id("com.dorongold.task-tree") version "4.0.1"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
@@ -31,34 +28,27 @@ description = "KernelF editor implemented with Modelix "
 version = computeVersion()
 println("Version: $version")
 
-fun computeVersion(): Any {
-    val versionFile = file("version.txt")
-    if (versionFile.exists()) return versionFile.readText().trim()
+fun computeVersion(): String {
+    // The released version is owned by release-please and kept in
+    // .release-please-manifest.json. Release builds publish that version
+    // verbatim; every other build appends -SNAPSHOT.
+    //
+    // -PreleaseVersion=<version> overrides everything and is used by the manual
+    // tag publish (publish.yml), where the pushed tag is the source of truth.
+    (project.findProperty("releaseVersion") as String?)
+        ?.trim()
+        ?.takeIf { it.isNotEmpty() }
+        ?.let { return it }
 
-    val gitVersion: groovy.lang.Closure<String> by extra
-    var version = if (versionFile.exists()) versionFile.readText().trim() else gitVersion()
-    if (!versionFile.exists() && "true" != project.findProperty("ciBuild")) {
-        version = "$version-SNAPSHOT"
-    }
+    val baseVersion = readReleaseManifestVersion()
+    return if (project.findProperty("release") == "true") baseVersion else "$baseVersion-SNAPSHOT"
+}
 
-    // A common case where the git-version plugin generates a version that is incompatible to NPM
-    version = version.replace(".dirty-", "-dirty-")
-
-    // NPM requires a valid semantic version
-    try {
-        Version.parse(version)
-    } catch (_: IllegalArgumentException) {
-        version = "0.0.0-$version"
-    }
-
-    // NPM is even stricter about the version format
-    if (!version.matches("""\d+\.\d+.\d+-.*""".toRegex())) {
-        version = "0.0.0-$version"
-    }
-
-    versionFile.writeText(version)
-
-    return version
+@Suppress("UNCHECKED_CAST")
+fun readReleaseManifestVersion(): String {
+    val manifestFile = file(".release-please-manifest.json")
+    val manifest = groovy.json.JsonSlurper().parse(manifestFile) as Map<String, String>
+    return manifest["."] ?: error("No \".\" entry in ${manifestFile.name}")
 }
 
 val tsModelApiPath = rootDir.parentFile.resolve("modelix.core").resolve("ts-model-api")
