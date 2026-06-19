@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.modelix.configureMpsTestClasspath
+import org.modelix.configureMpsTestTask
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
@@ -28,6 +30,9 @@ dependencies {
     testImplementation(coreLibs.logback.classic, excludeMPSLibraries)
     modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
 }
+
+// MPS 2025.1+ needs extra platform module jars on the test classpath and MPS's bundled coroutines fork.
+configureMpsTestClasspath()
 
 intellij {
     localPath = mpsHomeDir.map { it.asFile.absolutePath }
@@ -91,11 +96,15 @@ intellij {
 tasks {
     patchPluginXml {
         sinceBuild.set("233")
-        untilBuild.set("241.*")
+        untilBuild.set("251.*")
     }
 
     buildSearchableOptions {
         enabled = false
+    }
+
+    test {
+        configureMpsTestTask()
     }
 
 //    signPlugin {
