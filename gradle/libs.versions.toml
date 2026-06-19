@@ -48,7 +48,7 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.18" }
 
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.0" }
 
-playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.59.0" }
+playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.60.0" }
 
 testcontainers = { group = "org.testcontainers", name = "testcontainers", version = "2.0.5" }
 
