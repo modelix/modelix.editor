@@ -1,36 +1,25 @@
 version: 2
-registries:
-  maven-central:
-    type: maven-repository
-    url: https://repo.maven.apache.org/maven2/
-  maven-itemis:
-    type: maven-repository
-    url: https://artifacts.itemis.cloud/repository/maven-mps/
+# Dependabot owns GitHub Actions updates; Renovate (renovate.json5) owns Gradle,
+# the Gradle wrapper, npm, pre-commit and Node. Splitting ownership avoids
+# duplicate PRs.
 updates:
-  - package-ecosystem: "gradle"
-    open-pull-requests-limit: 20
-    registries:
-      - maven-central
-      - maven-itemis
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Berlin
+    labels:
+      - dependencies
+      - github-actions
+    # Emit Conventional Commits so PR-lint and release-please are satisfied.
+    # "ci" because this only updates GitHub Actions (CI tooling); "include:
+    # scope" adds the deps scope, e.g. "ci(deps): bump actions/checkout ...".
     commit-message:
-      prefix: "build(deps)"
-      prefix-development: "build(deps)"
-  - package-ecosystem: "github-actions"
-    open-pull-requests-limit: 20
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "build(deps)"
-      prefix-development: "build(deps)"
-  - package-ecosystem: "npm"
-    open-pull-requests-limit: 20
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "build(deps)"
-      prefix-development: "build(deps)"
+      prefix: ci
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
