@@ -3,7 +3,10 @@
   extends: [
     'config:best-practices',
     ':enablePreCommit',
-    ':semanticCommitTypeAll(build)',
+    // Use "fix" so dependency updates trigger a release-please version bump and
+    // a new release. (Dependabot keeps "ci" for GitHub Actions, which must not
+    // trigger a release — see .github/dependabot.yml.)
+    ':semanticCommitTypeAll(fix)',
   ],
   labels: ['dependencies'],
   timezone: 'Europe/Berlin',
