@@ -5,11 +5,17 @@
     ':enablePreCommit',
     ':semanticCommitTypeAll(build)',
   ],
+  labels: ['dependencies'],
+  timezone: 'Europe/Berlin',
+  schedule: ['before 6am on monday'],
+  // Renovate owns everything except GitHub Actions, which Dependabot manages
+  // (see .github/dependabot.yml). Splitting ownership avoids duplicate PRs.
   enabledManagers: [
-    'pre-commit',
+    'gradle',
     'gradle-wrapper',
+    'npm',
+    'pre-commit',
     'nvm',
-    'github-actions',
     'custom.regex',
   ],
   customManagers: [
@@ -24,6 +30,26 @@
       ],
       datasourceTemplate: 'node-version',
       versioningTemplate: 'node',
+    },
+  ],
+  packageRules: [
+    {
+      description: 'Group all Kotlin language/plugin updates together — they must move in lockstep.',
+      groupName: 'Kotlin',
+      matchPackageNames: [
+        'org.jetbrains.kotlin:**',
+        '/^org\\.jetbrains\\.kotlin\\./',
+      ],
+    },
+    {
+      description: 'Group kotlinx-coroutines artifacts.',
+      groupName: 'kotlinx-coroutines',
+      matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-coroutines**'],
+    },
+    {
+      description: 'Require manual review before adopting major releases.',
+      matchUpdateTypes: ['major'],
+      dependencyDashboardApproval: true,
     },
   ],
 }
