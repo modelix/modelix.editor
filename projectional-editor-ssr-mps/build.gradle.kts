@@ -52,7 +52,7 @@ intellij {
 tasks {
     patchPluginXml {
         sinceBuild.set("233")
-        untilBuild.set("241.*")
+        untilBuild.set("251.*")
     }
 
     buildSearchableOptions {
