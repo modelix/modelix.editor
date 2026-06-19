@@ -12,4 +12,3 @@ kotlin_gen
 node_modules
 /.intellijPlatform
 /.kotlin
-/version.txt

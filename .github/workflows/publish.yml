@@ -1,5 +1,10 @@
 name: Publish
 
+# Automated releases are driven by release-please.yml (Conventional Commits),
+# which tags and publishes in the same run. This workflow is the manual
+# fallback: push a version tag by hand to build and publish that exact version.
+# release-please tags are created with the default GITHUB_TOKEN and therefore do
+# NOT trigger this workflow, so there is no double publish.
 on:
   push:
     tags:
@@ -32,8 +37,15 @@ jobs:
         run: pnpm install
       - name: Set up Gradle
         uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1 # v3
-      - name: Use tag as version
-        run: echo "${GITHUB_REF#refs/*/}" > version.txt
+      # On a tag push the tag is the version (passed verbatim via
+      # -PreleaseVersion). A manual workflow_dispatch on a branch leaves this
+      # empty, so the build falls back to a -SNAPSHOT of the manifest version.
+      - name: Derive version from tag
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "arg=-PreleaseVersion=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
       - name: Build and Publish Artifacts
         run: >-
           ./gradlew
@@ -41,6 +53,7 @@ jobs:
           build
           publish
           -PciBuild=true
+          ${{ steps.version.outputs.arg }}
           -Partifacts.itemis.cloud.user=${{secrets.ARTIFACTS_ITEMIS_CLOUD_USER}}
           -Partifacts.itemis.cloud.pw=${{secrets.ARTIFACTS_ITEMIS_CLOUD_PW}}
           -Pgpr.user=${{ github.actor }}
