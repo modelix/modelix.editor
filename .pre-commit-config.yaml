@@ -22,7 +22,7 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ["@commitlint/config-angular"]
-        args: ["--config", "./commitlint.config.js"]
+        args: ["--config", "./commitlint.config.mjs"]
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.16.0
     hooks:
