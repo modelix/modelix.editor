@@ -17,7 +17,6 @@ plugins {
 }
 
 val generatorOutputDir = file("src/commonMain/kotlin_gen")
-val tsGeneratorOutputDir = file("../kernelf-angular-demo/src/gen")
 
 kotlin {
     jvmToolchain(17)
