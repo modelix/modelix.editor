@@ -4,6 +4,8 @@ import com.intellij.openapi.diagnostic.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.modelix.checks.CheckMessage
+import org.modelix.checks.CheckSeverity
 import org.modelix.editor.CaretSelection
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
@@ -30,6 +32,7 @@ import org.modelix.editor.text.frontend.getVisibleText
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.model.api.INode
+import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
 
@@ -591,6 +594,67 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         val parseTree = parser.parse(input)
         println(parseTree)
     }
+
+    private fun errorMessages(): List<CheckMessage> =
+        readAction {
+            classNode
+                .asLegacyNode()
+                .getDescendants(true)
+                .flatMap { MPSModelChecker.getMessages(incrementalEngine, it) }
+                .filter { it.severity == CheckSeverity.ERROR }
+                .toList()
+        }
+
+    fun `test model checker reports typesystem error and updates on model changes`() =
+        kotlinx.coroutines.test.runTest {
+            // The test project already produces messages (e.g. a false "Duplicated name of classifier" error caused
+            // by MPS rules comparing wrapped against unwrapped nodes by identity), so only assert on the delta.
+            val baseline = errorMessages()
+            assertTrue(
+                "Unexpected checker failure: $baseline",
+                baseline.none { it.message.contains("failed:") },
+            )
+
+            // `return 10;` inside the void method is a typesystem error
+            placeCaretIntoCellWithText("<no statement>")
+            typeText("return")
+            typeText("10")
+            assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                return 10;
+              }
+            }
+        """)
+
+            val newErrors = errorMessages() - baseline
+            newErrors.forEach { println("reported: ${it.severity}: ${it.message}") }
+            assertNotEmpty(newErrors)
+            assertTrue(
+                "Unexpected error messages: $newErrors",
+                newErrors.none { it.message.contains("failed:") },
+            )
+
+            // deleting the return statement should also remove the error message
+            pressKey(KnownKeys.Delete)
+            assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                return <no expression>;
+              }
+            }
+        """)
+            placeCaretIntoCellWithText("return")
+            pressKey(KnownKeys.Delete)
+            assertEditorText("""
+            public class Class1 {
+              public void method1(<no parameter>) {
+                <no statement>
+              }
+            }
+        """)
+            assertEquals(baseline, errorMessages())
+        }
 
     fun `test statement parsing 1`() = runParsingTest("int a;")
 
