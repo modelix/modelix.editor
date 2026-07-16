@@ -1,0 +1,8 @@
+# Marks this directory as an isolated pnpm workspace root so pnpm does not
+# resolve up to the repository-root pnpm-workspace.yaml.
+#
+# Approve dependency build scripts that pnpm (>=10) otherwise ignores.
+# esbuild needs its install script to provide the platform binary used by Vite.
+allowBuilds:
+  core-js: true
+  esbuild: true

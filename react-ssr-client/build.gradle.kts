@@ -6,8 +6,9 @@ plugins {
 }
 
 node {
-    version.set("24.16.0")
+    version.set("24.17.0")
     npmVersion.set("11.13.0")
+    pnpmVersion.set("11.13.1")
     val isCIBuild = "true" == project.findProperty("ciBuild")
     download.set(!isCIBuild)
 }
