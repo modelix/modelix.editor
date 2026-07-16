@@ -17,7 +17,6 @@ import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
-import org.modelix.model.mpsadapters.MPSWritableNode
 import org.modelix.model.mpsadapters.toModelix
 import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 
@@ -65,22 +64,6 @@ class IncrementalModelChecker(
     }
 
     private fun getRootNode(node: INode): INode = fGetRootNode(node).bind(engine).invoke()
-
-    /**
-     * The MPS checkers (especially the typesystem) don't work reliably on [ModelixNodeAsMPSNode], e.g.
-     * `jetbrains.mps.smodel.CopyUtil` fails with an AssertionError when the typesystem copies nodes into the type
-     * graph. Use the raw MPS node whenever the model is MPS backed.
-     */
-    private fun INode.toMPS(): SNode {
-        val writableNode = asWritableNode()
-        return if (writableNode is MPSWritableNode) writableNode.node else ModelixNodeAsMPSNode.toMPSNode(this)
-    }
-
-    private fun registerDependencies(node: INode) {
-        node.getPropertyRoles().forEach { node.getPropertyValue(it) }
-        node.getReferenceRoles().forEach { node.getReferenceTargetRef(it) }
-        node.allChildren.forEach { registerDependencies(it) }
-    }
 
     private fun runCheck(root: SNode): List<NodeReportItem> {
         val items = ArrayList<NodeReportItem>()
