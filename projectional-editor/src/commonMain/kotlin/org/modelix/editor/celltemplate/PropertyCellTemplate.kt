@@ -1,5 +1,7 @@
 package org.modelix.editor.celltemplate
 
+import org.modelix.checks.CheckMessageTarget
+import org.modelix.checks.addCheckMessages
 import org.modelix.constraints.ConstraintsAspect
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CellActionProperties
@@ -58,6 +60,8 @@ open class PropertyCellTemplate(
         data.properties[CellActionProperties.replaceText] = ChangePropertyAction(node)
         data.properties[CommonCellProperties.tabTarget] = true
         data.cellReferences += PropertyCellReference(property.toReference(), node.reference)
+        val target = CheckMessageTarget.PropertyTarget(property.getSimpleName())
+        data.properties.addCheckMessages(context.editorEngine.getCheckMessages(node).filter { it.target == target })
         return data
     }
 

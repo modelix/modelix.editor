@@ -1,5 +1,9 @@
 package org.modelix.editor
 
+import org.modelix.checks.CheckMessage
+import org.modelix.checks.CheckMessageTarget
+import org.modelix.checks.ModelCheckAspect
+import org.modelix.checks.addCheckMessages
 import org.modelix.editor.celltemplate.CellTemplate
 import org.modelix.editor.celltemplate.ParserForEditor
 import org.modelix.editor.text.backend.BackendEditorComponent
@@ -49,6 +53,8 @@ class EditorEngine(
                     val cellData = doCreateCellData(editorState, node)
                     cellData.properties[CommonCellProperties.node] = node.toNonExisting()
                     cellData.properties[CommonCellProperties.cellCall] = call
+                    val wholeNodeMessages = getCheckMessages(node).filter { it.target == CheckMessageTarget.WholeNode }
+                    if (wholeNodeMessages.isNotEmpty()) applyCheckMessages(cellData, wholeNodeMessages)
                     cellData.freeze()
                     LOG.trace { "Cell created for $node: $cellData" }
                     cellData
@@ -193,6 +199,23 @@ class EditorEngine(
                 properties[CommonCellProperties.textColor] = "red"
             }
         }
+    }
+
+    /**
+     * Returns the messages reported by the registered [ModelCheckAspect] checkers for the given node.
+     */
+    fun getCheckMessages(node: INode): List<CheckMessage> = ModelCheckAspect.getMessages(incrementalEngine, node)
+
+    /**
+     * Applies the messages to all text cells of the node's own cell spec (not descending into child nodes,
+     * which handle their own messages).
+     */
+    private fun applyCheckMessages(
+        data: CellSpecBase,
+        messages: List<CheckMessage>,
+    ) {
+        if (data is TextCellSpec) data.properties.addCheckMessages(messages)
+        data.children.forEach { if (it is CellSpecBase) applyCheckMessages(it, messages) }
     }
 
     fun resolveConceptEditor(concept: IConcept?): List<ConceptEditor> {

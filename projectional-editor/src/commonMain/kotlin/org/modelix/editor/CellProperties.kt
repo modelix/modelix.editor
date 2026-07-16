@@ -156,6 +156,8 @@ object CommonCellProperties {
     val onNewLine = BooleanCellPropertyKey("on-new-line", false)
     val noSpace = BooleanCellPropertyKey("no-space", false)
     val textColor = StringCellPropertyKey("text-color", null, inherits = true)
+    val errorMessage = StringCellPropertyKey("error-message", null)
+    val warningMessage = StringCellPropertyKey("warning-message", null)
     val placeholderTextColor = StringCellPropertyKey("placeholder-text-color", "lightGray", inherits = true)
     val backgroundColor = StringCellPropertyKey("background-color", null)
     val textReplacement = StringCellPropertyKey("text-replacement", null)

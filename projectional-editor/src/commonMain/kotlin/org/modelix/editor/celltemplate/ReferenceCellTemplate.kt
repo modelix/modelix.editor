@@ -1,5 +1,7 @@
 package org.modelix.editor.celltemplate
 
+import org.modelix.checks.CheckMessageTarget
+import org.modelix.checks.addCheckMessages
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
@@ -57,6 +59,8 @@ class ReferenceCellTemplate(
             ReferenceTargetActionProvider(ExistingNode(node), link, { it.getNode()?.let(presentation) ?: "" }).after {
                 context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
             }
+        val target = CheckMessageTarget.ReferenceTarget(link.getSimpleName())
+        data.properties.addCheckMessages(context.editorEngine.getCheckMessages(node).filter { it.target == target })
         return data
     }
 

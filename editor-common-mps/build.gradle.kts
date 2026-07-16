@@ -34,6 +34,7 @@ dependencies {
     api(libs.slf4j.api, excludeMPSLibraries)
     api(libs.kotlin.html)
 
+    api(coreLibs.modelix.incremental, excludeMPSLibraries)
     api(libs.modelix.mps.model.adapters, excludeMPSLibraries)
     api(libs.modelix.model.api.gen.runtime, excludeMPSLibraries)
     api(project(":reverse-mpsadapters"), excludeMPSLibraries)
