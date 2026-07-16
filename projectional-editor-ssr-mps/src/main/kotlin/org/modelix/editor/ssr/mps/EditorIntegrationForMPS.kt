@@ -1,6 +1,7 @@
 package org.modelix.editor.ssr.mps
 
 import org.jetbrains.mps.openapi.module.SRepository
+import org.modelix.checks.ModelCheckAspect
 import org.modelix.constraints.ConstraintsAspect
 import org.modelix.editor.EditorEngine
 import org.modelix.model.api.ILanguageRepository
@@ -23,6 +24,7 @@ class EditorIntegrationForMPS(
         aspectsFromMPS = LanguageAspectsFromMPSModules(repository)
         ScopeAspect.registerScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.add(MPSConstraints)
+        ModelCheckAspect.checkers.add(MPSModelChecker)
         editorEngine.addRegistry(aspectsFromMPS!!)
     }
 
@@ -32,5 +34,6 @@ class EditorIntegrationForMPS(
 
         ScopeAspect.unregisterScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.remove(MPSConstraints)
+        ModelCheckAspect.checkers.remove(MPSModelChecker)
     }
 }

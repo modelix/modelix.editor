@@ -21,6 +21,16 @@
     background-color: #DBE5FD;
 }
 
+.editor .text-cell.has-error {
+    text-decoration: underline wavy red;
+    text-decoration-skip-ink: none;
+}
+
+.editor .text-cell.has-warning {
+    text-decoration: underline wavy orange;
+    text-decoration-skip-ink: none;
+}
+
 .editor .line:before {
     content: counter(line-number);
     padding-right: 10px;

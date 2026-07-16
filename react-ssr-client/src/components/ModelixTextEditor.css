@@ -17,6 +17,16 @@
     background-color: #DBE5FD;
 }
 
+.modelix-text-editor .text-cell.has-error {
+    text-decoration: underline wavy red;
+    text-decoration-skip-ink: none;
+}
+
+.modelix-text-editor .text-cell.has-warning {
+    text-decoration: underline wavy orange;
+    text-decoration-skip-ink: none;
+}
+
 .modelix-text-editor .line {
     counter-increment: line-number;
 }

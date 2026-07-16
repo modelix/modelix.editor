@@ -4,6 +4,7 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.div
 import kotlinx.html.span
 import kotlinx.html.style
+import kotlinx.html.title
 import org.modelix.editor.text.frontend.editorComponent
 import org.modelix.editor.text.frontend.getVisibleText
 import org.modelix.editor.text.frontend.text
@@ -319,11 +320,20 @@ class LayoutableCell(
                 textIsOverridden -> "rgba(255, 0, 0, 0.5)"
                 else -> null
             }
-        consumer.span("text-cell") {
+        val errorMessage = cell.getProperty(CommonCellProperties.errorMessage)
+        val warningMessage = cell.getProperty(CommonCellProperties.warningMessage)
+        val classes =
+            listOfNotNull(
+                "text-cell",
+                "has-error".takeIf { errorMessage != null },
+                "has-warning".takeIf { warningMessage != null },
+            ).joinToString(" ")
+        consumer.span(classes) {
             val styleParts = mutableListOf<String>()
             if (textColor != null) styleParts += "color: $textColor"
             if (backgroundColor != null) styleParts += "background-color: $backgroundColor"
             if (styleParts.isNotEmpty()) style = styleParts.joinToString(";")
+            listOfNotNull(errorMessage, warningMessage).takeIf { it.isNotEmpty() }?.let { title = it.joinToString("\n") }
 
             +toText().useNbsp()
         }
