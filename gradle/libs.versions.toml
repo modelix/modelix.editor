@@ -46,7 +46,7 @@ kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version =
 
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.18" }
 
-kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.0" }
+kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.1" }
 
 playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.60.0" }
 
