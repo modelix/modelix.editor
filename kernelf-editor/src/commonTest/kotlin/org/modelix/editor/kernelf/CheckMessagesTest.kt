@@ -29,6 +29,7 @@ import org.modelix.model.area.PArea
 import org.modelix.model.withIncrementalComputationSupport
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class CheckMessagesTest {
     @Test
@@ -95,6 +96,58 @@ class CheckMessagesTest {
                     }
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.errorMessage))
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.warningMessage))
+            } finally {
+                ModelCheckAspect.checkers.remove(checker)
+                KernelfLanguages.languages.forEach { it.unregister() }
+            }
+        }
+
+    @Test
+    fun checkerFailureIsShownAsError() =
+        runTest {
+            KernelfLanguages.registerAll()
+            lateinit var numberLiteral: N_NumberLiteral
+            val branch = ModelFacade.toLocalBranch(ModelFacade.newLocalTree(useRoleIds = false)).withIncrementalComputationSupport()
+            val parensExpression =
+                branch.computeWrite {
+                    PArea(branch)
+                        .getRoot()
+                        .addNewChild("root", -1, C_ParensExpression.untyped())
+                        .typed<N_ParensExpression>()
+                        .apply {
+                            expr.setNew(C_NumberLiteral) {
+                                numberLiteral = this
+                                value = "200"
+                            }
+                        }
+                }
+
+            val checker =
+                object : IModelChecker {
+                    override fun getMessages(
+                        engine: IIncrementalEngine,
+                        node: INode,
+                    ): List<CheckMessage> = error("checker is broken")
+                }
+            ModelCheckAspect.checkers.add(checker)
+            try {
+                val engine = EditorEngine(IncrementalEngine())
+                KernelfEditor.register(engine)
+                val service = TextEditorServiceImpl(engine, parensExpression.untyped().asWritableNode().getModel(), backgroundScope)
+                val editor = FrontendEditorComponent(service)
+                editor.editNode(parensExpression.untypedReference())
+                editor.flush()
+
+                val cell =
+                    checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
+                        "Cell for property 'value' not found"
+                    }
+                val errorMessage = cell.getProperty(CommonCellProperties.errorMessage)
+                assertTrue(
+                    errorMessage?.contains("Model checker failed") == true &&
+                        errorMessage.contains("checker is broken"),
+                    "Unexpected error message: $errorMessage",
+                )
             } finally {
                 ModelCheckAspect.checkers.remove(checker)
                 KernelfLanguages.languages.forEach { it.unregister() }

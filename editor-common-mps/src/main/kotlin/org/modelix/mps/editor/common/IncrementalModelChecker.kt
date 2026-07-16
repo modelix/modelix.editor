@@ -1,7 +1,9 @@
 package org.modelix.mps.editor.common
 
 import jetbrains.mps.checkers.ConstraintsChecker
+import jetbrains.mps.errors.item.IssueKindReportItem
 import jetbrains.mps.errors.item.NodeReportItem
+import jetbrains.mps.errors.item.NodeReportItemBase
 import jetbrains.mps.errors.messageTargets.MessageTarget
 import jetbrains.mps.progress.EmptyProgressMonitor
 import jetbrains.mps.smodel.MPSModuleRepository
@@ -15,6 +17,7 @@ import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
+import org.modelix.model.mpsadapters.MPSWritableNode
 import org.modelix.model.mpsadapters.toModelix
 import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 
@@ -63,6 +66,22 @@ class IncrementalModelChecker(
 
     private fun getRootNode(node: INode): INode = fGetRootNode(node).bind(engine).invoke()
 
+    /**
+     * The MPS checkers (especially the typesystem) don't work reliably on [ModelixNodeAsMPSNode], e.g.
+     * `jetbrains.mps.smodel.CopyUtil` fails with an AssertionError when the typesystem copies nodes into the type
+     * graph. Use the raw MPS node whenever the model is MPS backed.
+     */
+    private fun INode.toMPS(): SNode {
+        val writableNode = asWritableNode()
+        return if (writableNode is MPSWritableNode) writableNode.node else ModelixNodeAsMPSNode.toMPSNode(this)
+    }
+
+    private fun registerDependencies(node: INode) {
+        node.getPropertyRoles().forEach { node.getPropertyValue(it) }
+        node.getReferenceRoles().forEach { node.getReferenceTargetRef(it) }
+        node.allChildren.forEach { registerDependencies(it) }
+    }
+
     private fun runCheck(root: SNode): List<NodeReportItem> {
         val items = ArrayList<NodeReportItem>()
         val consumer: Consumer<NodeReportItem> =
@@ -74,13 +93,38 @@ class IncrementalModelChecker(
 
         @Suppress("removal")
         val repository = MPSModuleRepository.getInstance()
-        TypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor())
-        NonTypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor())
-        ConstraintsChecker(null).asRootChecker().check(root, repository, consumer, EmptyProgressMonitor())
+
+        // A failing checker should not discard the messages of the other checkers.
+        // Its failure is shown in the editor as an error on the root node.
+        fun runSafely(
+            checkerName: String,
+            body: () -> Unit,
+        ) = try {
+            body()
+        } catch (ex: Throwable) {
+            LOG.error(ex) { "$checkerName failed for $root" }
+            items.add(
+                NodeReportItemBase.error(
+                    "$checkerName failed: $ex",
+                    root.reference,
+                    IssueKindReportItem.ENVIRONMENT_PROBLEM.deriveItemKind(),
+                ),
+            )
+        }
+
+        runSafely("TypesystemChecker") { TypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor()) }
+        runSafely("NonTypesystemChecker") { NonTypesystemChecker().check(root, repository, consumer, EmptyProgressMonitor()) }
+        runSafely("ConstraintsChecker") {
+            ConstraintsChecker(null).asRootChecker().check(root, repository, consumer, EmptyProgressMonitor())
+        }
         return items
     }
 
     companion object {
+        private val LOG =
+            io.github.oshai.kotlinlogging.KotlinLogging
+                .logger {}
+
         private val instances = java.util.WeakHashMap<IIncrementalEngine, IncrementalModelChecker>()
 
         /**

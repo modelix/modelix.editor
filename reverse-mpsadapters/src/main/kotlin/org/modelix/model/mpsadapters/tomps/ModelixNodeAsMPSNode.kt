@@ -20,7 +20,9 @@ import org.modelix.model.api.IReadableNode
 import org.modelix.model.api.IReferenceLinkReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.NullChildLinkReference
+import org.modelix.model.api.meta.NullConcept
 import org.modelix.model.api.remove
+import org.modelix.model.api.resolve
 import org.modelix.model.mpsadapters.MPSChildLink
 import org.modelix.model.mpsadapters.MPSConcept
 import org.modelix.model.mpsadapters.MPSNode
@@ -180,7 +182,10 @@ data class ModelixNodeAsMPSNode(
 
     override fun getContainingRoot(): SNode = parent?.containingRoot ?: this
 
-    override fun getContainmentLink(): SContainmentLink? = (node.getContainmentLink() as? MPSChildLink)?.link
+    override fun getContainmentLink(): SContainmentLink? {
+        val link = node.getContainmentLink().resolve(node.getParent()?.getConceptReference() ?: return null)
+        return (link as? MPSChildLink)?.link
+    }
 
     override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull()?.let { ModelixNodeAsMPSNode(it) }
 

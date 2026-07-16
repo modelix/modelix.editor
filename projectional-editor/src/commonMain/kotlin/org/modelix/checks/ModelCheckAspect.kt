@@ -21,8 +21,11 @@ object ModelCheckAspect {
     ): List<CheckMessage> =
         checkers.flatMap { checker ->
             runCatching { checker.getMessages(engine, node) }
-                .onFailure { LOG.error(it) { "Model checker $checker failed for $node" } }
-                .getOrDefault(emptyList())
+                .getOrElse { ex ->
+                    LOG.error(ex) { "Model checker $checker failed for $node" }
+                    // Surface the failure in the editor instead of silently dropping all messages.
+                    listOf(CheckMessage("Model checker failed: $ex", CheckSeverity.ERROR, CheckMessageTarget.WholeNode))
+                }
         }
 }
 
