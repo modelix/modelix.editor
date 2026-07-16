@@ -20,7 +20,6 @@ plugins {
 }
 
 val generatorOutputDir = buildDir.resolve("apigen").resolve("src_gen")
-val tsGeneratorOutputDir = file("../kernelf-angular-demo/src/gen")
 
 kotlin {
     jvm()
@@ -83,7 +82,6 @@ metamodel {
     includeConcept("jetbrains.mps.lang.test.TestInfo")
     kotlinProject = project
     kotlinDir = generatorOutputDir
-    typescriptDir = tsGeneratorOutputDir
     registrationHelperName = "org.modelix.kernelf.KernelfLanguages"
     conceptPropertiesInterfaceName = "org.modelix.kernelf.IConceptProperties"
     // exportModules("jetbrains.mps.baseLanguage")
