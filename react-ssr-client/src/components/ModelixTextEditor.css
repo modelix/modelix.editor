@@ -17,17 +17,15 @@
     background-color: #DBE5FD;
 }
 
-/* Underline for text cells, and for the spaces/indents inside a node's cell range so the underline is continuous. */
+/* Underline for text cells, and for the spaces inside a node's cell range so the underline is continuous. */
 .modelix-text-editor .text-cell.has-error,
-.modelix-text-editor .space.has-error,
-.modelix-text-editor .indent.has-error {
+.modelix-text-editor .space.has-error {
     text-decoration: underline wavy red;
     text-decoration-skip-ink: none;
 }
 
 .modelix-text-editor .text-cell.has-warning,
-.modelix-text-editor .space.has-warning,
-.modelix-text-editor .indent.has-warning {
+.modelix-text-editor .space.has-warning {
     text-decoration: underline wavy orange;
     text-decoration-skip-ink: none;
 }
