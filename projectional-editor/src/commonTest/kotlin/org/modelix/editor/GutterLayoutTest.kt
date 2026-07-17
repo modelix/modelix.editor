@@ -5,6 +5,8 @@ import org.modelix.editor.text.frontend.layout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -42,6 +44,33 @@ class GutterLayoutTest {
 
         val line = cell.layout.lines.single()
         assertEquals(setOf("boom"), line.getGutterState().errors)
+    }
+
+    @Test
+    fun messageOnAncestorUnderlinesDescendantAndInvalidatesItsLayout() {
+        val tree = FrontendCellTree()
+        val wrapper = EditorTestUtils.buildCells(listOf("inner"), tree)
+
+        val innerBefore =
+            wrapper.layout.lines
+                .single()
+                .words
+                .filterIsInstance<LayoutableCell>()
+                .single()
+        assertNull(innerBefore.cell.effectiveMessage(CommonCellProperties.errorMessage))
+
+        wrapper.setProperty(CommonCellProperties.errorMessage, "boom")
+
+        val innerAfter =
+            wrapper.layout.lines
+                .single()
+                .words
+                .filterIsInstance<LayoutableCell>()
+                .single()
+        // The message on the wrapper must invalidate the child's cached layout, so its line re-renders with a new
+        // layoutable and can pick up the inherited underline while rendering.
+        assertNotSame(innerBefore, innerAfter)
+        assertEquals("boom", innerAfter.cell.effectiveMessage(CommonCellProperties.errorMessage))
     }
 
     @Test

@@ -91,6 +91,20 @@ open class CellTreeBase : IMutableCellTree {
             }
         }
 
+        /**
+         * Clears the cached computations of all descendants. Used for properties that affect the whole subtree (e.g.
+         * a check message that is attached to a single cell but underlines that cell's whole cell range, which the
+         * descendants derive by walking up the cell tree while rendering).
+         */
+        fun invalidateDescendantComputations() {
+            withTreeLock {
+                children.forEach {
+                    it.cachedComputations.clear()
+                    it.invalidateDescendantComputations()
+                }
+            }
+        }
+
         override fun getTree(): IMutableCellTree = this@CellTreeBase
 
         override fun getId(): CellInstanceId = id
@@ -125,6 +139,7 @@ open class CellTreeBase : IMutableCellTree {
                 require(newValue !is CellPropertyKey<*>)
                 properties[key.name] = newValue
                 invalidateComputations()
+                if (key.invalidatesSubtree) invalidateDescendantComputations()
             }
         }
 
@@ -138,6 +153,7 @@ open class CellTreeBase : IMutableCellTree {
             withTreeLock {
                 properties.remove(key.name)
                 invalidateComputations()
+                if (key.invalidatesSubtree) invalidateDescendantComputations()
             }
         }
 

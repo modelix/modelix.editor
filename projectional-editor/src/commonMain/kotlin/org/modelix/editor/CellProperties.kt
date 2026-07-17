@@ -36,6 +36,12 @@ sealed class CellPropertyKey<E>(
     val defaultValue: E,
     val inherits: Boolean = false,
     val frontend: Boolean = true,
+    /**
+     * When true, changing this property also invalidates the cached layout of the cell's descendants, not just of
+     * the cell itself and its ancestors. Used for check messages, which are attached to a single cell but underline
+     * that cell's whole subtree (the descendants read the message by walking up the cell tree while rendering).
+     */
+    val invalidatesSubtree: Boolean = false,
 ) {
     override fun toString() = name
 
@@ -68,7 +74,8 @@ class StringCellPropertyKey(
     defaultValue: String?,
     inherits: Boolean = false,
     frontend: Boolean = true,
-) : CellPropertyKey<String?>(name, defaultValue, inherits, frontend) {
+    invalidatesSubtree: Boolean = false,
+) : CellPropertyKey<String?>(name, defaultValue, inherits, frontend, invalidatesSubtree) {
     override fun valueToString(value: String?): String? = value
 
     override fun valueFromString(str: String?): String? = str
@@ -156,8 +163,8 @@ object CommonCellProperties {
     val onNewLine = BooleanCellPropertyKey("on-new-line", false)
     val noSpace = BooleanCellPropertyKey("no-space", false)
     val textColor = StringCellPropertyKey("text-color", null, inherits = true)
-    val errorMessage = StringCellPropertyKey("error-message", null)
-    val warningMessage = StringCellPropertyKey("warning-message", null)
+    val errorMessage = StringCellPropertyKey("error-message", null, invalidatesSubtree = true)
+    val warningMessage = StringCellPropertyKey("warning-message", null, invalidatesSubtree = true)
     val placeholderTextColor = StringCellPropertyKey("placeholder-text-color", "lightGray", inherits = true)
     val backgroundColor = StringCellPropertyKey("background-color", null)
     val textReplacement = StringCellPropertyKey("text-replacement", null)

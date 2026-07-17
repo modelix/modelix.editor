@@ -66,10 +66,11 @@ class TextLine(
      * so it should be underlined together with them to make a node's cell-range underline continuous rather than
      * broken at every space. A leading indent is only included when the range continues from the previous line.
      */
-    fun isUnderlinedError(word: Layoutable): Boolean = isInSeverityRange(word) { it.getProperty(CommonCellProperties.errorMessage) != null }
+    fun isUnderlinedError(word: Layoutable): Boolean =
+        isInSeverityRange(word) { it.effectiveMessage(CommonCellProperties.errorMessage) != null }
 
     fun isUnderlinedWarning(word: Layoutable): Boolean =
-        isInSeverityRange(word) { it.getProperty(CommonCellProperties.warningMessage) != null }
+        isInSeverityRange(word) { it.effectiveMessage(CommonCellProperties.warningMessage) != null }
 
     private fun isInSeverityRange(
         word: Layoutable,
@@ -439,8 +440,10 @@ class LayoutableCell(
                 textIsOverridden -> "rgba(255, 0, 0, 0.5)"
                 else -> null
             }
-        val errorMessage = cell.getProperty(CommonCellProperties.errorMessage)
-        val warningMessage = cell.getProperty(CommonCellProperties.warningMessage)
+        // A message is attached to a single cell but underlines that cell's whole cell range, so walk up the cell
+        // tree: this text cell is underlined when it or one of its ancestors carries the message.
+        val errorMessage = cell.effectiveMessage(CommonCellProperties.errorMessage)
+        val warningMessage = cell.effectiveMessage(CommonCellProperties.warningMessage)
         val classes =
             listOfNotNull(
                 "text-cell",
@@ -462,6 +465,20 @@ class LayoutableCell(
 fun Cell.layoutable(): LayoutableCell? {
     // return rootCell().layout.lines.asSequence().flatMap { it.words }.filterIsInstance<LayoutableCell>().find { it.cell == this }
     return editorComponent.resolveLayoutable(this)
+}
+
+/**
+ * The value of a check-message property ([CommonCellProperties.errorMessage]/[CommonCellProperties.warningMessage])
+ * on this cell or its nearest ancestor that has it. A message is attached to a single cell but underlines that
+ * cell's whole cell range, so the descendants derive it by walking up the cell tree.
+ */
+fun ICellTree.Cell.effectiveMessage(key: CellPropertyKey<String?>): String? {
+    var current: ICellTree.Cell? = this
+    while (current != null) {
+        current.getProperty(key)?.let { return it }
+        current = current.getParent()
+    }
+    return null
 }
 
 class LayoutableIndent(
