@@ -24,16 +24,35 @@ class PagesTest {
         var playwright: Playwright? = null
         var browser: Browser? = null
 
+        /**
+         * The environment variable is set when executed via Gradle. When run from the IDE, fall back to the output
+         * of the Gradle tasks that assemble these directories.
+         */
+        private fun hostPath(
+            envVar: String,
+            buildDirName: String,
+        ): java.nio.file.Path {
+            System.getenv(envVar)?.let { return File(it).toPath() }
+            val candidates = listOf(File("build/$buildDirName"), File("react-ssr-mps-test/build/$buildDirName"))
+            val dir =
+                candidates.firstOrNull { it.isDirectory && !it.list().isNullOrEmpty() }
+                    ?: error(
+                        "$envVar is not set and none of ${candidates.map { it.absolutePath }} exists. " +
+                            "Run './gradlew :react-ssr-mps-test:collectPlugins :react-ssr-mps-test:copyTestLanguages' first.",
+                    )
+            return dir.toPath()
+        }
+
         @BeforeAll
         @JvmStatic
         fun beforeAll() {
             mps =
                 GenericContainer("modelix/mps-vnc-baseimage:0.9.4-mps2023.2")
                     .withCopyFileToContainer(
-                        MountableFile.forHostPath(File(System.getenv("MODELIX_MPS_PLUGINS_PATH")).toPath()),
+                        MountableFile.forHostPath(hostPath("MODELIX_MPS_PLUGINS_PATH", "plugins")),
                         "/mps/plugins"
                     ).withCopyFileToContainer(
-                        MountableFile.forHostPath(File(System.getenv("MODELIX_TEST_LANGUAGES_PATH")).toPath()),
+                        MountableFile.forHostPath(hostPath("MODELIX_TEST_LANGUAGES_PATH", "test-languages")),
                         "/mps-languages"
                     ).withExposedPorts(43595)
 //            .waitingFor(Wait.forListeningPort().withStartupTimeout(3.minutes.toJavaDuration()))
