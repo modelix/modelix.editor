@@ -47,14 +47,17 @@
 }
 
 /* A message attached to a node that has no text cell of its own is shown in the gutter instead of as an
-   inline underline. The colored border marks the line; the full message is available as a tooltip. */
+   inline underline. The tint and colored line number mark the line; the full message is available as a tooltip.
+   Only colors change (not the border width) so the line's text is not shifted. */
 .modelix-text-editor .line-gutter.has-warning {
-    border-right: 2px solid orange;
+    background: #FBF1D9;
+    border-right-color: orange;
     color: #C77700;
 }
 
 .modelix-text-editor .line-gutter.has-error {
-    border-right: 2px solid red;
+    background: #FBE4E4;
+    border-right-color: red;
     color: #C00000;
 }
 
