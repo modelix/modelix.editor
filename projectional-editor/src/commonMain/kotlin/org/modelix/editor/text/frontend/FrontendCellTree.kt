@@ -5,6 +5,7 @@ import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.ECellType
 import org.modelix.editor.FrontendEditorComponent
 import org.modelix.editor.LayoutableCell
+import org.modelix.editor.LayoutableGutterMarker
 import org.modelix.editor.LayoutedText
 import org.modelix.editor.TextCellProperties
 import org.modelix.editor.TextLayouter
@@ -134,6 +135,14 @@ fun runLayoutOnCell(
             val body: () -> Unit = {
                 if (cell.getProperty(CommonCellProperties.onNewLine)) layouter.onNewLine()
                 if (cell.getProperty(CommonCellProperties.noSpace)) layouter.noSpace()
+                // A collection cell renders no text of its own. If it carries check messages (e.g. a wrapper that
+                // only delegates to a child), emit an invisible marker so the messages appear in the gutter of the
+                // line where the collection's content begins.
+                val error = cell.getProperty(CommonCellProperties.errorMessage)
+                val warning = cell.getProperty(CommonCellProperties.warningMessage)
+                if (error != null || warning != null) {
+                    layouter.append(LayoutableGutterMarker(error, warning))
+                }
                 cell.getChildren().forEach { layouter.append(layoutChild(it)) }
                 if (cell.getProperty(CommonCellProperties.noSpace)) layouter.noSpace()
             }
