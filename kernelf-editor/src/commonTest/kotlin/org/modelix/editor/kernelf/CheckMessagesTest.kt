@@ -15,6 +15,8 @@ import org.modelix.checks.ModelCheckAspect
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.FrontendEditorComponent
+import org.modelix.editor.effectiveMessage
+import org.modelix.editor.resolveNodeCell
 import org.modelix.editor.resolvePropertyCell
 import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.incremental.IIncrementalEngine
@@ -85,17 +87,18 @@ class CheckMessagesTest {
                 editor.editNode(parensExpression.untypedReference())
                 editor.flush()
 
-                val cellWithMessages =
+                // The whole-node error is attached to the node's cell; the property warning to the 'value' cell.
+                val nodeCell = checkNotNull(editor.resolveNodeCell(numberLiteral)) { "Node cell not found" }
+                val valueCell =
                     checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
                         "Cell for property 'value' not found"
                     }
-                assertEquals("whole node error", cellWithMessages.getProperty(CommonCellProperties.errorMessage))
-                assertEquals("property warning", cellWithMessages.getProperty(CommonCellProperties.warningMessage))
+                assertEquals("whole node error", nodeCell.getProperty(CommonCellProperties.errorMessage))
+                assertEquals("property warning", valueCell.getProperty(CommonCellProperties.warningMessage))
+                // The 'value' cell inherits the whole-node error by walking up to the node cell.
+                assertEquals("whole node error", valueCell.effectiveMessage(CommonCellProperties.errorMessage))
 
-                val cellWithoutMessages =
-                    checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, otherNumberLiteral)) {
-                        "Cell for property 'value' not found"
-                    }
+                val cellWithoutMessages = checkNotNull(editor.resolveNodeCell(otherNumberLiteral)) { "Node cell not found" }
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.errorMessage))
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.warningMessage))
             } finally {
@@ -155,13 +158,16 @@ class CheckMessagesTest {
                 editor.flush()
 
                 // The message targets the PlusExpression as a whole, so both operand literals (child nodes) must be
-                // underlined too, not just the '+' operator that belongs to the PlusExpression itself.
+                // underlined too, not just the '+' operator that belongs to the PlusExpression itself. The message is
+                // attached to a single cell; the operand cells derive the underline by walking up the cell tree.
                 val leftCell =
                     checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, leftLiteral)) { "left 'value' cell not found" }
                 val rightCell =
                     checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, rightLiteral)) { "right 'value' cell not found" }
-                assertEquals("type error", leftCell.getProperty(CommonCellProperties.errorMessage))
-                assertEquals("type error", rightCell.getProperty(CommonCellProperties.errorMessage))
+                assertEquals("type error", leftCell.effectiveMessage(CommonCellProperties.errorMessage))
+                assertEquals("type error", rightCell.effectiveMessage(CommonCellProperties.errorMessage))
+                // The message is attached to a single cell, not duplicated onto the operand cells.
+                assertEquals(null, leftCell.getProperty(CommonCellProperties.errorMessage))
             } finally {
                 ModelCheckAspect.checkers.remove(checker)
                 KernelfLanguages.languages.forEach { it.unregister() }
@@ -237,10 +243,8 @@ class CheckMessagesTest {
                 editor.editNode(parensExpression.untypedReference())
                 editor.flush()
 
-                val cell =
-                    checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
-                        "Cell for property 'value' not found"
-                    }
+                // The hidden subtree's messages are surfaced on the nearest visible ancestor's cell (numberLiteral).
+                val cell = checkNotNull(editor.resolveNodeCell(numberLiteral)) { "Node cell not found" }
                 assertEquals("hidden child error", cell.getProperty(CommonCellProperties.errorMessage))
                 assertEquals("deep hidden warning", cell.getProperty(CommonCellProperties.warningMessage))
             } finally {
@@ -303,14 +307,16 @@ class CheckMessagesTest {
                 editor.editNode(parensExpression.untypedReference())
                 editor.flush()
 
-                val cell =
+                val valueCell =
                     checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
                         "Cell for property 'value' not found"
                     }
+                val nodeCell = checkNotNull(editor.resolveNodeCell(numberLiteral)) { "Node cell not found" }
                 // The message targeting the rendered 'value' cell is attached there by the property cell template.
+                assertEquals("value error", valueCell.getProperty(CommonCellProperties.errorMessage))
                 // The messages targeting features without a cell would otherwise be lost, so they are surfaced on the node.
-                assertEquals("value error\nunrendered reference error", cell.getProperty(CommonCellProperties.errorMessage))
-                assertEquals("unrendered property warning", cell.getProperty(CommonCellProperties.warningMessage))
+                assertEquals("unrendered reference error", nodeCell.getProperty(CommonCellProperties.errorMessage))
+                assertEquals("unrendered property warning", nodeCell.getProperty(CommonCellProperties.warningMessage))
             } finally {
                 ModelCheckAspect.checkers.remove(checker)
                 KernelfLanguages.languages.forEach { it.unregister() }
@@ -353,11 +359,12 @@ class CheckMessagesTest {
                 editor.editNode(parensExpression.untypedReference())
                 editor.flush()
 
+                // The failure is reported as a whole-node error on the node's cell; the 'value' cell inherits it.
                 val cell =
                     checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, numberLiteral)) {
                         "Cell for property 'value' not found"
                     }
-                val errorMessage = cell.getProperty(CommonCellProperties.errorMessage)
+                val errorMessage = cell.effectiveMessage(CommonCellProperties.errorMessage)
                 assertTrue(
                     errorMessage?.contains("Model checker failed") == true &&
                         errorMessage.contains("checker is broken"),

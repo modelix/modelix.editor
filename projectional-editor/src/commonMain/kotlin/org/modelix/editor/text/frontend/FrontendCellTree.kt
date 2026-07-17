@@ -40,18 +40,58 @@ class FrontendCellTree(
         withTreeLock {
             for (op in changes) {
                 when (op) {
-                    is CellDeleteOp -> getCell(op.id).detach()
-                    is CellDetachOp -> getCell(op.id).detach()
-                    is CellPropertyChangeOp -> getCell(op.id).setProperty(op.key, op.value)
-                    is CellPropertyRemoveOp -> getCell(op.id).removeProperty(op.key)
-                    is MoveCellOp -> getCell(op.childId).moveCell(op.index)
-                    is MoveCellToOp -> getCell(op.childId).moveCell(getCell(op.targetParent), op.index)
-                    is NewCellOp -> createCell(op.id)
-                    is NewChildCellOp -> getCell(op.parentId).addNewChild(op.index, op.childId)
+                    is CellDeleteOp -> {
+                        getCell(op.id).detach()
+                    }
+
+                    is CellDetachOp -> {
+                        getCell(op.id).detach()
+                    }
+
+                    is CellPropertyChangeOp -> {
+                        val cell = getCell(op.id)
+                        cell.setProperty(op.key, op.value)
+                        if (invalidatesSubtree(op.key)) cell.invalidateDescendantComputations()
+                    }
+
+                    is CellPropertyRemoveOp -> {
+                        val cell = getCell(op.id)
+                        cell.removeProperty(op.key)
+                        if (invalidatesSubtree(op.key)) {
+                            // removeProperty(String) doesn't invalidate on its own, so do it here for messages.
+                            cell.invalidateComputations()
+                            cell.invalidateDescendantComputations()
+                        }
+                    }
+
+                    is MoveCellOp -> {
+                        getCell(op.childId).moveCell(op.index)
+                    }
+
+                    is MoveCellToOp -> {
+                        getCell(op.childId).moveCell(getCell(op.targetParent), op.index)
+                    }
+
+                    is NewCellOp -> {
+                        createCell(op.id)
+                    }
+
+                    is NewChildCellOp -> {
+                        getCell(op.parentId).addNewChild(op.index, op.childId)
+                    }
                 }
             }
         }
     }
+
+    /**
+     * Whether a change to the property with the given name has to invalidate the layout of the cell's subtree, not
+     * just of the cell itself (see [CellPropertyKey.invalidatesSubtree]). The check operates on the string key that
+     * arrives with a [CellPropertyChangeOp]/[CellPropertyRemoveOp].
+     */
+    private fun invalidatesSubtree(propertyName: String): Boolean =
+        propertyName == CommonCellProperties.errorMessage.name ||
+            propertyName == CommonCellProperties.warningMessage.name
 
     inner class FrontendCellImpl(
         id: CellInstanceId,
