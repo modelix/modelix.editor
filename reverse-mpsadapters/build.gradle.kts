@@ -14,6 +14,7 @@ kotlin {
 
 dependencies {
     implementation(libs.modelix.mps.model.adapters)
+    implementation(coreLibs.modelix.incremental)
     compileOnly(
         fileTree(mpsHomeDir).matching {
             include("lib/*.jar")

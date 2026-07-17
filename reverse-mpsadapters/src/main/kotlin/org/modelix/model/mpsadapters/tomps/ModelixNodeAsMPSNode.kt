@@ -13,6 +13,7 @@ import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.model.SNodeId
 import org.jetbrains.mps.openapi.model.SNodeReference
 import org.jetbrains.mps.openapi.model.SReference
+import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IChildLinkReference
 import org.modelix.model.api.INode
 import org.modelix.model.api.IPropertyReference
@@ -51,30 +52,42 @@ data class ModelixNodeAsMPSNode(
             }
 
         @JvmStatic
-        fun toMPSNode(node: INode): SNode = ModelixNodeAsMPSNode(node.asWritableNode())
+        fun toMPSNode(node: INode): SNode = getInstance(node.asWritableNode())
 
         @JvmStatic
         @JvmName("toMPSNodeNullable")
         fun toMPSNode(node: INode?): SNode? {
             if (node == null) return null
-            return ModelixNodeAsMPSNode(node.asWritableNode())
+            return getInstance(node.asWritableNode())
         }
 
         @JvmStatic
-        fun toMPSNode(node: IReadableNode): SNode = ModelixNodeAsMPSNode(node)
+        fun toMPSNode(node: IReadableNode): SNode = getInstance(node)
 
         @JvmStatic
         @JvmName("toMPSNodeNullable")
         fun toMPSNode(node: IReadableNode?): SNode? {
             if (node == null) return null
-            return ModelixNodeAsMPSNode(node)
+            return getInstance(node)
         }
 
         @JvmStatic
         fun ensureIsTracked(node: SNode): SNode =
             when (node) {
                 is ModelixNodeAsMPSNode -> node
-                else -> ModelixNodeAsMPSNode(MPSWritableNode(node))
+                else -> getInstance(MPSWritableNode(node))
+            }
+
+        private val instances = java.util.WeakHashMap<IReadableNode, java.lang.ref.WeakReference<ModelixNodeAsMPSNode>>()
+
+        /**
+         * Instances are cached so that MPS code can compare nodes by reference identity, which rules typically use
+         * to skip the checked node when iterating its siblings (`it != node`).
+         */
+        private fun getInstance(node: IReadableNode): ModelixNodeAsMPSNode =
+            synchronized(instances) {
+                instances[node]?.get()
+                    ?: ModelixNodeAsMPSNode(node).also { instances[node] = java.lang.ref.WeakReference(it) }
             }
 
         @JvmStatic
@@ -109,7 +122,7 @@ data class ModelixNodeAsMPSNode(
         forceUnwrapMPSNode(this).addChild(link, forceUnwrapMPSNode(newChild))
     }
 
-    override fun getModel(): SModel? = forceUnwrapMPSNode(this).model
+    override fun getModel(): SModel? = forceUnwrapMPSNode(this).model?.let { ModelixModelAsMPSModel.getInstance(it) }
 
     override fun getNodeId(): SNodeId = forceUnwrapMPSNode(this).nodeId
 
@@ -178,7 +191,17 @@ data class ModelixNodeAsMPSNode(
         writableNode.remove()
     }
 
-    override fun getParent(): SNode? = node.getParent()?.let { ModelixNodeAsMPSNode(it) }
+    override fun getParent(): SNode? {
+        // For root nodes the modelix parent is the model, but the SNode contract expects null.
+        if (isRootNode()) return null
+        return node.getParent().wrap()
+    }
+
+    private fun isRootNode(): Boolean =
+        node.getContainmentLink().matches(
+            BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
+                .toReference()
+        )
 
     override fun getContainingRoot(): SNode = parent?.containingRoot ?: this
 
@@ -187,32 +210,34 @@ data class ModelixNodeAsMPSNode(
         return (link as? MPSChildLink)?.link
     }
 
-    override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull()?.let { ModelixNodeAsMPSNode(it) }
+    override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull().wrap()
 
-    override fun getLastChild(): SNode? = node.getAllChildren().lastOrNull()?.let { ModelixNodeAsMPSNode(it) }
+    override fun getLastChild(): SNode? = node.getAllChildren().lastOrNull().wrap()
 
     override fun getPrevSibling(): SNode? {
+        if (isRootNode()) return null
         val siblings = node.getParent()?.getAllChildren()?.toList() ?: return null
         val index = siblings.indexOf(node)
-        return siblings.getOrNull(index - 1)?.let { ModelixNodeAsMPSNode(it) }
+        return siblings.getOrNull(index - 1).wrap()
     }
 
     override fun getNextSibling(): SNode? {
+        if (isRootNode()) return null
         val siblings = node.getParent()?.getAllChildren()?.toList() ?: return null
         val index = siblings.indexOf(node)
-        return siblings.getOrNull(index + 1)?.let { ModelixNodeAsMPSNode(it) }
+        return siblings.getOrNull(index + 1).wrap()
     }
 
     override fun getChildren(link: SContainmentLink?): MutableIterable<SNode> =
         node
             .getChildren(link?.let { MPSChildLink(it).toReference() } ?: NullChildLinkReference)
-            .map { ModelixNodeAsMPSNode(it) }
+            .wrap()
             .toMutableList()
 
     override fun getChildren(): MutableIterable<SNode> =
         node
             .getAllChildren()
-            .map { ModelixNodeAsMPSNode(it) }
+            .wrap()
             .toMutableList()
 
     @Suppress("removal")
@@ -343,7 +368,7 @@ data class ModelixNodeAsMPSNode(
     override fun getPropertyNames(): MutableIterable<String> = properties.map { it.name }.toMutableList()
 
     @JvmName("wrapNode")
-    private fun IReadableNode.wrap(): ModelixNodeAsMPSNode = ModelixNodeAsMPSNode(this)
+    private fun IReadableNode.wrap(): ModelixNodeAsMPSNode = getInstance(this)
 
     @Suppress("SimpleRedundantLet")
     @JvmName("wrapNodeNullable")
