@@ -11,6 +11,7 @@ import org.modelix.editor.text.shared.celltree.IMutableCellTree
 import org.modelix.editor.text.shared.celltree.cellReferences
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.incremental.incrementalFunction
+import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.IConceptReference
 import org.modelix.model.api.INode
@@ -57,6 +58,28 @@ class EditorEngine(
             getCheckMessages(node) + node.allChildren.flatMap { allSubtreeMessages(it) }
         }
 
+    /**
+     * The whole-node messages of [node] and of all its ancestors up to (and including) the AST root node. A
+     * whole-node message applies to the whole node, so it has to underline the node's entire cell range. Because
+     * that range is the union of the node's own cells and the cells of its rendered descendants, each rendered node
+     * underlines its own cells with the whole-node messages returned here; combined across the tree this covers the
+     * full range.
+     *
+     * The result is cached per node (each node reuses its parent's result), so a message change on an ancestor only
+     * recomputes the path down to it. The walk stops at the AST root so that model/module wrapper nodes above it are
+     * never queried.
+     */
+    private val fInheritedWholeNodeMessages: (INode) -> List<CheckMessage> =
+        this.incrementalEngine.incrementalFunction("inheritedWholeNodeMessages") { _, node ->
+            val own = getCheckMessages(node).filter { it.target == CheckMessageTarget.WholeNode }
+            val parent = node.parent
+            if (parent == null || node.getContainmentLink()?.getUID() == ROOT_NODES_UID) {
+                own
+            } else {
+                own + inheritedWholeNodeMessages(parent)
+            }
+        }
+
     private val createCellSpecIncremental: (CellTreeState, CellCreationCall) -> CellSpecBase =
         this.incrementalEngine.incrementalFunction("createCellData") { _, editorState, call ->
             when (call) {
@@ -66,14 +89,16 @@ class EditorEngine(
                     cellData.properties[CommonCellProperties.node] = node.toNonExisting()
                     cellData.properties[CommonCellProperties.cellCall] = call
                     // Messages whose target cell (a property or reference cell) is rendered are attached to that
-                    // cell by the respective cell template. Everything else has no cell of its own and must be
-                    // surfaced here, on the node itself:
-                    //  - whole-node messages,
+                    // cell by the respective cell template. Everything else has no cell of its own and is surfaced
+                    // here, on this node's cells:
+                    //  - whole-node messages of this node and its ancestors, so a message underlines the whole cell
+                    //    range of its node (this node contributes its part of that range),
                     //  - targeted messages whose feature cell the editor does not render,
                     //  - all messages of descendants that are not rendered at all (this is the nearest visible ancestor).
-                    val unattachedOwnMessages = collectUnattachedOwnMessages(node, cellData)
-                    val hiddenDescendantMessages = collectHiddenDescendantMessages(node, cellData)
-                    val messages = unattachedOwnMessages + hiddenDescendantMessages
+                    val messages =
+                        inheritedWholeNodeMessages(node) +
+                            collectUnrenderedFeatureMessages(node, cellData) +
+                            collectHiddenDescendantMessages(node, cellData)
                     if (messages.isNotEmpty()) applyCheckMessages(cellData, messages)
                     cellData.freeze()
                     LOG.trace { "Cell created for $node: $cellData" }
@@ -255,12 +280,11 @@ class EditorEngine(
     }
 
     /**
-     * Returns [node]'s own messages that could not be attached to a cell of their own and therefore have to be
-     * shown on the node itself. A property or reference message is attached (by its cell template) only when the
-     * editor actually renders a cell for that feature; if it does not, the message would otherwise be lost.
-     * Whole-node messages have no dedicated feature cell and are always surfaced here.
+     * Returns [node]'s property/reference messages whose feature cell the editor does not render, so they could not
+     * be attached to a cell of their own by the cell template and would otherwise be lost. Whole-node messages are
+     * not returned here; they are handled as a range by [inheritedWholeNodeMessages].
      */
-    private fun collectUnattachedOwnMessages(
+    private fun collectUnrenderedFeatureMessages(
         node: INode,
         cellData: CellSpecBase,
     ): List<CheckMessage> {
@@ -268,12 +292,14 @@ class EditorEngine(
         collectRenderedFeatureCells(cellData, node.reference, renderedFeatures)
         return getCheckMessages(node).filter { message ->
             when (val target = message.target) {
-                is CheckMessageTarget.WholeNode -> true
+                is CheckMessageTarget.WholeNode -> false
                 is CheckMessageTarget.PropertyTarget -> renderedFeatures.properties.none { it.matches(target.role) }
                 is CheckMessageTarget.ReferenceTarget -> renderedFeatures.references.none { it.matches(target.role) }
             }
         }
     }
+
+    private fun inheritedWholeNodeMessages(node: INode): List<CheckMessage> = fInheritedWholeNodeMessages(node)
 
     /**
      * Collects the properties and references of [node] for which the cell spec renders a cell. Stops at child node
@@ -370,6 +396,10 @@ class EditorEngine(
         private val LOG =
             io.github.oshai.kotlinlogging.KotlinLogging
                 .logger {}
+
+        private val ROOT_NODES_UID =
+            BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
+                .getUID()
     }
 }
 

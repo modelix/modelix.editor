@@ -4,6 +4,8 @@ import org.modelix.editor.text.frontend.FrontendCellTree
 import org.modelix.editor.text.frontend.layout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Verifies that check messages are aggregated into the gutter of the line where the message-bearing cell's content
@@ -40,6 +42,34 @@ class GutterLayoutTest {
 
         val line = cell.layout.lines.single()
         assertEquals(setOf("boom"), line.getGutterState().errors)
+    }
+
+    @Test
+    fun spaceBetweenTwoErroredCellsIsUnderlined() {
+        val tree = FrontendCellTree()
+        val a = EditorTestUtils.buildCells("a", tree)
+        val b = EditorTestUtils.buildCells("b", tree)
+        a.setProperty(CommonCellProperties.errorMessage, "e")
+        b.setProperty(CommonCellProperties.errorMessage, "e")
+        val root = EditorTestUtils.buildCells(listOf(a, b), tree)
+
+        val line = root.layout.lines.single()
+        val space = line.words.first { it is LayoutableSpace }
+        assertTrue(line.isUnderlinedError(space), "space inside the errored range should be underlined")
+    }
+
+    @Test
+    fun spaceNextToOnlyOneErroredCellIsNotUnderlined() {
+        val tree = FrontendCellTree()
+        val a = EditorTestUtils.buildCells("a", tree)
+        val b = EditorTestUtils.buildCells("b", tree)
+        a.setProperty(CommonCellProperties.errorMessage, "e")
+        // b has no message
+        val root = EditorTestUtils.buildCells(listOf(a, b), tree)
+
+        val line = root.layout.lines.single()
+        val space = line.words.first { it is LayoutableSpace }
+        assertFalse(line.isUnderlinedError(space), "space at the edge of the range should not be underlined")
     }
 
     @Test
