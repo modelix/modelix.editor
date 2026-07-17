@@ -607,13 +607,11 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test model checker reports typesystem error and updates on model changes`() =
         kotlinx.coroutines.test.runTest {
-            // The test project already produces messages (e.g. a false "Duplicated name of classifier" error caused
-            // by MPS rules comparing wrapped against unwrapped nodes by identity), so only assert on the delta.
-            val baseline = errorMessages()
-            assertTrue(
-                "Unexpected checker failure: $baseline",
-                baseline.none { it.message.contains("failed:") },
-            )
+            // MPS rules compare nodes by reference identity (e.g. `it != classifier` in
+            // check_DuplicateClassifierNames_NonTypesystemRule), so the wrappers around the checked nodes must be
+            // canonical instances and navigation via the model must not leak unwrapped nodes.
+            // Otherwise false positives are reported here.
+            assertEquals(emptyList<CheckMessage>(), errorMessages())
 
             // `return 10;` inside the void method is a typesystem error
             placeCaretIntoCellWithText("<no statement>")
@@ -627,7 +625,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             }
         """)
 
-            val newErrors = errorMessages() - baseline
+            val newErrors = errorMessages()
             newErrors.forEach { println("reported: ${it.severity}: ${it.message}") }
             assertNotEmpty(newErrors)
             assertTrue(
@@ -653,7 +651,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
               }
             }
         """)
-            assertEquals(baseline, errorMessages())
+            assertEquals(emptyList<CheckMessage>(), errorMessages())
         }
 
     fun `test statement parsing 1`() = runParsingTest("int a;")
