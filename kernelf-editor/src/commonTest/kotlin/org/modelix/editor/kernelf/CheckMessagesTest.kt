@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import org.iets3.core.expr.base.C_ParensExpression
 import org.iets3.core.expr.base.C_PlusExpression
 import org.iets3.core.expr.base.N_ParensExpression
+import org.iets3.core.expr.base.N_PlusExpression
 import org.iets3.core.expr.simpleTypes.C_NumberLiteral
 import org.iets3.core.expr.simpleTypes.N_NumberLiteral
 import org.modelix.checks.CheckMessage
@@ -97,6 +98,70 @@ class CheckMessagesTest {
                     }
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.errorMessage))
                 assertEquals(null, cellWithoutMessages.getProperty(CommonCellProperties.warningMessage))
+            } finally {
+                ModelCheckAspect.checkers.remove(checker)
+                KernelfLanguages.languages.forEach { it.unregister() }
+            }
+        }
+
+    @Test
+    fun wholeNodeMessageUnderlinesTheWholeNodeRange() =
+        runTest {
+            KernelfLanguages.registerAll()
+            lateinit var plusExpression: N_PlusExpression
+            lateinit var leftLiteral: N_NumberLiteral
+            lateinit var rightLiteral: N_NumberLiteral
+            val branch = ModelFacade.toLocalBranch(ModelFacade.newLocalTree(useRoleIds = false)).withIncrementalComputationSupport()
+            val parensExpression =
+                branch.computeWrite {
+                    PArea(branch)
+                        .getRoot()
+                        .addNewChild("root", -1, C_ParensExpression.untyped())
+                        .typed<N_ParensExpression>()
+                        .apply {
+                            expr.setNew(C_PlusExpression) {
+                                plusExpression = this
+                                left.setNew(C_NumberLiteral) {
+                                    leftLiteral = this
+                                    value = "200"
+                                }
+                                right.setNew(C_NumberLiteral) {
+                                    rightLiteral = this
+                                    value = "100"
+                                }
+                            }
+                        }
+                }
+
+            val checker =
+                object : IModelChecker {
+                    override fun getMessages(
+                        engine: IIncrementalEngine,
+                        node: INode,
+                    ): List<CheckMessage> =
+                        if (node.reference == plusExpression.untypedReference()) {
+                            listOf(CheckMessage("type error", CheckSeverity.ERROR, CheckMessageTarget.WholeNode))
+                        } else {
+                            emptyList()
+                        }
+                }
+            ModelCheckAspect.checkers.add(checker)
+            try {
+                val engine = EditorEngine(IncrementalEngine())
+                KernelfEditor.register(engine)
+                val service = TextEditorServiceImpl(engine, parensExpression.untyped().asWritableNode().getModel(), backgroundScope)
+                val editor = FrontendEditorComponent(service)
+                editor.editNode(parensExpression.untypedReference())
+                editor.flush()
+
+                // The message targets the PlusExpression as a whole, so both operand literals (child nodes) must be
+                // underlined too, not just the '+' operator that belongs to the PlusExpression itself.
+                val leftCell =
+                    checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, leftLiteral)) { "left 'value' cell not found" }
+                val rightCell =
+                    checkNotNull(editor.resolvePropertyCell(C_NumberLiteral.value, rightLiteral)) { "right 'value' cell not found" }
+                assertEquals("type error", leftCell.getProperty(CommonCellProperties.errorMessage))
+                assertEquals("type error", rightCell.getProperty(CommonCellProperties.errorMessage))
             } finally {
                 ModelCheckAspect.checkers.remove(checker)
                 KernelfLanguages.languages.forEach { it.unregister() }
