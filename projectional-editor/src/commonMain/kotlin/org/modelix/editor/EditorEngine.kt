@@ -14,6 +14,9 @@ import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.IConceptReference
 import org.modelix.model.api.INode
+import org.modelix.model.api.INodeReference
+import org.modelix.model.api.IPropertyReference
+import org.modelix.model.api.IReferenceLinkReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getAllConcepts
 import org.modelix.model.api.remove
@@ -45,6 +48,15 @@ class EditorEngine(
             cell
         }
 
+    /**
+     * Aggregates the check messages of a subtree. Only invoked for descendants that are not rendered in the editor
+     * (see [collectHiddenDescendantMessages]), so caching is limited to the hidden parts of the model.
+     */
+    private val fAllSubtreeMessages: (INode) -> List<CheckMessage> =
+        this.incrementalEngine.incrementalFunction("allSubtreeMessages") { _, node ->
+            getCheckMessages(node) + node.allChildren.flatMap { allSubtreeMessages(it) }
+        }
+
     private val createCellSpecIncremental: (CellTreeState, CellCreationCall) -> CellSpecBase =
         this.incrementalEngine.incrementalFunction("createCellData") { _, editorState, call ->
             when (call) {
@@ -53,8 +65,16 @@ class EditorEngine(
                     val cellData = doCreateCellData(editorState, node)
                     cellData.properties[CommonCellProperties.node] = node.toNonExisting()
                     cellData.properties[CommonCellProperties.cellCall] = call
-                    val wholeNodeMessages = getCheckMessages(node).filter { it.target == CheckMessageTarget.WholeNode }
-                    if (wholeNodeMessages.isNotEmpty()) applyCheckMessages(cellData, wholeNodeMessages)
+                    // Messages whose target cell (a property or reference cell) is rendered are attached to that
+                    // cell by the respective cell template. Everything else has no cell of its own and must be
+                    // surfaced here, on the node itself:
+                    //  - whole-node messages,
+                    //  - targeted messages whose feature cell the editor does not render,
+                    //  - all messages of descendants that are not rendered at all (this is the nearest visible ancestor).
+                    val unattachedOwnMessages = collectUnattachedOwnMessages(node, cellData)
+                    val hiddenDescendantMessages = collectHiddenDescendantMessages(node, cellData)
+                    val messages = unattachedOwnMessages + hiddenDescendantMessages
+                    if (messages.isNotEmpty()) applyCheckMessages(cellData, messages)
                     cellData.freeze()
                     LOG.trace { "Cell created for $node: $cellData" }
                     cellData
@@ -207,15 +227,117 @@ class EditorEngine(
     fun getCheckMessages(node: INode): List<CheckMessage> = ModelCheckAspect.getMessages(incrementalEngine, node)
 
     /**
-     * Applies the messages to all text cells of the node's own cell spec (not descending into child nodes,
-     * which handle their own messages).
+     * Collects the check messages of all descendants of [node] that are not rendered in the editor.
+     *
+     * A child node is rendered when the node's cell spec references it (via a [ChildSpecReference]). Children that
+     * are not referenced get no cell, and neither do any of their descendants, so their messages would never be
+     * shown. Those messages are returned here so the caller can attach them to [node], the nearest visible ancestor.
+     */
+    private fun collectHiddenDescendantMessages(
+        node: INode,
+        cellData: CellSpecBase,
+    ): List<CheckMessage> {
+        val renderedChildren = HashSet<INodeReference>()
+        collectRenderedChildNodes(cellData, renderedChildren)
+        return node.allChildren
+            .filter { it.reference !in renderedChildren }
+            .flatMap { allSubtreeMessages(it) }
+    }
+
+    private fun collectRenderedChildNodes(
+        spec: ILocalOrChildNodeCell,
+        acc: MutableSet<INodeReference>,
+    ) {
+        when (spec) {
+            is ChildSpecReference -> acc.add(spec.childNode.reference)
+            is CellSpecBase -> spec.children.forEach { collectRenderedChildNodes(it, acc) }
+        }
+    }
+
+    /**
+     * Returns [node]'s own messages that could not be attached to a cell of their own and therefore have to be
+     * shown on the node itself. A property or reference message is attached (by its cell template) only when the
+     * editor actually renders a cell for that feature; if it does not, the message would otherwise be lost.
+     * Whole-node messages have no dedicated feature cell and are always surfaced here.
+     */
+    private fun collectUnattachedOwnMessages(
+        node: INode,
+        cellData: CellSpecBase,
+    ): List<CheckMessage> {
+        val renderedFeatures = RenderedFeatures()
+        collectRenderedFeatureCells(cellData, node.reference, renderedFeatures)
+        return getCheckMessages(node).filter { message ->
+            when (val target = message.target) {
+                is CheckMessageTarget.WholeNode -> true
+                is CheckMessageTarget.PropertyTarget -> renderedFeatures.properties.none { it.matches(target.role) }
+                is CheckMessageTarget.ReferenceTarget -> renderedFeatures.references.none { it.matches(target.role) }
+            }
+        }
+    }
+
+    /**
+     * Collects the properties and references of [node] for which the cell spec renders a cell. Stops at child node
+     * boundaries ([ChildSpecReference]), because those children render their own feature cells.
+     */
+    private fun collectRenderedFeatureCells(
+        spec: ILocalOrChildNodeCell,
+        nodeRef: INodeReference,
+        acc: RenderedFeatures,
+    ) {
+        when (spec) {
+            is ChildSpecReference -> {
+                Unit
+            }
+
+            is CellSpecBase -> {
+                spec.cellReferences.forEach { ref ->
+                    when (ref) {
+                        is PropertyCellReference -> if (ref.nodeRef == nodeRef) acc.properties.add(ref.property)
+                        is ReferencedNodeCellReference -> if (ref.sourceNodeRef == nodeRef) acc.references.add(ref.link)
+                        else -> Unit
+                    }
+                }
+                spec.children.forEach { collectRenderedFeatureCells(it, nodeRef, acc) }
+            }
+        }
+    }
+
+    /**
+     * Returns all check messages of [node] and its whole subtree. Used for subtrees that are entirely hidden,
+     * so the individual target of a message (property/reference) can no longer be resolved to a cell and every
+     * message is instead surfaced on the nearest visible ancestor.
+     *
+     * The aggregation is cached per node in the incremental engine, so a localized model change only recomputes
+     * the results along the path from the changed node to the hidden subtree's root; unchanged sibling subtrees
+     * are reused from the cache instead of being re-walked.
+     */
+    private fun allSubtreeMessages(node: INode): List<CheckMessage> = fAllSubtreeMessages(node)
+
+    /**
+     * Applies the messages to the node's own cell spec (not descending into child nodes, which handle their own
+     * messages). The messages are attached both to the node's root cell and to each of its text cells:
+     *  - the root cell guarantees the messages reach the gutter even when the node renders no text cell of its own
+     *    (a collection cell emits a [LayoutableGutterMarker] for them),
+     *  - the text cells additionally show the messages inline as an underline.
      */
     private fun applyCheckMessages(
         data: CellSpecBase,
         messages: List<CheckMessage>,
     ) {
-        if (data is TextCellSpec) data.properties.addCheckMessages(messages)
-        data.children.forEach { if (it is CellSpecBase) applyCheckMessages(it, messages) }
+        data.properties.addCheckMessages(messages)
+        applyCheckMessagesToTextCells(data.children, messages)
+    }
+
+    private fun applyCheckMessagesToTextCells(
+        children: List<ILocalOrChildNodeCell>,
+        messages: List<CheckMessage>,
+    ) {
+        children.forEach { child ->
+            if (child is CellSpecBase) {
+                if (child is TextCellSpec) child.properties.addCheckMessages(messages)
+                applyCheckMessagesToTextCells(child.children, messages)
+            }
+        }
     }
 
     fun resolveConceptEditor(concept: IConcept?): List<ConceptEditor> {
@@ -262,6 +384,14 @@ class DeleteNodeCellAction(
         }
         return null // The frontend updates the caret position using SavedCaretPosition
     }
+}
+
+/**
+ * The properties and references of a node for which the editor renders a cell, collected while walking a cell spec.
+ */
+private class RenderedFeatures {
+    val properties: MutableList<IPropertyReference> = ArrayList()
+    val references: MutableList<IReferenceLinkReference> = ArrayList()
 }
 
 sealed class CellCreationCall

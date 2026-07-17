@@ -9,7 +9,7 @@
     background-color: rgba(128, 217, 38, 0.15);
 }
 
-.modelix-text-editor .line.highlighted:before {
+.modelix-text-editor .line.highlighted .line-gutter {
     background-color: rgba(128, 217, 38, 0.15);
 }
 
@@ -31,8 +31,7 @@
     counter-increment: line-number;
 }
 
-.modelix-text-editor .line:before {
-    content: counter(line-number);
+.modelix-text-editor .line-gutter {
     padding-right: 10px;
     margin-right: 10px;
     min-width: 30pt;
@@ -41,6 +40,22 @@
     background: #F2F2F2;
     color: #ADADAD;
     border-right: 1px solid #d1d1d1;
+}
+
+.modelix-text-editor .line-gutter:before {
+    content: counter(line-number);
+}
+
+/* A message attached to a node that has no text cell of its own is shown in the gutter instead of as an
+   inline underline. The colored border marks the line; the full message is available as a tooltip. */
+.modelix-text-editor .line-gutter.has-warning {
+    border-right: 2px solid orange;
+    color: #C77700;
+}
+
+.modelix-text-editor .line-gutter.has-error {
+    border-right: 2px solid red;
+    color: #C00000;
 }
 
 .modelix-text-editor .relative-layer {

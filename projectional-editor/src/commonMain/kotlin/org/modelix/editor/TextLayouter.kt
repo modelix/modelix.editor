@@ -12,6 +12,22 @@ import org.modelix.editor.text.frontend.type
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalList
 
+/**
+ * The check messages that are shown in the gutter for a single line. Aggregated from all cells whose content
+ * starts on the line: the text cells on the line and the [LayoutableGutterMarker]s of enclosing cells that render
+ * no text of their own (e.g. a wrapper that only delegates to a child).
+ */
+class LineGutterState(
+    val errors: Set<String>,
+    val warnings: Set<String>,
+) {
+    val hasError: Boolean get() = errors.isNotEmpty()
+    val hasWarning: Boolean get() = warnings.isNotEmpty()
+    val isEmpty: Boolean get() = errors.isEmpty() && warnings.isEmpty()
+
+    fun tooltip(): String = (errors + warnings).joinToString("\n")
+}
+
 class TextLine(
     words_: Iterable<Layoutable>,
 ) : IProducesHtml {
@@ -20,6 +36,30 @@ class TextLine(
     val words: List<Layoutable> = words_.toList()
     val layoutablesIndexList: IncrementalList<Pair<ICellTree.Cell, LayoutableCell>> =
         IncrementalList.of(words.filterIsInstance<LayoutableCell>().map { it.cell to it })
+
+    /**
+     * Aggregates the check messages shown in this line's gutter. Text cells contribute their own messages (which
+     * are also underlined inline); [LayoutableGutterMarker]s contribute the messages of enclosing cells that have
+     * no text cell of their own, so those are not lost.
+     */
+    fun getGutterState(): LineGutterState {
+        val errors = LinkedHashSet<String>()
+        val warnings = LinkedHashSet<String>()
+        words.forEach { word ->
+            when (word) {
+                is LayoutableCell -> {
+                    word.cell.getProperty(CommonCellProperties.errorMessage)?.let { errors.add(it) }
+                    word.cell.getProperty(CommonCellProperties.warningMessage)?.let { warnings.add(it) }
+                }
+
+                is LayoutableGutterMarker -> {
+                    word.errorMessage?.let { errors.add(it) }
+                    word.warningMessage?.let { warnings.add(it) }
+                }
+            }
+        }
+        return LineGutterState(errors, warnings)
+    }
 
     init {
         words.filter { it.initialLine == null }.forEach { it.initialLine = this }
@@ -46,8 +86,21 @@ class TextLine(
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
         consumer.div("line") {
+            val gutterState = getGutterState()
+            val gutterClasses =
+                listOfNotNull(
+                    "line-gutter",
+                    "has-error".takeIf { gutterState.hasError },
+                    "has-warning".takeIf { gutterState.hasWarning },
+                ).joinToString(" ")
+            span(gutterClasses) {
+                // The line number itself is rendered via CSS (content: counter(line-number)). This element only
+                // exists so the gutter can also carry error/warning styling and a tooltip with the messages.
+                if (!gutterState.isEmpty) title = gutterState.tooltip()
+            }
             words.forEach { element: Layoutable ->
-                produceChild(element)
+                // Gutter markers are invisible in the line body; they only feed the gutter aggregation above.
+                if (element !is LayoutableGutterMarker) produceChild(element)
             }
             if (words.sumOf { it.getLength() } == 0) {
                 +Typography.nbsp.toString()
@@ -178,6 +231,40 @@ class TextLayouter {
         autoInsertSpace = false
     }
 
+    /**
+     * Re-appends the words of a line that is being merged into the current line. The merged line already contains
+     * explicit [LayoutableSpace]s, so auto-spacing is suppressed between its words ([realIndex] > 0), while the space
+     * between the current line's existing content and the merged content is still inserted for its first real word.
+     * Invisible [LayoutableGutterMarker]s don't count towards that index, so they can't swallow the space between the
+     * real words around them.
+     *
+     * @param filterIndent drops the merged line's leading indentation, used when merging into a line that already
+     * has its own indentation.
+     */
+    private fun appendMergedLineWords(
+        words: List<Layoutable>,
+        filterIndent: Boolean,
+    ) {
+        var realIndex = 0
+        words.forEach { word ->
+            when {
+                word is LayoutableGutterMarker -> {
+                    append(word)
+                }
+
+                filterIndent && word is LayoutableIndent -> {
+                    Unit
+                }
+
+                else -> {
+                    if (realIndex > 0) noSpace() // already contains LayoutableSpace instances
+                    append(word)
+                    realIndex++
+                }
+            }
+        }
+    }
+
     fun append(text: LayoutedText) {
         childTexts.add(text)
         text.indent = currentIndent
@@ -189,10 +276,7 @@ class TextLayouter {
             val line = closedLinesToCopy.first()
             closedLinesToCopy = closedLinesToCopy.withoutFirst()
             if (line != null && line.words.isNotEmpty()) {
-                line.words.filter { it !is LayoutableIndent }.forEachIndexed { index, it ->
-                    if (index > 0) noSpace() // already contains LayoutableSpace instances
-                    append(it)
-                }
+                appendMergedLineWords(line.words, filterIndent = true)
             }
         }
 
@@ -208,10 +292,7 @@ class TextLayouter {
 
         if (lastLineToCopy != null) {
             if (lastLineToCopy.words.isNotEmpty()) {
-                lastLineToCopy.words.forEachIndexed { index, it ->
-                    if (index > 0) noSpace() // already contains LayoutableSpace instances
-                    append(it)
-                }
+                appendMergedLineWords(lastLineToCopy.words, filterIndent = false)
             }
             reusableLastLine = lastLineToCopy
         }
@@ -229,10 +310,18 @@ class TextLayouter {
                 addNewLine()
             }
         }
+        if (element is LayoutableGutterMarker) {
+            // The marker is invisible and must not influence the spacing of the surrounding words, so it is added
+            // without inserting a space and without changing autoInsertSpace.
+            lastLine!!.add(element)
+            return
+        }
         if (currentIndent > 0 && lastLine!!.isEmpty()) {
             // lastLine!!.add(LayoutableIndent(currentIndent))
         }
-        val lastOnLine = lastLine!!.lastOrNull()
+        // Skip invisible markers when looking at the previous element, so a marker between two words does not
+        // swallow the space that would otherwise separate them.
+        val lastOnLine = lastLine!!.lastOrNull { it !is LayoutableGutterMarker }
         if (autoInsertSpace && lastOnLine != null && !lastOnLine.isWhitespace() && element !is LayoutableSpace) {
             lastLine!!.add(LayoutableSpace())
         }
@@ -360,6 +449,28 @@ class LayoutableIndent(
         consumer.span("indent") {
             +toText().useNbsp()
         }
+    }
+}
+
+/**
+ * A zero-width, invisible element that carries the check messages of an enclosing cell which renders no text of its
+ * own (e.g. a wrapper delegating to a child) to the line where that cell's content begins. It is not shown in the
+ * line body; [TextLine.getGutterState] reads it to populate the gutter. Being an ordinary word, it flows through the
+ * layouter's line merging unchanged, and a message change produces a new instance which forces the affected line
+ * (and its gutter) to be re-rendered.
+ */
+class LayoutableGutterMarker(
+    val errorMessage: String?,
+    val warningMessage: String?,
+) : Layoutable() {
+    override fun getLength(): Int = 0
+
+    override fun isWhitespace(): Boolean = true
+
+    override fun toText(): String = ""
+
+    override fun <T> produceHtml(consumer: TagConsumer<T>) {
+        // Rendered indirectly through the line's gutter, not as part of the line body.
     }
 }
 
