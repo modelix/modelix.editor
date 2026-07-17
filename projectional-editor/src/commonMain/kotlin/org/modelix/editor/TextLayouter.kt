@@ -62,9 +62,9 @@ class TextLine(
     }
 
     /**
-     * Whether the given whitespace [word] (a space or indent) sits inside a run of cells that all carry an error,
-     * so it should be underlined together with them to make a node's cell-range underline continuous rather than
-     * broken at every space. A leading indent is only included when the range continues from the previous line.
+     * Whether the given space [word] sits between two cells that both carry an error, so it should be underlined
+     * together with them to make a node's cell-range underline continuous rather than broken at every space.
+     * Leading indentation is never underlined.
      */
     fun isUnderlinedError(word: Layoutable): Boolean =
         isInSeverityRange(word) { it.effectiveMessage(CommonCellProperties.errorMessage) != null }
@@ -80,16 +80,7 @@ class TextLine(
         if (index < 0) return false
         val cellBefore = (index - 1 downTo 0).firstNotNullOfOrNull { words[it] as? LayoutableCell }
         val cellAfter = (index + 1 until words.size).firstNotNullOfOrNull { words[it] as? LayoutableCell }
-        if (cellBefore != null && cellAfter != null) {
-            return hasSeverity(cellBefore.cell) && hasSeverity(cellAfter.cell)
-        }
-        // No cell before (a leading indent): only continue a range that already spans from the previous line, so a
-        // standalone match at the start of a line does not underline its indentation.
-        if (cellBefore == null && cellAfter != null && hasSeverity(cellAfter.cell)) {
-            val prevLineLastCell = getSibling(false)?.words?.lastOrNull { it is LayoutableCell } as LayoutableCell?
-            return prevLineLastCell != null && hasSeverity(prevLineLastCell.cell)
-        }
-        return false
+        return cellBefore != null && cellAfter != null && hasSeverity(cellBefore.cell) && hasSeverity(cellAfter.cell)
     }
 
     init {
@@ -493,7 +484,8 @@ class LayoutableIndent(
     override fun toText(): String = (1..totalIndent()).joinToString("") { "  " }
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
-        consumer.span(whitespaceUnderlineClasses("indent", this)) {
+        // Indentation is never underlined, even inside a message's cell range.
+        consumer.span("indent") {
             +toText().useNbsp()
         }
     }
@@ -529,26 +521,19 @@ class LayoutableSpace : Layoutable() {
     override fun toText(): String = " "
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
-        consumer.span(whitespaceUnderlineClasses("space", this)) {
+        // A space between two cells of the same errored/warned range is underlined too, so the range's underline
+        // is continuous rather than broken at every space.
+        val line = getLine()
+        val classes =
+            listOfNotNull(
+                "space",
+                "has-error".takeIf { line?.isUnderlinedError(this) == true },
+                "has-warning".takeIf { line?.isUnderlinedWarning(this) == true },
+            ).joinToString(" ")
+        consumer.span(classes) {
             +Typography.nbsp.toString()
         }
     }
-}
-
-/**
- * The CSS classes for a whitespace layoutable (a space or indent): its [baseClass] plus has-error/has-warning when it
- * falls inside an underlined cell range on its line (see [TextLine.isUnderlinedError]).
- */
-private fun whitespaceUnderlineClasses(
-    baseClass: String,
-    word: Layoutable,
-): String {
-    val line = word.getLine()
-    return listOfNotNull(
-        baseClass,
-        "has-error".takeIf { line?.isUnderlinedError(word) == true },
-        "has-warning".takeIf { line?.isUnderlinedWarning(word) == true },
-    ).joinToString(" ")
 }
 
 fun String.useNbsp() = replace(' ', Typography.nbsp)

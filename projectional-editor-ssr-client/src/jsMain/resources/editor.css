@@ -21,17 +21,15 @@
     background-color: #DBE5FD;
 }
 
-/* Underline for text cells, and for the spaces/indents inside a node's cell range so the underline is continuous. */
+/* Underline for text cells, and for the spaces inside a node's cell range so the underline is continuous. */
 .editor .text-cell.has-error,
-.editor .space.has-error,
-.editor .indent.has-error {
+.editor .space.has-error {
     text-decoration: underline wavy red;
     text-decoration-skip-ink: none;
 }
 
 .editor .text-cell.has-warning,
-.editor .space.has-warning,
-.editor .indent.has-warning {
+.editor .space.has-warning {
     text-decoration: underline wavy orange;
     text-decoration-skip-ink: none;
 }
