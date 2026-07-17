@@ -35,15 +35,33 @@ node {
     download.set(!isCIBuild)
 }
 
+// The local @modelix/projectional-editor-ssr-client-lib dependency is a pnpm
+// `file:` dependency pointing at this directory, which is produced from the
+// Kotlin/JS sources of :projectional-editor-ssr-client-lib.
+val clientLibPackageDir =
+    project(":projectional-editor-ssr-client-lib").layout.buildDirectory.dir("packages/js")
+
 tasks.withType(PnpmSetupTask::class.java) {
     dependsOn(":projectional-editor-ssr-client-lib:packJsPackage")
 }
 
+// `pnpm install` copies the `file:` dependency into node_modules, but Gradle only
+// re-runs pnpmInstall when it sees a changed input. Declaring the client library
+// package as an input makes pnpmInstall refresh node_modules whenever the Kotlin/JS
+// sources change, instead of silently reusing a stale copy.
+tasks.named("pnpmInstall") {
+    dependsOn(":projectional-editor-ssr-client-lib:assembleJsPackage")
+    inputs.dir(clientLibPackageDir).withPropertyName("clientLibPackage")
+}
+
 tasks.named("pnpm_run_build") {
-    dependsOn("pnpmSetup")
+    dependsOn("pnpmInstall")
     inputs.dir("src")
     inputs.file("package.json")
     inputs.file("pnpm-lock.yaml")
+    // Without this the vite build is considered up-to-date and produces a stale
+    // client bundle when only the Kotlin/JS client library changed.
+    inputs.dir(clientLibPackageDir).withPropertyName("clientLibPackage")
 
     outputs.dir("dist")
 }
