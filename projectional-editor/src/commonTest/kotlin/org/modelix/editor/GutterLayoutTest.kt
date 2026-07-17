@@ -11,6 +11,26 @@ import kotlin.test.assertEquals
  */
 class GutterLayoutTest {
     private val newLine = EditorTestUtils.newLine
+    private val indentChildren = EditorTestUtils.indentChildren
+
+    @Test
+    fun markerDoesNotChangeIndentationOrText() {
+        fun render(withMessage: Boolean): String {
+            val tree = FrontendCellTree()
+            val wrapper = EditorTestUtils.buildCells(listOf("b"), tree)
+            if (withMessage) wrapper.setProperty(CommonCellProperties.errorMessage, "b error")
+            val root =
+                EditorTestUtils.buildCells(
+                    listOf("{", newLine, listOf(indentChildren, wrapper, newLine, "c"), newLine, "}"),
+                    tree,
+                )
+            return root.layout.toString()
+        }
+
+        // The invisible marker must not shift the text or its indentation.
+        assertEquals("{\n  b\n  c\n}", render(false))
+        assertEquals(render(false), render(true))
+    }
 
     @Test
     fun messageOnTextCellShowsInGutter() {
