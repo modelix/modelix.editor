@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     `maven-publish`
-    id("com.dorongold.task-tree") version "4.0.1"
+    id("com.dorongold.task-tree") version "4.0.2"
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.rpc) apply false
