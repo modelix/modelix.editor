@@ -1012,5 +1012,32 @@
       </node>
     </node>
   </node>
+  <node concept="24kQdi" id="1nuEuAnpG_5">
+    <ref role="1XX52x" to="f8gn:1nuEuAnpfoj" resolve="BL_ColorValue" />
+    <node concept="3EZMnI" id="1nuEuAnpG_7" role="2wV5jI">
+      <node concept="l2Vlx" id="1nuEuAnpG_8" role="2iSdaV" />
+      <node concept="3F0ifn" id="1nuEuAnpG_9" role="3EZMnx">
+        <property role="3F0ifm" value="*(" />
+        <node concept="3mYdg7" id="1nuEuAnpG_a" role="3F10Kt">
+          <property role="1413C4" value="p" />
+        </node>
+        <node concept="11LMrY" id="1nuEuAnpG_b" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="3F1sOY" id="1nuEuAnpG_c" role="3EZMnx">
+        <ref role="1NtTu8" to="f8gn:1nuEuAnpfok" resolve="expression" />
+      </node>
+      <node concept="3F0ifn" id="1nuEuAnpG_d" role="3EZMnx">
+        <property role="3F0ifm" value=")" />
+        <node concept="3mYdg7" id="1nuEuAnpG_e" role="3F10Kt">
+          <property role="1413C4" value="p" />
+        </node>
+        <node concept="11L4FC" id="1nuEuAnpG_f" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+    </node>
+  </node>
 </model>
 
