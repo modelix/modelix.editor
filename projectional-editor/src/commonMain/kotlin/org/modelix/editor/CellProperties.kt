@@ -162,11 +162,12 @@ object CommonCellProperties {
     val indentChildren = BooleanCellPropertyKey("indent-children", false)
     val onNewLine = BooleanCellPropertyKey("on-new-line", false)
     val noSpace = BooleanCellPropertyKey("no-space", false)
-    val textColor = StringCellPropertyKey("text-color", null, inherits = true)
+    val textColor = StringCellPropertyKey("text-color", null, inherits = true, invalidatesSubtree = true)
     val errorMessage = StringCellPropertyKey("error-message", null, invalidatesSubtree = true)
     val warningMessage = StringCellPropertyKey("warning-message", null, invalidatesSubtree = true)
-    val placeholderTextColor = StringCellPropertyKey("placeholder-text-color", "lightGray", inherits = true)
-    val backgroundColor = StringCellPropertyKey("background-color", null)
+    val placeholderTextColor =
+        StringCellPropertyKey("placeholder-text-color", "lightGray", inherits = true, invalidatesSubtree = true)
+    val backgroundColor = StringCellPropertyKey("background-color", null, inherits = true, invalidatesSubtree = true)
     val textReplacement = StringCellPropertyKey("text-replacement", null)
     val tabTarget = BooleanCellPropertyKey("tab-target", false) // caret is placed into the cell when navigating via TAB
     val selectable = BooleanCellPropertyKey("selectable", false)

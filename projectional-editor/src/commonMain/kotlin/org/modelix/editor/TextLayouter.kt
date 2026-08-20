@@ -429,7 +429,7 @@ class LayoutableCell(
         val backgroundColor =
             when {
                 textIsOverridden -> "rgba(255, 0, 0, 0.5)"
-                else -> null
+                else -> cell.getProperty(CommonCellProperties.backgroundColor)
             }
         // A message is attached to a single cell but underlines that cell's whole cell range, so walk up the cell
         // tree: this text cell is underlined when it or one of its ancestors carries the message.

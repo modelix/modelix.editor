@@ -117,7 +117,15 @@ open class CellTreeBase : IMutableCellTree {
 
         override fun <T> getProperty(key: CellPropertyKey<T>): T =
             withTreeLock {
-                if (properties.containsKey(key.name)) properties[key.name] as T else key.defaultValue
+                if (properties.containsKey(key.name)) {
+                    properties[key.name] as T
+                } else {
+                    // An inheriting property that isn't set on this cell is read from the closest ancestor that sets
+                    // it (see CellPropertyKey.inherits). Such keys are `invalidatesSubtree`, so that a change on an
+                    // ancestor also drops the cached layout of the descendants that read it.
+                    val parent = parent
+                    if (key.inherits && parent != null) parent.getProperty(key) else key.defaultValue
+                }
             }
 
         fun setProperty(
