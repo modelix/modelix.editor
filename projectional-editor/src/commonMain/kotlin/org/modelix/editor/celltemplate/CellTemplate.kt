@@ -36,19 +36,28 @@ abstract class CellTemplate(
     @get:JvmName("getReferenceField")
     @set:JvmName("setReferenceField")
     protected var reference: ICellTemplateReference? = null
+
+    /**
+     * The parts of the notation that need the node in scope: everything the DSL can express, but only
+     * decidable once there is a node to render. They complete the template, so [apply] runs them first,
+     * before anything reads it.
+     *
+     * A template holding these is therefore not reusable across nodes, and is rebuilt for each of them.
+     * Caching the ones that are empty here is an optimization that is not implemented yet.
+     */
     val withNode: MutableList<(node: INode) -> Unit> = ArrayList()
 
     fun apply(
         context: CellCreationContext,
         node: INode,
     ): CellSpecBase {
+        withNode.forEach { it(node) }
         val cellData = createCell(context, node)
         cellData.properties.addAll(properties)
         cellData.children.addAll(applyChildren(context, node, cellData))
         if (properties[CommonCellProperties.layout] == ECellLayout.VERTICAL) {
             cellData.children.drop(1).forEach { (it as CellSpecBase).properties[CommonCellProperties.onNewLine] = true }
         }
-        withNode.forEach { it(node) }
         val cellReference: TemplateCellReference = createCellReference(node)
         cellData.cellReferences.add(cellReference)
         applyTextReplacement(cellData, context.cellTreeState)
