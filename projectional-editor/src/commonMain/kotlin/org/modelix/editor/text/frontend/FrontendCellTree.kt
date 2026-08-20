@@ -89,9 +89,7 @@ class FrontendCellTree(
      * just of the cell itself (see [CellPropertyKey.invalidatesSubtree]). The check operates on the string key that
      * arrives with a [CellPropertyChangeOp]/[CellPropertyRemoveOp].
      */
-    private fun invalidatesSubtree(propertyName: String): Boolean =
-        propertyName == CommonCellProperties.errorMessage.name ||
-            propertyName == CommonCellProperties.warningMessage.name
+    private fun invalidatesSubtree(propertyName: String): Boolean = propertyName in SUBTREE_INVALIDATING_PROPERTIES
 
     inner class FrontendCellImpl(
         id: CellInstanceId,
@@ -111,10 +109,30 @@ class FrontendCellTree(
         override fun <T> getProperty(key: CellPropertyKey<T>): T =
             withTreeLock {
                 require(key.frontend) { "Property ${key.name} is not available in the frontend" }
-                if (properties.containsKey(key.name)) key.fromSerializableValue(properties[key.name]) else key.defaultValue
+                if (properties.containsKey(key.name)) {
+                    key.fromSerializableValue(properties[key.name])
+                } else {
+                    // See CellTreeBase.CellImpl.getProperty: an inheriting property falls back to the closest
+                    // ancestor that sets it.
+                    val parent = getParent()
+                    if (key.inherits && parent != null) parent.getProperty(key) else key.defaultValue
+                }
             }
     }
 }
+
+/**
+ * Names of the properties whose change affects the layout of the whole subtree: the check messages, which a cell's
+ * descendants read by walking up while rendering, and the inheriting properties, which they read the same way.
+ */
+private val SUBTREE_INVALIDATING_PROPERTIES: Set<String> =
+    setOf(
+        CommonCellProperties.errorMessage,
+        CommonCellProperties.warningMessage,
+        CommonCellProperties.textColor,
+        CommonCellProperties.placeholderTextColor,
+        CommonCellProperties.backgroundColor,
+    ).map { it.name }.toSet()
 
 object LayoutComputation : IRecursiveCachableComputation<LayoutedText> {
     override fun compute(cell: ICellTree.Cell): LayoutedText = runLayoutOnCell(cell) { it.layout }
