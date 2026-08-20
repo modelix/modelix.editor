@@ -3045,6 +3045,314 @@
         </node>
       </node>
     </node>
+    <node concept="3aamgX" id="74Ju8e4RkS9" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jA$7" resolve="ItalicStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4RkSa" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4RkSb" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4RkSc" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4RkSd" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4RkSe" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4RkSf" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4RkSg" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4RkSh" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4RkSi" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4RkSj" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4RkSk" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4RkSl" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4RkSm" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4RkSn" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4RkSi" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4RkSo" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.italic(boolean)" resolve="italic" />
+                      <node concept="3clFbT" id="74Ju8e4RkS$" role="37wK5m">
+                        <property role="3clFbU" value="true" />
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4RkSx" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4RkSy" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4RkSz" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="74Ju8e4RkS_" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jABp" resolve="UnderlinedStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4RkSA" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4RkSB" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4RkSC" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4RkSD" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4RkSE" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4RkSF" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4RkSG" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4RkSH" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4RkSI" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4RkSJ" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4RkSK" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4RkSL" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4RkSM" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4RkSN" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4RkSI" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4RkSO" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.underlined(boolean)" resolve="underlined" />
+                      <node concept="3clFbT" id="74Ju8e4RkT0" role="37wK5m">
+                        <property role="3clFbU" value="true" />
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4RkSX" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4RkSY" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4RkSZ" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="74Ju8e4RkT1" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jAEG" resolve="StrikeOutStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4RkT2" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4RkT3" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4RkT4" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4RkT5" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4RkT6" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4RkT7" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4RkT8" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4RkT9" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4RkTa" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4RkTb" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4RkTc" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4RkTd" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4RkTe" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4RkTf" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4RkTa" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4RkTg" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.strikeOut(boolean)" resolve="strikeOut" />
+                      <node concept="3clFbT" id="74Ju8e4RkTs" role="37wK5m">
+                        <property role="3clFbU" value="true" />
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4RkTp" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4RkTq" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4RkTr" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="74Ju8e4RkTt" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jAwQ" resolve="BoldStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4RkTu" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4RkTv" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4RkTw" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4RkTx" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4RkTy" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4RkTz" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4RkT$" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4RkT_" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4RkTA" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4RkTB" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4RkTC" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4RkTD" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4RkTE" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4RkTF" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4RkTA" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4RkTG" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.bold(boolean)" resolve="bold" />
+                      <node concept="3clFbT" id="74Ju8e4RkTS" role="37wK5m">
+                        <property role="3clFbU" value="true" />
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4RkTP" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4RkTQ" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4RkTR" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="74Ju8e4ThK4" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jAql" resolve="FontFamilyStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4ThK5" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4ThK6" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4ThK7" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4ThK8" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4ThK9" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4ThKa" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4ThKb" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4ThKc" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4ThKd" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4ThKe" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4ThKf" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4ThKg" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4ThKh" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4ThKi" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4ThKd" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4ThKj" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.fontFamily(java.lang.String)" resolve="fontFamily" />
+                      <node concept="Xl_RD" id="74Ju8e4ThKk" role="37wK5m">
+                        <property role="Xl_RC" value="abc" />
+                        <node concept="17Uvod" id="74Ju8e4ThKl" role="lGtFl">
+                          <property role="2qtEX9" value="value" />
+                          <property role="P4ACc" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1070475926800/1070475926801" />
+                          <node concept="3zFVjK" id="74Ju8e4ThKm" role="3zH0cK">
+                            <node concept="3clFbS" id="74Ju8e4ThKn" role="2VODD2">
+                              <node concept="3clFbF" id="74Ju8e4ThKo" role="3cqZAp">
+                                <node concept="2OqwBi" id="74Ju8e4ThKp" role="3clFbG">
+                                  <node concept="30H73N" id="74Ju8e4ThKq" role="2Oq$k0" />
+                                  <node concept="3TrcHB" id="74Ju8e4ThKv" role="2OqNvi">
+                                    <ref role="3TsBF5" to="f8gn:4DCI_D3jAqm" resolve="family" />
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4ThKs" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4ThKt" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4ThKu" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="74Ju8e4ThKw" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:4DCI_D3jAt_" resolve="FontSizeStyleItem" />
+      <node concept="1Koe21" id="74Ju8e4ThKx" role="1lVwrX">
+        <node concept="2OqwBi" id="74Ju8e4ThKy" role="1Koe22">
+          <node concept="2ShNRf" id="74Ju8e4ThKz" role="2Oq$k0">
+            <node concept="1pGfFk" id="74Ju8e4ThK$" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="74Ju8e4ThK_" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="74Ju8e4ThKA" role="37wK5m" />
+            <node concept="3clFbT" id="74Ju8e4ThKB" role="37wK5m" />
+            <node concept="1bVj0M" id="74Ju8e4ThKC" role="37wK5m">
+              <node concept="gl6BB" id="74Ju8e4ThKD" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="74Ju8e4ThKE" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="74Ju8e4ThKF" role="1bW5cS">
+                <node concept="3clFbF" id="74Ju8e4ThKG" role="3cqZAp">
+                  <node concept="2OqwBi" id="74Ju8e4ThKH" role="3clFbG">
+                    <node concept="37vLTw" id="74Ju8e4ThKI" role="2Oq$k0">
+                      <ref role="3cqZAo" node="74Ju8e4ThKD" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="74Ju8e4ThKJ" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.fontSize(java.lang.String)" resolve="fontSize" />
+                      <node concept="Xl_RD" id="74Ju8e4ThKK" role="37wK5m">
+                        <property role="Xl_RC" value="abc" />
+                        <node concept="17Uvod" id="74Ju8e4ThKL" role="lGtFl">
+                          <property role="2qtEX9" value="value" />
+                          <property role="P4ACc" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1070475926800/1070475926801" />
+                          <node concept="3zFVjK" id="74Ju8e4ThKM" role="3zH0cK">
+                            <node concept="3clFbS" id="74Ju8e4ThKN" role="2VODD2">
+                              <node concept="3clFbF" id="74Ju8e4ThKO" role="3cqZAp">
+                                <node concept="2OqwBi" id="74Ju8e4ThKP" role="3clFbG">
+                                  <node concept="30H73N" id="74Ju8e4ThKQ" role="2Oq$k0" />
+                                  <node concept="3TrcHB" id="74Ju8e4ThKV" role="2OqNvi">
+                                    <ref role="3TsBF5" to="f8gn:4DCI_D3jAtA" resolve="size" />
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="74Ju8e4ThKS" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="74Ju8e4ThKT" role="3cqZAp">
+                  <node concept="10M0yZ" id="74Ju8e4ThKU" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
   </node>
   <node concept="312cEu" id="7HT$1xKu5Jt">
     <property role="TrG5h" value="AspectsDescriptor" />

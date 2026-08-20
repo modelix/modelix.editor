@@ -38,6 +38,7 @@
       </concept>
       <concept id="1225271177708" name="jetbrains.mps.baseLanguage.structure.StringType" flags="in" index="17QB3L" />
       <concept id="1225271221393" name="jetbrains.mps.baseLanguage.structure.NPENotEqualsExpression" flags="nn" index="17QLQc" />
+      <concept id="1225271369338" name="jetbrains.mps.baseLanguage.structure.IsEmptyOperation" flags="nn" index="17RlXB" />
       <concept id="4972933694980447171" name="jetbrains.mps.baseLanguage.structure.BaseVariableDeclaration" flags="ng" index="19Szcq">
         <child id="5680397130376446158" name="type" index="1tU5fm" />
       </concept>
@@ -672,6 +673,72 @@
     <node concept="1YaCAy" id="1nuEuAgyY$o" role="1YuTPh">
       <property role="TrG5h" value="n" />
       <ref role="1YaFvo" to="f8gn:7dm8yUsMxww" resolve="Cell" />
+    </node>
+  </node>
+  <node concept="18kY7G" id="4DCI_D3lEu_">
+    <property role="TrG5h" value="check_FontFamilyStyleItem" />
+    <property role="3GE5qa" value="styles" />
+    <node concept="3clFbS" id="4DCI_D3lEuC" role="18ibNy">
+      <node concept="3clFbJ" id="4DCI_D3lEuD" role="3cqZAp">
+        <node concept="2OqwBi" id="4DCI_D3lEuG" role="3clFbw">
+          <node concept="2OqwBi" id="4DCI_D3lEuJ" role="2Oq$k0">
+            <node concept="1YBJjd" id="4DCI_D3lEuM" role="2Oq$k0">
+              <ref role="1YBMHb" node="4DCI_D3lEuV" resolve="n" />
+            </node>
+            <node concept="3TrcHB" id="4DCI_D3lEuN" role="2OqNvi">
+              <ref role="3TsBF5" to="f8gn:4DCI_D3jAqm" resolve="family" />
+            </node>
+          </node>
+          <node concept="17RlXB" id="4DCI_D3lEuO" role="2OqNvi" />
+        </node>
+        <node concept="3clFbS" id="4DCI_D3lEuP" role="3clFbx">
+          <node concept="2MkqsV" id="4DCI_D3lEuQ" role="3cqZAp">
+            <node concept="Xl_RD" id="4DCI_D3lEuT" role="2MkJ7o">
+              <property role="Xl_RC" value="No font family specified" />
+            </node>
+            <node concept="1YBJjd" id="4DCI_D3lEuU" role="1urrMF">
+              <ref role="1YBMHb" node="4DCI_D3lEuV" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="4DCI_D3lEuV" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:4DCI_D3jAql" resolve="FontFamilyStyleItem" />
+    </node>
+  </node>
+  <node concept="18kY7G" id="4DCI_D3lFCt">
+    <property role="TrG5h" value="check_FontSizeStyleItem" />
+    <property role="3GE5qa" value="styles" />
+    <node concept="3clFbS" id="4DCI_D3lFCw" role="18ibNy">
+      <node concept="3clFbJ" id="4DCI_D3lFCx" role="3cqZAp">
+        <node concept="2OqwBi" id="4DCI_D3lFC$" role="3clFbw">
+          <node concept="2OqwBi" id="4DCI_D3lFCB" role="2Oq$k0">
+            <node concept="1YBJjd" id="4DCI_D3lFCE" role="2Oq$k0">
+              <ref role="1YBMHb" node="4DCI_D3lFCN" resolve="n" />
+            </node>
+            <node concept="3TrcHB" id="4DCI_D3lFCF" role="2OqNvi">
+              <ref role="3TsBF5" to="f8gn:4DCI_D3jAtA" resolve="size" />
+            </node>
+          </node>
+          <node concept="17RlXB" id="4DCI_D3lFCG" role="2OqNvi" />
+        </node>
+        <node concept="3clFbS" id="4DCI_D3lFCH" role="3clFbx">
+          <node concept="2MkqsV" id="4DCI_D3lFCI" role="3cqZAp">
+            <node concept="Xl_RD" id="4DCI_D3lFCL" role="2MkJ7o">
+              <property role="Xl_RC" value="No font size specified" />
+            </node>
+            <node concept="1YBJjd" id="4DCI_D3lFCM" role="1urrMF">
+              <ref role="1YBMHb" node="4DCI_D3lFCN" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="4DCI_D3lFCN" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:4DCI_D3jAt_" resolve="FontSizeStyleItem" />
     </node>
   </node>
 </model>

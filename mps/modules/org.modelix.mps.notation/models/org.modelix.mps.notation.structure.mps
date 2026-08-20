@@ -508,5 +508,57 @@
       <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
     </node>
   </node>
+  <node concept="1TIwiD" id="4DCI_D3jAql">
+    <property role="EcuMT" value="5353246110602117908" />
+    <property role="TrG5h" value="FontFamilyStyleItem" />
+    <property role="34LRSv" value="font-family" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+    <node concept="1TJgyi" id="4DCI_D3jAqm" role="1TKVEl">
+      <property role="IQ2nx" value="1352559845727501536" />
+      <property role="TrG5h" value="family" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="4DCI_D3jAt_">
+    <property role="EcuMT" value="697482408287495428" />
+    <property role="TrG5h" value="FontSizeStyleItem" />
+    <property role="34LRSv" value="font-size" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+    <node concept="1TJgyi" id="4DCI_D3jAtA" role="1TKVEl">
+      <property role="IQ2nx" value="4438989594929491714" />
+      <property role="TrG5h" value="size" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="4DCI_D3jAwQ">
+    <property role="EcuMT" value="7204899901527765682" />
+    <property role="TrG5h" value="BoldStyleItem" />
+    <property role="34LRSv" value="bold" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+  </node>
+  <node concept="1TIwiD" id="4DCI_D3jA$7">
+    <property role="EcuMT" value="1015907877235949181" />
+    <property role="TrG5h" value="ItalicStyleItem" />
+    <property role="34LRSv" value="italic" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+  </node>
+  <node concept="1TIwiD" id="4DCI_D3jABp">
+    <property role="EcuMT" value="646786121732785426" />
+    <property role="TrG5h" value="UnderlinedStyleItem" />
+    <property role="34LRSv" value="underlined" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+  </node>
+  <node concept="1TIwiD" id="4DCI_D3jAEG">
+    <property role="EcuMT" value="3597272673461042034" />
+    <property role="TrG5h" value="StrikeOutStyleItem" />
+    <property role="34LRSv" value="strike-out" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+  </node>
 </model>
 
