@@ -494,5 +494,19 @@
     <property role="3GE5qa" value="styles" />
     <ref role="1TJDcQ" node="43rgS5P5d3X" resolve="ColorStyleItem" />
   </node>
+  <node concept="1TIwiD" id="1nuEuAnpfoj">
+    <property role="EcuMT" value="1216438080843433818" />
+    <property role="TrG5h" value="BL_ColorValue" />
+    <property role="34LRSv" value="*(" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P5d5Q" resolve="ColorValue" />
+    <node concept="1TJgyj" id="1nuEuAnpfok" role="1TKVEi">
+      <property role="IQ2ns" value="5142972672523371767" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="expression" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
+    </node>
+  </node>
 </model>
 

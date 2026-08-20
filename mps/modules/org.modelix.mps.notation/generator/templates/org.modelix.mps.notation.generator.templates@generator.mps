@@ -2729,6 +2729,102 @@
         </node>
       </node>
     </node>
+    <node concept="3aamgX" id="4OG1auJGV_e" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:43rgS5P5dfO" resolve="TextColorStyleItem" />
+      <node concept="1Koe21" id="4OG1auJGV_f" role="1lVwrX">
+        <node concept="2OqwBi" id="4OG1auJGV_g" role="1Koe22">
+          <node concept="2ShNRf" id="4OG1auJGV_h" role="2Oq$k0">
+            <node concept="1pGfFk" id="4OG1auJGV_i" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="4OG1auJGV_j" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="4OG1auJGV_k" role="37wK5m" />
+            <node concept="3clFbT" id="4OG1auJGV_l" role="37wK5m" />
+            <node concept="1bVj0M" id="4OG1auJGV_m" role="37wK5m">
+              <node concept="gl6BB" id="4OG1auJGV_n" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="4OG1auJGV_o" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="4OG1auJGV_p" role="1bW5cS">
+                <node concept="3clFbF" id="4OG1auJGV_q" role="3cqZAp">
+                  <node concept="2OqwBi" id="4OG1auJGV_r" role="3clFbG">
+                    <node concept="37vLTw" id="4OG1auJGV_s" role="2Oq$k0">
+                      <ref role="3cqZAo" node="4OG1auJGV_n" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="4OG1auJGV_t" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
+                      <node concept="1bVj0M" id="4OG1auJGV_O" role="37wK5m">
+                        <node concept="3clFbS" id="4OG1auJGV_P" role="1bW5cS">
+                          <node concept="3clFbF" id="4OG1auKpSrj" role="3cqZAp">
+                            <node concept="2OqwBi" id="4OG1auKpSrk" role="3clFbG">
+                              <node concept="37vLTw" id="4OG1auKpSrl" role="2Oq$k0">
+                                <ref role="3cqZAo" node="4OG1auJGV_n" resolve="builder" />
+                              </node>
+                              <node concept="liA8E" id="4OG1auKpSrm" role="2OqNvi">
+                                <ref role="37wK5l" to="jej1:~CellTemplateBuilder.textColor(java.lang.String)" resolve="textColor" />
+                                <node concept="Xl_RD" id="4OG1auJGV_R" role="37wK5m">
+                                  <property role="Xl_RC" value="" />
+                                  <node concept="29HgVG" id="4OG1auJGV_S" role="lGtFl">
+                                    <node concept="3NFfHV" id="4OG1auJGV_T" role="3NFExx">
+                                      <node concept="3clFbS" id="4OG1auJGV_U" role="2VODD2">
+                                        <node concept="3clFbF" id="4OG1auJGV_V" role="3cqZAp">
+                                          <node concept="2OqwBi" id="4OG1auJGVA1" role="3clFbG">
+                                            <node concept="30H73N" id="4OG1auJGVA2" role="2Oq$k0" />
+                                            <node concept="2qgKlT" id="4OG1auJGVA3" role="2OqNvi">
+                                              <ref role="37wK5l" to="wsib:4OG1auJF0F_" resolve="getComputedExpression" />
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                          <node concept="3cpWs6" id="4OG1auKpSrw" role="3cqZAp">
+                            <node concept="10M0yZ" id="4OG1auKpSrx" role="3cqZAk">
+                              <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                              <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                            </node>
+                          </node>
+                        </node>
+                        <node concept="gl6BB" id="4OG1auJGV_Z" role="1bW2Oz">
+                          <property role="TrG5h" value="modelixNode" />
+                          <node concept="2jxLKc" id="4OG1auJGVA0" role="1tU5fm" />
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="4OG1auJGV_A" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="4OG1auJGV_B" role="3cqZAp">
+                  <node concept="10M0yZ" id="4OG1auJGV_C" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="30G5F_" id="4OG1auJGV_D" role="30HLyM">
+        <node concept="3clFbS" id="4OG1auJGV_E" role="2VODD2">
+          <node concept="3clFbF" id="4OG1auJGV_F" role="3cqZAp">
+            <node concept="2OqwBi" id="4OG1auJGV_L" role="3clFbG">
+              <node concept="30H73N" id="4OG1auJGV_M" role="2Oq$k0" />
+              <node concept="2qgKlT" id="4OG1auJGV_N" role="2OqNvi">
+                <ref role="37wK5l" to="wsib:4OG1auJF0Fh" resolve="isComputedColor" />
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
     <node concept="3aamgX" id="1nuEuAfuL31" role="3acgRq">
       <ref role="30HIoZ" to="f8gn:43rgS5P5dfO" resolve="TextColorStyleItem" />
       <node concept="1Koe21" id="1nuEuAfuL32" role="1lVwrX">
@@ -2785,6 +2881,102 @@
                     <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
                   </node>
                 </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="3aamgX" id="4OG1auJGVA4" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:1nuEuAfnjtS" resolve="BackgroundColorStyleItem" />
+      <node concept="1Koe21" id="4OG1auJGVA5" role="1lVwrX">
+        <node concept="2OqwBi" id="4OG1auJGVA6" role="1Koe22">
+          <node concept="2ShNRf" id="4OG1auJGVA7" role="2Oq$k0">
+            <node concept="1pGfFk" id="4OG1auJGVA8" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="4OG1auJGVA9" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="4OG1auJGVAa" role="37wK5m" />
+            <node concept="3clFbT" id="4OG1auJGVAb" role="37wK5m" />
+            <node concept="1bVj0M" id="4OG1auJGVAc" role="37wK5m">
+              <node concept="gl6BB" id="4OG1auJGVAd" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="2jxLKc" id="4OG1auJGVAe" role="1tU5fm" />
+              </node>
+              <node concept="3clFbS" id="4OG1auJGVAf" role="1bW5cS">
+                <node concept="3clFbF" id="4OG1auJGVAg" role="3cqZAp">
+                  <node concept="2OqwBi" id="4OG1auJGVAh" role="3clFbG">
+                    <node concept="37vLTw" id="4OG1auJGVAi" role="2Oq$k0">
+                      <ref role="3cqZAo" node="4OG1auJGVAd" resolve="builder" />
+                    </node>
+                    <node concept="liA8E" id="4OG1auJGVAj" role="2OqNvi">
+                      <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
+                      <node concept="1bVj0M" id="4OG1auJGVAE" role="37wK5m">
+                        <node concept="3clFbS" id="4OG1auJGVAF" role="1bW5cS">
+                          <node concept="3clFbF" id="4OG1auKpSry" role="3cqZAp">
+                            <node concept="2OqwBi" id="4OG1auKpSrz" role="3clFbG">
+                              <node concept="37vLTw" id="4OG1auKpSr$" role="2Oq$k0">
+                                <ref role="3cqZAo" node="4OG1auJGVAd" resolve="builder" />
+                              </node>
+                              <node concept="liA8E" id="4OG1auKpSr_" role="2OqNvi">
+                                <ref role="37wK5l" to="jej1:~CellTemplateBuilder.backgroundColor(java.lang.String)" resolve="backgroundColor" />
+                                <node concept="Xl_RD" id="4OG1auJGVAH" role="37wK5m">
+                                  <property role="Xl_RC" value="" />
+                                  <node concept="29HgVG" id="4OG1auJGVAI" role="lGtFl">
+                                    <node concept="3NFfHV" id="4OG1auJGVAJ" role="3NFExx">
+                                      <node concept="3clFbS" id="4OG1auJGVAK" role="2VODD2">
+                                        <node concept="3clFbF" id="4OG1auJGVAL" role="3cqZAp">
+                                          <node concept="2OqwBi" id="4OG1auJGVAR" role="3clFbG">
+                                            <node concept="30H73N" id="4OG1auJGVAS" role="2Oq$k0" />
+                                            <node concept="2qgKlT" id="4OG1auJGVAT" role="2OqNvi">
+                                              <ref role="37wK5l" to="wsib:4OG1auJF0F_" resolve="getComputedExpression" />
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                          <node concept="3cpWs6" id="4OG1auKpSrJ" role="3cqZAp">
+                            <node concept="10M0yZ" id="4OG1auKpSrK" role="3cqZAk">
+                              <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                              <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                            </node>
+                          </node>
+                        </node>
+                        <node concept="gl6BB" id="4OG1auJGVAP" role="1bW2Oz">
+                          <property role="TrG5h" value="modelixNode" />
+                          <node concept="2jxLKc" id="4OG1auJGVAQ" role="1tU5fm" />
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="4OG1auJGVAs" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="4OG1auJGVAt" role="3cqZAp">
+                  <node concept="10M0yZ" id="4OG1auJGVAu" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="30G5F_" id="4OG1auJGVAv" role="30HLyM">
+        <node concept="3clFbS" id="4OG1auJGVAw" role="2VODD2">
+          <node concept="3clFbF" id="4OG1auJGVAx" role="3cqZAp">
+            <node concept="2OqwBi" id="4OG1auJGVAB" role="3clFbG">
+              <node concept="30H73N" id="4OG1auJGVAC" role="2Oq$k0" />
+              <node concept="2qgKlT" id="4OG1auJGVAD" role="2OqNvi">
+                <ref role="37wK5l" to="wsib:4OG1auJF0Fh" resolve="isComputedColor" />
               </node>
             </node>
           </node>
