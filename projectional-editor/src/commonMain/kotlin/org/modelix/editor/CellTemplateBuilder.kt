@@ -140,12 +140,16 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
             .also(template::addChild)
     }
 
-    fun textColor(color: String) {
-        template.properties[CommonCellProperties.textColor] = color
+    /**
+     * A null color leaves the property unset, so it is inherited from the parent cell. That is what a
+     * notation computing its color from the node inside [withUntypedNode] returns when it has none.
+     */
+    fun textColor(color: String?) {
+        if (color != null) template.properties[CommonCellProperties.textColor] = color
     }
 
-    fun backgroundColor(color: String) {
-        template.properties[CommonCellProperties.backgroundColor] = color
+    fun backgroundColor(color: String?) {
+        if (color != null) template.properties[CommonCellProperties.backgroundColor] = color
     }
 
     fun vertical(body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
