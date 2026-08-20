@@ -15,6 +15,12 @@
       <concept id="7862711839422615209" name="jetbrains.mps.lang.structure.structure.DocumentedNodeAnnotation" flags="ng" index="t5JxF">
         <property id="7862711839422615217" name="text" index="t5JxN" />
       </concept>
+      <concept id="1082978164218" name="jetbrains.mps.lang.structure.structure.DataTypeDeclaration" flags="ng" index="AxPO6">
+        <property id="7791109065626895363" name="datatypeId" index="3F6X1D" />
+      </concept>
+      <concept id="1082978499127" name="jetbrains.mps.lang.structure.structure.ConstrainedDataTypeDeclaration" flags="ng" index="Az7Fb">
+        <property id="1083066089218" name="constraint" index="FLfZY" />
+      </concept>
       <concept id="1169125787135" name="jetbrains.mps.lang.structure.structure.AbstractConceptDeclaration" flags="ig" index="PkWjJ">
         <property id="6714410169261853888" name="conceptId" index="EcuMT" />
         <property id="4628067390765956802" name="abstract" index="R5$K7" />
@@ -138,6 +144,13 @@
     <property role="EcuMT" value="8310867745953159200" />
     <property role="TrG5h" value="Cell" />
     <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="1TJgyj" id="43rgS5P5dbz" role="1TKVEi">
+      <property role="IQ2ns" value="4673403261621162723" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="styleItems" />
+      <property role="20lbJX" value="fLJekj5/_0__n" />
+      <ref role="20lvS9" node="43rgS5P1XCO" resolve="StyleItem" />
+    </node>
     <node concept="PrWs8" id="7dm8yUsMxzU" role="PzmwI">
       <ref role="PrY4T" node="7dm8yUsMxhg" resolve="ICell" />
     </node>
@@ -388,6 +401,98 @@
     <property role="3GE5qa" value="expressions" />
     <property role="34LRSv" value="target" />
     <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
+  </node>
+  <node concept="1TIwiD" id="43rgS5P1XCO">
+    <property role="EcuMT" value="4673403261620312628" />
+    <property role="TrG5h" value="StyleItem" />
+    <property role="3GE5qa" value="styles" />
+    <property role="R5$K7" value="true" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+  </node>
+  <node concept="1TIwiD" id="43rgS5P5d3X">
+    <property role="EcuMT" value="4673403261621162237" />
+    <property role="3GE5qa" value="styles" />
+    <property role="TrG5h" value="ColorStyleItem" />
+    <property role="R5$K7" value="true" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+    <node concept="1TJgyj" id="43rgS5P5dby" role="1TKVEi">
+      <property role="IQ2ns" value="4673403261621162722" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="color" />
+      <ref role="20lvS9" node="43rgS5P5d5Q" resolve="ColorValue" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="43rgS5P5d5Q">
+    <property role="EcuMT" value="4673403261621162358" />
+    <property role="3GE5qa" value="styles" />
+    <property role="TrG5h" value="ColorValue" />
+    <property role="R5$K7" value="true" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+  </node>
+  <node concept="1TIwiD" id="43rgS5P5d7J">
+    <property role="EcuMT" value="4673403261621162479" />
+    <property role="3GE5qa" value="styles" />
+    <property role="TrG5h" value="HexColorValue" />
+    <property role="34LRSv" value="#" />
+    <ref role="1TJDcQ" node="43rgS5P5d5Q" resolve="ColorValue" />
+    <node concept="1TJgyi" id="43rgS5P5d9C" role="1TKVEl">
+      <property role="IQ2nx" value="4673403261621162600" />
+      <property role="TrG5h" value="value" />
+      <ref role="AX2Wp" node="43rgS5P5d9D" resolve="HexColorValuePattern" />
+    </node>
+  </node>
+  <node concept="Az7Fb" id="43rgS5P5d9D">
+    <property role="3F6X1D" value="4673403261621162601" />
+    <property role="3GE5qa" value="styles" />
+    <property role="TrG5h" value="HexColorValuePattern" />
+    <property role="FLfZY" value="[0-9a-fA-F]{0,6}" />
+  </node>
+  <node concept="1TIwiD" id="43rgS5P5dfO">
+    <property role="EcuMT" value="4673403261621162996" />
+    <property role="3GE5qa" value="styles" />
+    <property role="TrG5h" value="TextColorStyleItem" />
+    <property role="34LRSv" value="text-color" />
+    <ref role="1TJDcQ" node="43rgS5P5d3X" resolve="ColorStyleItem" />
+  </node>
+  <node concept="1TIwiD" id="1nuEuAfnjrj">
+    <property role="EcuMT" value="339429764947997119" />
+    <property role="TrG5h" value="StyleClass" />
+    <property role="34LRSv" value="style" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="PrWs8" id="1nuEuAfnjrk" role="PzmwI">
+      <ref role="PrY4T" node="7dm8yUsMflU" resolve="INotationModuleContent" />
+    </node>
+    <node concept="PrWs8" id="1nuEuAfnjrl" role="PzmwI">
+      <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+    <node concept="1TJgyj" id="1nuEuAfnjrm" role="1TKVEi">
+      <property role="IQ2ns" value="2814434073180947567" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="styleItems" />
+      <property role="20lbJX" value="fLJekj5/_0__n" />
+      <ref role="20lvS9" node="43rgS5P1XCO" resolve="StyleItem" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="1nuEuAfnjsA">
+    <property role="EcuMT" value="2164428496225295350" />
+    <property role="TrG5h" value="ApplyStyleClass" />
+    <property role="34LRSv" value="apply" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
+    <node concept="1TJgyj" id="1nuEuAfnjsB" role="1TKVEi">
+      <property role="IQ2ns" value="4758389092131838426" />
+      <property role="20kJfa" value="styleClass" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="1nuEuAfnjrj" resolve="StyleClass" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="1nuEuAfnjtS">
+    <property role="EcuMT" value="914622274852450787" />
+    <property role="TrG5h" value="BackgroundColorStyleItem" />
+    <property role="34LRSv" value="background-color" />
+    <property role="3GE5qa" value="styles" />
+    <ref role="1TJDcQ" node="43rgS5P5d3X" resolve="ColorStyleItem" />
   </node>
 </model>
 
