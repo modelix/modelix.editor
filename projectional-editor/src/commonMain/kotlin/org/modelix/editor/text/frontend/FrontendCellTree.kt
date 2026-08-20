@@ -132,6 +132,12 @@ private val SUBTREE_INVALIDATING_PROPERTIES: Set<String> =
         CommonCellProperties.textColor,
         CommonCellProperties.placeholderTextColor,
         CommonCellProperties.backgroundColor,
+        CommonCellProperties.fontFamily,
+        CommonCellProperties.fontSize,
+        CommonCellProperties.bold,
+        CommonCellProperties.italic,
+        CommonCellProperties.underlined,
+        CommonCellProperties.strikeOut,
     ).map { it.name }.toSet()
 
 object LayoutComputation : IRecursiveCachableComputation<LayoutedText> {
