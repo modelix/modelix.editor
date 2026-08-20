@@ -7,6 +7,7 @@ import org.modelix.editor.celltemplate.CollectionCellTemplate
 import org.modelix.editor.celltemplate.ConstantCellTemplate
 import org.modelix.editor.celltemplate.FlagCellTemplate
 import org.modelix.editor.celltemplate.LabelCellTemplate
+import org.modelix.editor.celltemplate.ModelAccessCellTemplate
 import org.modelix.editor.celltemplate.NewLineCellTemplate
 import org.modelix.editor.celltemplate.NoSpaceCellTemplate
 import org.modelix.editor.celltemplate.NotationRootCellTemplate
@@ -419,7 +420,7 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
     }
 
     fun modelAccess(body: ModelAccessBuilder.() -> Unit) {
-        var setter: (String?) -> Unit = {}
+        var setter: ((String?) -> Unit)? = null
         var getter: () -> String? = { "<getter missing>" }
         body(
             object : ModelAccessBuilder {
@@ -432,15 +433,24 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
                 }
             }
         )
-        modelAccess(getter, setter)
+        modelAccessCell(getter, setter)
     }
 
     fun modelAccess(
         getter: () -> String?,
         setter: (String?) -> Unit,
     ) {
-        // TODO ModelAccessCellTemplate
-        ConstantCellTemplate(template.concept, "<model access>").builder().template.also(template::addChild)
+        modelAccessCell(getter, setter)
+    }
+
+    private fun modelAccessCell(
+        getter: () -> String?,
+        setter: ((String?) -> Unit)?,
+    ) {
+        ModelAccessCellTemplate(template.concept, getter, setter)
+            .builder()
+            .template
+            .also(template::addChild)
     }
 
     inner class WithNodeContext(
