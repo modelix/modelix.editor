@@ -7,6 +7,7 @@
     <use id="d7706f63-9be2-479c-a3da-ae92af1e64d5" name="jetbrains.mps.lang.generator.generationContext" version="2" />
     <use id="df345b11-b8c7-4213-ac66-48d2a9b75d88" name="jetbrains.mps.baseLanguageInternal" version="0" />
     <use id="515552c7-fcc0-4ab4-9789-2f3c49344e85" name="jetbrains.mps.baseLanguage.varVariable" version="0" />
+    <use id="446c26eb-2b7b-4bf0-9b35-f83fa582753e" name="jetbrains.mps.lang.modelapi" version="0" />
     <devkit ref="a2eb3a43-fcc2-4200-80dc-c60110c4862d(jetbrains.mps.devkit.templates)" />
   </languages>
   <imports>
@@ -26,14 +27,14 @@
     <import index="jks5" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:org.modelix.model.api(org.modelix.mps.editor.common.stubs/)" />
     <import index="1ut2" ref="208eaf68-fd3a-497a-a4b6-4923ff457c3b/java:org.modelix.model.mpsadapters.tomps(org.modelix.mps.editor.common.stubs/)" />
     <import index="i8bi" ref="r:c3548bac-30eb-4a2a-937c-0111d5697309(jetbrains.mps.lang.smodel.generator.smodelAdapter)" />
-    <import index="wsib" ref="r:d1d5cd51-6710-43f8-bd5b-f958da6e1ca2(org.modelix.mps.notation.behavior)" implicit="true" />
+    <import index="tpee" ref="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" />
+    <import index="tp68" ref="r:00000000-0000-4000-0000-011c895903ac(jetbrains.mps.baseLanguageInternal.structure)" />
+    <import index="wsib" ref="r:d1d5cd51-6710-43f8-bd5b-f958da6e1ca2(org.modelix.mps.notation.behavior)" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
-    <import index="tpee" ref="r:00000000-0000-4000-0000-011c895902ca(jetbrains.mps.baseLanguage.structure)" implicit="true" />
     <import index="wyt6" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.lang(JDK/)" implicit="true" />
   </imports>
   <registry>
     <language id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage">
-      <concept id="4836112446988635817" name="jetbrains.mps.baseLanguage.structure.UndefinedType" flags="in" index="2jxLKc" />
       <concept id="1202948039474" name="jetbrains.mps.baseLanguage.structure.InstanceMethodCallOperation" flags="nn" index="liA8E" />
       <concept id="1188207840427" name="jetbrains.mps.baseLanguage.structure.AnnotationInstance" flags="nn" index="2AHcQZ">
         <reference id="1188208074048" name="annotation" index="2AI5Lk" />
@@ -62,6 +63,7 @@
         <reference id="1144433057691" name="classifier" index="1PxDUh" />
       </concept>
       <concept id="1070534058343" name="jetbrains.mps.baseLanguage.structure.NullLiteral" flags="nn" index="10Nm6u" />
+      <concept id="1070534644030" name="jetbrains.mps.baseLanguage.structure.BooleanType" flags="in" index="10P_77" />
       <concept id="1068390468200" name="jetbrains.mps.baseLanguage.structure.FieldDeclaration" flags="ig" index="312cEg" />
       <concept id="1068390468198" name="jetbrains.mps.baseLanguage.structure.ClassConcept" flags="ig" index="312cEu">
         <child id="1095933932569" name="implementedInterface" index="EKbjA" />
@@ -77,6 +79,7 @@
         <reference id="1068581517664" name="variableDeclaration" index="3cqZAo" />
       </concept>
       <concept id="1068498886292" name="jetbrains.mps.baseLanguage.structure.ParameterDeclaration" flags="ir" index="37vLTG" />
+      <concept id="1225271177708" name="jetbrains.mps.baseLanguage.structure.StringType" flags="in" index="17QB3L" />
       <concept id="1225271283259" name="jetbrains.mps.baseLanguage.structure.NPEEqualsExpression" flags="nn" index="17R0WA" />
       <concept id="1225271408483" name="jetbrains.mps.baseLanguage.structure.IsNotEmptyOperation" flags="nn" index="17RvpY" />
       <concept id="4972933694980447171" name="jetbrains.mps.baseLanguage.structure.BaseVariableDeclaration" flags="ng" index="19Szcq">
@@ -186,6 +189,7 @@
       <concept id="1167327847730" name="jetbrains.mps.lang.generator.structure.Reduction_MappingRule" flags="lg" index="3aamgX">
         <child id="1169672767469" name="ruleConsequence" index="1lVwrX" />
       </concept>
+      <concept id="1184690432998" name="jetbrains.mps.lang.generator.structure.TemplateFunctionParameter_outputNode" flags="nn" index="3l3mFP" />
       <concept id="1167756080639" name="jetbrains.mps.lang.generator.structure.PropertyMacro_GetPropertyValue" flags="in" index="3zFVjK" />
       <concept id="1167770111131" name="jetbrains.mps.lang.generator.structure.ReferenceMacro_GetReferent" flags="in" index="3$xsQk" />
       <concept id="1167945743726" name="jetbrains.mps.lang.generator.structure.IfMacro_Condition" flags="in" index="3IZrLx" />
@@ -205,14 +209,10 @@
         <child id="1167770376702" name="referentFunction" index="3$ytzL" />
       </concept>
     </language>
-    <language id="fd392034-7849-419d-9071-12563d152375" name="jetbrains.mps.baseLanguage.closures">
-      <concept id="2524418899405758586" name="jetbrains.mps.baseLanguage.closures.structure.InferredClosureParameterDeclaration" flags="ig" index="gl6BB" />
-      <concept id="1199569711397" name="jetbrains.mps.baseLanguage.closures.structure.ClosureLiteral" flags="nn" index="1bVj0M">
-        <child id="1199569906740" name="parameter" index="1bW2Oz" />
-        <child id="1199569916463" name="body" index="1bW5cS" />
-      </concept>
-    </language>
     <language id="d7706f63-9be2-479c-a3da-ae92af1e64d5" name="jetbrains.mps.lang.generator.generationContext">
+      <concept id="1218047638031" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextOp_CreateUniqueName" flags="nn" index="2piZGk">
+        <child id="1218047638032" name="baseName" index="2piZGb" />
+      </concept>
       <concept id="1216860049635" name="jetbrains.mps.lang.generator.generationContext.structure.TemplateFunctionParameter_generationContext" flags="nn" index="1iwH7S" />
       <concept id="1217004708011" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextOp_GetInputModel" flags="nn" index="1r8y6K" />
     </language>
@@ -220,6 +220,13 @@
       <concept id="4733039728785194814" name="jetbrains.mps.lang.modelapi.structure.NamedNodeReference" flags="ng" index="ZC_QK">
         <reference id="7256306938026143658" name="target" index="2aWVGs" />
         <child id="7256306938026143676" name="child" index="2aWVGa" />
+      </concept>
+    </language>
+    <language id="df345b11-b8c7-4213-ac66-48d2a9b75d88" name="jetbrains.mps.baseLanguageInternal">
+      <concept id="3329300704499081004" name="jetbrains.mps.baseLanguageInternal.structure.InternalLambdaExpression" flags="ng" index="3s519P">
+        <child id="1199569906740" name="parameter" index="1bW2Oz" />
+        <child id="1199569916463" name="body" index="1bW5cS" />
+        <child id="3329300704499081622" name="returnType" index="3s52Nf" />
       </concept>
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
@@ -334,16 +341,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZ9_Qn" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZ9_RS" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZ9EDo" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZ9EDp" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV7Sw" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV7Ui" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5f3" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZ9EDq" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5hL" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5hM" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5hN" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZ9EDr" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZ9GiV" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZ9GEn" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZ9GiT" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZ9EDp" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5f3" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlxG" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlxH" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlxI" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlxJ" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlxK" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlxL" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZ9J9w" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.constant(java.lang.String,kotlin.jvm.functions.Function1)" resolve="constant" />
@@ -370,10 +403,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="1vEPqpZ9Ms4" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZ9Msc" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV7Uj" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV7W5" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI5hO" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZ9Msd" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI5nC" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI5nD" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI5nE" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEfS" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEfT" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEfU" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEfV" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEfW" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEfX" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEfY" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEfZ" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZ9Mse" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxTZ_" role="3cqZAp">
@@ -430,16 +492,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZ9WWJ" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZ9WWK" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZ9WWL" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZ9WWM" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV7W6" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV7XS" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5nF" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZ9WWN" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5qp" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5qq" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5qr" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZ9WWO" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZ9WWP" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZ9WWQ" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZ9WWR" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZ9WWM" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5nF" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlxM" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlxN" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlxO" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlxP" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlxQ" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlxR" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZ9WWS" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.noSpace()" resolve="noSpace" />
@@ -473,16 +561,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZa9Me" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZa9Mf" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZa9Mg" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZa9Mh" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV7XT" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV7ZF" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5qs" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZa9Mi" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5ta" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5tb" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5tc" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZa9Mj" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZa9Mk" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZa9Ml" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZa9Mm" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZa9Mh" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5qs" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlxS" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlxT" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlxU" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlxV" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlxW" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlxX" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZa9Mn" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.newLine()" resolve="newLine" />
@@ -516,23 +630,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZagBt" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZagBu" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZagBv" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZagBw" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV7ZG" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV81u" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5td" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZagBx" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5vV" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5vW" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5vX" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZagBy" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZagBz" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZagB$" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZagB_" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZagBw" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5td" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlxY" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlxZ" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRly0" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRly1" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRly2" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRly3" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZagBA" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.conceptAlias(kotlin.jvm.functions.Function1)" resolve="conceptAlias" />
-                      <node concept="1bVj0M" id="1vEPqpZapxO" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZapxP" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV81v" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV83h" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI5vY" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZapxQ" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI5_E" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI5_F" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI5_G" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEg0" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEg1" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEg2" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEg3" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEg4" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEg5" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEg6" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEg7" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZapxR" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxTZH" role="3cqZAp">
@@ -589,16 +758,27 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZaquu" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZaquv" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZaquw" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZaqux" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV83i" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV854" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5_H" role="1bW2Oz">
                 <property role="TrG5h" value="rootBuilder" />
-                <node concept="2jxLKc" id="1vEPqpZaquy" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5Cr" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5Cs" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5Ct" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZaquz" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZaqu$" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZaqu_" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZaquA" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZaqux" resolve="rootBuilder" />
+                      <ref role="3cqZAo" node="4HILH0eI5_H" resolve="rootBuilder" />
                     </node>
                     <node concept="liA8E" id="1vEPqpZaquB" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~NotationRootCellTemplateBuilder.completionText(java.lang.String)" resolve="completionText" />
@@ -699,23 +879,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZaAro" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZaArp" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZaArq" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZaArr" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV855" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV86R" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5Cu" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZaArs" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5Fc" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5Fd" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5Fe" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZaArt" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZaAru" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZaArv" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZaArw" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZaArr" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5Cu" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRly4" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRly5" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRly6" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRly7" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRly8" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRly9" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZaArx" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.optional(kotlin.jvm.functions.Function1)" resolve="optional" />
-                      <node concept="1bVj0M" id="1vEPqpZaAry" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZaArz" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV86S" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV88E" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI5Ff" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZaAr$" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI5KV" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI5KW" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI5KX" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEg8" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEg9" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEga" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEgb" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEgc" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEgd" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEge" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEgf" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZaAr_" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxTZP" role="3cqZAp">
@@ -788,16 +1023,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZaNwg" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZaNwh" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZaNwi" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZaNwj" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV88F" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8at" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5KY" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZaNwk" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5NG" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5NH" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5NI" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZaNwl" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZaNwm" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZaNwn" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZaNwo" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZaNwj" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5KY" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlya" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyb" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyc" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyd" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlye" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyf" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZaNwp" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.propertyCell(org.modelix.model.api.IProperty,kotlin.jvm.functions.Function1)" resolve="propertyCell" />
@@ -846,10 +1107,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="1vEPqpZaNwq" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZaNwr" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8au" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8cg" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI5NJ" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZaNws" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI5TG" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~PropertyCellTemplateBuilder" resolve="PropertyCellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI5TH" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI5TI" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEgg" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEgh" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEgi" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEgj" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEgk" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEgl" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEgm" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEgn" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZaNwt" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxTZX" role="3cqZAp">
@@ -871,7 +1161,7 @@
                           <node concept="3clFbF" id="1vEPqpZbbtn" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZbcD4" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZbbtl" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZaNwr" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI5NJ" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZbgUd" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~PropertyCellTemplateBuilder.regex(java.lang.String)" resolve="regex" />
@@ -908,7 +1198,7 @@
                           <node concept="3clFbF" id="1vEPqpZbt9d" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZbt9e" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZbt9f" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZaNwr" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI5NJ" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZbt9g" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~PropertyCellTemplateBuilder.regex(java.lang.String)" resolve="regex" />
@@ -945,7 +1235,7 @@
                           <node concept="3clFbF" id="1vEPqpZbz$1" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZbz$2" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZbz$3" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZaNwr" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI5NJ" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZbz$4" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~PropertyCellTemplateBuilder.regex(java.lang.String)" resolve="regex" />
@@ -1014,7 +1304,7 @@
                           <node concept="3clFbF" id="1vEPqpZbKK9" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZbKKa" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZbKKb" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZaNwr" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI5NJ" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZbKKc" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~PropertyCellTemplateBuilder.regex(java.lang.String)" resolve="regex" />
@@ -1089,16 +1379,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZbZQs" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZbZQt" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZbZQu" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZbZQv" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8ch" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8e3" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI5TJ" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZbZQw" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI5Wt" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI5Wu" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI5Wv" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZbZQx" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZbZQy" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZbZQz" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZbZQ$" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZbZQv" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI5TJ" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyg" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyh" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyi" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyj" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyk" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyl" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZbZQ_" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.flagCell(org.modelix.model.api.IProperty,java.lang.String,kotlin.jvm.functions.Function1)" resolve="flagCell" />
@@ -1186,10 +1502,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="1vEPqpZbZQT" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZbZQU" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8e4" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8fQ" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI5Ww" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZbZQV" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI62x" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI62y" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI62z" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEgo" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEgp" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEgq" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEgr" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEgs" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEgt" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEgu" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEgv" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZbZQW" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU05" role="3cqZAp">
@@ -1246,16 +1591,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1vEPqpZeyli" role="37wK5m" />
             <node concept="3clFbT" id="1vEPqpZeylj" role="37wK5m" />
-            <node concept="1bVj0M" id="1vEPqpZeylk" role="37wK5m">
-              <node concept="gl6BB" id="1vEPqpZeyll" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8fR" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8hD" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI62$" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1vEPqpZeylm" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI65i" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI65j" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI65k" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1vEPqpZeyln" role="1bW5cS">
                 <node concept="3clFbF" id="1vEPqpZeylo" role="3cqZAp">
                   <node concept="2OqwBi" id="1vEPqpZeylp" role="3clFbG">
                     <node concept="37vLTw" id="1vEPqpZeylq" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1vEPqpZeyll" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI62$" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlym" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyn" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyo" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyp" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyq" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyr" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1vEPqpZeylr" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.vertical(org.modelix.model.api.IChildLink,kotlin.jvm.functions.Function1)" resolve="vertical" />
@@ -1316,10 +1687,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="1vEPqpZeym2" role="37wK5m">
-                        <node concept="gl6BB" id="1vEPqpZeym3" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8hE" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8js" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI65l" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1vEPqpZeym4" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI6bi" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~ChildCellTemplateBuilder" resolve="ChildCellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI6bj" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI6bk" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEgw" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEgx" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEgy" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEgz" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEg$" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEg_" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEgA" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEgB" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1vEPqpZeym5" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0d" role="3cqZAp">
@@ -1341,14 +1741,43 @@
                           <node concept="3clFbF" id="1vEPqpZrgZS" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZrhEO" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZrgZQ" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZeym3" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI65l" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZrmx3" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~ChildCellTemplateBuilder.separator(kotlin.jvm.functions.Function1)" resolve="separator" />
-                                <node concept="1bVj0M" id="1vEPqpZrnaa" role="37wK5m">
-                                  <node concept="gl6BB" id="1vEPqpZrnah" role="1bW2Oz">
+                                <node concept="3s519P" id="HgolRSV8jt" role="37wK5m">
+                                  <node concept="3uibUv" id="HgolRSV8lf" role="3s52Nf">
+                                    <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                  </node>
+                                  <node concept="37vLTG" id="4HILH0eI6bl" role="1bW2Oz">
                                     <property role="TrG5h" value="builder" />
-                                    <node concept="2jxLKc" id="1vEPqpZrnai" role="1tU5fm" />
+                                    <node concept="3uibUv" id="4HILH0eI6k9" role="1tU5fm">
+                                      <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                                      <node concept="3uibUv" id="4HILH0eI6ka" role="11_B2D">
+                                        <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                                      </node>
+                                      <node concept="3uibUv" id="4HILH0eI6kb" role="11_B2D">
+                                        <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                                      </node>
+                                    </node>
+                                    <node concept="17Uvod" id="HgolRTSEgC" role="lGtFl">
+                                      <property role="2qtEX9" value="name" />
+                                      <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                      <node concept="3zFVjK" id="HgolRTSEgD" role="3zH0cK">
+                                        <node concept="3clFbS" id="HgolRTSEgE" role="2VODD2">
+                                          <node concept="3clFbF" id="HgolRTSEgF" role="3cqZAp">
+                                            <node concept="2OqwBi" id="HgolRTSEgG" role="3clFbG">
+                                              <node concept="1iwH7S" id="HgolRTSEgH" role="2Oq$k0" />
+                                              <node concept="2piZGk" id="HgolRTSEgI" role="2OqNvi">
+                                                <node concept="Xl_RD" id="HgolRTSEgJ" role="2piZGb">
+                                                  <property role="Xl_RC" value="builder" />
+                                                </node>
+                                              </node>
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
                                   </node>
                                   <node concept="3clFbS" id="1vEPqpZrnaj" role="1bW5cS">
                                     <node concept="3clFbH" id="1vEPqpZroVy" role="3cqZAp">
@@ -1398,7 +1827,7 @@
                           <node concept="3clFbF" id="1vEPqpZrDky" role="3cqZAp">
                             <node concept="2OqwBi" id="1vEPqpZrDQP" role="3clFbG">
                               <node concept="37vLTw" id="1vEPqpZrDkw" role="2Oq$k0">
-                                <ref role="3cqZAo" node="1vEPqpZeym3" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI65l" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="1vEPqpZrHDY" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~ChildCellTemplateBuilder.newLineConcept(org.modelix.model.api.IConcept)" resolve="newLineConcept" />
@@ -1494,16 +1923,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZQ1VT" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZQ1VU" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZQ1VV" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZQ1VW" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8lg" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8n2" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI6kc" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZQ1VX" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI6mU" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI6mV" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI6mW" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZQ1VY" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZQ1VZ" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZQ1W0" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZQ1W1" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZQ1VW" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI6kc" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlys" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyt" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyu" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyv" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyw" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyx" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZQ1W2" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.horizontal(org.modelix.model.api.IChildLink,java.lang.String,kotlin.jvm.functions.Function1)" resolve="horizontal" />
@@ -1603,10 +2058,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="2QtC6yZQ1WH" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZQ1WI" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8n3" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8oP" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI6mX" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZQ1WJ" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI6t2" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~ChildCellTemplateBuilder" resolve="ChildCellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI6t3" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI6t4" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEgK" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEgL" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEgM" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEgN" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEgO" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEgP" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEgQ" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEgR" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZQ1WK" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0l" role="3cqZAp">
@@ -1628,14 +2112,43 @@
                           <node concept="3clFbF" id="2QtC6yZQ1WL" role="3cqZAp">
                             <node concept="2OqwBi" id="2QtC6yZQ1WM" role="3clFbG">
                               <node concept="37vLTw" id="2QtC6yZQ1WN" role="2Oq$k0">
-                                <ref role="3cqZAo" node="2QtC6yZQ1WI" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI6mX" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="2QtC6yZQ1WO" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~ChildCellTemplateBuilder.separator(kotlin.jvm.functions.Function1)" resolve="separator" />
-                                <node concept="1bVj0M" id="2QtC6yZQ1WP" role="37wK5m">
-                                  <node concept="gl6BB" id="2QtC6yZQ1WQ" role="1bW2Oz">
+                                <node concept="3s519P" id="HgolRSV8oQ" role="37wK5m">
+                                  <node concept="3uibUv" id="HgolRSV8qC" role="3s52Nf">
+                                    <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                  </node>
+                                  <node concept="37vLTG" id="4HILH0eI6t5" role="1bW2Oz">
                                     <property role="TrG5h" value="builder" />
-                                    <node concept="2jxLKc" id="2QtC6yZQ1WR" role="1tU5fm" />
+                                    <node concept="3uibUv" id="4HILH0eI6A1" role="1tU5fm">
+                                      <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                                      <node concept="3uibUv" id="4HILH0eI6A2" role="11_B2D">
+                                        <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                                      </node>
+                                      <node concept="3uibUv" id="4HILH0eI6A3" role="11_B2D">
+                                        <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                                      </node>
+                                    </node>
+                                    <node concept="17Uvod" id="HgolRTSEgS" role="lGtFl">
+                                      <property role="2qtEX9" value="name" />
+                                      <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                      <node concept="3zFVjK" id="HgolRTSEgT" role="3zH0cK">
+                                        <node concept="3clFbS" id="HgolRTSEgU" role="2VODD2">
+                                          <node concept="3clFbF" id="HgolRTSEgV" role="3cqZAp">
+                                            <node concept="2OqwBi" id="HgolRTSEgW" role="3clFbG">
+                                              <node concept="1iwH7S" id="HgolRTSEgX" role="2Oq$k0" />
+                                              <node concept="2piZGk" id="HgolRTSEgY" role="2OqNvi">
+                                                <node concept="Xl_RD" id="HgolRTSEgZ" role="2piZGb">
+                                                  <property role="Xl_RC" value="builder" />
+                                                </node>
+                                              </node>
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
                                   </node>
                                   <node concept="3clFbS" id="2QtC6yZQ1WS" role="1bW5cS">
                                     <node concept="3clFbH" id="2QtC6yZQ1WT" role="3cqZAp">
@@ -1685,7 +2198,7 @@
                           <node concept="3clFbF" id="2QtC6yZQ1Xc" role="3cqZAp">
                             <node concept="2OqwBi" id="2QtC6yZQ1Xd" role="3clFbG">
                               <node concept="37vLTw" id="2QtC6yZQ1Xe" role="2Oq$k0">
-                                <ref role="3cqZAo" node="2QtC6yZQ1WI" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI6mX" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="2QtC6yZQ1Xf" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~ChildCellTemplateBuilder.newLineConcept(org.modelix.model.api.IConcept)" resolve="newLineConcept" />
@@ -1764,16 +2277,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yYX9pB" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yYX9pC" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yYX9pD" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yYX9pE" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8qD" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8sr" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI6A4" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yYX9pF" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI6CM" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI6CN" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI6CO" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yYX9pG" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yYX9pH" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yYX9pI" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yYX9pJ" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yYX9pE" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI6A4" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyy" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyz" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRly$" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRly_" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyA" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyB" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yYX9pK" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.cell(org.modelix.model.api.IChildLink,kotlin.jvm.functions.Function1)" resolve="cell" />
@@ -1834,10 +2373,39 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="2QtC6yYX9qr" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yYX9qs" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8ss" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8ue" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI6CP" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yYX9qt" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI6II" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI6IJ" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI6IK" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEh0" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEh1" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEh2" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEh3" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEh4" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEh5" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEh6" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEh7" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yYX9qu" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0t" role="3cqZAp">
@@ -1894,16 +2462,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZ1MI9" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZ1MIa" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZ1MIb" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZ1MIc" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8uf" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8w1" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI6IL" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZ1MId" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI6Lv" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI6Lw" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI6Lx" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZ1MIe" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZ1MIf" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZ1MIg" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZ1MIh" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZ1MIc" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI6IL" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyC" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyD" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyE" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyF" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyG" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyH" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZ1MIi" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.cell(org.modelix.model.api.IReferenceLink,kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function1)" resolve="cell" />
@@ -1964,10 +2558,15 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="2QtC6yZ1MIE" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ1MIF" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8w2" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8xA" role="3s52Nf">
+                          <ref role="3uigEE" to="wyt6:~String" resolve="String" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI6Ly" role="1bW2Oz">
                           <property role="TrG5h" value="referenceTarget" />
-                          <node concept="2jxLKc" id="2QtC6yZ1MIG" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI6S$" role="1tU5fm">
+                            <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ1MIH" role="1bW5cS">
                           <node concept="3cpWs6" id="2QtC6yZ2wwd" role="3cqZAp">
@@ -1999,7 +2598,7 @@
                                 <node concept="liA8E" id="6GdlvdUGl11" role="2OqNvi">
                                   <ref role="37wK5l" to="1ut2:~ModelixNodeAsMPSNode$Companion.toMPSNode(org.modelix.model.api.INode)" resolve="toMPSNode" />
                                   <node concept="37vLTw" id="6GdlvdUGl12" role="37wK5m">
-                                    <ref role="3cqZAo" node="2QtC6yZ1MIF" resolve="referenceTarget" />
+                                    <ref role="3cqZAo" node="4HILH0eI6Ly" resolve="referenceTarget" />
                                   </node>
                                 </node>
                               </node>
@@ -2047,10 +2646,42 @@
                           </node>
                         </node>
                       </node>
-                      <node concept="1bVj0M" id="2QtC6yZ20d0" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ20d1" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8xB" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8zQ" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI6S_" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZ20d2" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI70T" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~ReferenceCellTemplateBuilder" resolve="ReferenceCellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI70U" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI70V" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI70W" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEh8" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEh9" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEha" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhb" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEhc" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEhd" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhe" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhf" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ20d3" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0_" role="3cqZAp">
@@ -2162,23 +2793,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1nuEuAfyIB8" role="37wK5m" />
             <node concept="3clFbT" id="1nuEuAfyIB9" role="37wK5m" />
-            <node concept="1bVj0M" id="1nuEuAfyIBa" role="37wK5m">
-              <node concept="gl6BB" id="1nuEuAfyIBb" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8zR" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8_D" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI70X" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1nuEuAfyIBc" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI73F" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI73G" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI73H" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1nuEuAfyIBd" role="1bW5cS">
                 <node concept="3clFbF" id="1nuEuAfyIBe" role="3cqZAp">
                   <node concept="2OqwBi" id="1nuEuAfyIBf" role="3clFbG">
                     <node concept="37vLTw" id="1nuEuAfyIBg" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1nuEuAfyIBb" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI70X" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyI" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyJ" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyK" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyL" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyM" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyN" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1nuEuAfyIBh" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.indented(kotlin.jvm.functions.Function1)" resolve="indented" />
-                      <node concept="1bVj0M" id="1nuEuAfyIBi" role="37wK5m">
-                        <node concept="gl6BB" id="1nuEuAfyIBj" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8_E" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8Bs" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI73I" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="1nuEuAfyIBk" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI79q" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI79r" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI79s" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEhg" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEhh" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEhi" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhj" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEhk" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEhl" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhm" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhn" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="1nuEuAfyIBl" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfyIBm" role="3cqZAp">
@@ -2258,23 +2944,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZ3g2R" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZ3g2S" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZ3g2T" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZ3g2U" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8Bt" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8Df" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI79t" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZ3g2V" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI7cb" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI7cc" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI7cd" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZ3g2W" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZ3g2X" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZ3g2Y" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZ3g2Z" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZ3g2U" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI79t" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyO" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyP" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyQ" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyR" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyS" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyT" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZ3g30" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.indented(kotlin.jvm.functions.Function1)" resolve="indented" />
-                      <node concept="1bVj0M" id="2QtC6yZ3g3P" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ3g3Q" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8Dg" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8F2" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI7ce" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZ3g3R" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI7hU" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI7hV" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI7hW" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEho" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEhp" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEhq" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhr" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEhs" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEht" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhu" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhv" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ3g3S" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0H" role="3cqZAp">
@@ -2347,23 +3088,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZ4acp" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZ4acq" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZ4acr" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZ4acs" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8F3" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8GP" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI7hX" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZ4act" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI7kF" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI7kG" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI7kH" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZ4acu" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZ4acv" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZ4acw" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZ4acx" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZ4acs" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI7hX" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlyU" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlyV" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlyW" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlyX" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlyY" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlyZ" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZ4acy" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.vertical(kotlin.jvm.functions.Function1)" resolve="vertical" />
-                      <node concept="1bVj0M" id="2QtC6yZ4acz" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ4ac$" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8GQ" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8IC" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI7kI" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZ4ac_" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI7qq" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI7qr" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI7qs" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEhw" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEhx" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEhy" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhz" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEh$" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEh_" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhA" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhB" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ4acA" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0P" role="3cqZAp">
@@ -2448,23 +3244,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZ4u_x" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZ4u_y" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZ4u_z" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZ4u_$" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8ID" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8Kr" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI7qt" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZ4u__" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI7tb" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI7tc" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI7td" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZ4u_A" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZ4u_B" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZ4u_C" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZ4u_D" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZ4u_$" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI7qt" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlz0" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlz1" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlz2" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlz3" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlz4" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlz5" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZ4u_E" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.horizontal(kotlin.jvm.functions.Function1)" resolve="horizontal" />
-                      <node concept="1bVj0M" id="2QtC6yZ4u_F" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ4u_G" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8Ks" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8Me" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI7te" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZ4u_H" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI7yU" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI7yV" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI7yW" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEhC" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEhD" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEhE" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhF" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEhG" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEhH" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhI" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhJ" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ4u_I" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU0X" role="3cqZAp">
@@ -2537,23 +3388,78 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2QtC6yZ4Rzc" role="37wK5m" />
             <node concept="3clFbT" id="2QtC6yZ4Rzd" role="37wK5m" />
-            <node concept="1bVj0M" id="2QtC6yZ4Rze" role="37wK5m">
-              <node concept="gl6BB" id="2QtC6yZ4Rzf" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8Mf" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8O1" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI7yX" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2QtC6yZ4Rzg" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI7_F" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI7_G" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI7_H" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2QtC6yZ4Rzh" role="1bW5cS">
                 <node concept="3clFbF" id="2QtC6yZ4Rzi" role="3cqZAp">
                   <node concept="2OqwBi" id="2QtC6yZ4Rzj" role="3clFbG">
                     <node concept="37vLTw" id="2QtC6yZ4Rzk" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2QtC6yZ4Rzf" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI7yX" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlz6" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlz7" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlz8" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlz9" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlza" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzb" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2QtC6yZ4Rzl" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.horizontal(kotlin.jvm.functions.Function1)" resolve="horizontal" />
-                      <node concept="1bVj0M" id="2QtC6yZ4Rzm" role="37wK5m">
-                        <node concept="gl6BB" id="2QtC6yZ4Rzn" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV8O2" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8PO" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI7_I" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2QtC6yZ4Rzo" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI7Fq" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI7Fr" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI7Fs" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEhK" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEhL" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEhM" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEhN" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEhO" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEhP" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEhQ" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEhR" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2QtC6yZ4Rzp" role="1bW5cS">
                           <node concept="3clFbH" id="1nuEuAfxU15" role="3cqZAp">
@@ -2575,14 +3481,37 @@
                           <node concept="3clFbF" id="2QtC6yZ50Ta" role="3cqZAp">
                             <node concept="2OqwBi" id="2QtC6yZ50Tc" role="3clFbG">
                               <node concept="37vLTw" id="2QtC6yZ50Td" role="2Oq$k0">
-                                <ref role="3cqZAo" node="2QtC6yZ4Rzn" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI7_I" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="2QtC6yZ50Te" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
-                                <node concept="1bVj0M" id="2QtC6yZ50Tf" role="37wK5m">
-                                  <node concept="gl6BB" id="2QtC6yZ50Tg" role="1bW2Oz">
+                                <node concept="3s519P" id="HgolRSV8PP" role="37wK5m">
+                                  <node concept="3uibUv" id="HgolRSV8QH" role="3s52Nf">
+                                    <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                  </node>
+                                  <node concept="37vLTG" id="4HILH0eI7Ft" role="1bW2Oz">
                                     <property role="TrG5h" value="modelixNode" />
-                                    <node concept="2jxLKc" id="2QtC6yZ50Th" role="1tU5fm" />
+                                    <node concept="3uibUv" id="4HILH0eI7Ms" role="1tU5fm">
+                                      <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                                    </node>
+                                    <node concept="17Uvod" id="HgolRTSEhS" role="lGtFl">
+                                      <property role="2qtEX9" value="name" />
+                                      <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                      <node concept="3zFVjK" id="HgolRTSEhT" role="3zH0cK">
+                                        <node concept="3clFbS" id="HgolRTSEhU" role="2VODD2">
+                                          <node concept="3clFbF" id="HgolRTSEhV" role="3cqZAp">
+                                            <node concept="2OqwBi" id="HgolRTSEhW" role="3clFbG">
+                                              <node concept="1iwH7S" id="HgolRTSEhX" role="2Oq$k0" />
+                                              <node concept="2piZGk" id="HgolRTSEhY" role="2OqNvi">
+                                                <node concept="Xl_RD" id="HgolRTSEhZ" role="2piZGb">
+                                                  <property role="Xl_RC" value="modelixNode" />
+                                                </node>
+                                              </node>
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
                                   </node>
                                   <node concept="3clFbS" id="2QtC6yZ50Ti" role="1bW5cS">
                                     <node concept="3cpWs8" id="2QtC6z1jQKQ" role="3cqZAp">
@@ -2598,7 +3527,25 @@
                                           <node concept="liA8E" id="2QtC6z1jVlf" role="2OqNvi">
                                             <ref role="37wK5l" to="1ut2:~ModelixNodeAsMPSNode$Companion.toMPSNode(org.modelix.model.api.INode)" resolve="toMPSNode" />
                                             <node concept="37vLTw" id="2xR011TvVVZ" role="37wK5m">
-                                              <ref role="3cqZAo" node="2QtC6yZ50Tg" resolve="modelixNode" />
+                                              <ref role="3cqZAo" node="4HILH0eI7Ft" resolve="modelixNode" />
+                                            </node>
+                                          </node>
+                                        </node>
+                                        <node concept="17Uvod" id="HgolRTSEi0" role="lGtFl">
+                                          <property role="2qtEX9" value="name" />
+                                          <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                          <node concept="3zFVjK" id="HgolRTSEi1" role="3zH0cK">
+                                            <node concept="3clFbS" id="HgolRTSEi2" role="2VODD2">
+                                              <node concept="3clFbF" id="HgolRTSEi3" role="3cqZAp">
+                                                <node concept="2OqwBi" id="HgolRTSEi4" role="3clFbG">
+                                                  <node concept="1iwH7S" id="HgolRTSEi5" role="2Oq$k0" />
+                                                  <node concept="2piZGk" id="HgolRTSEi6" role="2OqNvi">
+                                                    <node concept="Xl_RD" id="HgolRTSEi7" role="2piZGb">
+                                                      <property role="Xl_RC" value="node" />
+                                                    </node>
+                                                  </node>
+                                                </node>
+                                              </node>
                                             </node>
                                           </node>
                                         </node>
@@ -2607,24 +3554,48 @@
                                     <node concept="3clFbF" id="2QtC6yZ59nV" role="3cqZAp">
                                       <node concept="2OqwBi" id="2QtC6yZ59nX" role="3clFbG">
                                         <node concept="37vLTw" id="2QtC6yZ59nY" role="2Oq$k0">
-                                          <ref role="3cqZAo" node="2QtC6yZ4Rzn" resolve="builder" />
+                                          <ref role="3cqZAo" node="4HILH0eI7_I" resolve="builder" />
                                         </node>
                                         <node concept="liA8E" id="2QtC6yZ59nZ" role="2OqNvi">
                                           <ref role="37wK5l" to="jej1:~CellTemplateBuilder.modelAccess(kotlin.jvm.functions.Function1)" resolve="modelAccess" />
-                                          <node concept="1bVj0M" id="2QtC6yZ59o0" role="37wK5m">
-                                            <node concept="gl6BB" id="2QtC6yZ59o1" role="1bW2Oz">
+                                          <node concept="3s519P" id="HgolRSV8QI" role="37wK5m">
+                                            <node concept="3uibUv" id="HgolRSV8RA" role="3s52Nf">
+                                              <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                            </node>
+                                            <node concept="37vLTG" id="4HILH0eI7Mt" role="1bW2Oz">
                                               <property role="TrG5h" value="builder" />
-                                              <node concept="2jxLKc" id="2QtC6yZ59o2" role="1tU5fm" />
+                                              <node concept="3uibUv" id="4HILH0eI7Va" role="1tU5fm">
+                                                <ref role="3uigEE" to="jej1:~ModelAccessBuilder" resolve="ModelAccessBuilder" />
+                                              </node>
+                                              <node concept="17Uvod" id="HgolRTSEi8" role="lGtFl">
+                                                <property role="2qtEX9" value="name" />
+                                                <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                                <node concept="3zFVjK" id="HgolRTSEi9" role="3zH0cK">
+                                                  <node concept="3clFbS" id="HgolRTSEia" role="2VODD2">
+                                                    <node concept="3clFbF" id="HgolRTSEib" role="3cqZAp">
+                                                      <node concept="2OqwBi" id="HgolRTSEic" role="3clFbG">
+                                                        <node concept="1iwH7S" id="HgolRTSEid" role="2Oq$k0" />
+                                                        <node concept="2piZGk" id="HgolRTSEie" role="2OqNvi">
+                                                          <node concept="Xl_RD" id="HgolRTSEif" role="2piZGb">
+                                                            <property role="Xl_RC" value="builder" />
+                                                          </node>
+                                                        </node>
+                                                      </node>
+                                                    </node>
+                                                  </node>
+                                                </node>
+                                              </node>
                                             </node>
                                             <node concept="3clFbS" id="2QtC6yZ59o3" role="1bW5cS">
                                               <node concept="3clFbF" id="2QtC6yZ5lml" role="3cqZAp">
                                                 <node concept="2OqwBi" id="2QtC6yZ5lmn" role="3clFbG">
                                                   <node concept="37vLTw" id="2QtC6yZ5lmo" role="2Oq$k0">
-                                                    <ref role="3cqZAo" node="2QtC6yZ59o1" resolve="builder" />
+                                                    <ref role="3cqZAo" node="4HILH0eI7Mt" resolve="builder" />
                                                   </node>
                                                   <node concept="liA8E" id="2QtC6yZ5lmp" role="2OqNvi">
                                                     <ref role="37wK5l" to="jej1:~ModelAccessBuilder.get(kotlin.jvm.functions.Function0)" resolve="get" />
-                                                    <node concept="1bVj0M" id="2QtC6yZ5lmq" role="37wK5m">
+                                                    <node concept="3s519P" id="HgolRSV8RB" role="37wK5m">
+                                                      <node concept="17QB3L" id="HgolRSV8Sc" role="3s52Nf" />
                                                       <node concept="3clFbS" id="2QtC6yZ5lmt" role="1bW5cS">
                                                         <node concept="3cpWs6" id="2QtC6yZ5lmu" role="3cqZAp">
                                                           <node concept="Xl_RD" id="2QtC6yZ5wxE" role="3cqZAk">
@@ -2720,6 +3691,21 @@
                   <ref role="37wK5l" to="1ut2:~ModelixNodeAsMPSNode$Companion.toMPSNode(org.modelix.model.api.INode)" resolve="toMPSNode" />
                   <node concept="37vLTw" id="2xR011UnUZi" role="37wK5m">
                     <ref role="3cqZAo" node="2xR011UnUZ9" resolve="modelixNode" />
+                    <node concept="1ZhdrF" id="HgolRTRlzc" role="lGtFl">
+                      <property role="2qtEX8" value="variableDeclaration" />
+                      <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                      <node concept="3$xsQk" id="HgolRTRlzd" role="3$ytzL">
+                        <node concept="3clFbS" id="HgolRTRlze" role="2VODD2">
+                          <node concept="3clFbF" id="HgolRTRlzf" role="3cqZAp">
+                            <node concept="2YIFZM" id="HgolRTRlzg" role="3clFbG">
+                              <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                              <ref role="37wK5l" to="wsib:HgolRTUXg0" resolve="findUntypedNodeParameter" />
+                              <node concept="3l3mFP" id="HgolRTRlzh" role="37wK5m" />
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                    </node>
                   </node>
                 </node>
                 <node concept="raruj" id="2xR011UnUZj" role="lGtFl" />
@@ -2743,25 +3729,93 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="4OG1auJGV_k" role="37wK5m" />
             <node concept="3clFbT" id="4OG1auJGV_l" role="37wK5m" />
-            <node concept="1bVj0M" id="4OG1auJGV_m" role="37wK5m">
-              <node concept="gl6BB" id="4OG1auJGV_n" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8Sd" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8TZ" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI7Vb" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="4OG1auJGV_o" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI7XT" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI7XU" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI7XV" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="4OG1auJGV_p" role="1bW5cS">
                 <node concept="3clFbF" id="4OG1auJGV_q" role="3cqZAp">
                   <node concept="2OqwBi" id="4OG1auJGV_r" role="3clFbG">
                     <node concept="37vLTw" id="4OG1auJGV_s" role="2Oq$k0">
-                      <ref role="3cqZAo" node="4OG1auJGV_n" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI7Vb" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlzi" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlzj" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzk" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzl" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlzm" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzn" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="4OG1auJGV_t" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
-                      <node concept="1bVj0M" id="4OG1auJGV_O" role="37wK5m">
+                      <node concept="3s519P" id="HgolRSV8U0" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8US" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI7XW" role="1bW2Oz">
+                          <property role="TrG5h" value="modelixNode" />
+                          <node concept="3uibUv" id="4HILH0eI826" role="1tU5fm">
+                            <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEig" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEih" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEii" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEij" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEik" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEil" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEim" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEin" role="2piZGb">
+                                        <property role="Xl_RC" value="modelixNode" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
                         <node concept="3clFbS" id="4OG1auJGV_P" role="1bW5cS">
                           <node concept="3clFbF" id="4OG1auKpSrj" role="3cqZAp">
                             <node concept="2OqwBi" id="4OG1auKpSrk" role="3clFbG">
                               <node concept="37vLTw" id="4OG1auKpSrl" role="2Oq$k0">
-                                <ref role="3cqZAo" node="4OG1auJGV_n" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI7Vb" resolve="builder" />
+                                <node concept="1ZhdrF" id="HgolRTRlzo" role="lGtFl">
+                                  <property role="2qtEX8" value="variableDeclaration" />
+                                  <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                                  <node concept="3$xsQk" id="HgolRTRlzp" role="3$ytzL">
+                                    <node concept="3clFbS" id="HgolRTRlzq" role="2VODD2">
+                                      <node concept="3clFbF" id="HgolRTRlzr" role="3cqZAp">
+                                        <node concept="2YIFZM" id="HgolRTRlzs" role="3clFbG">
+                                          <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                          <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                          <node concept="3l3mFP" id="HgolRTRlzt" role="37wK5m" />
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
                               </node>
                               <node concept="liA8E" id="4OG1auKpSrm" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~CellTemplateBuilder.textColor(java.lang.String)" resolve="textColor" />
@@ -2791,10 +3845,6 @@
                               <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
                             </node>
                           </node>
-                        </node>
-                        <node concept="gl6BB" id="4OG1auJGV_Z" role="1bW2Oz">
-                          <property role="TrG5h" value="modelixNode" />
-                          <node concept="2jxLKc" id="4OG1auJGVA0" role="1tU5fm" />
                         </node>
                       </node>
                     </node>
@@ -2839,16 +3889,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1nuEuAfuL37" role="37wK5m" />
             <node concept="3clFbT" id="1nuEuAfuL38" role="37wK5m" />
-            <node concept="1bVj0M" id="1nuEuAfuL39" role="37wK5m">
-              <node concept="gl6BB" id="1nuEuAfuL3a" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8UT" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8WF" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI827" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1nuEuAfuL3b" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI84P" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI84Q" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI84R" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1nuEuAfuL3c" role="1bW5cS">
                 <node concept="3clFbF" id="1nuEuAfuL3d" role="3cqZAp">
                   <node concept="2OqwBi" id="1nuEuAfuL3e" role="3clFbG">
                     <node concept="37vLTw" id="1nuEuAfuL3f" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1nuEuAfuL3a" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI827" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlzu" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlzv" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzw" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzx" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlzy" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzz" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1nuEuAfuL3g" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.textColor(java.lang.String)" resolve="textColor" />
@@ -2901,25 +3977,93 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="4OG1auJGVAa" role="37wK5m" />
             <node concept="3clFbT" id="4OG1auJGVAb" role="37wK5m" />
-            <node concept="1bVj0M" id="4OG1auJGVAc" role="37wK5m">
-              <node concept="gl6BB" id="4OG1auJGVAd" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8WG" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV8Yu" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI84S" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="4OG1auJGVAe" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI87A" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI87B" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI87C" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="4OG1auJGVAf" role="1bW5cS">
                 <node concept="3clFbF" id="4OG1auJGVAg" role="3cqZAp">
                   <node concept="2OqwBi" id="4OG1auJGVAh" role="3clFbG">
                     <node concept="37vLTw" id="4OG1auJGVAi" role="2Oq$k0">
-                      <ref role="3cqZAo" node="4OG1auJGVAd" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI84S" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlz$" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlz_" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzA" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzB" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlzC" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzD" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="4OG1auJGVAj" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
-                      <node concept="1bVj0M" id="4OG1auJGVAE" role="37wK5m">
+                      <node concept="3s519P" id="HgolRSV8Yv" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV8Zn" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI87D" role="1bW2Oz">
+                          <property role="TrG5h" value="modelixNode" />
+                          <node concept="3uibUv" id="4HILH0eI8bN" role="1tU5fm">
+                            <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEio" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEip" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEiq" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEir" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEis" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEit" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEiu" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEiv" role="2piZGb">
+                                        <property role="Xl_RC" value="modelixNode" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
+                        </node>
                         <node concept="3clFbS" id="4OG1auJGVAF" role="1bW5cS">
                           <node concept="3clFbF" id="4OG1auKpSry" role="3cqZAp">
                             <node concept="2OqwBi" id="4OG1auKpSrz" role="3clFbG">
                               <node concept="37vLTw" id="4OG1auKpSr$" role="2Oq$k0">
-                                <ref role="3cqZAo" node="4OG1auJGVAd" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI84S" resolve="builder" />
+                                <node concept="1ZhdrF" id="HgolRTRlzE" role="lGtFl">
+                                  <property role="2qtEX8" value="variableDeclaration" />
+                                  <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                                  <node concept="3$xsQk" id="HgolRTRlzF" role="3$ytzL">
+                                    <node concept="3clFbS" id="HgolRTRlzG" role="2VODD2">
+                                      <node concept="3clFbF" id="HgolRTRlzH" role="3cqZAp">
+                                        <node concept="2YIFZM" id="HgolRTRlzI" role="3clFbG">
+                                          <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                          <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                          <node concept="3l3mFP" id="HgolRTRlzJ" role="37wK5m" />
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
                               </node>
                               <node concept="liA8E" id="4OG1auKpSr_" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~CellTemplateBuilder.backgroundColor(java.lang.String)" resolve="backgroundColor" />
@@ -2949,10 +4093,6 @@
                               <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
                             </node>
                           </node>
-                        </node>
-                        <node concept="gl6BB" id="4OG1auJGVAP" role="1bW2Oz">
-                          <property role="TrG5h" value="modelixNode" />
-                          <node concept="2jxLKc" id="4OG1auJGVAQ" role="1tU5fm" />
                         </node>
                       </node>
                     </node>
@@ -2997,16 +4137,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="1nuEuAfuL3D" role="37wK5m" />
             <node concept="3clFbT" id="1nuEuAfuL3E" role="37wK5m" />
-            <node concept="1bVj0M" id="1nuEuAfuL3F" role="37wK5m">
-              <node concept="gl6BB" id="1nuEuAfuL3G" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV8Zo" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV91a" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8bO" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="1nuEuAfuL3H" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8ey" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8ez" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8e$" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="1nuEuAfuL3I" role="1bW5cS">
                 <node concept="3clFbF" id="1nuEuAfuL3J" role="3cqZAp">
                   <node concept="2OqwBi" id="1nuEuAfuL3K" role="3clFbG">
                     <node concept="37vLTw" id="1nuEuAfuL3L" role="2Oq$k0">
-                      <ref role="3cqZAo" node="1nuEuAfuL3G" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8bO" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlzK" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlzL" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzM" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzN" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlzO" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzP" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="1nuEuAfuL3M" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.backgroundColor(java.lang.String)" resolve="backgroundColor" />
@@ -3059,16 +4225,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4RkSf" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4RkSg" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4RkSh" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4RkSi" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV91b" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV92X" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8e_" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4RkSj" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8hj" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8hk" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8hl" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4RkSk" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4RkSl" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4RkSm" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4RkSn" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4RkSi" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8e_" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlzQ" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlzR" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzS" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzT" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRlzU" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRlzV" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4RkSo" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.italic(boolean)" resolve="italic" />
@@ -3105,16 +4297,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4RkSF" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4RkSG" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4RkSH" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4RkSI" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV92Y" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV94K" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8hm" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4RkSJ" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8k4" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8k5" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8k6" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4RkSK" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4RkSL" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4RkSM" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4RkSN" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4RkSI" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8hm" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRlzW" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRlzX" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRlzY" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRlzZ" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$0" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$1" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4RkSO" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.underlined(boolean)" resolve="underlined" />
@@ -3151,16 +4369,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4RkT7" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4RkT8" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4RkT9" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4RkTa" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV94L" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV96z" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8k7" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4RkTb" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8mP" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8mQ" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8mR" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4RkTc" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4RkTd" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4RkTe" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4RkTf" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4RkTa" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8k7" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRl$2" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRl$3" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRl$4" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRl$5" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$6" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$7" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4RkTg" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.strikeOut(boolean)" resolve="strikeOut" />
@@ -3197,16 +4441,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4RkTz" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4RkT$" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4RkT_" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4RkTA" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV96$" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV98m" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8mS" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4RkTB" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8pA" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8pB" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8pC" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4RkTC" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4RkTD" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4RkTE" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4RkTF" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4RkTA" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8mS" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRl$8" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRl$9" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRl$a" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRl$b" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$c" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$d" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4RkTG" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.bold(boolean)" resolve="bold" />
@@ -3243,16 +4513,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4ThKa" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4ThKb" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4ThKc" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4ThKd" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV98n" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV9a9" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8pD" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4ThKe" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8sn" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8so" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8sp" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4ThKf" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4ThKg" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4ThKh" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4ThKi" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4ThKd" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8pD" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRl$e" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRl$f" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRl$g" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRl$h" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$i" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$j" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4ThKj" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.fontFamily(java.lang.String)" resolve="fontFamily" />
@@ -3305,16 +4601,42 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="74Ju8e4ThKA" role="37wK5m" />
             <node concept="3clFbT" id="74Ju8e4ThKB" role="37wK5m" />
-            <node concept="1bVj0M" id="74Ju8e4ThKC" role="37wK5m">
-              <node concept="gl6BB" id="74Ju8e4ThKD" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV9aa" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV9bW" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8sq" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="74Ju8e4ThKE" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8v8" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8v9" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8va" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="74Ju8e4ThKF" role="1bW5cS">
                 <node concept="3clFbF" id="74Ju8e4ThKG" role="3cqZAp">
                   <node concept="2OqwBi" id="74Ju8e4ThKH" role="3clFbG">
                     <node concept="37vLTw" id="74Ju8e4ThKI" role="2Oq$k0">
-                      <ref role="3cqZAo" node="74Ju8e4ThKD" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8sq" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRl$k" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRl$l" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRl$m" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRl$n" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$o" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$p" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="74Ju8e4ThKJ" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.fontSize(java.lang.String)" resolve="fontSize" />
@@ -3367,36 +4689,114 @@
             <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
             <node concept="10Nm6u" id="2eHudJqj5ua" role="37wK5m" />
             <node concept="3clFbT" id="2eHudJqj5ub" role="37wK5m" />
-            <node concept="1bVj0M" id="2eHudJqj5uc" role="37wK5m">
-              <node concept="gl6BB" id="2eHudJqj5ud" role="1bW2Oz">
+            <node concept="3s519P" id="HgolRSV9bX" role="37wK5m">
+              <node concept="3uibUv" id="HgolRSV9dJ" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="4HILH0eI8vb" role="1bW2Oz">
                 <property role="TrG5h" value="builder" />
-                <node concept="2jxLKc" id="2eHudJqj5ue" role="1tU5fm" />
+                <node concept="3uibUv" id="4HILH0eI8xT" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="4HILH0eI8xU" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="4HILH0eI8xV" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
               </node>
               <node concept="3clFbS" id="2eHudJqj5uf" role="1bW5cS">
                 <node concept="3clFbF" id="2eHudJqj5ug" role="3cqZAp">
                   <node concept="2OqwBi" id="2eHudJqj5uh" role="3clFbG">
                     <node concept="37vLTw" id="2eHudJqj5ui" role="2Oq$k0">
-                      <ref role="3cqZAo" node="2eHudJqj5ud" resolve="builder" />
+                      <ref role="3cqZAo" node="4HILH0eI8vb" resolve="builder" />
+                      <node concept="1ZhdrF" id="HgolRTRl$q" role="lGtFl">
+                        <property role="2qtEX8" value="variableDeclaration" />
+                        <property role="P3scX" value="f3061a53-9226-4cc5-a443-f952ceaf5816/1068498886296/1068581517664" />
+                        <node concept="3$xsQk" id="HgolRTRl$r" role="3$ytzL">
+                          <node concept="3clFbS" id="HgolRTRl$s" role="2VODD2">
+                            <node concept="3clFbF" id="HgolRTRl$t" role="3cqZAp">
+                              <node concept="2YIFZM" id="HgolRTRl$u" role="3clFbG">
+                                <ref role="1Pybhc" to="wsib:HgolRTUXeG" resolve="NotationGenUtil" />
+                                <ref role="37wK5l" to="wsib:HgolRTUXeJ" resolve="findCellBuilder" />
+                                <node concept="3l3mFP" id="HgolRTRl$v" role="37wK5m" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="liA8E" id="2eHudJqj5uj" role="2OqNvi">
                       <ref role="37wK5l" to="jej1:~CellTemplateBuilder.horizontal(kotlin.jvm.functions.Function1)" resolve="horizontal" />
-                      <node concept="1bVj0M" id="2eHudJqj5uk" role="37wK5m">
-                        <node concept="gl6BB" id="2eHudJqj5ul" role="1bW2Oz">
+                      <node concept="3s519P" id="HgolRSV9dK" role="37wK5m">
+                        <node concept="3uibUv" id="HgolRSV9fy" role="3s52Nf">
+                          <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                        </node>
+                        <node concept="37vLTG" id="4HILH0eI8xW" role="1bW2Oz">
                           <property role="TrG5h" value="builder" />
-                          <node concept="2jxLKc" id="2eHudJqj5um" role="1tU5fm" />
+                          <node concept="3uibUv" id="4HILH0eI8BC" role="1tU5fm">
+                            <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                            <node concept="3uibUv" id="4HILH0eI8BD" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="3uibUv" id="4HILH0eI8BE" role="11_B2D">
+                              <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                            </node>
+                          </node>
+                          <node concept="17Uvod" id="HgolRTSEiw" role="lGtFl">
+                            <property role="2qtEX9" value="name" />
+                            <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                            <node concept="3zFVjK" id="HgolRTSEix" role="3zH0cK">
+                              <node concept="3clFbS" id="HgolRTSEiy" role="2VODD2">
+                                <node concept="3clFbF" id="HgolRTSEiz" role="3cqZAp">
+                                  <node concept="2OqwBi" id="HgolRTSEi$" role="3clFbG">
+                                    <node concept="1iwH7S" id="HgolRTSEi_" role="2Oq$k0" />
+                                    <node concept="2piZGk" id="HgolRTSEiA" role="2OqNvi">
+                                      <node concept="Xl_RD" id="HgolRTSEiB" role="2piZGb">
+                                        <property role="Xl_RC" value="builder" />
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
+                          </node>
                         </node>
                         <node concept="3clFbS" id="2eHudJqj5un" role="1bW5cS">
                           <node concept="3clFbF" id="2eHudJqj5uw" role="3cqZAp">
                             <node concept="2OqwBi" id="2eHudJqj5ux" role="3clFbG">
                               <node concept="37vLTw" id="2eHudJqj5uy" role="2Oq$k0">
-                                <ref role="3cqZAo" node="2eHudJqj5ul" resolve="builder" />
+                                <ref role="3cqZAo" node="4HILH0eI8xW" resolve="builder" />
                               </node>
                               <node concept="liA8E" id="2eHudJqj5uz" role="2OqNvi">
                                 <ref role="37wK5l" to="jej1:~CellTemplateBuilder.withUntypedNode(kotlin.jvm.functions.Function1)" resolve="withUntypedNode" />
-                                <node concept="1bVj0M" id="2eHudJqj5u$" role="37wK5m">
-                                  <node concept="gl6BB" id="2eHudJqj5u_" role="1bW2Oz">
+                                <node concept="3s519P" id="HgolRSV9fz" role="37wK5m">
+                                  <node concept="3uibUv" id="HgolRSV9gr" role="3s52Nf">
+                                    <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                  </node>
+                                  <node concept="37vLTG" id="4HILH0eI8BF" role="1bW2Oz">
                                     <property role="TrG5h" value="modelixNode" />
-                                    <node concept="2jxLKc" id="2eHudJqj5uA" role="1tU5fm" />
+                                    <node concept="3uibUv" id="4HILH0eI8IE" role="1tU5fm">
+                                      <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                                    </node>
+                                    <node concept="17Uvod" id="HgolRTSEiC" role="lGtFl">
+                                      <property role="2qtEX9" value="name" />
+                                      <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                      <node concept="3zFVjK" id="HgolRTSEiD" role="3zH0cK">
+                                        <node concept="3clFbS" id="HgolRTSEiE" role="2VODD2">
+                                          <node concept="3clFbF" id="HgolRTSEiF" role="3cqZAp">
+                                            <node concept="2OqwBi" id="HgolRTSEiG" role="3clFbG">
+                                              <node concept="1iwH7S" id="HgolRTSEiH" role="2Oq$k0" />
+                                              <node concept="2piZGk" id="HgolRTSEiI" role="2OqNvi">
+                                                <node concept="Xl_RD" id="HgolRTSEiJ" role="2piZGb">
+                                                  <property role="Xl_RC" value="modelixNode" />
+                                                </node>
+                                              </node>
+                                            </node>
+                                          </node>
+                                        </node>
+                                      </node>
+                                    </node>
                                   </node>
                                   <node concept="3clFbS" id="2eHudJqj5uB" role="1bW5cS">
                                     <node concept="3cpWs8" id="2eHudJqj5uC" role="3cqZAp">
@@ -3412,7 +4812,25 @@
                                           <node concept="liA8E" id="2eHudJqj5uH" role="2OqNvi">
                                             <ref role="37wK5l" to="1ut2:~ModelixNodeAsMPSNode$Companion.toMPSNode(org.modelix.model.api.INode)" resolve="toMPSNode" />
                                             <node concept="37vLTw" id="2eHudJqj5uI" role="37wK5m">
-                                              <ref role="3cqZAo" node="2eHudJqj5u_" resolve="modelixNode" />
+                                              <ref role="3cqZAo" node="4HILH0eI8BF" resolve="modelixNode" />
+                                            </node>
+                                          </node>
+                                        </node>
+                                        <node concept="17Uvod" id="HgolRTSEiK" role="lGtFl">
+                                          <property role="2qtEX9" value="name" />
+                                          <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                          <node concept="3zFVjK" id="HgolRTSEiL" role="3zH0cK">
+                                            <node concept="3clFbS" id="HgolRTSEiM" role="2VODD2">
+                                              <node concept="3clFbF" id="HgolRTSEiN" role="3cqZAp">
+                                                <node concept="2OqwBi" id="HgolRTSEiO" role="3clFbG">
+                                                  <node concept="1iwH7S" id="HgolRTSEiP" role="2Oq$k0" />
+                                                  <node concept="2piZGk" id="HgolRTSEiQ" role="2OqNvi">
+                                                    <node concept="Xl_RD" id="HgolRTSEiR" role="2piZGb">
+                                                      <property role="Xl_RC" value="node" />
+                                                    </node>
+                                                  </node>
+                                                </node>
+                                              </node>
                                             </node>
                                           </node>
                                         </node>
@@ -3421,7 +4839,7 @@
                                     <node concept="3clFbF" id="2eHudJqj5vf" role="3cqZAp">
                                       <node concept="2OqwBi" id="2eHudJqj5vg" role="3clFbG">
                                         <node concept="37vLTw" id="2eHudJqj5vh" role="2Oq$k0">
-                                          <ref role="3cqZAo" node="2eHudJqj5ul" resolve="builder" />
+                                          <ref role="3cqZAo" node="4HILH0eI8xW" resolve="builder" />
                                         </node>
                                         <node concept="liA8E" id="2eHudJqj5vi" role="2OqNvi">
                                           <ref role="37wK5l" to="jej1:~CellTemplateBuilder.label(java.lang.String,kotlin.jvm.functions.Function1)" resolve="label" />
@@ -3442,10 +4860,39 @@
                                               </node>
                                             </node>
                                           </node>
-                                          <node concept="1bVj0M" id="2eHudJqj5vs" role="37wK5m">
-                                            <node concept="gl6BB" id="2eHudJqj5vt" role="1bW2Oz">
+                                          <node concept="3s519P" id="HgolRSV9gs" role="37wK5m">
+                                            <node concept="3uibUv" id="HgolRSV9ie" role="3s52Nf">
+                                              <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                                            </node>
+                                            <node concept="37vLTG" id="4HILH0eI8IF" role="1bW2Oz">
                                               <property role="TrG5h" value="builder" />
-                                              <node concept="2jxLKc" id="2eHudJqj5vu" role="1tU5fm" />
+                                              <node concept="3uibUv" id="4HILH0eI8T2" role="1tU5fm">
+                                                <ref role="3uigEE" to="jej1:~CellTemplateBuilder" resolve="CellTemplateBuilder" />
+                                                <node concept="3uibUv" id="4HILH0eI8T3" role="11_B2D">
+                                                  <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                                                </node>
+                                                <node concept="3uibUv" id="4HILH0eI8T4" role="11_B2D">
+                                                  <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                                                </node>
+                                              </node>
+                                              <node concept="17Uvod" id="HgolRTSEiS" role="lGtFl">
+                                                <property role="2qtEX9" value="name" />
+                                                <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                                                <node concept="3zFVjK" id="HgolRTSEiT" role="3zH0cK">
+                                                  <node concept="3clFbS" id="HgolRTSEiU" role="2VODD2">
+                                                    <node concept="3clFbF" id="HgolRTSEiV" role="3cqZAp">
+                                                      <node concept="2OqwBi" id="HgolRTSEiW" role="3clFbG">
+                                                        <node concept="1iwH7S" id="HgolRTSEiX" role="2Oq$k0" />
+                                                        <node concept="2piZGk" id="HgolRTSEiY" role="2OqNvi">
+                                                          <node concept="Xl_RD" id="HgolRTSEiZ" role="2piZGb">
+                                                            <property role="Xl_RC" value="builder" />
+                                                          </node>
+                                                        </node>
+                                                      </node>
+                                                    </node>
+                                                  </node>
+                                                </node>
+                                              </node>
                                             </node>
                                             <node concept="3clFbS" id="2eHudJqj5vv" role="1bW5cS">
                                               <node concept="3clFbH" id="2eHudJqj5vw" role="3cqZAp">
@@ -3584,10 +5031,39 @@
                   </node>
                 </node>
               </node>
-              <node concept="1bVj0M" id="7HT$1xKui5x" role="37wK5m">
-                <node concept="gl6BB" id="7HT$1xKui5D" role="1bW2Oz">
+              <node concept="3s519P" id="HgolRSV9if" role="37wK5m">
+                <node concept="3uibUv" id="HgolRSV9k1" role="3s52Nf">
+                  <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+                </node>
+                <node concept="37vLTG" id="4HILH0eI8T5" role="1bW2Oz">
                   <property role="TrG5h" value="builder" />
-                  <node concept="2jxLKc" id="7HT$1xKui5E" role="1tU5fm" />
+                  <node concept="3uibUv" id="4HILH0eI8VP" role="1tU5fm">
+                    <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                    <node concept="3uibUv" id="4HILH0eI8VQ" role="11_B2D">
+                      <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                    </node>
+                    <node concept="3uibUv" id="4HILH0eI8VR" role="11_B2D">
+                      <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                    </node>
+                  </node>
+                  <node concept="17Uvod" id="HgolRTA74e" role="lGtFl">
+                    <property role="2qtEX9" value="name" />
+                    <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                    <node concept="3zFVjK" id="HgolRTA74h" role="3zH0cK">
+                      <node concept="3clFbS" id="HgolRTA74j" role="2VODD2">
+                        <node concept="3clFbF" id="HgolRTA74k" role="3cqZAp">
+                          <node concept="2OqwBi" id="HgolRTA74m" role="3clFbG">
+                            <node concept="1iwH7S" id="HgolRTA74p" role="2Oq$k0" />
+                            <node concept="2piZGk" id="HgolRTA74q" role="2OqNvi">
+                              <node concept="Xl_RD" id="HgolRTA74s" role="2piZGb">
+                                <property role="Xl_RC" value="builder" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
                 </node>
                 <node concept="3clFbS" id="7HT$1xKui5H" role="1bW5cS">
                   <node concept="3cpWs8" id="2QtC6z0YHyI" role="3cqZAp">
@@ -3595,21 +5071,42 @@
                       <property role="TrG5h" value="rootBuilder" />
                       <node concept="PeGgZ" id="2QtC6z0YHyG" role="1tU5fm" />
                       <node concept="37vLTw" id="2QtC6z0YJMq" role="33vP2m">
-                        <ref role="3cqZAo" node="7HT$1xKui5D" resolve="builder" />
+                        <ref role="3cqZAo" node="4HILH0eI8T5" resolve="builder" />
                       </node>
                     </node>
                   </node>
                   <node concept="3clFbF" id="1vEPqpZ8jNe" role="3cqZAp">
                     <node concept="2OqwBi" id="1vEPqpZ8kc3" role="3clFbG">
                       <node concept="37vLTw" id="1vEPqpZ8jNc" role="2Oq$k0">
-                        <ref role="3cqZAo" node="7HT$1xKui5D" resolve="builder" />
+                        <ref role="3cqZAo" node="4HILH0eI8T5" resolve="builder" />
                       </node>
                       <node concept="liA8E" id="1vEPqpZ8mKD" role="2OqNvi">
                         <ref role="37wK5l" to="jej1:~NotationRootCellTemplateBuilder.condition(kotlin.jvm.functions.Function1)" resolve="condition" />
-                        <node concept="1bVj0M" id="1vEPqpZ8nh8" role="37wK5m">
-                          <node concept="gl6BB" id="1vEPqpZ8nhf" role="1bW2Oz">
+                        <node concept="3s519P" id="HgolRSV9k2" role="37wK5m">
+                          <node concept="10P_77" id="HgolRSV9kW" role="3s52Nf" />
+                          <node concept="37vLTG" id="4HILH0eI8VS" role="1bW2Oz">
                             <property role="TrG5h" value="modelixNode" />
-                            <node concept="2jxLKc" id="1vEPqpZ8nhg" role="1tU5fm" />
+                            <node concept="3uibUv" id="4HILH0eI906" role="1tU5fm">
+                              <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                            </node>
+                            <node concept="17Uvod" id="HgolRTAdOu" role="lGtFl">
+                              <property role="2qtEX9" value="name" />
+                              <property role="P4ACc" value="ceab5195-25ea-4f22-9b92-103b95ca8c0c/1169194658468/1169194664001" />
+                              <node concept="3zFVjK" id="HgolRTAdOx" role="3zH0cK">
+                                <node concept="3clFbS" id="HgolRTAdOz" role="2VODD2">
+                                  <node concept="3clFbF" id="HgolRTAdO$" role="3cqZAp">
+                                    <node concept="2OqwBi" id="HgolRTAdOA" role="3clFbG">
+                                      <node concept="1iwH7S" id="HgolRTAdOD" role="2Oq$k0" />
+                                      <node concept="2piZGk" id="HgolRTAdOE" role="2OqNvi">
+                                        <node concept="Xl_RD" id="HgolRTAdOG" role="2piZGb">
+                                          <property role="Xl_RC" value="modelixNode" />
+                                        </node>
+                                      </node>
+                                    </node>
+                                  </node>
+                                </node>
+                              </node>
+                            </node>
                           </node>
                           <node concept="3clFbS" id="1vEPqpZ8nhj" role="1bW5cS">
                             <node concept="3clFbF" id="1vEPqpZ8nZM" role="3cqZAp">
