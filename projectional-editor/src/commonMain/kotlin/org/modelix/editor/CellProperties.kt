@@ -59,7 +59,8 @@ class BooleanCellPropertyKey(
     defaultValue: Boolean,
     inherits: Boolean = false,
     frontend: Boolean = true,
-) : CellPropertyKey<Boolean>(name, defaultValue, inherits, frontend) {
+    invalidatesSubtree: Boolean = false,
+) : CellPropertyKey<Boolean>(name, defaultValue, inherits, frontend, invalidatesSubtree) {
     override fun valueToString(value: Boolean): String = value.toString()
 
     override fun valueFromString(str: String?): Boolean = str.toBoolean()
@@ -168,6 +169,12 @@ object CommonCellProperties {
     val placeholderTextColor =
         StringCellPropertyKey("placeholder-text-color", "lightGray", inherits = true, invalidatesSubtree = true)
     val backgroundColor = StringCellPropertyKey("background-color", null, inherits = true, invalidatesSubtree = true)
+    val fontFamily = StringCellPropertyKey("font-family", null, inherits = true, invalidatesSubtree = true)
+    val fontSize = StringCellPropertyKey("font-size", null, inherits = true, invalidatesSubtree = true)
+    val bold = BooleanCellPropertyKey("bold", false, inherits = true, invalidatesSubtree = true)
+    val italic = BooleanCellPropertyKey("italic", false, inherits = true, invalidatesSubtree = true)
+    val underlined = BooleanCellPropertyKey("underlined", false, inherits = true, invalidatesSubtree = true)
+    val strikeOut = BooleanCellPropertyKey("strike-out", false, inherits = true, invalidatesSubtree = true)
     val textReplacement = StringCellPropertyKey("text-replacement", null)
     val tabTarget = BooleanCellPropertyKey("tab-target", false) // caret is placed into the cell when navigating via TAB
     val selectable = BooleanCellPropertyKey("selectable", false)

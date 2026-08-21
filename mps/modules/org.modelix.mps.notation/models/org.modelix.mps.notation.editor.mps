@@ -1039,5 +1039,98 @@
       </node>
     </node>
   </node>
+  <node concept="24kQdi" id="4DCI_D3lDsv">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jAql" resolve="FontFamilyStyleItem" />
+    <node concept="3EZMnI" id="4DCI_D3lDsx" role="2wV5jI">
+      <node concept="2iRfu4" id="4DCI_D3lDsy" role="2iSdaV" />
+      <node concept="PMmxH" id="4DCI_D3lDsz" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F0ifn" id="4DCI_D3lDs$" role="3EZMnx">
+        <property role="3F0ifm" value=":" />
+      </node>
+      <node concept="3F0A7n" id="4DCI_D3lDs_" role="3EZMnx">
+        <ref role="1NtTu8" to="f8gn:4DCI_D3jAqm" resolve="family" />
+      </node>
+    </node>
+  </node>
+  <node concept="24kQdi" id="4DCI_D3lD$M">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jAt_" resolve="FontSizeStyleItem" />
+    <node concept="3EZMnI" id="4DCI_D3lD$O" role="2wV5jI">
+      <node concept="2iRfu4" id="4DCI_D3lD$P" role="2iSdaV" />
+      <node concept="PMmxH" id="4DCI_D3lD$Q" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F0ifn" id="4DCI_D3lD$R" role="3EZMnx">
+        <property role="3F0ifm" value=":" />
+      </node>
+      <node concept="3F0A7n" id="4DCI_D3lD$S" role="3EZMnx">
+        <ref role="1NtTu8" to="f8gn:4DCI_D3jAtA" resolve="size" />
+      </node>
+    </node>
+  </node>
+  <node concept="24kQdi" id="4DCI_D3lDH7">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jAwQ" resolve="BoldStyleItem" />
+    <node concept="PMmxH" id="4DCI_D3lDH9" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="4DCI_D3lDPq">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jA$7" resolve="ItalicStyleItem" />
+    <node concept="PMmxH" id="4DCI_D3lDPs" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="4DCI_D3lDXJ">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jABp" resolve="UnderlinedStyleItem" />
+    <node concept="PMmxH" id="4DCI_D3lDXL" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="4DCI_D3lE66">
+    <ref role="1XX52x" to="f8gn:4DCI_D3jAEG" resolve="StrikeOutStyleItem" />
+    <node concept="PMmxH" id="4DCI_D3lE68" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+    </node>
+  </node>
+  <node concept="24kQdi" id="2eHudJqaXZ_">
+    <ref role="1XX52x" to="f8gn:2eHudJpH2xi" resolve="LabelCell" />
+    <node concept="3EZMnI" id="2eHudJqaXZB" role="2wV5jI">
+      <node concept="l2Vlx" id="2eHudJqaXZC" role="2iSdaV" />
+      <node concept="PMmxH" id="2eHudJqaXZD" role="3EZMnx">
+        <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      </node>
+      <node concept="3F0ifn" id="2eHudJqaXZE" role="3EZMnx">
+        <property role="3F0ifm" value="(" />
+        <node concept="3mYdg7" id="2eHudJqaXZF" role="3F10Kt">
+          <property role="1413C4" value="p" />
+        </node>
+        <node concept="11L4FC" id="2eHudJqaXZG" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+        <node concept="11LMrY" id="2eHudJqaXZH" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="3F1sOY" id="2eHudJqaXZI" role="3EZMnx">
+        <ref role="1NtTu8" to="f8gn:2eHudJpH2xj" resolve="text" />
+      </node>
+      <node concept="3F0ifn" id="2eHudJqaXZJ" role="3EZMnx">
+        <property role="3F0ifm" value=")" />
+        <node concept="3mYdg7" id="2eHudJqaXZK" role="3F10Kt">
+          <property role="1413C4" value="p" />
+        </node>
+        <node concept="11L4FC" id="2eHudJqaXZL" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+    </node>
+    <node concept="3EZMnI" id="2eHudJqaXZM" role="6VMZX">
+      <node concept="2iRkQZ" id="2eHudJqaXZN" role="2iSdaV" />
+      <node concept="PMmxH" id="2eHudJqaXZO" role="3EZMnx">
+        <ref role="PMmxG" node="43rgS5P5db$" resolve="StyleItems" />
+      </node>
+    </node>
+  </node>
 </model>
 

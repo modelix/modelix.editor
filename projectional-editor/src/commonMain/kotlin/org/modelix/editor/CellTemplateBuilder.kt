@@ -153,6 +153,38 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
         if (color != null) template.properties[CommonCellProperties.backgroundColor] = color
     }
 
+    /**
+     * A CSS font-family list, e.g. `"Fira Code, monospace"`. Null leaves the property unset, so it is inherited
+     * from the parent cell, like [textColor].
+     */
+    fun fontFamily(family: String?) {
+        if (family != null) template.properties[CommonCellProperties.fontFamily] = family
+    }
+
+    /**
+     * A CSS font size, e.g. `"12px"`, `"1.2em"` or `"smaller"`. The layouter measures a line in characters, so a
+     * cell whose size differs from the editor's no longer aligns with the columns above and below it.
+     */
+    fun fontSize(size: String?) {
+        if (size != null) template.properties[CommonCellProperties.fontSize] = size
+    }
+
+    fun bold(value: Boolean = true) {
+        template.properties[CommonCellProperties.bold] = value
+    }
+
+    fun italic(value: Boolean = true) {
+        template.properties[CommonCellProperties.italic] = value
+    }
+
+    fun underlined(value: Boolean = true) {
+        template.properties[CommonCellProperties.underlined] = value
+    }
+
+    fun strikeOut(value: Boolean = true) {
+        template.properties[CommonCellProperties.strikeOut] = value
+    }
+
     fun vertical(body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
         // TODO add correct layout information
         CollectionCellTemplate(template.concept)

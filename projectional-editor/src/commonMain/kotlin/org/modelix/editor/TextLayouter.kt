@@ -445,10 +445,29 @@ class LayoutableCell(
             val styleParts = mutableListOf<String>()
             if (textColor != null) styleParts += "color: $textColor"
             if (backgroundColor != null) styleParts += "background-color: $backgroundColor"
+            cell.getProperty(CommonCellProperties.fontFamily)?.let { styleParts += "font-family: $it" }
+            cell.getProperty(CommonCellProperties.fontSize)?.let { styleParts += "font-size: $it" }
+            if (cell.getProperty(CommonCellProperties.bold)) styleParts += "font-weight: bold"
+            if (cell.getProperty(CommonCellProperties.italic)) styleParts += "font-style: italic"
             if (styleParts.isNotEmpty()) style = styleParts.joinToString(";")
             listOfNotNull(errorMessage, warningMessage).takeIf { it.isNotEmpty() }?.let { title = it.joinToString("\n") }
 
-            +toText().useNbsp()
+            val decorations =
+                listOfNotNull(
+                    "underline".takeIf { cell.getProperty(CommonCellProperties.underlined) },
+                    "line-through".takeIf { cell.getProperty(CommonCellProperties.strikeOut) },
+                )
+            if (decorations.isEmpty()) {
+                +toText().useNbsp()
+            } else {
+                // A check message underlines this span through the has-error/has-warning classes, and a single
+                // text-decoration declaration cannot carry two line styles. A nested span draws its own decoration
+                // in addition to the one it inherits, so both the style's line and the message's wavy line show.
+                span {
+                    style = "text-decoration-line: " + decorations.joinToString(" ")
+                    +toText().useNbsp()
+                }
+            }
         }
     }
 }

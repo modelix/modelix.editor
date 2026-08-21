@@ -14,23 +14,42 @@ import org.modelix.model.api.INode
  * It is not part of the grammar of the language.
  * It is ignored when generating transformation action.
  * A constant is part of the grammar.
+ *
+ * It carries additional information about the code rather than code, like an inline hint in IntelliJ, and is styled
+ * to read that way: grey, in the embedder's UI font, a step smaller than the editor. The proportional font is what
+ * separates a label from the text at a glance - and it also means a label does not occupy whole character cells, so
+ * whatever follows it on the same line no longer lines up with the lines above and below it.
+ *
+ * These are defaults on the template, so anything the notation sets on the label cell itself is applied after them
+ * and wins.
  */
 class LabelCellTemplate(
     concept: IConcept,
     val text: String,
 ) : CellTemplate(concept) {
+    init {
+        properties[CommonCellProperties.textColor] = DEFAULT_TEXT_COLOR
+        properties[CommonCellProperties.fontFamily] = DEFAULT_FONT_FAMILY
+        properties[CommonCellProperties.fontSize] = DEFAULT_FONT_SIZE
+    }
+
     override fun createCell(
         context: CellCreationContext,
         node: INode,
-    ): TextCellSpec =
-        TextCellSpec(text, "").also {
-            if (!it.properties.isSet(CommonCellProperties.textColor)) {
-                it.properties[CommonCellProperties.textColor] = "LightGray"
-            }
-        }
+    ): TextCellSpec = TextCellSpec(text, "")
 
     override fun getInstantiationActions(
         location: INonExistingNode,
         parameters: CodeCompletionParameters,
     ): List<IActionOrProvider>? = emptyList()
+
+    companion object {
+        const val DEFAULT_TEXT_COLOR = "LightGray"
+
+        /** The UI font of whatever embeds the editor, so that a label is visibly not code. */
+        const val DEFAULT_FONT_FAMILY = "system-ui, sans-serif"
+
+        /** Relative, so a label stays one step below the editor's font size instead of a fixed number of pixels. */
+        const val DEFAULT_FONT_SIZE = "smaller"
+    }
 }
