@@ -560,5 +560,18 @@
     <property role="3GE5qa" value="styles" />
     <ref role="1TJDcQ" node="43rgS5P1XCO" resolve="StyleItem" />
   </node>
+  <node concept="1TIwiD" id="2eHudJpH2xi">
+    <property role="EcuMT" value="8001726925258320992" />
+    <property role="TrG5h" value="LabelCell" />
+    <property role="34LRSv" value="label" />
+    <ref role="1TJDcQ" node="7dm8yUsMxww" resolve="Cell" />
+    <node concept="1TJgyj" id="2eHudJpH2xj" role="1TKVEi">
+      <property role="IQ2ns" value="6782337433283915644" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="text" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
+    </node>
+  </node>
 </model>
 
