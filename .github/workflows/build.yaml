@@ -37,7 +37,7 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build -PciBuild=true -Pgpr.token=${{ secrets.GITHUB_TOKEN }} -Pmps.version.major=2023.3
+        run: ./gradlew build -PciBuild=true -Pgpr.token=${{ secrets.GITHUB_TOKEN }} -Pmps.version.major=2024.1
       - name: Archive test report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
