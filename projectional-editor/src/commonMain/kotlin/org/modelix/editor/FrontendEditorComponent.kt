@@ -678,6 +678,11 @@ class FrontendEditorComponentState(
                 highlightedCell = newHighlightedCell,
             )
         }.also {
+            // The cell tree is the first dependency, so that the HTML is generated from an up to date tree, and
+            // also because a model change that arrives without a selection change (one that was made in MPS
+            // instead of in the browser) has to invalidate the rendering.
+            it.addDependency(cellTree)
+            it.addDependency(layoutablesIndex)
             it.addDependency(selection)
             it.addDependency(selectionView)
             it.addDependency(codeCompletionMenu)
