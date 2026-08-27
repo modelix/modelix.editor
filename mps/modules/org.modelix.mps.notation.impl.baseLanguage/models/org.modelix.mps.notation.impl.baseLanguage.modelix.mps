@@ -1606,6 +1606,7 @@
       <node concept="3JB3jO" id="6xJrM0Nv0JT" role="3JBHQ1" />
     </node>
     <node concept="3JBH_3" id="58hR5f$kOB$" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tpee:4ctkEngA$UD" resolve="UndefinedType" />
       <node concept="1yh6fm" id="58hR5f$kOKn" role="3JBHQ1">
         <node concept="3Pd4f9" id="1nuEuAh36DZ" role="PNT5y">
@@ -4077,6 +4078,18 @@
       <ref role="3JBHV4" to="tpee:hvt17LK" resolve="ValueParameter" />
       <node concept="1yh6fm" id="4LGiksPnuBy" role="3JBHQ1" />
     </node>
+    <node concept="3JBH_3" id="4LGiksQ0urx" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tpee:g76ryKb" resolve="ConceptFunctionParameter" />
+      <node concept="1yh6fm" id="4LGiksQ0urw" role="3JBHQ1" />
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0usw" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tpee:4Lb$w0Yiqs4" resolve="BaseVariableReference" />
+      <node concept="1yiJt1" id="4LGiksQ0usv" role="3JBHQ1">
+        <ref role="1yiJtc" to="tpee:4Lb$w0Yiqs5" resolve="baseVariableDeclaration" />
+      </node>
+    </node>
   </node>
   <node concept="3JBFZQ" id="22f9nDgKep2">
     <property role="TrG5h" value="jetbrains.mps.lang.smodel" />
@@ -4603,12 +4616,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.IfInstanceOfStatement" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHDi" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:1Cyzq4PvWDN" resolve="IfInstanceOfVarReference" />
-      <node concept="3JB3jO" id="3$1Yp8wiHDj" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.IfInstanceOfVarReference" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDk" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:1Cyzq4Pv$D9" resolve="IfInstanceOfVariable" />
       <node concept="2OY0tg" id="4LGiksPnuCQ" role="3JBHQ1">
@@ -4712,12 +4719,6 @@
         <node concept="3JB3jO" id="4LGiksPnuD3" role="2OY0$2">
           <property role="3JB3xJ" value="/" />
         </node>
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHDM" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:3xFa6mqMw9a" resolve="ModelPointer_ResolveOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHDN" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.ModelPointer_ResolveOperation" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDQ" role="3JBHiB">
@@ -4829,12 +4830,6 @@
     <node concept="3JBH_3" id="3$1Yp8wiHEo" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:5kLyeZleWQw" resolve="NodePointer_GetModelOperation" />
       <node concept="1yh6fm" id="4LGiksPnuDm" role="3JBHQ1" />
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHEq" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:3ayRDg9aLzO" resolve="NodePointer_ResolveOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHEr" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.NodePointer_ResolveOperation" />
-      </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHEu" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:haqgKhF" resolve="Node_ConceptMethodCall" />
@@ -5163,28 +5158,10 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHFQ" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:gDxIGKj" resolve="OperationParm_Inclusion" />
-      <node concept="3JB3jO" id="3$1Yp8wiHFR" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.OperationParm_Inclusion" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHFS" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:4uVbusd0fYc" resolve="OperationParm_LinkQualifier" />
       <node concept="1yiDfa" id="4LGiksPnuEd" role="3JBHQ1">
         <ref role="1yiDfm" to="tp25:4uVbusd0fYd" resolve="linkQualifier" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHFU" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:gDxLfci" resolve="OperationParm_Root" />
-      <node concept="3JB3jO" id="3$1Yp8wiHFV" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.OperationParm_Root" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHFW" role="3JBHiB">
-      <ref role="3JBHV4" to="tp25:1lvHLgR6tlS" resolve="OperationParm_SameMetaLevel" />
-      <node concept="3JB3jO" id="3$1Yp8wiHFX" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.OperationParm_SameMetaLevel" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHFY" role="3JBHiB">
@@ -5554,6 +5531,32 @@
         <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.SubconceptCase" />
       </node>
     </node>
+    <node concept="3JBH_3" id="4LGiksQ0urS" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp25:gDxHYCE" resolve="AbstractOperationParameter" />
+      <node concept="1yh6fm" id="4LGiksQ0urR" role="3JBHQ1" />
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0us3" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp25:3xFa6mqMwat" resolve="AbstractPointerResolveOperation" />
+      <node concept="2OY0tg" id="4LGiksQ0urZ" role="3JBHQ1">
+        <node concept="3JB3jO" id="4LGiksQ0urY" role="2OY0$2">
+          <property role="3JB3xJ" value="resolve" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0us0" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0urX" role="2OY0$2">
+          <property role="3JB3xJ" value="(" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0us1" role="2OY0$2" />
+        <node concept="1yiDfa" id="4LGiksQ0urW" role="2OY0$2">
+          <ref role="1yiDfm" to="tp25:3ayRDg9aL$v" resolve="repositoryArg" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0us2" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0urV" role="2OY0$2">
+          <property role="3JB3xJ" value=")" />
+        </node>
+      </node>
+    </node>
   </node>
   <node concept="3JBFZQ" id="22f9nDgLzlo">
     <property role="TrG5h" value="jetbrains.mps.lang.text" />
@@ -5696,6 +5699,7 @@
       </node>
     </node>
     <node concept="3JBH_3" id="58hR5f$kOtp" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tp2q:gK_YKtE" resolve="ListType" />
       <node concept="2OY0tg" id="58hR5f$kOtB" role="3JBHQ1">
         <node concept="1yh6fm" id="58hR5f$kOtE" role="2OY0$2">
@@ -5737,6 +5741,7 @@
       </node>
     </node>
     <node concept="3JBH_3" id="58hR5f$kTY9" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tp2q:hrrvAJb" resolve="MapType" />
       <node concept="2OY0tg" id="58hR5f$kTYD" role="3JBHQ1">
         <node concept="1yh6fm" id="58hR5f$kTYG" role="2OY0$2">
@@ -5784,24 +5789,6 @@
       <ref role="3JBHV4" to="tp2q:hQEZigj" resolve="ClearSetOperation" />
       <node concept="2OY0tg" id="4LGiksPnuGp" role="3JBHQ1">
         <node concept="1yh6fm" id="4LGiksPnuGo" role="2OY0$2" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHHK" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:6bxRKqX8naM" resolve="CollectionType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHHL" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.CollectionType" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHHM" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:hbQWeAY" resolve="ConcatOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHHN" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ConcatOperation" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHHO" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i2YL$DY" resolve="ContainerIteratorType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHHP" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ContainerIteratorType" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHHQ" role="3JBHiB">
@@ -5896,24 +5883,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.CustomMapCreator" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHI2" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:hyWwVge" resolve="CutOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHI3" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.CutOperation" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHI4" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:2UpUqInRBsh" resolve="DequeType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHI5" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.DequeType" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHI6" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:hyNgGp0" resolve="DisjunctOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHI7" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.DisjunctOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHI8" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:hRS9umm" resolve="DowncastExpression" />
       <node concept="2OY0tg" id="4LGiksPnuGY" role="3JBHQ1">
@@ -5944,12 +5913,6 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIc" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:h866VRs" resolve="ExcludeOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHId" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ExcludeOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIe" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:gMGpvep" resolve="ForEachStatement" />
       <node concept="3JB3jO" id="3$1Yp8wiHIf" role="3JBHQ1">
@@ -5970,31 +5933,13 @@
         <ref role="1yiJtc" to="tp2q:gMGs0uU" resolve="variable" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIk" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i0v1z5O" resolve="GetCurrentOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIl" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.GetCurrentOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIm" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:hvlbrpW" resolve="GetKeysOperation" />
       <node concept="1yh6fm" id="4LGiksPnuHb" role="3JBHQ1" />
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIo" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i0v1n0X" resolve="GetNextOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIp" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.GetNextOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIq" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:i0T8wUn" resolve="GetValuesOperation" />
       <node concept="1yh6fm" id="4LGiksPnuHc" role="3JBHQ1" />
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIs" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i0v0PRO" resolve="HasNextOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIt" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.HasNextOperation" />
-      </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIu" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:hrrGOWH" resolve="HashMapCreator" />
@@ -6089,13 +6034,8 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIE" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:h860Fb$" resolve="IntersectOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIF" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.IntersectOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIG" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tp2q:i0uOF5o" resolve="IteratorType" />
       <node concept="2OY0tg" id="4LGiksPnuHO" role="3JBHQ1">
         <node concept="1yh6fm" id="4LGiksPnuHN" role="2OY0$2" />
@@ -6119,12 +6059,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.JoinOperation" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIK" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i3AY5xN" resolve="KeyAccessOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIL" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.KeyAccessOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIM" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:i32FmgM" resolve="LinkedHashMapCreator" />
       <node concept="3JB3jO" id="3$1Yp8wiHIN" role="3JBHQ1">
@@ -6141,12 +6075,6 @@
       <ref role="3JBHV4" to="tp2q:hQJqq4S" resolve="LinkedListCreator" />
       <node concept="3JB3jO" id="3$1Yp8wiHIR" role="3JBHQ1">
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.LinkedListCreator" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHIS" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:2Uq2TE90jvD" resolve="LinkedListType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHIT" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.LinkedListType" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIU" role="3JBHiB">
@@ -6319,12 +6247,6 @@
       <ref role="3JBHV4" to="tp2q:i3CFNF1" resolve="MappingsSetOperation" />
       <node concept="1yh6fm" id="4LGiksPnuIV" role="3JBHQ1" />
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHJg" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i0v1Rfi" resolve="MoveNextOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHJh" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.MoveNextOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJi" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:7PXIfgo7YCl" resolve="MultiForEachPair" />
       <node concept="2OY0tg" id="4LGiksPnuIZ" role="3JBHQ1">
@@ -6430,12 +6352,6 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHJy" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:4VG9JMUXOih" resolve="QueueType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHJz" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.QueueType" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJA" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:hQKedQc" resolve="RemoveAtElementOperation" />
       <node concept="2OY0tg" id="4LGiksPnuJz" role="3JBHQ1">
@@ -6452,12 +6368,6 @@
         <node concept="3JB3jO" id="4LGiksPnuJv" role="2OY0$2">
           <property role="3JB3xJ" value=")" />
         </node>
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHJC" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i2YMHdw" resolve="RemoveOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHJD" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.RemoveOperation" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJG" role="3JBHiB">
@@ -6526,6 +6436,7 @@
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJM" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tp2q:hQhMVNg" resolve="SetType" />
       <node concept="2OY0tg" id="4LGiksPnuK4" role="3JBHQ1">
         <node concept="1yh6fm" id="4LGiksPnuK3" role="2OY0$2" />
@@ -6611,24 +6522,6 @@
       <ref role="3JBHV4" to="tp2q:h9nlBG7" resolve="SortDirection" />
       <node concept="3JB3jO" id="3$1Yp8wiHJX" role="3JBHQ1">
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.SortDirection" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHJY" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i341B87" resolve="SortedMapType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHJZ" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.SortedMapType" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHK0" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i34wHOq" resolve="SortedSetType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHK1" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.SortedSetType" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHK2" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:5T$hED6V_VG" resolve="StackType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHK3" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.StackType" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHK4" role="3JBHiB">
@@ -6754,12 +6647,6 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKg" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:hyWx4T6" resolve="TailOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKh" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.TailOperation" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHKi" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:i34Kgke" resolve="TailSetOperation" />
       <node concept="2OY0tg" id="4LGiksPnuLr" role="3JBHQ1">
@@ -6831,16 +6718,80 @@
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.TreeSetCreator" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKs" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:h84TjdH" resolve="UnionOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKt" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.UnionOperation" />
+    <node concept="3JBH_3" id="4LGiksQ0urE" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:h856pF2" resolve="BinaryOperation" />
+      <node concept="2OY0tg" id="4LGiksQ0urA" role="3JBHQ1">
+        <node concept="1yh6fm" id="4LGiksQ0ur_" role="2OY0$2" />
+        <node concept="1yiDf7" id="4LGiksQ0urB" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0ur$" role="2OY0$2">
+          <property role="3JB3xJ" value="(" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0urC" role="2OY0$2" />
+        <node concept="1yiDfa" id="4LGiksQ0urz" role="2OY0$2">
+          <ref role="1yiDfm" to="tp2q:h8576M6" resolve="rightExpression" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0urD" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0ury" role="2OY0$2">
+          <property role="3JB3xJ" value=")" />
+        </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKu" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2q:i3AV6I3" resolve="ValueAccessOperation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKv" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ValueAccessOperation" />
+    <node concept="3JBH_3" id="4LGiksQ0urN" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:4VG9JMUYcer" resolve="AbstractContainerType" />
+      <node concept="2OY0tg" id="4LGiksQ0urJ" role="3JBHQ1">
+        <node concept="1yh6fm" id="4LGiksQ0urI" role="2OY0$2" />
+        <node concept="1yiDf7" id="4LGiksQ0urK" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0urH" role="2OY0$2">
+          <property role="3JB3xJ" value="&lt;" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0urL" role="2OY0$2" />
+        <node concept="1yiDfa" id="4LGiksQ0urG" role="2OY0$2">
+          <ref role="1yiDfm" to="tp2q:4VG9JMUYces" resolve="elementType" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0urM" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0urF" role="2OY0$2">
+          <property role="3JB3xJ" value="&gt;" />
+        </node>
+      </node>
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0urQ" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:i0v0eXP" resolve="AbstractIteratorOperation" />
+      <node concept="2OY0tg" id="4LGiksQ0urP" role="3JBHQ1">
+        <node concept="1yh6fm" id="4LGiksQ0urO" role="2OY0$2" />
+      </node>
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0urU" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:i3AUDRs" resolve="AbstractMappingOperation" />
+      <node concept="1yh6fm" id="4LGiksQ0urT" role="3JBHQ1" />
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0us6" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:i0w$_VD" resolve="AbstractEnumeratorOperation" />
+      <node concept="2OY0tg" id="4LGiksQ0us5" role="3JBHQ1">
+        <node concept="1yh6fm" id="4LGiksQ0us4" role="2OY0$2" />
+      </node>
+    </node>
+    <node concept="3JBH_3" id="4LGiksQ0usf" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tp2q:hyWvAry" resolve="ChunkOperation" />
+      <node concept="2OY0tg" id="4LGiksQ0usb" role="3JBHQ1">
+        <node concept="1yh6fm" id="4LGiksQ0usa" role="2OY0$2" />
+        <node concept="1yiDf7" id="4LGiksQ0usc" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0us9" role="2OY0$2">
+          <property role="3JB3xJ" value="(" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0usd" role="2OY0$2" />
+        <node concept="1yiDfa" id="4LGiksQ0us8" role="2OY0$2">
+          <ref role="1yiDfm" to="tp2q:hyWvEWZ" resolve="length" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0use" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0us7" role="2OY0$2">
+          <property role="3JB3xJ" value=")" />
+        </node>
       </node>
     </node>
   </node>
@@ -6988,48 +6939,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ComparisonRule" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKM" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hS7zZI2" resolve="ConceptFunctionParameter_ContextNode" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKN" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_ContextNode" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKO" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:3dvSt2RikNW" resolve="ConceptFunctionParameter_EditorContext" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKP" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_EditorContext" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKQ" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hS7z$4e" resolve="ConceptFunctionParameter_Role" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKR" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_Role" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKS" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:64uvs5aqq0k" resolve="ConceptFunctionParameter_Selection" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKT" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_Selection" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKU" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hS7zGQX" resolve="ConceptFunctionParameter_isAggregation" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKV" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_isAggregation" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKW" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hGQ6cc0" resolve="ConceptFunctionParameter_node" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKX" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_node" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHKY" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hS7gLIB" resolve="ConceptFunctionParameter_var" />
-      <node concept="3JB3jO" id="3$1Yp8wiHKZ" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ConceptFunctionParameter_var" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHL0" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h5YaCyN" resolve="ConceptReference" />
       <node concept="2OY0tg" id="4LGiksPnuMz" role="3JBHQ1">
@@ -7048,18 +6957,6 @@
         <node concept="2OYlUR" id="4LGiksPnuMu" role="2OY0$2">
           <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
         </node>
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHL2" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:h5ZoVKz" resolve="CreateComparableEquationStatement" />
-      <node concept="3JB3jO" id="3$1Yp8wiHL3" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.CreateComparableEquationStatement" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHL4" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hb3qWvG" resolve="CreateComparableEquationStatementStrong" />
-      <node concept="3JB3jO" id="3$1Yp8wiHL5" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.CreateComparableEquationStatementStrong" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHL6" role="3JBHiB">
@@ -7280,12 +7177,6 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHLI" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hZcjfmK" resolve="LeftOperandType_parameter" />
-      <node concept="3JB3jO" id="3$1Yp8wiHLJ" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.LeftOperandType_parameter" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLK" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h6iQiFj" resolve="LinkPatternVariableReference" />
       <node concept="1yiJt1" id="4LGiksPnuNx" role="3JBHQ1">
@@ -7374,12 +7265,6 @@
         <node concept="1yiDfa" id="4LGiksPnuNV" role="2OY0$2">
           <ref role="1yiDfm" to="tpd4:hgmwGF0" resolve="normalType" />
         </node>
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHM0" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hZcjoao" resolve="Operation_parameter" />
-      <node concept="3JB3jO" id="3$1Yp8wiHM1" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.Operation_parameter" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHM2" role="3JBHiB">
@@ -7621,12 +7506,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ReportErrorStatementAnnotation" />
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHMQ" role="3JBHiB">
-      <ref role="3JBHV4" to="tpd4:hZcjoVq" resolve="RightOperandType_parameter" />
-      <node concept="3JB3jO" id="3$1Yp8wiHMR" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.RightOperandType_parameter" />
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMS" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hfSilrT" resolve="RuntimeErrorType" />
       <node concept="2OY0tg" id="4LGiksPnuON" role="3JBHQ1">
@@ -7863,6 +7742,23 @@
         <ref role="1yiJtc" to="tpd4:hyX3Bgo" resolve="whenConcreteVar" />
       </node>
     </node>
+    <node concept="3JBH_3" id="4LGiksQ0usm" role="3JBHiB">
+      <property role="2PxJs8" value="true" />
+      <ref role="3JBHV4" to="tpd4:3Jyakw70jUR" resolve="AbstractComparableStatement" />
+      <node concept="2OY0tg" id="4LGiksQ0usk" role="3JBHQ1">
+        <node concept="1yiDfa" id="4LGiksQ0usj" role="2OY0$2">
+          <ref role="1yiDfm" to="tpd4:h5ZfhOP" resolve="leftExpression" />
+        </node>
+        <node concept="1yh6fm" id="4LGiksQ0usi" role="2OY0$2" />
+        <node concept="1yiDfa" id="4LGiksQ0ush" role="2OY0$2">
+          <ref role="1yiDfm" to="tpd4:h5ZfhOQ" resolve="rightExpression" />
+        </node>
+        <node concept="1yiDf7" id="4LGiksQ0usl" role="2OY0$2" />
+        <node concept="3JB3jO" id="4LGiksQ0usg" role="2OY0$2">
+          <property role="3JB3xJ" value=";" />
+        </node>
+      </node>
+    </node>
   </node>
   <node concept="3JBFZQ" id="3$1Yp8w7Lfz">
     <property role="TrG5h" value="jetbrains.mps.lang.core" />
@@ -8003,12 +7899,6 @@
       <ref role="3JBHV4" to="tp2c:U7sbC7HC1h" resolve="ClosureLiteralType" />
       <node concept="3JB3jO" id="3$1Yp8wiHO7" role="3JBHQ1">
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.closures.structure.ClosureLiteralType" />
-      </node>
-    </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHO8" role="3JBHiB">
-      <ref role="3JBHV4" to="tp2c:7NbpLe7cVk0" resolve="ClosureVarType" />
-      <node concept="3JB3jO" id="3$1Yp8wiHO9" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.closures.structure.ClosureVarType" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOa" role="3JBHiB">
