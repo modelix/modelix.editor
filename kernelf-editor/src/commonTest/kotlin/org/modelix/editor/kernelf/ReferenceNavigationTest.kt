@@ -27,6 +27,7 @@ import org.modelix.model.ModelFacade
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IBranch
 import org.modelix.model.api.INode
+import org.modelix.model.api.INodeReference
 import org.modelix.model.area.PArea
 import org.modelix.model.withIncrementalComputationSupport
 import kotlin.test.Test
@@ -43,6 +44,7 @@ import kotlin.test.assertTrue
  */
 class ReferenceNavigationTest {
     private lateinit var branch: IBranch
+    private lateinit var targetLibrary: N_Library
     private lateinit var constant: N_Constant
     private lateinit var constantRef: N_ConstantRef
     private lateinit var editor: FrontendEditorComponent
@@ -107,6 +109,29 @@ class ReferenceNavigationTest {
         }
 
     /**
+     * A host application that shows more than the editor alone opens the target itself, e.g. in a new browser tab.
+     * It gets the node to navigate to and the root node it is in.
+     */
+    @Test
+    fun aTargetInAnotherRootNodeIsOfferedToTheHost() =
+        runNavigationTest(targetInOwnRootNode = true) {
+            val navigatedTo = ArrayList<Pair<INodeReference, INodeReference>>()
+            editor.navigateToExternalNode = { targetNode, rootNode ->
+                navigatedTo.add(targetNode to rootNode)
+                true
+            }
+
+            assertTrue(editor.navigateToReferenceTarget(referenceCell()))
+
+            assertEquals(
+                listOf(constant.untypedReference() to targetLibrary.untypedReference()),
+                navigatedTo.toList(),
+            )
+            // The host navigated, so the editor kept showing its own root node.
+            assertEquals(null, editor.resolveNodeCell(constant.untyped()))
+        }
+
+    /**
      * The cell that shows the `constant` reference of [constantRef]. It is the only cell of the editor that knows a
      * reference target.
      */
@@ -135,7 +160,7 @@ class ReferenceNavigationTest {
         val editedLibrary =
             branch.computeWrite {
                 val model = newModel()
-                val targetLibrary = model.newLibrary()
+                targetLibrary = model.newLibrary()
                 constant =
                     targetLibrary.contents.addNew(C_Constant).apply {
                         name = "answer"

@@ -56,11 +56,17 @@ open class FrontendEditorComponent(
     private val openedRootGeneration = AtomicLong(0)
 
     /**
-     * Invoked by [navigateToNode] for a node that has no cell in this editor, usually because it is outside the
-     * currently opened root node. A host application can use this to open the node in a different editor. Returns
-     * true if it navigated to the node.
+     * Invoked by [navigateToNode] for a node that is outside the currently opened root node. It receives the node to
+     * navigate to and the root node that has to be opened to show it. A host application can use this to open that
+     * root node somewhere else (a new browser tab, a tab component, a second editor) instead of replacing the
+     * content of this editor. Returns true if it navigated to the node.
      */
-    var navigateToExternalNode: ((INodeReference) -> Boolean)? = null
+    var navigateToExternalNode: ((targetNode: INodeReference, rootNode: INodeReference) -> Boolean)? = null
+
+    /**
+     * The root node this editor currently shows, as passed to [openNode].
+     */
+    private var openedRootNode: INodeReference? = null
 
     fun openNode(rootNode: INodeReference): Deferred<EditorUpdateData> {
         val firstUpdate = CompletableDeferred<EditorUpdateData>()
@@ -69,6 +75,7 @@ open class FrontendEditorComponent(
             // Cancelling the previous flow doesn't happen immediately. The generation lets an update that is still
             // on its way be recognized as one of the previous root node, whose cells don't exist anymore.
             val generation = openedRootGeneration.incrementAndGet()
+            openedRootNode = rootNode
             state.resetCellTree()
             val updateFlow = service.openNode(editorId, rootNode.toSerialized())
             coroutineScope.launch {
@@ -326,25 +333,34 @@ open class FrontendEditorComponent(
     suspend fun navigateToNode(targetRef: INodeReference): Boolean {
         if (selectNode(targetRef)) return true
 
-        navigateToExternalNode?.let {
-            LOG.trace { "No cell found for $targetRef. Delegating to the external navigation handler." }
-            return it.invoke(targetRef)
-        }
-
         val rootNode = serviceCall { getContainingRootNode(targetRef.toSerialized()) }
         if (rootNode == null) {
             LOG.warn { "Cannot navigate to $targetRef. The node was not found in the model." }
             return false
         }
+
+        // The node is inside the opened root node, but has no cell. Nothing to open, and opening the same root node
+        // somewhere else wouldn't show the node either.
+        if (rootNode == openedRootNode) {
+            LOG.warn { "Cannot navigate to $targetRef. The node has no cell in the editor of $rootNode." }
+            return false
+        }
+
+        navigateToExternalNode?.let {
+            LOG.trace { "No cell found for $targetRef. Delegating the root node $rootNode to the host application." }
+            if (it.invoke(targetRef, rootNode)) return true
+        }
+
         LOG.trace { "No cell found for $targetRef. Opening its root node $rootNode." }
         openNode(rootNode).await()
         return selectNode(targetRef)
     }
 
     /**
-     * Moves the selection to the cell of the given node, if that node is part of the currently opened root node.
+     * Moves the selection to the cell of the given node and scrolls it into view, if that node is part of the
+     * currently opened root node. Unlike [navigateToNode] it never opens a different root node.
      */
-    private fun selectNode(targetRef: INodeReference): Boolean {
+    fun selectNode(targetRef: INodeReference): Boolean {
         val selection = CaretPositionPolicy(NodeCellReference(targetRef)).getBestSelection(this) ?: return false
         doChangeSelection(selection)
         scrollIntoViewLater { getHtmlElement(selection.layoutable) }

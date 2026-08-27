@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.modelix.editor.text.frontend.getVisibleText
 import org.modelix.editor.text.shared.NullTextEditorService
+import org.modelix.editor.text.shared.TextEditorService
 import org.modelix.editor.text.shared.celltree.CellInstanceId
 import org.modelix.editor.text.shared.celltree.CellPropertyChangeOp
 import org.modelix.editor.text.shared.celltree.CellTreeOp
@@ -46,24 +47,25 @@ class ReferenceNavigationTest {
     @Test
     fun aTargetOutsideTheOpenedRootNodeIsDelegatedToTheHost() =
         runTest {
-            // The reference points to a node that has no cell, e.g. because it is in a different root node.
-            val editor = editorWithReferenceTo(NodeReference("node-without-cell"))
-            val navigatedTo = ArrayList<INodeReference>()
-            editor.navigateToExternalNode = {
-                navigatedTo.add(it)
+            // The reference points to a node that has no cell, because it is in a different root node.
+            val editor = editorWithReferenceTo(NodeReference("node-without-cell"), rootNodeOfTarget = NodeReference("other-root"))
+            val navigatedTo = ArrayList<Pair<INodeReference, INodeReference>>()
+            editor.navigateToExternalNode = { targetNode, rootNode ->
+                navigatedTo.add(targetNode to rootNode)
                 true
             }
 
             assertTrue(editor.navigateToReferenceTarget(editor.findCell("reference")))
 
-            assertEquals(listOf<INodeReference>(NodeReference("node-without-cell")), navigatedTo.toList())
+            // The host is told which root node to open to make the target visible.
+            assertEquals(listOf(NodeReference("node-without-cell") to NodeReference("other-root")), navigatedTo.toList())
             assertNull(editor.getSelection())
         }
 
     @Test
-    fun withoutAHostThereIsNoNavigationToATargetWithoutACell() =
+    fun aTargetTheModelDoesNotKnowIsNotNavigatedTo() =
         runTest {
-            val editor = editorWithReferenceTo(NodeReference("node-without-cell"))
+            val editor = editorWithReferenceTo(NodeReference("node-without-cell"), rootNodeOfTarget = null)
 
             assertFalse(editor.navigateToReferenceTarget(editor.findCell("reference")))
         }
@@ -103,8 +105,11 @@ class ReferenceNavigationTest {
      * An editor showing a cell 'reference' that points to [target], a cell 'target' that belongs to the node
      * `target-node`, and a cell 'plain' that is not involved in any reference.
      */
-    private fun editorWithReferenceTo(target: INodeReference): FrontendEditorComponent {
-        val editor = FrontendEditorComponent(NullTextEditorService())
+    private fun editorWithReferenceTo(
+        target: INodeReference,
+        rootNodeOfTarget: NodeReference? = null,
+    ): FrontendEditorComponent {
+        val editor = FrontendEditorComponent(ServiceWithRootNodes(rootNodeOfTarget))
         val rootCell = EditorTestUtils.buildCells(listOf("reference", "plain", "target"), editor.getCellTree())
         rootCell.moveCell(editor.getRootCell(), 0)
 
@@ -120,4 +125,14 @@ class ReferenceNavigationTest {
     private fun FrontendEditorComponent.findCell(text: String): Cell = getRootCell().descendants().single { it.getVisibleText() == text }
 
     private fun FrontendEditorComponent.selectedText(): String? = (getSelection() as? CaretSelection)?.layoutable?.toText()
+
+    /**
+     * Answers the question the editor asks before it navigates to a node it has no cell for: which root node has to
+     * be opened to show it.
+     */
+    private class ServiceWithRootNodes(
+        private val rootNode: NodeReference?,
+    ) : TextEditorService by NullTextEditorService() {
+        override suspend fun getContainingRootNode(nodeRef: NodeReference): NodeReference? = rootNode
+    }
 }
