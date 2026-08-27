@@ -5853,7 +5853,6 @@
             <property role="3JB3xJ" value="{" />
           </node>
         </node>
-        <node concept="2OWiap" id="4LGiksPnuGS" role="2OY0$2" />
         <node concept="2OY0tg" id="4LGiksPnuGR" role="2OY0$2">
           <node concept="2OWiap" id="4LGiksPnuGL" role="2OY0$2" />
           <node concept="2OY0tg" id="4LGiksPnuGJ" role="2OY0$2">
@@ -5870,7 +5869,6 @@
             <node concept="2OYvdK" id="4LGiksPnuGK" role="2OYu5s" />
           </node>
         </node>
-        <node concept="2OWiap" id="4LGiksPnuGQ" role="2OY0$2" />
         <node concept="3JB3jO" id="4LGiksPnuGP" role="2OY0$2">
           <property role="3JB3xJ" value="}" />
         </node>
