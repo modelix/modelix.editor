@@ -46,9 +46,16 @@ import org.modelix.editor.text.shared.TextEditorService
 import org.modelix.editor.text.shared.celltree.CellInstanceId
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.editor.text.shared.celltree.cellReferences
+import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IMutableModel
+import org.modelix.model.api.IReadableNode
 import org.modelix.model.api.NodeReference
 import org.modelix.model.api.runSynchronized
+import org.modelix.model.api.toSerialized
+
+private val ROOT_NODES_LINK =
+    BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
+        .toReference()
 
 class TextEditorServiceImpl(
     val engine: EditorEngine,
@@ -79,7 +86,9 @@ class TextEditorServiceImpl(
                 updateChannel.sendUpdate()
                 awaitClose()
             } finally {
-                updateChannels.getAndUpdate { it - editorId }
+                // Opening a different root node registers a new channel under the same editor ID before this
+                // (cancelled) one is cleaned up, so only remove the channel that is still the registered one.
+                updateChannels.getAndUpdate { if (it[editorId] === updateChannel) it - editorId else it }
             }
         }
     }
@@ -131,6 +140,24 @@ class TextEditorServiceImpl(
             }
             return@runWithCell updateChannel.createUpdate()
         }
+
+    override suspend fun getContainingRootNode(nodeRef: NodeReference): NodeReference? =
+        model.executeRead {
+            model
+                .tryResolveNode(nodeRef)
+                ?.containingRootNode()
+                ?.getNodeReference()
+                ?.toSerialized()
+        }
+
+    /**
+     * The node that an editor is opened on to show this node: the closest ancestor that is a root node of a model,
+     * or the topmost ancestor if the model has no such structure.
+     */
+    private fun IReadableNode.containingRootNode(): IReadableNode {
+        val parent = getParent() ?: return this
+        return if (getContainmentLink().matches(ROOT_NODES_LINK)) this else parent.containingRootNode()
+    }
 
     override suspend fun executeDelete(
         editorId: Int,

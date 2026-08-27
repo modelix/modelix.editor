@@ -24,6 +24,13 @@ interface TextEditorService {
         forward: Boolean,
     ): EditorUpdateData
 
+    /**
+     * The root node that contains [nodeRef], the one an editor has to be opened on to make that node visible.
+     * Used to navigate to a reference target that is outside the currently opened root node.
+     * Returns null if the node doesn't exist in the model.
+     */
+    suspend fun getContainingRootNode(nodeRef: NodeReference): NodeReference?
+
     suspend fun executeDelete(
         editorId: Int,
         cellId: CellInstanceId,
@@ -94,6 +101,8 @@ class NullTextEditorService : TextEditorService {
     ): EditorUpdateData {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getContainingRootNode(nodeRef: NodeReference): NodeReference? = null
 
     override suspend fun executeDelete(
         editorId: Int,

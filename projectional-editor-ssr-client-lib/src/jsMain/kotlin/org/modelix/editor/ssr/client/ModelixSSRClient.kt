@@ -42,7 +42,9 @@ class ModelixSSRClient(
     fun createEditor(
         rootNodeReference: INodeReference,
         existingContainerElement: HTMLDivElement? = null,
-    ): HTMLElement = editors.createEditor(rootNodeReference, existingContainerElement)
+        navigateToExternalNode: ((targetNode: INodeReference, rootNode: INodeReference) -> Boolean)? = null,
+        selectedNode: INodeReference? = null,
+    ): HTMLElement = editors.createEditor(rootNodeReference, existingContainerElement, navigateToExternalNode, selectedNode)
 }
 
 inline fun <R> KLogger.logExceptions(body: () -> R): R {

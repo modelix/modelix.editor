@@ -53,18 +53,28 @@ private val LOG =
 class ImageEditorForMPSProject(
     private val project: Project,
 ) : Disposable {
+    /**
+     * Looking the service up again in [dispose] can resurrect it after the application level services were
+     * already disposed. The resurrected instance stays in the `Disposer` tree and keeps the class loader of
+     * this plugin alive, which prevents the plugin from being unloaded.
+     */
+    private val server = ApplicationManager.getApplication().service<ImageEditorForMPS>()
+
     init {
-        ApplicationManager.getApplication().service<ImageEditorForMPS>().registerProject(project)
+        server.registerProject(project)
     }
 
     override fun dispose() {
-        ApplicationManager.getApplication().service<ImageEditorForMPS>().unregisterProject(project)
+        server.unregisterProject(project)
     }
 }
 
 @Service(Service.Level.APP)
 class ImageEditorForMPS : Disposable {
     companion object {
+        private const val SHUTDOWN_GRACE_PERIOD_MS = 1_000L
+        private const val SHUTDOWN_TIMEOUT_MS = 5_000L
+
         fun getInstance() = ApplicationManager.getApplication().getService(ImageEditorForMPS::class.java)
     }
 
@@ -104,7 +114,7 @@ class ImageEditorForMPS : Disposable {
         runSynchronized(this) {
             if (ktorServer != null) return
 
-            println("starting react SSR server")
+            println("starting image editor server")
 
             MPSModuleRepository.getInstance().modelAccess.addCommandListener(commandLister)
             ktorServer =
@@ -138,9 +148,11 @@ class ImageEditorForMPS : Disposable {
     fun ensureStopped() {
         runSynchronized(this) {
             if (ktorServer == null) return
-            println("stopping modelix SSR server")
+            println("stopping image editor server")
             MPSModuleRepository.getInstance().modelAccess.removeCommandListener(commandLister)
-            ktorServer?.stop()
+            // A bounded timeout is required. An unbounded stop() can block forever, which would block the plugin
+            // unloading and the MPS shutdown.
+            ktorServer?.stop(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS)
             ktorServer = null
         }
     }

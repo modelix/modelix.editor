@@ -50,8 +50,26 @@ object ClientSideEditorsAPI {
         client = ModelixSSRClient(httpClient, url)
     }
 
+    /**
+     * @param navigateToExternalNode called when a Cmd/Ctrl+click on a reference points to a node outside the opened
+     *   root node. It receives the serialized reference of the node to navigate to and of the root node that has to
+     *   be opened to show it, and returns whether it navigated there. The editor opens that root node itself if the
+     *   host application doesn't handle it.
+     * @param selectedNode the serialized reference of a node inside the opened root node to put the selection on.
+     */
     fun createEditor(
         rootNodeReference: String,
         existingContainerElement: HTMLDivElement? = null,
-    ): HTMLElement = client.createEditor(NodeReference(rootNodeReference), existingContainerElement)
+        navigateToExternalNode: ((targetNode: String, rootNode: String) -> Boolean)? = null,
+        selectedNode: String? = null,
+    ): HTMLElement =
+        client.createEditor(
+            rootNodeReference = NodeReference(rootNodeReference),
+            existingContainerElement = existingContainerElement,
+            navigateToExternalNode =
+                navigateToExternalNode?.let { handler ->
+                    { targetNode, rootNode -> handler(targetNode.serialize(), rootNode.serialize()) }
+                },
+            selectedNode = selectedNode?.let { NodeReference(it) },
+        )
 }

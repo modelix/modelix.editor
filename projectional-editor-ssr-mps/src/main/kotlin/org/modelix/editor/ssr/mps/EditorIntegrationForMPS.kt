@@ -35,5 +35,12 @@ class EditorIntegrationForMPS(
         ScopeAspect.unregisterScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.remove(MPSConstraints)
         ModelCheckAspect.checkers.remove(MPSModelChecker)
+
+        // The change translator and the aspects registry attach listeners to MPS. Leaving them registered would keep
+        // this plugin's classes referenced from MPS and prevent the plugin from being unloaded.
+        mpsChangeTranslator?.stop()
+        mpsChangeTranslator = null
+        aspectsFromMPS?.dispose()
+        aspectsFromMPS = null
     }
 }

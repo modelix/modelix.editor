@@ -53,15 +53,38 @@ open class FrontendEditorComponent(
             eventQueue.enqueue(UIEventType.Html, { getHtmlElement() })
         })
     private val remoteUpdatesLoop: AtomicReference<Job?> = AtomicReference(null)
+    private val openedRootGeneration = AtomicLong(0)
+
+    /**
+     * Invoked by [navigateToNode] for a node that is outside the currently opened root node. It receives the node to
+     * navigate to and the root node that has to be opened to show it. A host application can use this to open that
+     * root node somewhere else (a new browser tab, a tab component, a second editor) instead of replacing the
+     * content of this editor. Returns true if it navigated to the node.
+     */
+    var navigateToExternalNode: ((targetNode: INodeReference, rootNode: INodeReference) -> Boolean)? = null
+
+    /**
+     * The root node this editor currently shows, as passed to [openNode].
+     */
+    private var openedRootNode: INodeReference? = null
 
     fun openNode(rootNode: INodeReference): Deferred<EditorUpdateData> {
         val firstUpdate = CompletableDeferred<EditorUpdateData>()
         remoteUpdatesLoop.getAndUpdate { currentJob ->
             currentJob?.cancel("root node changed")
+            // Cancelling the previous flow doesn't happen immediately. The generation lets an update that is still
+            // on its way be recognized as one of the previous root node, whose cells don't exist anymore.
+            val generation = openedRootGeneration.incrementAndGet()
+            openedRootNode = rootNode
+            state.resetCellTree()
             val updateFlow = service.openNode(editorId, rootNode.toSerialized())
             coroutineScope.launch {
                 var isFirst = true
                 updateFlow.collect { update ->
+                    if (openedRootGeneration.get() != generation) {
+                        LOG.trace { "Ignoring an update of a root node that is not open anymore" }
+                        return@collect
+                    }
                     enqueueUpdate(update)
                     if (isFirst) {
                         isFirst = false
@@ -194,7 +217,7 @@ open class FrontendEditorComponent(
             state.closeCompletionMenu()
         }
 
-    fun dispose() {
+    open fun dispose() {
         eventQueue.dispose()
         remoteUpdatesLoop.getAndUpdate { currentJob ->
             currentJob?.cancel("disposed")
@@ -254,6 +277,7 @@ open class FrontendEditorComponent(
             when (producer) {
                 is LayoutableCell -> {
                     val layoutable = producer as? LayoutableCell ?: continue
+                    if (event.isNavigationClick() && navigateToReferenceTarget(layoutable.cell)) return true
                     val text = layoutable.toText() // htmlElement.innerText
                     val cellAbsoluteBounds = htmlElement.getInnerBounds()
                     val relativeClickX = event.x - cellAbsoluteBounds.x
@@ -280,6 +304,67 @@ open class FrontendEditorComponent(
             }
         }
         return false
+    }
+
+    /**
+     * Navigates to the target of the reference that is shown by [cell], like Cmd/Ctrl+click does in MPS.
+     *
+     * Returns false if the cell doesn't show a reference, if the reference is unset, or if the target couldn't be
+     * located (see [navigateToNode]).
+     */
+    suspend fun navigateToReferenceTarget(cell: Cell): Boolean {
+        val targetRef =
+            cell
+                .ancestors(true)
+                .firstNotNullOfOrNull { it.getProperty(CommonCellProperties.referenceTarget) } ?: return false
+        return navigateToNode(targetRef)
+    }
+
+    /**
+     * Moves the selection to the cell of the given node and scrolls it into view.
+     *
+     * A node outside the currently opened root node has no cell in this editor. Like MPS, which opens the editor of
+     * the root node that contains the target, this editor then switches to that root node and selects the target
+     * there. A host application that shows more than just this editor (a URL, a node tree, ...) can take over by
+     * setting [navigateToExternalNode].
+     *
+     * Returns false if the node was neither found nor handled.
+     */
+    suspend fun navigateToNode(targetRef: INodeReference): Boolean {
+        if (selectNode(targetRef)) return true
+
+        val rootNode = serviceCall { getContainingRootNode(targetRef.toSerialized()) }
+        if (rootNode == null) {
+            LOG.warn { "Cannot navigate to $targetRef. The node was not found in the model." }
+            return false
+        }
+
+        // The node is inside the opened root node, but has no cell. Nothing to open, and opening the same root node
+        // somewhere else wouldn't show the node either.
+        if (rootNode == openedRootNode) {
+            LOG.warn { "Cannot navigate to $targetRef. The node has no cell in the editor of $rootNode." }
+            return false
+        }
+
+        navigateToExternalNode?.let {
+            LOG.trace { "No cell found for $targetRef. Delegating the root node $rootNode to the host application." }
+            if (it.invoke(targetRef, rootNode)) return true
+        }
+
+        LOG.trace { "No cell found for $targetRef. Opening its root node $rootNode." }
+        openNode(rootNode).await()
+        return selectNode(targetRef)
+    }
+
+    /**
+     * Moves the selection to the cell of the given node and scrolls it into view, if that node is part of the
+     * currently opened root node. Unlike [navigateToNode] it never opens a different root node.
+     */
+    fun selectNode(targetRef: INodeReference): Boolean {
+        val selection = CaretPositionPolicy(NodeCellReference(targetRef)).getBestSelection(this) ?: return false
+        doChangeSelection(selection)
+        scrollIntoViewLater { getHtmlElement(selection.layoutable) }
+        return true
     }
 
     private fun selectClosestInLine(
@@ -628,6 +713,17 @@ class FrontendEditorComponentState(
 
     @JvmSynchronized
     fun getHtmlElement(producer: IProducesHtml): IVirtualDom.HTMLElement? = htmlState.getValidState().generatedHtmlMap.getOutput(producer)
+
+    /**
+     * Throws away the cells of the previously opened root node. A new root node is rendered by a new backend editor
+     * whose cell IDs start from scratch, so the old cells cannot stay in the tree.
+     */
+    @JvmSynchronized
+    fun resetCellTree() {
+        cellTree.setState(CellTreeState(FrontendCellTree(editorComponent), emptyList()))
+        selection.setState(SelectionState())
+        codeCompletionMenu.setState(CompletionMenuState())
+    }
 
     @JvmSynchronized
     fun updateCellTree(changes: List<CellTreeOp>) {

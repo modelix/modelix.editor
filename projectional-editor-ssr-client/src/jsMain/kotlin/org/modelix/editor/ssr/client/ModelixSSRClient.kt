@@ -3,6 +3,7 @@ package org.modelix.editor.ssr.client
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -23,6 +24,8 @@ import org.modelix.editor.text.shared.TextEditorService
 import org.modelix.model.api.INodeReference
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.json
 
 class ModelixSSRClient(
@@ -88,6 +91,17 @@ class ModelixSSRClient(
             editorComponent.enqueueUIEvent(event.convert(JSKeyboardEventType.KEYUP))
             event.preventDefault()
         }
+        // Cmd/Ctrl+click navigates to the target of a reference. While the modifier is held, the class marks the
+        // reference cell under the mouse as clickable (see the .navigation-mode rule in editor.css). The modifier is
+        // tracked on the window, because the editor doesn't have the keyboard focus until it is clicked into. The
+        // blur listener ends the mode when the window loses the focus while the modifier is held (e.g. Cmd+Tab).
+        val navigationModeListener: (Event) -> Unit = { event ->
+            val active = (event as? KeyboardEvent)?.let { it.metaKey || it.ctrlKey } ?: false
+            containerElement.classList.toggle("navigation-mode", active)
+        }
+        window.addEventListener("keydown", navigationModeListener)
+        window.addEventListener("keyup", navigationModeListener)
+        window.addEventListener("blur", navigationModeListener)
 
         editorComponent.openNode(rootNodeReference)
         LOG.info { "Creating editor ${editorComponent.editorId}" }

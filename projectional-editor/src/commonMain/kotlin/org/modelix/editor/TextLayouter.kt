@@ -440,6 +440,9 @@ class LayoutableCell(
                 "text-cell",
                 "has-error".takeIf { errorMessage != null },
                 "has-warning".takeIf { warningMessage != null },
+                // Cmd/Ctrl+click navigates to the target. The class lets the stylesheet show that while the
+                // modifier is held (see FrontendEditorComponent.navigateToReferenceTarget).
+                "reference-cell".takeIf { cell.getProperty(CommonCellProperties.referenceTarget) != null },
             ).joinToString(" ")
         consumer.span(classes) {
             val styleParts = mutableListOf<String>()

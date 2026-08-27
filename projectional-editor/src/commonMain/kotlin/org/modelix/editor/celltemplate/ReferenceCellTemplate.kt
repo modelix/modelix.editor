@@ -52,9 +52,12 @@ class ReferenceCellTemplate(
         context: CellCreationContext,
         node: INode,
     ): CellSpecBase {
-        val data = TextCellSpec(getText(node), "<no ${link.getSimpleName()}>")
+        val targetNode = getTargetNode(node)
+        val data = TextCellSpec(targetNode?.let(presentation) ?: "", "<no ${link.getSimpleName()}>")
         data.cellReferences += ReferencedNodeCellReference(node.reference, link.toReference())
         data.properties[CommonCellProperties.tabTarget] = true
+        // Allows the frontend to navigate to the target of the reference (Cmd/Ctrl+click), like MPS does.
+        if (targetNode != null) data.properties[CommonCellProperties.referenceTarget] = targetNode.reference
         data.properties[CellActionProperties.substitute] =
             ReferenceTargetActionProvider(ExistingNode(node), link, { it.getNode()?.let(presentation) ?: "" }).after {
                 context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
@@ -63,8 +66,6 @@ class ReferenceCellTemplate(
         data.properties.addCheckMessages(context.editorEngine.getCheckMessages(node).filter { it.target == target })
         return data
     }
-
-    private fun getText(node: INode): String = getTargetNode(node)?.let(presentation) ?: ""
 
     private fun getTargetNode(sourceNode: INode): INode? = sourceNode.getReferenceTarget(link)
 
