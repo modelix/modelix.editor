@@ -49,11 +49,7 @@ class ModelixModelAsMPSModel private constructor(
 
     override fun getNode(id: SNodeId): SNode? = model.getNode(id)?.let { ModelixNodeAsMPSNode.toMPSNode(MPSWritableNode(it)) }
 
-    override fun equals(other: Any?): Boolean =
-        when (other) {
-            is ModelixModelAsMPSModel -> model == other.model
-            else -> model == other
-        }
+    override fun equals(other: Any?): Boolean = other is ModelixModelAsMPSModel && model == other.model
 
     override fun hashCode(): Int = model.hashCode()
 
