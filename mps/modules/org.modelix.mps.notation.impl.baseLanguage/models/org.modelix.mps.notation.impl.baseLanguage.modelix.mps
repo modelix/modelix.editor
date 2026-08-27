@@ -3750,21 +3750,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHAC" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:gLYQUyN" resolve="ClosureParameterReference" />
-      <node concept="1yiJt1" id="4LGiksPnuA0" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpee:gLYR86$" resolve="closureParameter" />
+      <node concept="3JB3jO" id="4LGiksR$iZu" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.ClosureParameterReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHAG" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:huSWr6e" resolve="CustomPropertyImplementation" />
-      <node concept="2OY0tg" id="4LGiksQRGz$" role="3JBHQ1">
-        <node concept="IzWyk" id="4LGiksQRGz_" role="2OY0$2" />
-        <node concept="1yiDfa" id="4LGiksQRGzz" role="2OY0$2">
-          <ref role="1yiDfm" to="tpee:huT9Ut0" resolve="getAccessor" />
-        </node>
-        <node concept="IzWyk" id="4LGiksQRGzA" role="2OY0$2" />
-        <node concept="1yiDfa" id="4LGiksQRGzy" role="2OY0$2">
-          <ref role="1yiDfm" to="tpee:huXAMrU" resolve="setAccessor" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZv" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.CustomPropertyImplementation" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHAI" role="3JBHiB">
@@ -3950,8 +3943,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBk" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:2hzApTijNJP" resolve="PropertyValueReference" />
-      <node concept="1yiJt1" id="4LGiksPnuAj" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpee:2hzApTjpGZL" resolve="owningProperty" />
+      <node concept="3JB3jO" id="4LGiksR$iZw" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.PropertyValueReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBo" role="3JBHiB">
@@ -3991,8 +3984,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBs" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:3mPoTkdZzdR" resolve="StaticFieldReferenceOperation" />
-      <node concept="1yiJt1" id="4LGiksPnuAk" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpee:3mPoTkdZzrB" resolve="staticFieldDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$iZx" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.StaticFieldReferenceOperation" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBu" role="3JBHiB">
@@ -4180,8 +4173,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBM" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:2zDZ3IzYz_0" resolve="UnresolvedNameReference" />
-      <node concept="2OYlUR" id="4LGiksPnuBx" role="3JBHQ1">
-        <ref role="2OYlZd" to="tpee:2zDZ3IzYz_1" resolve="resolveName" />
+      <node concept="3JB3jO" id="4LGiksR$iZy" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.UnresolvedNameReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHBO" role="3JBHiB">
@@ -4235,10 +4228,15 @@
       <node concept="1yh6fm" id="4LGiksQ0urw" role="3JBHQ1" />
     </node>
     <node concept="3JBH_3" id="4LGiksQ0usw" role="3JBHiB">
-      <property role="2PxJs8" value="true" />
       <ref role="3JBHV4" to="tpee:4Lb$w0Yiqs4" resolve="BaseVariableReference" />
-      <node concept="1yiJt1" id="4LGiksQ0usv" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpee:4Lb$w0Yiqs5" resolve="baseVariableDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$iZz" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.BaseVariableReference" />
+      </node>
+    </node>
+    <node concept="3JBH_3" id="4LGiksR$j0r" role="3JBHiB">
+      <ref role="3JBHV4" to="tpee:7fGiXOMF9Vj" resolve="HexLongLiteral" />
+      <node concept="3JB3jO" id="4LGiksR$j0s" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.HexLongLiteral" />
       </node>
     </node>
   </node>
@@ -4555,8 +4553,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHCi" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:gNgn60t" resolve="ConceptReference" />
-      <node concept="1yiJt1" id="4LGiksPnuC1" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:gNgnhzJ" resolve="concept" />
+      <node concept="3JB3jO" id="4LGiksR$iZ$" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.ConceptReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHCk" role="3JBHiB">
@@ -4735,14 +4733,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHCC" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:78qQRpbfVOr" resolve="DevkitPointer" />
-      <node concept="2OYlUR" id="4LGiksPnuC8" role="3JBHQ1">
-        <ref role="2OYlZd" to="tp25:78qQRpbfVOs" resolve="devkitName" />
+      <node concept="3JB3jO" id="4LGiksR$iZ_" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.DevkitPointer" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHCE" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:45eRmv04iIh" resolve="EnumMemberReference" />
-      <node concept="1yiJt1" id="4LGiksPnuC9" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:45eRmv04iIo" resolve="decl" />
+      <node concept="3JB3jO" id="4LGiksR$iZA" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.EnumMemberReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHCK" role="3JBHiB">
@@ -4918,8 +4916,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHD6" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:1HbIxIw0iPw" resolve="Enum_MemberLiteral" />
-      <node concept="1yiJt1" id="4LGiksPnuCN" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:1HbIxIw0iP$" resolve="memberDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$iZB" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.Enum_MemberLiteral" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHD8" role="3JBHiB">
@@ -5018,22 +5016,20 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDk" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:1Cyzq4Pv$D9" resolve="IfInstanceOfVariable" />
-      <node concept="2OY0tg" id="4LGiksPnuCQ" role="3JBHQ1">
-        <node concept="2OYlUR" id="4LGiksPnuCP" role="2OY0$2">
-          <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZC" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.IfInstanceOfVariable" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDm" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:34EJa6aIcz0" resolve="LanguageId" />
-      <node concept="2OYlUR" id="4LGiksPnuCR" role="3JBHQ1">
-        <ref role="2OYlZd" to="tp25:34EJa6aIcNn" resolve="namespace" />
+      <node concept="3JB3jO" id="4LGiksR$iZD" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.LanguageId" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDo" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:296OPknU5z2" resolve="LanguageIdentityBySourceModule" />
-      <node concept="1yiDfa" id="4LGiksPnuCS" role="3JBHQ1">
-        <ref role="1yiDfm" to="tp25:296OPknU5zD" resolve="moduleReference" />
+      <node concept="3JB3jO" id="4LGiksR$iZE" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.LanguageIdentityBySourceModule" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDq" role="3JBHiB">
@@ -5097,14 +5093,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHD$" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:2qM$EmJLWMG" resolve="LinkQualifier" />
-      <node concept="1yiJt1" id="4LGiksPnuD1" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:2qM$EmJLWMK" resolve="link" />
+      <node concept="3JB3jO" id="4LGiksR$iZF" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.LinkQualifier" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDC" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:hy6LbF0" resolve="LinkRefQualifier" />
-      <node concept="1yiJt1" id="4LGiksPnuD2" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:hy6LbF1" resolve="link" />
+      <node concept="3JB3jO" id="4LGiksR$iZG" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.LinkRefQualifier" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHDE" role="3JBHiB">
@@ -5219,16 +5215,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHEg" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:5zEkxuKhrAP" resolve="NodeAttributeQualifier" />
-      <node concept="1yiJt1" id="4LGiksPnuDe" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:5zEkxuKhrAQ" resolve="attributeConcept" />
+      <node concept="3JB3jO" id="4LGiksR$iZH" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.NodeAttributeQualifier" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHEi" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:2SljyToQhUX" resolve="NodePointerArg_Identity" />
-      <node concept="2OY0tg" id="4LGiksPnuDg" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuDf" role="2OY0$2">
-          <ref role="1yiDfm" to="tp25:2SljyToQhW6" resolve="ref" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZI" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.NodePointerArg_Identity" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHEk" role="3JBHiB">
@@ -5767,8 +5761,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHFS" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:4uVbusd0fYc" resolve="OperationParm_LinkQualifier" />
-      <node concept="1yiDfa" id="4LGiksPnuEd" role="3JBHQ1">
-        <ref role="1yiDfm" to="tp25:4uVbusd0fYd" resolve="linkQualifier" />
+      <node concept="3JB3jO" id="4LGiksR$iZJ" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.OperationParm_LinkQualifier" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHFY" role="3JBHiB">
@@ -5900,8 +5894,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHGa" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:2qM$EmJLWMH" resolve="PropertyQualifier" />
-      <node concept="1yiJt1" id="4LGiksPnuEU" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:2qM$EmJLWMJ" resolve="property" />
+      <node concept="3JB3jO" id="4LGiksR$iZK" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.PropertyQualifier" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHGc" role="3JBHiB">
@@ -6102,8 +6096,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHGS" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:35Jy4LMD1lX" resolve="SLinkImplicitSelect" />
-      <node concept="1yiJt1" id="4LGiksPnuFE" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:35Jy4LMD1u3" resolve="link" />
+      <node concept="3JB3jO" id="4LGiksR$iZL" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.SLinkImplicitSelect" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHGU" role="3JBHiB">
@@ -6157,8 +6151,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHH2" role="3JBHiB">
       <ref role="3JBHV4" to="tp25:gzTrcDJ" resolve="SPropertyAccess" />
-      <node concept="1yiJt1" id="4LGiksPnuFW" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp25:gzTsBJd" resolve="property" />
+      <node concept="3JB3jO" id="4LGiksR$iZM" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.SPropertyAccess" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHH4" role="3JBHiB">
@@ -6232,6 +6226,12 @@
         </node>
       </node>
     </node>
+    <node concept="3JBH_3" id="4LGiksR$j0t" role="3JBHiB">
+      <ref role="3JBHV4" to="tp25:1Cyzq4PvWDN" resolve="IfInstanceOfVarReference" />
+      <node concept="3JB3jO" id="4LGiksR$j0u" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.structure.IfInstanceOfVarReference" />
+      </node>
+    </node>
   </node>
   <node concept="3JBFZQ" id="22f9nDgLzlo">
     <property role="TrG5h" value="jetbrains.mps.lang.text" />
@@ -6287,40 +6287,20 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHHm" role="3JBHiB">
       <ref role="3JBHV4" to="zqge:7Vz6ZmoXaKt" resolve="Letter" />
-      <node concept="2OY0tg" id="4LGiksQRGDK" role="3JBHQ1">
-        <node concept="2OYlUR" id="4LGiksQRGDJ" role="2OY0$2">
-          <ref role="2OYlZd" to="zqge:7Vz6ZmoXaQu" resolve="value" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZN" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.text.structure.Letter" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHHo" role="3JBHiB">
       <ref role="3JBHV4" to="zqge:2HViukQ0LZD" resolve="NodeWrapperElement" />
-      <node concept="2OY0tg" id="4LGiksQRGDO" role="3JBHQ1">
-        <node concept="3JB3jO" id="4LGiksQRGDN" role="2OY0$2">
-          <property role="3JB3xJ" value=" " />
-        </node>
-        <node concept="1yiDf7" id="4LGiksQRGDP" role="2OY0$2" />
-        <node concept="1yiDfa" id="4LGiksQRGDM" role="2OY0$2">
-          <ref role="1yiDfm" to="zqge:2HViukQ0LZE" resolve="node" />
-        </node>
-        <node concept="1yiDf7" id="4LGiksQRGDQ" role="2OY0$2" />
-        <node concept="3JB3jO" id="4LGiksQRGDL" role="2OY0$2">
-          <property role="3JB3xJ" value=" " />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZO" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.text.structure.NodeWrapperElement" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHHq" role="3JBHiB">
       <ref role="3JBHV4" to="zqge:2MpFNjy3sHf" resolve="NodeWrapperTextualElement" />
-      <node concept="2OY0tg" id="4LGiksPnuGe" role="3JBHQ1">
-        <node concept="3JB3jO" id="4LGiksPnuGd" role="2OY0$2">
-          <property role="3JB3xJ" value=" " />
-        </node>
-        <node concept="1yiDfa" id="4LGiksPnuGc" role="2OY0$2">
-          <ref role="1yiDfm" to="zqge:2MpFNjy3sHg" resolve="node" />
-        </node>
-        <node concept="3JB3jO" id="4LGiksPnuGb" role="2OY0$2">
-          <property role="3JB3xJ" value=" " />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZP" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.text.structure.NodeWrapperTextualElement" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHHs" role="3JBHiB">
@@ -6606,16 +6586,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIg" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:gMGrK_y" resolve="ForEachVariable" />
-      <node concept="2OY0tg" id="4LGiksPnuH9" role="3JBHQ1">
-        <node concept="2OYlUR" id="4LGiksPnuH8" role="2OY0$2">
-          <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZQ" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ForEachVariable" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIi" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:gMGrUn3" resolve="ForEachVariableReference" />
-      <node concept="1yiJt1" id="4LGiksPnuHa" role="3JBHQ1">
-        <ref role="1yiJtc" to="tp2q:gMGs0uU" resolve="variable" />
+      <node concept="3JB3jO" id="4LGiksR$iZR" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.ForEachVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHIm" role="3JBHiB">
@@ -7005,18 +6983,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJm" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:7PXIfgo7YCo" resolve="MultiForEachVariable" />
-      <node concept="2OY0tg" id="4LGiksPnuJ1" role="3JBHQ1">
-        <node concept="2OYlUR" id="4LGiksPnuJ0" role="2OY0$2">
-          <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZS" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.MultiForEachVariable" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJo" role="3JBHiB">
       <ref role="3JBHV4" to="tp2q:7cq3qQ1ylWm" resolve="MultiForEachVariableReference" />
-      <node concept="2OY0tg" id="4LGiksPnuJ3" role="3JBHQ1">
-        <node concept="1yiJt1" id="4LGiksPnuJ2" role="2OY0$2">
-          <ref role="1yiJtc" to="tp2q:7cq3qQ1yojP" resolve="variable" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZT" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.collections.structure.MultiForEachVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHJq" role="3JBHiB">
@@ -7579,8 +7553,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHKy" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h5YBJns" resolve="ApplicableNodeReference" />
-      <node concept="1yiJt1" id="4LGiksPnuLU" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:h5YBMDq" resolve="applicableNode" />
+      <node concept="3JB3jO" id="4LGiksR$iZU" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.ApplicableNodeReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHK$" role="3JBHiB">
@@ -7621,8 +7595,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHKC" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:21kJG8H0nwI" resolve="CheckingRuleReference" />
-      <node concept="1yiJt1" id="4LGiksPnuM7" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:21kJG8H0nwJ" resolve="declaration" />
+      <node concept="3JB3jO" id="4LGiksR$iZV" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.CheckingRuleReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHKE" role="3JBHiB">
@@ -7840,8 +7814,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLo" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:49g6ijgJh$j" resolve="InequationReference" />
-      <node concept="1yiJt1" id="4LGiksPnuMO" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:49g6ijgJh$k" resolve="inequation" />
+      <node concept="3JB3jO" id="4LGiksR$iZW" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.InequationReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLq" role="3JBHiB">
@@ -7997,8 +7971,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLK" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h6iQiFj" resolve="LinkPatternVariableReference" />
-      <node concept="1yiJt1" id="4LGiksPnuNx" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:h6iQynJ" resolve="patternVarDecl" />
+      <node concept="3JB3jO" id="4LGiksR$iZX" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.LinkPatternVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLM" role="3JBHiB">
@@ -8128,10 +8102,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHLY" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hgmw_os" resolve="NormalTypeClause" />
-      <node concept="2OY0tg" id="4LGiksPnuNW" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuNV" role="2OY0$2">
-          <ref role="1yiDfm" to="tpd4:hgmwGF0" resolve="normalType" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$iZY" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.NormalTypeClause" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHM2" role="3JBHiB">
@@ -8241,8 +8213,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMk" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h6iOg0Q" resolve="PatternVariableReference" />
-      <node concept="1yiJt1" id="4LGiksPnuOi" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:h6iOnTw" resolve="patternVarDecl" />
+      <node concept="3JB3jO" id="4LGiksR$iZZ" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.PatternVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMm" role="3JBHiB">
@@ -8286,25 +8258,20 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMu" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h6iQnZT" resolve="PropertyPatternVariableReference" />
-      <node concept="1yiJt1" id="4LGiksPnuOs" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:h6iQtwW" resolve="patternVarDecl" />
+      <node concept="3JB3jO" id="4LGiksR$j00" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.PropertyPatternVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMw" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hGQ6JHQ" resolve="QuickFixArgument" />
-      <node concept="2OY0tg" id="4LGiksPnuOv" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuOu" role="2OY0$2">
-          <ref role="1yiDfm" to="tpd4:hGQ6QOv" resolve="argumentType" />
-        </node>
-        <node concept="2OYlUR" id="4LGiksPnuOt" role="2OY0$2">
-          <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j01" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.QuickFixArgument" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMy" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hGQwW09" resolve="QuickFixArgumentReference" />
-      <node concept="1yiJt1" id="4LGiksPnuOw" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:hGQwW0a" resolve="quickFixArgument" />
+      <node concept="3JB3jO" id="4LGiksR$j02" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.QuickFixArgumentReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHM$" role="3JBHiB">
@@ -8321,19 +8288,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMC" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:718BIU4ue$Y" resolve="QuickFixField" />
-      <node concept="2OY0tg" id="4LGiksPnuOz" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuOy" role="2OY0$2">
-          <ref role="1yiDfm" to="tpd4:718BIU4ue$Z" resolve="fieldType" />
-        </node>
-        <node concept="2OYlUR" id="4LGiksPnuOx" role="2OY0$2">
-          <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j03" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.QuickFixField" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHME" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:718BIU4urlt" resolve="QuickFixFieldReference" />
-      <node concept="1yiJt1" id="4LGiksPnuO$" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:718BIU4urlu" resolve="quickFixField" />
+      <node concept="3JB3jO" id="4LGiksR$j04" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.QuickFixFieldReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMG" role="3JBHiB">
@@ -8420,8 +8382,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHMY" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hfSilrV" resolve="RuntimeTypeVariable" />
-      <node concept="2OYlUR" id="4LGiksPnuOR" role="3JBHQ1">
-        <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
+      <node concept="3JB3jO" id="4LGiksR$j05" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.RuntimeTypeVariable" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHN0" role="3JBHiB">
@@ -8500,8 +8462,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNe" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:h5Z$b1c" resolve="TypeVarReference" />
-      <node concept="1yiJt1" id="4LGiksPnuP7" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:h5Z$eQz" resolve="typeVarDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$j06" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.TypeVarReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNg" role="3JBHiB">
@@ -8738,14 +8700,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNA" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hyX1q9U" resolve="WhenConcreteVariableDeclaration" />
-      <node concept="2OYlUR" id="4LGiksPnuPA" role="3JBHQ1">
-        <ref role="2OYlZd" to="tpck:h0TrG11" resolve="name" />
+      <node concept="3JB3jO" id="4LGiksR$j07" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.WhenConcreteVariableDeclaration" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNC" role="3JBHiB">
       <ref role="3JBHV4" to="tpd4:hyX3wvL" resolve="WhenConcreteVariableReference" />
-      <node concept="1yiJt1" id="4LGiksPnuPB" role="3JBHQ1">
-        <ref role="1yiJtc" to="tpd4:hyX3Bgo" resolve="whenConcreteVar" />
+      <node concept="3JB3jO" id="4LGiksR$j08" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.typesystem.structure.WhenConcreteVariableReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="4LGiksQ0usm" role="3JBHiB">
@@ -8770,18 +8732,14 @@
     <property role="TrG5h" value="jetbrains.mps.lang.core" />
     <node concept="3JBH_3" id="3$1Yp8wiHNE" role="3JBHiB">
       <ref role="3JBHV4" to="tpck:3Rc6kd0K$RF" resolve="BaseCommentAttribute" />
-      <node concept="2OY0tg" id="4LGiksPnuPD" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuPC" role="2OY0$2">
-          <ref role="1yiDfm" to="tpck:2ETBKOyieyt" resolve="commentedNode" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j09" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.core.structure.BaseCommentAttribute" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNG" role="3JBHiB">
       <ref role="3JBHV4" to="tpck:3emwrjqjJ6B" resolve="BasePlaceholder" />
-      <node concept="2OY0tg" id="4LGiksPnuPF" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuPE" role="2OY0$2">
-          <ref role="1yiDfm" to="tpck:3emwrjqjJ6X" resolve="content" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j0a" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.core.structure.BasePlaceholder" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNI" role="3JBHiB">
@@ -9136,8 +9094,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOC" role="3JBHiB">
       <ref role="3JBHV4" to="m373:1V5cIK_ctb$" resolve="ClassifierDocReference" />
-      <node concept="1yiJt1" id="4LGiksPnuQO" role="3JBHQ1">
-        <ref role="1yiJtc" to="m373:1V5cIK_ctb_" resolve="classifier" />
+      <node concept="3JB3jO" id="4LGiksR$j0b" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.ClassifierDocReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOE" role="3JBHiB">
@@ -9200,16 +9158,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOM" role="3JBHiB">
       <ref role="3JBHV4" to="m373:5VgPTPXJCro" resolve="DocMethodParameterReference" />
-      <node concept="1yiJt1" id="4LGiksPnuQZ" role="3JBHQ1">
-        <ref role="1yiJtc" to="m373:5VgPTPXJCrt" resolve="parameterDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$j0c" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.DocMethodParameterReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOO" role="3JBHiB">
       <ref role="3JBHV4" to="m373:5VgPTPXJCrr" resolve="DocTypeParameterReference" />
-      <node concept="2OY0tg" id="4LGiksPnuR1" role="3JBHQ1">
-        <node concept="1yiJt1" id="4LGiksPnuR0" role="2OY0$2">
-          <ref role="1yiJtc" to="m373:5VgPTPXJCru" resolve="typeVariableDeclaration" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j0d" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.DocTypeParameterReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOQ" role="3JBHiB">
@@ -9226,8 +9182,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOU" role="3JBHiB">
       <ref role="3JBHV4" to="m373:1V5cIK_b9CC" resolve="FieldDocReference" />
-      <node concept="1yiJt1" id="4LGiksPnuR2" role="3JBHQ1">
-        <ref role="1yiJtc" to="m373:1V5cIK_b9CD" resolve="fieldDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$j0e" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.FieldDocReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHOW" role="3JBHiB">
@@ -9287,8 +9243,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHP6" role="3JBHiB">
       <ref role="3JBHV4" to="m373:1V5cIK_ctbj" resolve="MethodDocReference" />
-      <node concept="1yiJt1" id="4LGiksPnuRk" role="3JBHQ1">
-        <ref role="1yiJtc" to="m373:1V5cIK_ctbk" resolve="methodDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$j0f" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.MethodDocReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHP8" role="3JBHiB">
@@ -9343,8 +9299,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHPg" role="3JBHiB">
       <ref role="3JBHV4" to="m373:5CSG7KHrnLV" resolve="StaticFieldDocReference" />
-      <node concept="1yiJt1" id="4LGiksPnuRz" role="3JBHQ1">
-        <ref role="1yiJtc" to="m373:5CSG7KHrnM6" resolve="staticFieldDeclaration" />
+      <node concept="3JB3jO" id="4LGiksR$j0g" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.javadoc.structure.StaticFieldDocReference" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHPi" role="3JBHiB">
@@ -9499,16 +9455,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHPA" role="3JBHiB">
       <ref role="3JBHV4" to="cx9y:3xYtul1rirb" resolve="LocalVariableDeclarationInTuple" />
-      <node concept="2OY0tg" id="4LGiksPnuSj" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuSi" role="2OY0$2">
-          <ref role="1yiDfm" to="cx9y:3xYtul1rito" resolve="variable" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j0h" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.tuples.structure.LocalVariableDeclarationInTuple" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHPC" role="3JBHiB">
       <ref role="3JBHV4" to="cx9y:i2sxajE" resolve="NamedTupleComponentAccessOperation" />
-      <node concept="1yiJt1" id="4LGiksPnuSk" role="3JBHQ1">
-        <ref role="1yiJtc" to="cx9y:i2sxfO8" resolve="component" />
+      <node concept="3JB3jO" id="4LGiksR$j0i" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.tuples.structure.NamedTupleComponentAccessOperation" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHPE" role="3JBHiB">
@@ -9715,16 +9669,14 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQc" role="3JBHiB">
       <ref role="3JBHV4" to="tp3r:63LzO9stH8q" resolve="NodeBuilderPropertyExpression" />
-      <node concept="1yiDfa" id="4LGiksPnuSR" role="3JBHQ1">
-        <ref role="1yiDfm" to="tp3r:63LzO9stH8r" resolve="expression" />
+      <node concept="3JB3jO" id="4LGiksR$j0j" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.quotation.structure.NodeBuilderPropertyExpression" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQe" role="3JBHiB">
       <ref role="3JBHV4" to="tp3r:76efOMRCfEj" resolve="NodeBuilderRef" />
-      <node concept="2OY0tg" id="4LGiksPnuST" role="3JBHQ1">
-        <node concept="1yiJt1" id="4LGiksPnuSS" role="2OY0$2">
-          <ref role="1yiJtc" to="tp3r:76efOMRCfEl" resolve="target" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j0k" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.quotation.structure.NodeBuilderRef" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQg" role="3JBHiB">
@@ -9795,8 +9747,8 @@
     <property role="TrG5h" value="jetbrains.mps.lang.smodel.query" />
     <node concept="3JBH_3" id="3$1Yp8wiHQm" role="3JBHiB">
       <ref role="3JBHV4" to="3xdn:238_VGTIKuD" resolve="CustomScope" />
-      <node concept="1yiDfa" id="4LGiksPnuT8" role="3JBHQ1">
-        <ref role="1yiDfm" to="3xdn:238_VGTIKuE" resolve="scope" />
+      <node concept="3JB3jO" id="4LGiksR$j0l" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.smodel.query.structure.CustomScope" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQo" role="3JBHiB">
@@ -10028,20 +9980,20 @@
     <property role="TrG5h" value="jetbrains.mps.lang.modelapi" />
     <node concept="3JBH_3" id="3$1Yp8wiHQS" role="3JBHiB">
       <ref role="3JBHV4" to="dvox:_GDk1qYZig" resolve="ModelName" />
-      <node concept="2OYlUR" id="4LGiksPnuTS" role="3JBHQ1">
-        <ref role="2OYlZd" to="dvox:_GDk1qYZih" resolve="value" />
+      <node concept="3JB3jO" id="4LGiksR$j0m" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.modelapi.structure.ModelName" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQU" role="3JBHiB">
       <ref role="3JBHV4" to="dvox:k2ZBl8Cedw" resolve="ModelPointer" />
-      <node concept="1yiDfa" id="4LGiksPnuTT" role="3JBHQ1">
-        <ref role="1yiDfm" to="dvox:_GDk1qZ2Jc" resolve="name" />
+      <node concept="3JB3jO" id="4LGiksR$j0n" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.modelapi.structure.ModelPointer" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQW" role="3JBHiB">
       <ref role="3JBHV4" to="dvox:k2ZBl8Cedx" resolve="ModulePointer" />
-      <node concept="2OYlUR" id="4LGiksPnuTU" role="3JBHQ1">
-        <ref role="2OYlZd" to="dvox:1Bs_61$mI_D" resolve="moduleName" />
+      <node concept="3JB3jO" id="4LGiksR$j0o" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.modelapi.structure.ModulePointer" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHQY" role="3JBHiB">
@@ -10113,10 +10065,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHR6" role="3JBHiB">
       <ref role="3JBHV4" to="qff7:7Mb2akafE8d" resolve="CommandClosureLiteral" />
-      <node concept="2OY0tg" id="4LGiksPnuU2" role="3JBHQ1">
-        <node concept="1yiDfa" id="4LGiksPnuU1" role="2OY0$2">
-          <ref role="1yiDfm" to="tp2c:htbW58J" resolve="body" />
-        </node>
+      <node concept="3JB3jO" id="4LGiksR$j0p" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.lang.access.structure.CommandClosureLiteral" />
       </node>
     </node>
   </node>
@@ -10148,8 +10098,8 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHRq" role="3JBHiB">
       <ref role="3JBHV4" to="506t:6RnKM36Z9vd" resolve="MethodReferenceTypeTargetExpression" />
-      <node concept="1yiDfa" id="4LGiksPnuU8" role="3JBHQ1">
-        <ref role="1yiDfm" to="506t:6RnKM36ZaiS" resolve="type" />
+      <node concept="3JB3jO" id="4LGiksR$j0q" role="3JBHQ1">
+        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.methodReferences.structure.MethodReferenceTypeTargetExpression" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHRs" role="3JBHiB">
