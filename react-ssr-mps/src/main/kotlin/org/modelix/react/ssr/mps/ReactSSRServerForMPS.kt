@@ -55,18 +55,28 @@ import kotlin.time.Duration.Companion.seconds
 class ReactSSRServerForMPSProject(
     private val project: Project,
 ) : Disposable {
+    /**
+     * Looking the service up again in [dispose] can resurrect it after the application level services were
+     * already disposed. The resurrected instance stays in the `Disposer` tree and keeps the class loader of
+     * this plugin alive, which prevents the plugin from being unloaded.
+     */
+    private val server = ApplicationManager.getApplication().service<ReactSSRServerForMPS>()
+
     init {
-        ApplicationManager.getApplication().service<ReactSSRServerForMPS>().registerProject(project)
+        server.registerProject(project)
     }
 
     override fun dispose() {
-        ApplicationManager.getApplication().service<ReactSSRServerForMPS>().unregisterProject(project)
+        server.unregisterProject(project)
     }
 }
 
 @Service(Service.Level.APP)
 class ReactSSRServerForMPS : Disposable {
     companion object {
+        private const val SHUTDOWN_GRACE_PERIOD_MS = 1_000L
+        private const val SHUTDOWN_TIMEOUT_MS = 5_000L
+
         fun getInstance() = ApplicationManager.getApplication().getService(ReactSSRServerForMPS::class.java)
     }
 
@@ -179,18 +189,21 @@ class ReactSSRServerForMPS : Disposable {
     fun ensureStopped() {
         runSynchronized(this) {
             if (ktorServer == null) return
-            println("stopping modelix SSR server")
+            println("stopping react SSR server")
             MPSModuleRepository.getInstance().modelAccess.removeCommandListener(commandLister)
-            ktorServer?.let { server ->
-                ApplicationManager.getApplication().executeOnPooledThread {
-                    // The stop call often blocks forever and MPS can't shut down if called synchronously.
-                    server.stop()
-                }
-            }
+            // A bounded timeout is required. An unbounded stop() can block forever, which would block the plugin
+            // unloading and the MPS shutdown.
+            ktorServer?.stop(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS)
             ktorServer = null
             ssrServer?.dispose()
             ssrServer = null
+            rendererFactory?.let { Disposer.dispose(it) }
+            rendererFactory = null
             changeTranslator.stop()
+            // The languages are registered in a global registry that lives in the shared org.modelix.mps.editor.common
+            // plugin. Leaving them registered would keep this plugin's classes referenced and prevent it from being
+            // unloaded.
+            ApiGenLanguages.languages.forEach { it.unregister() }
         }
     }
 
