@@ -3834,18 +3834,6 @@
         </node>
       </node>
     </node>
-    <node concept="3JBH_3" id="3$1Yp8wiHAS" role="3JBHiB">
-      <ref role="3JBHV4" to="tpee:7fGiXOMF9Vj" resolve="HexLongLiteral" />
-      <node concept="2OY0tg" id="4LGiksPnuA3" role="3JBHQ1">
-        <node concept="3JB3jO" id="4LGiksPnuA2" role="2OY0$2">
-          <property role="3JB3xJ" value="0x" />
-        </node>
-        <node concept="1yiDf7" id="4LGiksPnuA4" role="2OY0$2" />
-        <node concept="2OYlUR" id="4LGiksPnuA1" role="2OY0$2">
-          <ref role="2OYlZd" to="tpee:7fGiXOMF9Ws" resolve="hexValue" />
-        </node>
-      </node>
-    </node>
     <node concept="3JBH_3" id="3$1Yp8wiHAU" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:6ixVQjdAObe" resolve="IncompleteLeftParen" />
       <node concept="3JB3jO" id="3$1Yp8wiHAV" role="3JBHQ1">
