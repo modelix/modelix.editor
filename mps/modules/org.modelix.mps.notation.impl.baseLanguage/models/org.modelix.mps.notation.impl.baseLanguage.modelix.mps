@@ -3910,12 +3910,6 @@
         <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.BaseVariableReference" />
       </node>
     </node>
-    <node concept="3JBH_3" id="4LGiksR$j0r" role="3JBHiB">
-      <ref role="3JBHV4" to="tpee:7fGiXOMF9Vj" resolve="HexLongLiteral" />
-      <node concept="3JB3jO" id="4LGiksR$j0s" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.baseLanguage.structure.HexLongLiteral" />
-      </node>
-    </node>
   </node>
   <node concept="3JBFZQ" id="22f9nDgKep2">
     <property role="TrG5h" value="jetbrains.mps.lang.smodel" />
