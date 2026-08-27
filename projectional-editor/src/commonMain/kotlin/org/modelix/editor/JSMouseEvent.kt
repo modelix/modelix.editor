@@ -23,6 +23,13 @@ data class JSMouseEvent(
             else -> JSMouseButton.NONE
         }
 
+    /**
+     * A click that navigates to the target of a reference instead of placing the caret: Cmd+click on macOS,
+     * Ctrl+click on the other platforms. Both are accepted, because the platform isn't known here.
+     */
+    fun isNavigationClick(): Boolean =
+        getButtonAsEnum() == JSMouseButton.PRIMARY && (modifiers.meta || modifiers.ctrl) && !modifiers.alt && !modifiers.shift
+
     fun getButtonsAsEnum(): Set<JSMouseButton> {
         val bitToValue =
             listOf(

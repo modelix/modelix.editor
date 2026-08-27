@@ -142,6 +142,14 @@
     padding: 3px 6px;
 }
 
+/* Cmd/Ctrl+click navigates to the target of a reference. While the modifier is held, the reference cell under the
+   mouse is marked as clickable, like MPS does. The class on the container is set by the client that dispatches the
+   keyboard events. */
+.navigation-mode .text-cell.reference-cell:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 @keyframes blinker {
     from {
         opacity: 100%;

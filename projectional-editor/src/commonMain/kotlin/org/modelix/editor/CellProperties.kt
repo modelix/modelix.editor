@@ -3,7 +3,10 @@ package org.modelix.editor
 import org.modelix.editor.text.shared.celltree.BooleanCellPropertyValue
 import org.modelix.editor.text.shared.celltree.CellPropertyValue
 import org.modelix.editor.text.shared.celltree.CellReferenceListValue
+import org.modelix.editor.text.shared.celltree.NodeReferenceCellPropertyValue
 import org.modelix.editor.text.shared.celltree.StringCellPropertyValue
+import org.modelix.model.api.INodeReference
+import org.modelix.model.api.NodeReference
 
 class CellProperties : Freezable() {
     private val properties: MutableMap<CellPropertyKey<*>, Any?> = HashMap()
@@ -101,6 +104,22 @@ object CellReferenceListPropertyKey :
     override fun fromSerializableValue(value: Any?): List<CellReference> = value as List<CellReference>
 }
 
+/**
+ * A reference to a node in the model. [INodeReference] compares by its serialized form, so a value that is created by
+ * the backend is equal to the one that arrives in the frontend, independent of the implementation.
+ */
+class NodeReferenceCellPropertyKey(
+    name: String,
+) : CellPropertyKey<INodeReference?>(name, null, inherits = false, frontend = true) {
+    override fun valueToString(value: INodeReference?): String? = value?.serialize()
+
+    override fun valueFromString(str: String?): INodeReference? = str?.let { NodeReference(it) }
+
+    override fun toSerializableValue(value: INodeReference?): CellPropertyValue<*>? = value?.let { NodeReferenceCellPropertyValue(it) }
+
+    override fun fromSerializableValue(value: Any?): INodeReference? = value as INodeReference?
+}
+
 class EnumCellPropertyKey<E : Enum<E>>(
     name: String,
     defaultValue: E,
@@ -183,6 +202,9 @@ object CommonCellProperties {
     val node = BackendCellPropertyKey<INonExistingNode?>("node", null) // set on the root cell of a node
     val cellCall = BackendCellPropertyKey<CellCreationCall?>("cell-call", null) // set on the root cell of a cell call
     val cellReferences = CellReferenceListPropertyKey
+
+    // set on a cell that shows a reference, so that the frontend can navigate to the target (Cmd/Ctrl+click)
+    val referenceTarget = NodeReferenceCellPropertyKey("reference-target")
 }
 
 object TextCellProperties {
