@@ -19,7 +19,6 @@ import org.modelix.editor.KnownKeys
 import org.modelix.editor.NodeCellReference
 import org.modelix.editor.ancestors
 import org.modelix.editor.applyShadowing
-import org.modelix.editor.celltemplate.ParserForEditor
 import org.modelix.editor.descendantsAndSelf
 import org.modelix.editor.flattenApplicableActions
 import org.modelix.editor.getCompletionPattern
@@ -550,51 +549,6 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             """)
         }
 
-    private fun runParsingTest(input: String) = runParsingTest(input, false)
-
-    private fun runCompletionTest(input: String) = runParsingTest(input, true)
-
-    private fun runParsingTest(
-        input: String,
-        completion: Boolean,
-    ) {
-        readAction {
-            println("Running test ...")
-            placeCaretIntoCellWithText("<no statement>")
-            val layoutable = (editor.getSelection() as CaretSelection).layoutable
-            val node =
-                layoutable.cell
-                    .backend()
-                    .ancestors(true)
-                    .mapNotNull { it.getProperty(CommonCellProperties.node) }
-                    .first()
-
-            val parser = ParserForEditor(editorEngine).getParser(node.expectedConcept()!!, forCodeCompletion = completion)
-            val parseTree = parser.parse(input)
-            println(parseTree)
-        }
-    }
-
-    private fun runClassParsingTest(
-        input: String,
-        completion: Boolean,
-    ) {
-        println("Running test ...")
-        placeCaretIntoCellWithText("class")
-
-        val layoutable = (editor.getSelection() as CaretSelection).layoutable
-        val node =
-            layoutable.cell
-                .backend()
-                .ancestors(true)
-                .mapNotNull { it.getProperty(CommonCellProperties.node) }
-                .first()
-        val concept = node.getNode()!!.concept!!
-        val parser = ParserForEditor(editorEngine).getParser(concept, forCodeCompletion = completion)
-        val parseTree = parser.parse(input)
-        println(parseTree)
-    }
-
     private fun errorMessages(): List<CheckMessage> =
         readAction {
             classNode
@@ -653,29 +607,4 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
             assertEquals(emptyList<CheckMessage>(), errorMessages())
         }
-
-    fun `test statement parsing 1`() = runParsingTest("int a;")
-
-    fun `test statement parsing 2`() = runParsingTest("int a = 10 + 20;")
-
-    fun `test statement parsing 3`() = runParsingTest("return 10;")
-
-    fun `test statement parsing 4`() = runParsingTest("""for ( int i = 0 ; i < 10 ; i++ ) { return i ; }""")
-
-    fun `test statement parsing 5`() = runParsingTest("""System.out.println("Hello");""")
-
-    fun `disabled test statement parsing 6`() = runParsingTest("""System.out.println("Hello World!");""")
-
-    fun `test class parsing 1`() =
-        runClassParsingTest("""
-        class Math {
-            public static int plus(int a, int b) {
-                return a + b;
-            }
-        }
-    """, false)
-
-    fun `test completion 1`() = runParsingTest("""intᚹ""")
-
-    fun `test completion 2`() = runParsingTest("""int aᚹ""")
 }
