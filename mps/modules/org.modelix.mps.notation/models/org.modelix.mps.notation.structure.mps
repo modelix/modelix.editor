@@ -585,5 +585,40 @@
       <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
     </node>
   </node>
+  <node concept="1TIwiD" id="7QHj_JKdiVf">
+    <property role="EcuMT" value="2837580884860884887" />
+    <property role="TrG5h" value="ChoiceAlternative" />
+    <property role="34LRSv" value="-&gt;" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="1TJgyi" id="7QHj_JKdiVg" role="1TKVEl">
+      <property role="IQ2nx" value="2837886392563691011" />
+      <property role="TrG5h" value="value" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+    <node concept="1TJgyi" id="7QHj_JKdiVh" role="1TKVEl">
+      <property role="IQ2nx" value="3236128708605000757" />
+      <property role="TrG5h" value="text" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="7QHj_JKkmAq">
+    <property role="EcuMT" value="6643317836066003333" />
+    <property role="TrG5h" value="ChoiceCell" />
+    <property role="34LRSv" value="choice" />
+    <ref role="1TJDcQ" node="7dm8yUsMxww" resolve="Cell" />
+    <node concept="1TJgyj" id="7QHj_JKkmAr" role="1TKVEi">
+      <property role="IQ2ns" value="2591656080694944389" />
+      <property role="20kJfa" value="property" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpce:f_TJgxF" resolve="PropertyDeclaration" />
+    </node>
+    <node concept="1TJgyj" id="7QHj_JKkmAs" role="1TKVEi">
+      <property role="IQ2ns" value="8927119863024059411" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="alternatives" />
+      <property role="20lbJX" value="fLJekj6/_1__n" />
+      <ref role="20lvS9" node="7QHj_JKdiVf" resolve="ChoiceAlternative" />
+    </node>
+  </node>
 </model>
 

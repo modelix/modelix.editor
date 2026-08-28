@@ -1,6 +1,8 @@
 package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CellCreationContext
+import org.modelix.editor.CellSpec
+import org.modelix.editor.CellSpecBase
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.IActionOrProvider
@@ -22,10 +24,15 @@ import org.modelix.model.api.INode
  *
  * These are defaults on the template, so anything the notation sets on the label cell itself is applied after them
  * and wins.
+ *
+ * A null [text] renders nothing at all. That is how a notation makes a label conditional: the label is the one cell
+ * an arbitrary condition is safe on, because it is not part of the grammar, so there is no substitution or side
+ * transformation to derive for it. A notation writes the condition into the expression that computes the text and
+ * yields null where MPS would have hidden the cell behind a rendering condition.
  */
 class LabelCellTemplate(
     concept: IConcept,
-    val text: String,
+    val text: String?,
 ) : CellTemplate(concept) {
     init {
         properties[CommonCellProperties.textColor] = DEFAULT_TEXT_COLOR
@@ -36,7 +43,7 @@ class LabelCellTemplate(
     override fun createCell(
         context: CellCreationContext,
         node: INode,
-    ): TextCellSpec = TextCellSpec(text, "")
+    ): CellSpecBase = text?.let { TextCellSpec(it, "") } ?: CellSpec()
 
     override fun getInstantiationActions(
         location: INonExistingNode,

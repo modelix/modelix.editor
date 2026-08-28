@@ -27,6 +27,21 @@ data class OptionalSymbol(
     override fun toString(): String = "optional(${children.joinToString(" ")})"
 }
 
+/**
+ * A closed set of mutually exclusive ways of writing the same position in a notation - what a property with a
+ * fixed set of values renders as. Each alternative is a symbol sequence of its own, and an empty one is how an
+ * alternative that renders nothing is expressed (a blank constant is dropped by [Grammar]).
+ */
+data class AlternationSymbol(
+    val alternatives: List<List<ISymbol>>,
+) : INonTerminalSymbol {
+    override fun leafSymbols(): Sequence<ISymbol> = alternatives.asSequence().flatten().flatMap { it.leafSymbols() }
+
+    override fun matches(token: IParseTreeNode): Boolean = token is ParseTreeNode && token.rule.head == this
+
+    override fun toString(): String = alternatives.joinToString(" | ", "(", ")") { it.joinToString(" ") }
+}
+
 data class ConstantSymbol(
     val text: String,
 ) : ITerminalSymbol {

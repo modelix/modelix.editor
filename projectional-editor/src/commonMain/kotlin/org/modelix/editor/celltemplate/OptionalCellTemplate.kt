@@ -62,6 +62,8 @@ class OptionalCellTemplate(
             if (!conditionState) {
                 cell.properties[CommonCellProperties.isForceShown] = true
             }
+            cell.properties[CellActionProperties.delete] =
+                ClearOptionalCellAction(conditionSymbol, node, createCellReference(node))
             return super.applyChildren(context, node, cell)
         } else {
             if (transformationSymbol == null) return emptyList()
