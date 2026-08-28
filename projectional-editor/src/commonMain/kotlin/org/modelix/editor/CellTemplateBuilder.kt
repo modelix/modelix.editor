@@ -409,14 +409,13 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
         this.cell(presentation, body, targetNodeConverter)
     }
 
-    fun ITypedSingleChildLink<*>.cell(body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
+    fun ITypedSingleChildLink<*>.cell(body: ChildCellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
         untyped().cell(body)
     }
 
-    fun IChildLink.cell(body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
+    fun IChildLink.cell(body: ChildCellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
         require(!this.isMultiple) { "Not allowed on child lists" }
-        ChildCellTemplate(template.concept, this)
-            .builder()
+        ChildCellTemplateBuilder<NodeT, ConceptT>(ChildCellTemplate(template.concept, this), concept, nodeConverter)
             .also(body)
             .template
             .also(template::addChild)
@@ -549,6 +548,15 @@ class ChildCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
 
     fun newLineConcept(newLineConcept: IConcept) {
         (template as ChildCellTemplate).newLineConcept = newLineConcept
+    }
+
+    /**
+     * Replaces the default `<no [link name]>` shown while the child link is empty.
+     * An empty string renders nothing, but the caret can still be placed there to create the child.
+     * `null` restores the default, so a notation computing the text may return it when it has nothing to say.
+     */
+    fun placeholderText(placeholderText: String?) {
+        (template as ChildCellTemplate).placeholderText = placeholderText
     }
 }
 

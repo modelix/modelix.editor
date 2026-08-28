@@ -773,5 +773,48 @@
       <ref role="1YaFvo" to="f8gn:2eHudJpH2xi" resolve="LabelCell" />
     </node>
   </node>
+  <node concept="1YbPZF" id="4RYBXc0s1BV">
+    <property role="TrG5h" value="typeof_ChildCell" />
+    <node concept="3clFbS" id="4RYBXc0s1BY" role="18ibNy">
+      <node concept="3clFbJ" id="4RYBXc0s1BZ" role="3cqZAp">
+        <node concept="3y3z36" id="4RYBXc0s1C2" role="3clFbw">
+          <node concept="2OqwBi" id="4RYBXc0s1C5" role="3uHU7B">
+            <node concept="1YBJjd" id="4RYBXc0s1C8" role="2Oq$k0">
+              <ref role="1YBMHb" node="4RYBXc0s1Ct" resolve="n" />
+            </node>
+            <node concept="3TrEf2" id="4RYBXc0s1C9" role="2OqNvi">
+              <ref role="3Tt5mk" to="f8gn:4RYBXc0s1K4" resolve="placeholderText" />
+            </node>
+          </node>
+          <node concept="10Nm6u" id="4RYBXc0s1Ca" role="3uHU7w" />
+        </node>
+        <node concept="3clFbS" id="4RYBXc0s1Cb" role="3clFbx">
+          <node concept="1ZobV4" id="4RYBXc0s1Cc" role="3cqZAp">
+            <node concept="mw_s8" id="4RYBXc0s1Cf" role="1ZfhKB">
+              <node concept="2c44tf" id="4RYBXc0s1Ch" role="mwGJk">
+                <node concept="17QB3L" id="4RYBXc0s1Cj" role="2c44tc" />
+              </node>
+            </node>
+            <node concept="mw_s8" id="4RYBXc0s1Ck" role="1ZfhK$">
+              <node concept="1Z2H0r" id="4RYBXc0s1Cm" role="mwGJk">
+                <node concept="2OqwBi" id="4RYBXc0s1Co" role="1Z2MuG">
+                  <node concept="1YBJjd" id="4RYBXc0s1Cr" role="2Oq$k0">
+                    <ref role="1YBMHb" node="4RYBXc0s1Ct" resolve="n" />
+                  </node>
+                  <node concept="3TrEf2" id="4RYBXc0s1Cs" role="2OqNvi">
+                    <ref role="3Tt5mk" to="f8gn:4RYBXc0s1K4" resolve="placeholderText" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="4RYBXc0s1Ct" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:4RYBXc0s1K3" resolve="ChildCell" />
+    </node>
+  </node>
 </model>
 
