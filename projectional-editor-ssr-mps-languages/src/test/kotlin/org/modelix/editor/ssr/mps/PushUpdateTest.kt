@@ -24,8 +24,8 @@ import kotlin.time.Duration.Companion.seconds
 
 private val INITIAL = """
     public class Class1 {
-      public void method1(<no parameter>) {
-        <no statement>
+      public void method1() {
+
       }
     }
 """
@@ -114,7 +114,7 @@ class PushUpdateTest : TestBase("SimpleProject") {
     private suspend fun awaitEditorText(expected: String) {
         val reached =
             withTimeoutOrNull(20.seconds) {
-                while (editorText() != expected.trimIndent()) delay(50)
+                while (editorText().normalizedEditorText() != expected.normalizedEditorText()) delay(50)
                 true
             }
         assertTrue(
@@ -126,7 +126,7 @@ class PushUpdateTest : TestBase("SimpleProject") {
 
     fun `test property change in a write action`() =
         runBlocking {
-            assertEquals(INITIAL.trimIndent(), editorText())
+            assertEquals(INITIAL.normalizedEditorText(), editorText().normalizedEditorText())
             writeActionOnEdt {
                 classNode.node.setProperty(SNodeUtil.property_INamedConcept_name, "RenamedClass")
             }
@@ -135,7 +135,7 @@ class PushUpdateTest : TestBase("SimpleProject") {
 
     fun `test property change in a command`() =
         runBlocking {
-            assertEquals(INITIAL.trimIndent(), editorText())
+            assertEquals(INITIAL.normalizedEditorText(), editorText().normalizedEditorText())
             commandOnEdt {
                 classNode.node.setProperty(SNodeUtil.property_INamedConcept_name, "RenamedClass")
             }
@@ -160,7 +160,7 @@ class PushUpdateTest : TestBase("SimpleProject") {
 
     fun `test removing a child in a command`() =
         runBlocking {
-            assertEquals(INITIAL.trimIndent(), editorText())
+            assertEquals(INITIAL.normalizedEditorText(), editorText().normalizedEditorText())
             commandOnEdt {
                 val member = classNode.node.children.first { it.containmentLink?.name == "member" }
                 member.delete()
@@ -168,7 +168,7 @@ class PushUpdateTest : TestBase("SimpleProject") {
             awaitEditorText(
                 """
                 public class Class1 {
-                  <no member>
+
                 }
                 """,
             )

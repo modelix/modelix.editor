@@ -61,6 +61,16 @@ class ChildCellTemplate(
      */
     var newLineConcept: IConcept? = null
 
+    /**
+     * Text shown while the link is empty.
+     * `null` means the default `<no [link name]>`. An empty string renders nothing, but the caret can still be
+     * placed there to create the child.
+     *
+     * The notation may compute it from the node, in which case it is written by a `withNode` callback and this
+     * field is reassigned before every [createCell].
+     */
+    var placeholderText: String? = null
+
     override fun toParserSymbol(): ISymbol =
         if (link.isMultiple) {
             val separatorSymbols =
@@ -136,7 +146,12 @@ class ChildCellTemplate(
 
         fun addSubstitutionPlaceholder(index: Int) {
             val isDefaultPlaceholder = childNodes.isEmpty()
-            val placeholderText = if (isDefaultPlaceholder) "<no ${link.getSimpleName()}>" else "<choose ${link.getSimpleName()}>"
+            val placeholderText =
+                if (isDefaultPlaceholder) {
+                    this@ChildCellTemplate.placeholderText ?: "<no ${link.getSimpleName()}>"
+                } else {
+                    "<choose ${link.getSimpleName()}>"
+                }
             val placeholder = TextCellSpec("", placeholderText)
             placeholder.properties[CellActionProperties.substitute] =
                 ReplaceNodeActionProvider(NonExistingChild(node.toNonExisting(), link, index)).after {
