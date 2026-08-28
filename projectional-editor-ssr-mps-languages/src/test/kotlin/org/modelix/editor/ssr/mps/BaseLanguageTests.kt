@@ -7,6 +7,7 @@ import kotlinx.coroutines.runBlocking
 import org.modelix.checks.CheckMessage
 import org.modelix.checks.CheckSeverity
 import org.modelix.editor.CaretSelection
+import org.modelix.editor.ChildNodeCellReference
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.EditorEngine
@@ -31,6 +32,7 @@ import org.modelix.editor.text.frontend.getVisibleText
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.model.api.INode
+import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
@@ -100,13 +102,47 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     suspend fun assertEditorText(expected: String) {
         editor.flush()
-        assertEquals(expected.trimIndent(), editor.getRootCell().layout.toString())
+        assertEquals(
+            expected.normalizedEditorText(),
+            editor
+                .getRootCell()
+                .layout
+                .toString()
+                .normalizedEditorText()
+        )
     }
 
     suspend fun placeCaretAtEnd(node: INode) {
         val cell = editor.resolveCell(NodeCellReference(node.reference)).first()
         val lastLeafCell = cell.lastLeaf()
         editor.changeSelection(CaretSelection(lastLeafCell.layoutable()!!, lastLeafCell.getMaxCaretPos()))
+    }
+
+    private fun childOf(
+        node: IWritableNode,
+        role: String,
+    ) = readAction { node.getAllChildren().first { it.getContainmentLink().getSimpleName() == role } }
+
+    private val methodNode: IWritableNode get() = childOf(classNode, "member")
+
+    private val methodBodyNode: IWritableNode get() = childOf(methodNode, "body")
+
+    /**
+     * Puts the caret into the placeholder of an empty child link.
+     *
+     * It used to be reachable through [placeCaretIntoCellWithText] by its `<no [link]>` text, but a notation can
+     * now say what an empty link renders as - the baseLanguage ones render nothing, like MPS - so the placeholder
+     * is resolved through the cell reference it carries instead of through what it shows.
+     */
+    fun placeCaretIntoPlaceholderOf(
+        node: IWritableNode,
+        linkName: String,
+    ) {
+        val link = readAction { checkNotNull(node.tryGetConcept()).getAllChildLinks().first { it.getSimpleName() == linkName } }
+        val cell =
+            editor.resolveCell(ChildNodeCellReference(node.getNodeReference(), link.toReference())).firstOrNull()
+                ?: throw NoSuchElementException("No placeholder cell for the empty $linkName of $node")
+        editor.doChangeSelection(CaretSelection(cell.layoutable()!!, cell.getMaxCaretPos()))
     }
 
     fun placeCaretIntoCellWithText(
@@ -167,8 +203,8 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         kotlinx.coroutines.test.runTest {
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
-                <no statement>
+              public void method1() {
+
               }
             }
         """)
@@ -181,8 +217,8 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressEnter()
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
-                <no statement>
+              public void method1() {
+
               }
               
             }
@@ -191,7 +227,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test creating LocalVariableDeclarationStatement by typing a type`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             val actions = getCodeCompletionEntries("int")
             assertEquals(
                 listOf(
@@ -204,7 +240,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("int ")
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int <no name>;
               }
             }
@@ -213,13 +249,13 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test naming LocalVariableDeclaration`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             pressKey(KnownKeys.Tab)
             typeText("abc")
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc;
               }
             }
@@ -228,14 +264,14 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test showing initializer of LocalVariableDeclaration using side transformation`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             pressKey(KnownKeys.Tab)
             typeText("abc")
             typeText("=")
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc = <no initializer>;
               }
             }
@@ -245,14 +281,14 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test showing initializer of LocalVariableDeclaration using TAB`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             pressKey(KnownKeys.Tab)
             typeText("abc")
             pressKey(KnownKeys.Tab)
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc = <no initializer>;
               }
             }
@@ -262,7 +298,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test previous optional is hidden when TABing to next`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             pressKey(KnownKeys.Tab)
             typeText("abc")
@@ -274,7 +310,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc;
                 int def;
               }
@@ -284,7 +320,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressKey(KnownKeys.Tab)
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc = <no initializer>;
                 int def;
               }
@@ -297,7 +333,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressKey(KnownKeys.Tab)
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc;
                 int def = <no initializer>;
               }
@@ -308,7 +344,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test adding initializer to LocalVariableDeclaration`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             pressKey(KnownKeys.Tab)
             typeText("abc")
@@ -316,7 +352,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("10")
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 int abc = 10;
               }
             }
@@ -325,7 +361,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test adding second parameter to InstanceMethodDeclaration by pressing ENTER`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
@@ -333,7 +369,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEditorText("""
             public class Class1 {
               public void method1(int p1, <choose parameter>) {
-                <no statement>
+
               }
             }
         """)
@@ -343,7 +379,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p2) {
-                <no statement>
+
               }
             }
         """)
@@ -351,7 +387,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test adding second parameter to InstanceMethodDeclaration by typing separator after last`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
@@ -362,7 +398,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p2) {
-                <no statement>
+
               }
             }
         """)
@@ -371,7 +407,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test adding second parameter to InstanceMethodDeclaration by typing separator after first`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
@@ -387,7 +423,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1, int p3, int p2) {
-                <no statement>
+
               }
             }
         """)
@@ -395,7 +431,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         }
 
 /*    fun `test adding second parameter to InstanceMethodDeclaration by typing separator before last`() {
-        placeCaretIntoCellWithText("<no parameter>")
+        placeCaretIntoPlaceholderOf(methodNode, "parameter")
         typeText("int")
         pressKey(KnownKeys.Tab)
         typeText("p1")
@@ -411,7 +447,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         assertFinalEditorText("""
             class Class1 {
               public void method1(int p1, long p3, int p2) {
-                <no statement>
+
               }
             }
         """)
@@ -419,14 +455,14 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test deleting parameter using BACKSPACE`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
             assertEditorText("""
             public class Class1 {
               public void method1(int p1) {
-                <no statement>
+
               }
             }
         """)
@@ -438,41 +474,41 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressKey(KnownKeys.Backspace)
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
-                <no statement>
+              public void method1() {
+
               }
             }
         """)
-            assertCaretPosition("|<no parameter>")
+            assertCaretPosition("|")
         }
 
     fun `test deleting parameter using DELETE`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
             assertEditorText("""
             public class Class1 {
               public void method1(int p1) {
-                <no statement>
+
               }
             }
         """)
             pressKey(KnownKeys.Delete)
             assertFinalEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
-                <no statement>
+              public void method1() {
+
               }
             }
         """)
-            assertCaretPosition("|<no parameter>")
+            assertCaretPosition("|")
         }
 
     fun `test deleting placeholder`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no parameter>")
+            placeCaretIntoPlaceholderOf(methodNode, "parameter")
             typeText("int")
             pressKey(KnownKeys.Tab)
             typeText("p1")
@@ -480,7 +516,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEditorText("""
             public class Class1 {
               public void method1(int p1, <choose parameter>) {
-                <no statement>
+
               }
             }
         """)
@@ -488,7 +524,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertFinalEditorText("""
             public class Class1 {
               public void method1(int p1) {
-                <no statement>
+
               }
             }
         """)
@@ -497,11 +533,11 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
     fun `test typing plus expression`() =
         kotlinx.coroutines.test.runTest {
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("int ")
             assertEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int <no name>;
                   }
                 }
@@ -510,7 +546,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("abc")
             assertEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int abc;
                   }
                 }
@@ -518,7 +554,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("=")
             assertEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int abc = <no initializer>;
                   }
                 }
@@ -526,7 +562,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("10")
             assertEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int abc = 10;
                   }
                 }
@@ -535,14 +571,14 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             typeText("25")
             assertEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int abc = 10 + 25;
                   }
                 }
             """)
             assertFinalEditorText("""
                 public class Class1 {
-                  public void method1(<no parameter>) {
+                  public void method1() {
                     int abc = 10 + 25;
                   }
                 }
@@ -568,12 +604,12 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEquals(emptyList<CheckMessage>(), errorMessages())
 
             // `return 10;` inside the void method is a typesystem error
-            placeCaretIntoCellWithText("<no statement>")
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
             typeText("return")
             typeText("10")
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 return 10;
               }
             }
@@ -591,7 +627,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressKey(KnownKeys.Delete)
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
+              public void method1() {
                 return <no expression>;
               }
             }
@@ -600,8 +636,8 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             pressKey(KnownKeys.Delete)
             assertEditorText("""
             public class Class1 {
-              public void method1(<no parameter>) {
-                <no statement>
+              public void method1() {
+
               }
             }
         """)

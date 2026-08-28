@@ -120,3 +120,12 @@ abstract class TestBase(
         return result as R
     }
 }
+
+/**
+ * An expected editor text, ready to compare against what the editor rendered.
+ *
+ * The layout keeps a line's indentation even when everything on that line renders as nothing - an empty
+ * placeholder, for example - and `trimIndent` cannot express such a line, because it blanks a line that is only
+ * whitespace. Trailing spaces carry no meaning for these assertions, so both sides drop them.
+ */
+internal fun String.normalizedEditorText(): String = trimIndent().lineSequence().joinToString("\n") { it.trimEnd() }
