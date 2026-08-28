@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.21.0](https://github.com/modelix/modelix.editor/compare/1.20.0...1.21.0) (2026-08-28)
+
+
+### Features
+
+* **projectional-editor:** derive notations for the baseLanguage companion languages ([50510a5](https://github.com/modelix/modelix.editor/commit/50510a55585921b9e56553544322a4e59f9a982c))
+* **projectional-editor:** drop MPS 2023.3 and restore the derived notations ([f5fc700](https://github.com/modelix/modelix.editor/commit/f5fc700bca498789e470392e60335efefb442e8b))
+* **projectional-editor:** express MPS's conditional cells as choices and optional groups ([7c451bc](https://github.com/modelix/modelix.editor/commit/7c451bc3d56730e77ba2d02cbce489b11ca58c60))
+* **projectional-editor:** express MPS's conditional cells as choices and optional groups ([f9bceda](https://github.com/modelix/modelix.editor/commit/f9bcedaf4c12aba3354cc4b4fbec5225ec1988e8))
+* **projectional-editor:** give the baseLanguage notations the placeholders MPS uses ([7b02436](https://github.com/modelix/modelix.editor/commit/7b02436381ab12d4375d8f2181dabb6ff2d55ccd))
+* **projectional-editor:** inherit notations from the super concept ([6aef4c3](https://github.com/modelix/modelix.editor/commit/6aef4c3f14d76ad5582785a4ea4bb4a9578168f4))
+* **projectional-editor:** let a notation set the placeholder of an empty child link ([eff22b9](https://github.com/modelix/modelix.editor/commit/eff22b9dc6539e5f358f65dfbc2e7bd8e35ae584))
+* **projectional-editor:** let a notation set the placeholder of an empty child link ([0c83577](https://github.com/modelix/modelix.editor/commit/0c8357764f3d029a123949794a8a5aa99016e312))
+* **projectional-editor:** map the alias editor component to ConceptAliasCell ([d6f5b55](https://github.com/modelix/modelix.editor/commit/d6f5b55da3b09434479072829c26a1696547022b))
+* **projectional-editor:** navigate to reference targets with Cmd/Ctrl+click ([becac3d](https://github.com/modelix/modelix.editor/commit/becac3d9a0c77466189dd8e1a80c076cb5271dec))
+* **projectional-editor:** notations for the languages used with baseLanguage ([6d4414c](https://github.com/modelix/modelix.editor/commit/6d4414c232c5c70be3940e9dbaeb8862fe373fce))
+* **projectional-editor:** open a reference target of another root node in a new browser tab ([71b2e94](https://github.com/modelix/modelix.editor/commit/71b2e940833c58ce81c39dfbd5a8729353117b7d))
+* **projectional-editor:** translate block layout, flags and optional cells ([47c45e3](https://github.com/modelix/modelix.editor/commit/47c45e3352f00319d8aefc071cd5a8290f4de5e2))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.microsoft.playwright:playwright to v1.62.0 ([#558](https://github.com/modelix/modelix.editor/issues/558)) ([8b269f6](https://github.com/modelix/modelix.editor/commit/8b269f62e74ad29edefd611778a7a94c71f2655d))
+* **mps-plugin:** declare the image editor's dependency on the shared libraries plugin ([c56cba6](https://github.com/modelix/modelix.editor/commit/c56cba6e2fbced3b379883a98ac29bb5c739cfa7))
+* **mps-plugin:** make the equality of the model wrapper symmetric ([e24c148](https://github.com/modelix/modelix.editor/commit/e24c1487a33f3edcef5406ad48fb855bf81f7510))
+* **mps-plugin:** release the registered listeners and servers on dispose ([b7fc058](https://github.com/modelix/modelix.editor/commit/b7fc0582ba3ecdecfdae981a6fbf1b4eaa71524f))
+* **projectional-editor:** drop the indent cells that may not sit where they did ([e25482f](https://github.com/modelix/modelix.editor/commit/e25482f5927fd31922707603f39b2db578a54c00))
+* **projectional-editor:** drop the notation of a concept MPS 2023.3 does not have ([7a6ae16](https://github.com/modelix/modelix.editor/commit/7a6ae1628dbf80dc5101734c99ec611342a0978d))
+* **projectional-editor:** keep the concepts that are not typed out of the menu ([3677c3f](https://github.com/modelix/modelix.editor/commit/3677c3fd1f4abce8487c25567682f0215b847025))
+* **projectional-editor:** park the derived notations until the grammar can hold them ([e1bbfc9](https://github.com/modelix/modelix.editor/commit/e1bbfc9fe046e890986c1c523cdc7a2480091919))
+* **projectional-editor:** register the RPC serialization of the HttpClient ([38aa727](https://github.com/modelix/modelix.editor/commit/38aa727c7bad70d621837a755357ca2af5d59bb0))
+* **projectional-editor:** remove the HexLongLiteral notation again ([8ca5cdd](https://github.com/modelix/modelix.editor/commit/8ca5cdd8604247c685aa64978c3d9996e2fdbb3b))
+* **projectional-editor:** render changes that were made in MPS ([da0a472](https://github.com/modelix/modelix.editor/commit/da0a472f8e5bcaf71dd64b5052d2bf109e7b02c3))
+* **projectional-editor:** restore the standalone editor page ([f189409](https://github.com/modelix/modelix.editor/commit/f189409eeb043f3ef2bc36f1eb796a1eb9b46917))
+* **projectional-editor:** stop generating notations that only add grammar ambiguity ([5b8b24e](https://github.com/modelix/modelix.editor/commit/5b8b24e104da16ff8aa518f76ba1e6e2b40776be))
+* show model changes made in MPS in the web editor ([23fff66](https://github.com/modelix/modelix.editor/commit/23fff669b2a45eb9d8f13514dfac4183c8c0ba6a))
+
 ## [1.20.0](https://github.com/modelix/modelix.editor/compare/1.19.0...1.20.0) (2026-08-21)
 
 
