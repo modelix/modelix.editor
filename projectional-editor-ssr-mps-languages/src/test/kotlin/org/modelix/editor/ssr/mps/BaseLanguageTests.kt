@@ -31,7 +31,10 @@ import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.editor.text.frontend.getVisibleText
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
+import org.modelix.model.api.ConceptReference
+import org.modelix.model.api.IChildLinkReference
 import org.modelix.model.api.INode
+import org.modelix.model.api.IPropertyReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
@@ -643,4 +646,73 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
             assertEquals(emptyList<CheckMessage>(), errorMessages())
         }
+
+    /**
+     * MPS holds an enumeration value as `<memberId>/<name>` and its editor shows the name, converting in
+     * `PropertyAccessor` rather than in the model - so that persistence and synchronisation keep seeing the stored
+     * form. `TrimOperation.trimKind` is the one enumeration-typed property in baseLanguage, and this is the whole
+     * round trip through the real MPS conversion: `SDataType.fromString` to the value and `getPresentation` to the
+     * text on the way out, `fromPresentation` and `SDataType.toString` on the way back.
+     */
+    fun `test an enumeration property is shown by name and stored by id`() =
+        kotlinx.coroutines.test.runTest {
+            val trimOperation =
+                writeAction {
+                    val statement =
+                        methodBodyNode.addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068580123155")
+                        )
+                    val dotExpression =
+                        statement.addNewChild(
+                            IChildLinkReference.fromName("expression"),
+                            -1,
+                            ConceptReference(BL + "1197027756228")
+                        )
+                    dotExpression
+                        .addNewChild(
+                            IChildLinkReference.fromName("operand"),
+                            -1,
+                            ConceptReference(BL + "1070475926800")
+                        ).setPropertyValue(IPropertyReference.fromName("value"), "abc")
+                    dotExpression.addNewChild(
+                        IChildLinkReference.fromName("operation"),
+                        -1,
+                        ConceptReference(BL + "1225271546410")
+                    )
+                }
+            assertEditorText("""
+            public class Class1 {
+              public void method1() {
+                "abc".trim(<no trimKind>);
+              }
+            }
+        """)
+
+            placeCaretIntoCellWithText("<no trimKind>")
+            typeText("leading")
+
+            // The editor shows the member's name. assertFinalEditorText resets the editor state first, so this is
+            // what the conversion makes of the stored value, not the text that was typed.
+            assertFinalEditorText("""
+            public class Class1 {
+              public void method1() {
+                "abc".trim(leading);
+              }
+            }
+        """)
+
+            // The model holds the form MPS persists, which is not the form that was typed or shown.
+            val stored = readAction { trimOperation.getPropertyValue(TRIM_KIND) }
+            assertNotNull("trimKind was not written", stored)
+            assertTrue("Expected a '<memberId>/<name>' value, was '" + stored + "'", stored!!.contains("/"))
+            assertEquals("leading", stored.substringAfter("/"))
+        }
+
+    companion object {
+        /** `jetbrains.mps.baseLanguage`, as modelix spells a concept reference: `mps:<languageId>/<conceptId>`. */
+        private const val BL = "mps:f3061a53-9226-4cc5-a443-f952ceaf5816/"
+        private val TRIM_KIND = IPropertyReference.fromName("trimKind")
+    }
 }

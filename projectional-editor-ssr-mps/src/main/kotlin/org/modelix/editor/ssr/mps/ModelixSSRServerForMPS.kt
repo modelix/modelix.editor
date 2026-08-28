@@ -83,6 +83,7 @@ import org.modelix.model.mpsadapters.MPSProperty
 import org.modelix.model.mpsadapters.MPSReferenceLink
 import org.modelix.model.mpsadapters.MPSRepositoryAsNode
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.presentation.IPropertyPresentation
 import org.modelix.scopes.IScope
 import org.modelix.scopes.IScopeProvider
 import java.net.URLEncoder
@@ -407,6 +408,40 @@ fun IChildLink?.toMPS(): SContainmentLink? = if (this is MPSChildLink) this.link
 fun IChildLinkDefinition?.toMPS(): SContainmentLink? = if (this is MPSChildLink) this.link else null
 
 fun IReferenceLink?.toMPS(): SReferenceLink? = if (this is MPSReferenceLink) this.link else null
+
+/**
+ * The conversion between the value a property is stored as and the text it is read and typed in, which for an MPS
+ * enumeration are different: `gZ5fh_4/error` against `error`.
+ *
+ * Both halves are the pair MPS's own editor uses in `jetbrains.mps.nodeEditor.cells.PropertyAccessor`, with
+ * `SDataType` doing the string/value serialisation that `SNodeAccessUtilImpl` uses for the same purpose.
+ * A property whose stored form already is its presentation - every string and boolean - converts to itself, and
+ * text that is not a value of the property at all comes back as null so the caller keeps what was typed.
+ */
+object MPSPropertyPresentation : IPropertyPresentation {
+    override fun toPresentation(
+        property: IProperty,
+        storedValue: String,
+    ): String? {
+        val mpsProperty = property.toMPS() ?: return null
+        return runCatching {
+            IPropertyPresentationProvider
+                .getPresentationProviderFor(mpsProperty)
+                .getPresentation(mpsProperty.type.fromString(storedValue))
+        }.getOrNull()
+    }
+
+    override fun fromPresentation(
+        property: IProperty,
+        text: String,
+    ): String? {
+        val mpsProperty = property.toMPS() ?: return null
+        return runCatching {
+            val value = IPropertyPresentationProvider.getPresentationProviderFor(mpsProperty).fromPresentation(text)
+            mpsProperty.type.toString(value)
+        }.getOrNull()
+    }
+}
 
 fun IProperty?.toMPS(): SProperty? = if (this is MPSProperty) this.property else null
 

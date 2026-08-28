@@ -3,6 +3,7 @@ package org.modelix.editor
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.modelix.editor.celltemplate.CellTemplate
 import org.modelix.editor.celltemplate.ChildCellTemplate
+import org.modelix.editor.celltemplate.ChoiceCellTemplate
 import org.modelix.editor.celltemplate.CollectionCellTemplate
 import org.modelix.editor.celltemplate.ConstantCellTemplate
 import org.modelix.editor.celltemplate.FlagCellTemplate
@@ -130,8 +131,11 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
         conceptProperty("alias", body)
     }
 
+    /**
+     * A null [text] renders nothing, which is how a notation makes a label conditional. See [LabelCellTemplate].
+     */
     fun label(
-        text: String,
+        text: String?,
         body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {},
     ) {
         LabelCellTemplate(template.concept, text)
@@ -356,15 +360,41 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
     fun ITypedProperty<Boolean>.booleanCell(
         trueText: String = "true",
         falseText: String = "false",
-        body: CellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {
+        body: ChoiceCellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {
         },
     ) {
-        // TODO generate code completion entries for the two possible values
-        untyped().propertyCell {
-            readReplace { if (it == "true") trueText else falseText }
-            writeReplace { if (it == trueText) "true" else "false" }
+        untyped().booleanCell(trueText, falseText, body)
+    }
+
+    /**
+     * A boolean written as one of two words. The two-sided form of [flagCell], for the case where the unset state
+     * has a word of its own instead of rendering nothing.
+     */
+    fun IProperty.booleanCell(
+        trueText: String = "true",
+        falseText: String = "false",
+        body: ChoiceCellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {
+        },
+    ) {
+        choiceCell {
+            alternative("true", trueText)
+            alternative("false", falseText)
             body()
         }
+    }
+
+    /**
+     * A property with a closed set of values, each written its own way. See [ChoiceCellTemplate].
+     */
+    fun IProperty.choiceCell(body: ChoiceCellTemplateBuilder<NodeT, ConceptT>.() -> Unit) {
+        ChoiceCellTemplateBuilder(ChoiceCellTemplate(template.concept, this), concept, nodeConverter)
+            .also(body)
+            .template
+            .also(template::addChild)
+    }
+
+    fun ITypedProperty<*>.choiceCell(body: ChoiceCellTemplateBuilder<NodeT, ConceptT>.() -> Unit) {
+        untyped().choiceCell(body)
     }
 
     private fun <TargetNodeT> IReferenceLink.cell(
@@ -522,16 +552,39 @@ class PropertyCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
         (template as PropertyCellTemplate).regex = regex
     }
 
+    /** How the stored value is shown. See [PropertyCellTemplate.readReplace]. */
     fun readReplace(replacement: (String) -> String) {
-        // TODO
+        (template as PropertyCellTemplate).readReplace = replacement
     }
 
+    /** How typed text is stored. See [PropertyCellTemplate.writeReplace]. */
     fun writeReplace(replacement: (String) -> String) {
-        // TODO
+        (template as PropertyCellTemplate).writeReplace = replacement
     }
 
     fun placeholderText(placeholderText: String) {
         (template as PropertyCellTemplate).placeholderText = placeholderText
+    }
+}
+
+class ChoiceCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
+    template: ChoiceCellTemplate,
+    concept: ConceptT,
+    nodeConverter: INodeConverter<NodeT>,
+) : CellTemplateBuilder<NodeT, ConceptT>(template, concept, nodeConverter) {
+    /**
+     * Declares that [value] is written as [text]. An empty [text] renders nothing, which is how the unset side of a
+     * flag is expressed.
+     */
+    fun alternative(
+        value: String,
+        text: String,
+    ) {
+        (template as ChoiceCellTemplate).alternative(value, text)
+    }
+
+    fun placeholderText(placeholderText: String) {
+        (template as ChoiceCellTemplate).placeholderText = placeholderText
     }
 }
 

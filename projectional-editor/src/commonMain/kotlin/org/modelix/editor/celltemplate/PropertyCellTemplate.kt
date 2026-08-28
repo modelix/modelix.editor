@@ -31,6 +31,7 @@ import org.modelix.parser.ISymbol
 import org.modelix.parser.PropertySymbol
 import org.modelix.parser.RegexSymbol
 import org.modelix.parser.Token
+import org.modelix.presentation.PropertyPresentationAspect
 
 open class PropertyCellTemplate(
     concept: IConcept,
@@ -41,6 +42,47 @@ open class PropertyCellTemplate(
     var validator: ((String) -> Boolean)? = null
     var regex: Regex? = null
 
+    /**
+     * Maps the stored property value to the text the editor shows, for a notation that writes a value differently
+     * from how the model holds it - a decimal separator, a symbol standing for a keyword.
+     *
+     * A notation that sets nothing still gets the conversion its language defines, through
+     * [PropertyPresentationAspect] - which is what turns an MPS enumeration's stored `gZ5fh_4/error` into `error`.
+     */
+    var readReplace: ((String) -> String)? = null
+
+    /**
+     * Maps typed text back to the value stored, the other half of [readReplace]. It is applied wherever text becomes
+     * a property value: typing over the cell, creating the node by typing its value, and parsing.
+     *
+     * This runs before validation, so a notation validates the value it asks for rather than the keys that were
+     * pressed. The language's own conversion ([PropertyPresentationAspect]) runs after, because validation is
+     * defined on the presented form - `ConstraintsAspect.checkPropertyValue` converts to the stored form itself.
+     */
+    var writeReplace: ((String) -> String)? = null
+
+    /**
+     * Text as the notation asks for it to be held - the form everything downstream is defined on: what a validator
+     * judges, what a constraint is checked against, and what the language then converts for storage.
+     */
+    private fun presentedValue(text: String): String = writeReplace?.invoke(text) ?: text
+
+    /**
+     * The stored value as the editor shows it: undo the language's conversion, then the notation's.
+     */
+    private fun displayedText(value: String?): String? =
+        value?.let {
+            val presented = PropertyPresentationAspect.toPresentation(property, it) ?: it
+            readReplace?.invoke(presented) ?: presented
+        }
+
+    /**
+     * Typed text as the model stores it. Text the language does not recognise as one of its values is stored as it
+     * is - every prefix of a value looks like that while it is being typed.
+     */
+    private fun storedValue(text: String): String =
+        presentedValue(text).let { PropertyPresentationAspect.fromPresentation(property, it) ?: it }
+
     override fun toParserSymbol(): ISymbol = PropertySymbol(property, regex ?: RegexSymbol.defaultPropertyPattern)
 
     override fun toCompletionToken(): ICompletionTokenOrList? = PropertyCompletionToken(property)
@@ -48,14 +90,14 @@ open class PropertyCellTemplate(
     override fun consumeTokens(builder: IParseTreeToAstBuilder) {
         val symbol = toParserSymbol()
         val token = builder.consumeNextToken { it is Token && it.symbol == symbol } ?: return
-        builder.currentNode().setPropertyValue(property, (token as Token).text)
+        builder.currentNode().setPropertyValue(property, storedValue((token as Token).text))
     }
 
     override fun createCell(
         context: CellCreationContext,
         node: INode,
     ): CellSpecBase {
-        val value = node.getPropertyValue(property)
+        val value = displayedText(node.getPropertyValue(property))
         val data = TextCellSpec(value ?: "", if (value == null) placeholderText else "")
         data.properties[CellActionProperties.replaceText] = ChangePropertyAction(node)
         data.properties[CommonCellProperties.tabTarget] = true
@@ -91,7 +133,9 @@ open class PropertyCellTemplate(
         val location: INonExistingNode,
     ) : ICodeCompletionActionProvider {
         override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> =
-            if (parameters.pattern.isNotBlank() && validateValue(location.replacement(concept), parameters.pattern)) {
+            if (parameters.pattern.isNotBlank() &&
+                validateValue(location.replacement(concept), presentedValue(parameters.pattern))
+            ) {
                 listOf(WrapPropertyValue(location, parameters.pattern))
             } else {
                 emptyList()
@@ -108,7 +152,7 @@ open class PropertyCellTemplate(
 
         override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val node = location.getOrCreateNode(concept)
-            node.setPropertyValue(property, value)
+            node.setPropertyValue(property, storedValue(value))
             return CaretPositionPolicy(createCellReference(node))
         }
     }
@@ -118,7 +162,7 @@ open class PropertyCellTemplate(
     ) : ITextChangeAction {
         override fun isValid(value: String?): Boolean {
             if (value == null) return true
-            return validateValue(node.toNonExisting(), value)
+            return validateValue(node.toNonExisting(), presentedValue(value))
         }
 
         override fun replaceText(
@@ -128,7 +172,7 @@ open class PropertyCellTemplate(
             newText: String,
         ): Boolean {
             node.getArea().executeWrite {
-                node.setPropertyValue(property, newText)
+                node.setPropertyValue(property, storedValue(newText))
             }
             return true
         }

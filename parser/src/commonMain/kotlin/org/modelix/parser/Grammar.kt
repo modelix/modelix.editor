@@ -11,6 +11,7 @@ class Grammar {
     private val rules = ArrayList<ProductionRule>()
     private val existingLists = HashSet<ListSymbol>()
     private val existingOptionals = HashSet<OptionalSymbol>()
+    private val existingAlternations = HashSet<AlternationSymbol>()
     private val loadedSubConceptRules = HashSet<IConcept>()
     private val follows: Map<INonTerminalSymbol, Set<ITerminalSymbol>>
     val knownConstants: Set<String>
@@ -77,6 +78,7 @@ class Grammar {
     private fun loadRulesFromSymbols(symbols: List<ISymbol>) {
         symbols.filterIsInstance<ListSymbol>().forEach { addListRules(it) }
         symbols.filterIsInstance<OptionalSymbol>().forEach { addOptionalRules(it) }
+        symbols.filterIsInstance<AlternationSymbol>().forEach { addAlternationRules(it) }
     }
 
     private fun addListRules(listSymbol: ListSymbol) {
@@ -93,6 +95,15 @@ class Grammar {
         rules += ProductionRule(optionalSymbol, optionalSymbol.children)
         rules += ProductionRule(optionalSymbol, emptyList())
         loadRulesFromSymbols(optionalSymbol.children)
+    }
+
+    private fun addAlternationRules(alternationSymbol: AlternationSymbol) {
+        if (existingAlternations.contains(alternationSymbol)) return
+        existingAlternations.add(alternationSymbol)
+        for (alternative in alternationSymbol.alternatives) {
+            rules += ProductionRule(alternationSymbol, alternative)
+            loadRulesFromSymbols(alternative)
+        }
     }
 
     private fun loadSubConceptRules(subConcept: IConcept) {

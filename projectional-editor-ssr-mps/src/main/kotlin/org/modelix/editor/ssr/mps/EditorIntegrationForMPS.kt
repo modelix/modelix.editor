@@ -7,6 +7,7 @@ import org.modelix.editor.EditorEngine
 import org.modelix.model.api.ILanguageRepository
 import org.modelix.model.mpsadapters.MPSChangeTranslator
 import org.modelix.model.mpsadapters.MPSLanguageRepository
+import org.modelix.presentation.PropertyPresentationAspect
 import org.modelix.scopes.ScopeAspect
 
 class EditorIntegrationForMPS(
@@ -24,6 +25,7 @@ class EditorIntegrationForMPS(
         aspectsFromMPS = LanguageAspectsFromMPSModules(repository)
         ScopeAspect.registerScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.add(MPSConstraints)
+        PropertyPresentationAspect.providers.add(MPSPropertyPresentation)
         ModelCheckAspect.checkers.add(MPSModelChecker)
         editorEngine.addRegistry(aspectsFromMPS!!)
     }
@@ -34,6 +36,7 @@ class EditorIntegrationForMPS(
 
         ScopeAspect.unregisterScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.remove(MPSConstraints)
+        PropertyPresentationAspect.providers.remove(MPSPropertyPresentation)
         ModelCheckAspect.checkers.remove(MPSModelChecker)
 
         // The change translator and the aspects registry attach listeners to MPS. Leaving them registered would keep
