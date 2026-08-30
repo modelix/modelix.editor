@@ -17,7 +17,7 @@ npm-publish = { id = "dev.petuska.npm.publish", version = "3.5.3" }
 
 [versions]
 
-modelixCore = "19.1.0"
+modelixCore = "19.4.1"
 
 modelixBuildtools="2.0.2"
 
