@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.22.0](https://github.com/modelix/modelix.editor/compare/1.21.0...1.22.0) (2026-09-04)
+
+
+### Features
+
+* **projectional-editor:** reusable parts of a notation ([d5dc865](https://github.com/modelix/modelix.editor/commit/d5dc86536dfc5dbf44c8e687bb2e880775197b11))
+* **projectional-editor:** reusable parts of a notation ([6db5c79](https://github.com/modelix/modelix.editor/commit/6db5c79e98bdcd55472c9bd5faae8436c76261f3))
+* **projectional-editor:** sensible defaults for reference cells ([8df7fd3](https://github.com/modelix/modelix.editor/commit/8df7fd399de589f962c601abcc21a03c8abbc0af))
+* **projectional-editor:** sensible defaults for reference cells ([80369da](https://github.com/modelix/modelix.editor/commit/80369da000764dbb521ff53de785a5f5e579f670))
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.5.2 ([#567](https://github.com/modelix/modelix.editor/issues/567)) ([4d574a9](https://github.com/modelix/modelix.editor/commit/4d574a94724f8cc70bd63b7c0976c4faad2dffd9))
+* **deps:** update modelixcore to v19.4.1 ([#570](https://github.com/modelix/modelix.editor/issues/570)) ([ff9a9b7](https://github.com/modelix/modelix.editor/commit/ff9a9b7314ff422d91e9902fa2a690035bb79b3b))
+* **deps:** update pnpm to v11.24.0 ([#571](https://github.com/modelix/modelix.editor/issues/571)) ([ed7f102](https://github.com/modelix/modelix.editor/commit/ed7f102bc4c8d1d9dcc388e8753dbfeb8589be04))
+
+
+### Code Refactoring
+
+* **projectional-editor:** share the repeated cells of the baseLanguage notations ([058c847](https://github.com/modelix/modelix.editor/commit/058c84764cbf2c57c04d4ac7fcd02928c13c61a6))
+
 ## [1.21.0](https://github.com/modelix/modelix.editor/compare/1.20.0...1.21.0) (2026-08-28)
 
 
