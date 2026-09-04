@@ -5909,6 +5909,71 @@
         </node>
       </node>
     </node>
+    <node concept="3aamgX" id="3NQOi27P2UC" role="3acgRq">
+      <ref role="30HIoZ" to="f8gn:3NQOi27s2bH" resolve="ComponentCell" />
+      <node concept="1Koe21" id="3NQOi27P2UD" role="1lVwrX">
+        <node concept="2OqwBi" id="3NQOi27P2UE" role="1Koe22">
+          <node concept="2ShNRf" id="3NQOi27P2UF" role="2Oq$k0">
+            <node concept="1pGfFk" id="3NQOi27P2UG" role="2ShVmc">
+              <property role="373rjd" value="true" />
+              <ref role="37wK5l" to="jej1:~EditorAspect.&lt;init&gt;()" resolve="EditorAspect" />
+            </node>
+          </node>
+          <node concept="liA8E" id="3NQOi27P2UH" role="2OqNvi">
+            <ref role="37wK5l" to="jej1:~EditorAspect.conceptEditor(org.modelix.model.api.IConcept,boolean,kotlin.jvm.functions.Function1)" resolve="conceptEditor" />
+            <node concept="10Nm6u" id="3NQOi27P2UI" role="37wK5m" />
+            <node concept="3clFbT" id="3NQOi27P2UJ" role="37wK5m" />
+            <node concept="3s519P" id="3NQOi27P2UK" role="37wK5m">
+              <node concept="3uibUv" id="3NQOi27P2UL" role="3s52Nf">
+                <ref role="3uigEE" to="v18h:~Unit" resolve="Unit" />
+              </node>
+              <node concept="37vLTG" id="3NQOi27P2UM" role="1bW2Oz">
+                <property role="TrG5h" value="builder" />
+                <node concept="3uibUv" id="3NQOi27P2UN" role="1tU5fm">
+                  <ref role="3uigEE" to="jej1:~NotationRootCellTemplateBuilder" resolve="NotationRootCellTemplateBuilder" />
+                  <node concept="3uibUv" id="3NQOi27P2UO" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~INode" resolve="INode" />
+                  </node>
+                  <node concept="3uibUv" id="3NQOi27P2UP" role="11_B2D">
+                    <ref role="3uigEE" to="jks5:~IConcept" resolve="IConcept" />
+                  </node>
+                </node>
+              </node>
+              <node concept="3clFbS" id="3NQOi27P2UQ" role="1bW5cS">
+                <node concept="3clFbH" id="3NQOi27P2V4" role="3cqZAp">
+                  <node concept="29HgVG" id="3NQOi27P2V5" role="lGtFl">
+                    <node concept="3NFfHV" id="3NQOi27P2V6" role="3NFExx">
+                      <node concept="3clFbS" id="3NQOi27P2V7" role="2VODD2">
+                        <node concept="3clFbF" id="3NQOi27P2V8" role="3cqZAp">
+                          <node concept="2OqwBi" id="3NQOi27P2V9" role="3clFbG">
+                            <node concept="3TrEf2" id="3NQOi27P2Va" role="2OqNvi">
+                              <ref role="3Tt5mk" to="f8gn:3NQOi27s29X" resolve="cell" />
+                            </node>
+                            <node concept="2OqwBi" id="3NQOi27P2Vc" role="2Oq$k0">
+                              <node concept="30H73N" id="3NQOi27P2Vd" role="2Oq$k0" />
+                              <node concept="3TrEf2" id="3NQOi27P2Ve" role="2OqNvi">
+                                <ref role="3Tt5mk" to="f8gn:3NQOi27s2bI" resolve="component" />
+                              </node>
+                            </node>
+                          </node>
+                        </node>
+                      </node>
+                    </node>
+                  </node>
+                  <node concept="raruj" id="3NQOi27P2V1" role="lGtFl" />
+                </node>
+                <node concept="3cpWs6" id="3NQOi27P2V2" role="3cqZAp">
+                  <node concept="10M0yZ" id="3NQOi27P2V3" role="3cqZAk">
+                    <ref role="3cqZAo" to="v18h:~Unit.INSTANCE" resolve="INSTANCE" />
+                    <ref role="1PxDUh" to="v18h:~Unit" resolve="Unit" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
   </node>
   <node concept="312cEu" id="7HT$1xKu5Jt">
     <property role="TrG5h" value="AspectsDescriptor" />

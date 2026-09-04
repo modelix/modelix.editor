@@ -20,6 +20,7 @@
     <import index="35tq" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/java:jetbrains.mps.scope(MPS.Core/)" />
     <import index="f8gn" ref="r:37580d55-803b-40f6-8108-d95a9fce8d6e(org.modelix.mps.notation.structure)" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
+    <import index="wsib" ref="r:d1d5cd51-6710-43f8-bd5b-f958da6e1ca2(org.modelix.mps.notation.behavior)" implicit="true" />
     <import index="tpcn" ref="r:00000000-0000-4000-0000-011c8959028b(jetbrains.mps.lang.structure.behavior)" implicit="true" />
     <import index="mhbf" ref="8865b7a8-5271-43d3-884c-6fd1d9cfdd34/java:org.jetbrains.mps.openapi.model(MPS.OpenAPI/)" implicit="true" />
   </imports>
@@ -132,9 +133,6 @@
       <concept id="1138055754698" name="jetbrains.mps.lang.smodel.structure.SNodeType" flags="in" index="3Tqbb2">
         <reference id="1138405853777" name="concept" index="ehGHo" />
       </concept>
-      <concept id="1138056143562" name="jetbrains.mps.lang.smodel.structure.SLinkAccess" flags="nn" index="3TrEf2">
-        <reference id="1138056516764" name="link" index="3Tt5mk" />
-      </concept>
     </language>
     <language id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" name="jetbrains.mps.lang.core">
       <concept id="1133920641626" name="jetbrains.mps.lang.core.structure.BaseConcept" flags="ng" index="2VYdi">
@@ -224,14 +222,14 @@
                         <node concept="2Xjw5R" id="CUW2QYLad1" role="2OqNvi">
                           <node concept="1xMEDy" id="CUW2QYLad3" role="1xVPHs">
                             <node concept="chp4Y" id="CUW2QYLajW" role="ri$Ld">
-                              <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                              <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                             </node>
                           </node>
                           <node concept="1xIGOp" id="CUW2QYLat0" role="1xVPHs" />
                         </node>
                       </node>
-                      <node concept="3TrEf2" id="CUW2QYLaOR" role="2OqNvi">
-                        <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                      <node concept="2qgKlT" id="3NQOi27yTdr" role="2OqNvi">
+                        <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                       </node>
                     </node>
                     <node concept="2qgKlT" id="CUW2QYLb_J" role="2OqNvi">
@@ -293,14 +291,14 @@
                         <node concept="2Xjw5R" id="CUW2QYMkkb" role="2OqNvi">
                           <node concept="1xMEDy" id="CUW2QYMkkd" role="1xVPHs">
                             <node concept="chp4Y" id="CUW2QYMkqB" role="ri$Ld">
-                              <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                              <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                             </node>
                           </node>
                           <node concept="1xIGOp" id="CUW2QYMkyN" role="1xVPHs" />
                         </node>
                       </node>
-                      <node concept="3TrEf2" id="CUW2QYMkTL" role="2OqNvi">
-                        <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                      <node concept="2qgKlT" id="3NQOi27yD0e" role="2OqNvi">
+                        <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                       </node>
                     </node>
                     <node concept="2qgKlT" id="CUW2QYMlCy" role="2OqNvi">
@@ -383,14 +381,14 @@
                       <node concept="2Xjw5R" id="ziPuhE_I3q" role="2OqNvi">
                         <node concept="1xMEDy" id="ziPuhE_I3s" role="1xVPHs">
                           <node concept="chp4Y" id="ziPuhE_I8b" role="ri$Ld">
-                            <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                            <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                           </node>
                         </node>
                         <node concept="1xIGOp" id="ziPuhE_Ify" role="1xVPHs" />
                       </node>
                     </node>
-                    <node concept="3TrEf2" id="ziPuhE_ICF" role="2OqNvi">
-                      <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                    <node concept="2qgKlT" id="3NQOi27yWb9" role="2OqNvi">
+                      <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                     </node>
                   </node>
                   <node concept="2qgKlT" id="ziPuhE_JAA" role="2OqNvi">
@@ -465,14 +463,14 @@
                     <node concept="2Xjw5R" id="ziPuhEA2Ho" role="2OqNvi">
                       <node concept="1xMEDy" id="ziPuhEA2Hq" role="1xVPHs">
                         <node concept="chp4Y" id="ziPuhEA2M9" role="ri$Ld">
-                          <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                          <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                         </node>
                       </node>
                       <node concept="1xIGOp" id="ziPuhEA2Tv" role="1xVPHs" />
                     </node>
                   </node>
-                  <node concept="3TrEf2" id="ziPuhEA3ht" role="2OqNvi">
-                    <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                  <node concept="2qgKlT" id="3NQOi27yY39" role="2OqNvi">
+                    <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                   </node>
                 </node>
                 <node concept="2qgKlT" id="ziPuhEA49m" role="2OqNvi">
@@ -504,14 +502,14 @@
                         <node concept="2Xjw5R" id="ziPuhEA59I" role="2OqNvi">
                           <node concept="1xMEDy" id="ziPuhEA59K" role="1xVPHs">
                             <node concept="chp4Y" id="ziPuhEA5ev" role="ri$Ld">
-                              <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                              <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                             </node>
                           </node>
                           <node concept="1xIGOp" id="ziPuhEA5pj" role="1xVPHs" />
                         </node>
                       </node>
-                      <node concept="3TrEf2" id="ziPuhEA5KW" role="2OqNvi">
-                        <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                      <node concept="2qgKlT" id="3NQOi27z1n$" role="2OqNvi">
+                        <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                       </node>
                     </node>
                     <node concept="2qgKlT" id="ziPuhEA6vI" role="2OqNvi">
@@ -619,7 +617,7 @@
               <node concept="2Xjw5R" id="1nuEuAnq2Av" role="2OqNvi">
                 <node concept="1xMEDy" id="1nuEuAnq2Aw" role="1xVPHs">
                   <node concept="chp4Y" id="1nuEuAnq2Ax" role="ri$Ld">
-                    <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                    <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                   </node>
                 </node>
                 <node concept="1xIGOp" id="1nuEuAnq2Ay" role="1xVPHs" />
@@ -683,14 +681,14 @@
                         <node concept="2Xjw5R" id="7QHj_JKmDGo" role="2OqNvi">
                           <node concept="1xMEDy" id="7QHj_JKmDGp" role="1xVPHs">
                             <node concept="chp4Y" id="7QHj_JKmDGq" role="ri$Ld">
-                              <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                              <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
                             </node>
                           </node>
                           <node concept="1xIGOp" id="7QHj_JKmDGr" role="1xVPHs" />
                         </node>
                       </node>
-                      <node concept="3TrEf2" id="7QHj_JKmDGs" role="2OqNvi">
-                        <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+                      <node concept="2qgKlT" id="3NQOi27z4Dz" role="2OqNvi">
+                        <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
                       </node>
                     </node>
                     <node concept="2qgKlT" id="7QHj_JKmDGt" role="2OqNvi">

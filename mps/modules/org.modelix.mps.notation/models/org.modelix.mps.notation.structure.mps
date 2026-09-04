@@ -125,6 +125,9 @@
     <node concept="PrWs8" id="7dm8yUsMfLW" role="PzmwI">
       <ref role="PrY4T" node="7dm8yUsMflU" resolve="INotationModuleContent" />
     </node>
+    <node concept="PrWs8" id="3NQOi27s2du" role="PzmwI">
+      <ref role="PrY4T" node="3NQOi27s28c" resolve="ICellContainer" />
+    </node>
   </node>
   <node concept="PlHQZ" id="7dm8yUsMxhg">
     <property role="EcuMT" value="8310867745953158224" />
@@ -242,7 +245,7 @@
       <property role="IQ2ns" value="7525355686451955469" />
       <property role="20lmBu" value="fLJjDmT/aggregation" />
       <property role="20kJfa" value="separatorCell" />
-      <ref role="20lvS9" node="7dm8yUsMxww" resolve="Cell" />
+      <ref role="20lvS9" node="7dm8yUsMxhg" resolve="ICell" />
     </node>
     <node concept="RPilO" id="CUW2QYMjoG" role="lGtFl">
       <ref role="RPilL" node="CUW2QYMipn" resolve="link" />
@@ -627,6 +630,55 @@
     <property role="34LRSv" value="source" />
     <property role="R4oN_" value="the node the reference is written on" />
     <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
+  </node>
+  <node concept="PlHQZ" id="3NQOi27s28c">
+    <property role="EcuMT" value="3626805357825575494" />
+    <property role="TrG5h" value="ICellContainer" />
+    <property role="R4oN_" value="something that owns a cell tree written against one concept" />
+  </node>
+  <node concept="1TIwiD" id="3NQOi27s29T">
+    <property role="EcuMT" value="4376771084259653422" />
+    <property role="TrG5h" value="NotationComponent" />
+    <property role="34LRSv" value="component" />
+    <property role="R4oN_" value="a reusable part of a notation, included with a ComponentCell" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="PrWs8" id="3NQOi27s29U" role="PzmwI">
+      <ref role="PrY4T" node="7dm8yUsMflU" resolve="INotationModuleContent" />
+    </node>
+    <node concept="PrWs8" id="3NQOi27s29V" role="PzmwI">
+      <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+    <node concept="PrWs8" id="3NQOi27s29W" role="PzmwI">
+      <ref role="PrY4T" node="3NQOi27s28c" resolve="ICellContainer" />
+    </node>
+    <node concept="1TJgyj" id="3NQOi27s29X" role="1TKVEi">
+      <property role="IQ2ns" value="7436335112202935940" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="cell" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="7dm8yUsMxhg" resolve="ICell" />
+    </node>
+    <node concept="1TJgyj" id="3NQOi27s29Y" role="1TKVEi">
+      <property role="IQ2ns" value="5475292998606619439" />
+      <property role="20kJfa" value="concept" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" to="tpce:h0PkWnZ" resolve="AbstractConceptDeclaration" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="3NQOi27s2bH">
+    <property role="EcuMT" value="6806925329298934671" />
+    <property role="TrG5h" value="ComponentCell" />
+    <property role="34LRSv" value="component" />
+    <property role="R4oN_" value="includes the cells of a NotationComponent" />
+    <node concept="1TJgyj" id="3NQOi27s2bI" role="1TKVEi">
+      <property role="IQ2ns" value="7763732591390734169" />
+      <property role="20kJfa" value="component" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="3NQOi27s29T" resolve="NotationComponent" />
+    </node>
+    <node concept="PrWs8" id="3NQOi27zp7y" role="PzmwI">
+      <ref role="PrY4T" node="7dm8yUsMxhg" resolve="ICell" />
+    </node>
   </node>
 </model>
 
