@@ -45,7 +45,7 @@ val Editor_org_iets3_core_expr_toplevel =
             concept.value.cell()
         }
         editor(language.ConstantRef) {
-            concept.constant.cell({ name })
+            concept.constant.cell()
         }
         editor(language.EmptyMember) {
             "".constant()
@@ -60,7 +60,7 @@ val Editor_org_iets3_core_expr_toplevel =
             "index".constant()
         }
         editor(language.EnumIsInSelector) {
-            concept.literal.cell({ name })
+            concept.literal.cell()
         }
         editor(language.EnumIsInTarget) {
             "isIn".constant()
@@ -73,7 +73,7 @@ val Editor_org_iets3_core_expr_toplevel =
             "is".constant()
             noSpace()
             parentheses {
-                concept.literal.cell({ name })
+                concept.literal.cell()
             }
         }
         editor(language.EnumLiteral) {
@@ -102,13 +102,13 @@ val Editor_org_iets3_core_expr_toplevel =
             })
         }
         editor(language.EnumType) {
-            concept.enum.cell({ name })
+            concept.enum.cell()
         }
         editor(language.EnumValueAccessor) {
             "value".constant()
         }
         editor(language.ExtensionFunctionCall) {
-            concept.extFun.cell({ name })
+            concept.extFun.cell()
             // TODO effect descriptor
             noSpace()
             parentheses {
@@ -116,7 +116,7 @@ val Editor_org_iets3_core_expr_toplevel =
             }
         }
         editor(language.FieldSetter) {
-            concept.field.cell({ name })
+            concept.field.cell()
             concept.value.cell()
         }
         editor(language.Function) {
@@ -157,7 +157,7 @@ val Editor_org_iets3_core_expr_toplevel =
             }
         }
         editor(language.FunctionCall) {
-            concept.function.cell({ name })
+            concept.function.cell()
             // TODO effect descriptor
             noSpace()
             parentheses {
@@ -170,7 +170,7 @@ val Editor_org_iets3_core_expr_toplevel =
         editor(language.FunRef) {
             ":".constant()
             noSpace()
-            concept.`fun`.cell({ name })
+            concept.`fun`.cell()
         }
         editor(language.GroupKeyTarget) {
             "key".constant()
@@ -216,14 +216,14 @@ val Editor_org_iets3_core_expr_toplevel =
             concept.contents.vertical()
         }
         editor(language.NewValueSetter) {
-            concept.member.cell({ name })
+            concept.member.cell()
             optional {
                 "=".constant()
                 concept.newValue.cell()
             }
         }
         editor(language.OldMemberRef) {
-            concept.member.cell({ name })
+            concept.member.cell()
         }
         editor(language.OldValueExpr) {
             "old".constant()
@@ -244,11 +244,11 @@ val Editor_org_iets3_core_expr_toplevel =
             }
         }
         editor(language.QualifierRef) {
-            concept.enum.cell({ name })
+            concept.enum.cell()
             noSpace()
             ":".constant()
             noSpace()
-            concept.lit.cell({ name })
+            concept.lit.cell()
         }
         editor(language.RecordChangeTarget) {
             "with".constant()
@@ -299,10 +299,10 @@ val Editor_org_iets3_core_expr_toplevel =
             }
         }
         editor(language.RecordMemberRefInConstraint) {
-            concept.member.cell({ name })
+            concept.member.cell()
         }
         editor(language.RecordType) {
-            concept.record.cell({ name })
+            concept.record.cell()
         }
         editor(language.RecordTypeAdapter) {
             concept.type.cell()
@@ -333,6 +333,6 @@ val Editor_org_iets3_core_expr_toplevel =
             "it".constant()
         }
         editor(language.TypedefType) {
-            concept.typedef.cell({ name })
+            concept.typedef.cell()
         }
     }

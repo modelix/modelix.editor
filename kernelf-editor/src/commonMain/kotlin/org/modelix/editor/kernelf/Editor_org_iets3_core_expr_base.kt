@@ -485,7 +485,7 @@ val Editor_org_iets3_core_expr_base =
             }
         }
         editor(language.SuccessValueExpr) {
-            concept.`try`.cell({ name })
+            concept.`try`.cell()
         }
         editor(language.ThisExpression) {
             "this".constant {

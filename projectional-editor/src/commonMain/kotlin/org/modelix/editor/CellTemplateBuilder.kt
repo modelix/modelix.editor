@@ -15,6 +15,7 @@ import org.modelix.editor.celltemplate.NotationRootCellTemplate
 import org.modelix.editor.celltemplate.OptionalCellTemplate
 import org.modelix.editor.celltemplate.PropertyCellTemplate
 import org.modelix.editor.celltemplate.ReferenceCellTemplate
+import org.modelix.editor.celltemplate.defaultReferencePresentation
 import org.modelix.metamodel.IConceptOfTypedNode
 import org.modelix.metamodel.ITypedChildLink
 import org.modelix.metamodel.ITypedChildListLink
@@ -422,8 +423,12 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
         ).also(body).template.also(template::addChild)
     }
 
+    /**
+     * The target of the reference, written the way [presentation] says. Without one it is written as its name,
+     * which is what a notation means unless it says otherwise. See [defaultReferencePresentation].
+     */
     fun <TargetNodeT : ITypedNode> ITypedReferenceLink<TargetNodeT>.cell(
-        presentation: TargetNodeT.() -> String?,
+        presentation: TargetNodeT.() -> String? = { untyped().defaultReferencePresentation() },
         body: ReferenceCellTemplateBuilder<NodeT, ConceptT, TargetNodeT>.() -> Unit = {
         },
     ) {
@@ -432,7 +437,7 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
     }
 
     fun IReferenceLink.cell(
-        presentation: INode.() -> String?,
+        presentation: INode.() -> String? = { defaultReferencePresentation() },
         body: ReferenceCellTemplateBuilder<NodeT, ConceptT, INode>.() -> Unit = {},
     ) {
         val targetNodeConverter = INodeConverter.Untyped
@@ -620,9 +625,36 @@ class ReferenceCellTemplateBuilder<SourceNodeT : Any, SourceConceptT : Any, Targ
     sourceNodeConverter: INodeConverter<SourceNodeT>,
     private val targetNodeConverter: INodeConverter<TargetNodeT>,
 ) : CellTemplateBuilder<SourceNodeT, SourceConceptT>(template, concept, sourceNodeConverter) {
+    /**
+     * Overrides how the reference target is written. This is the same thing the `presentation` argument of `cell`
+     * sets; it exists so a notation can change it from inside the body block.
+     */
     fun presentation(f: (TargetNodeT) -> String?) {
-        TODO("Not implemented yet")
+        (template as ReferenceCellTemplate).presentation = { presentationOf(this) { target -> f(target) } }
     }
+
+    /**
+     * Writes the target from both the reference node and the target, for the rare concept whose presentation
+     * depends on where it is referenced (see [ReferenceCellTemplate.presentationWithContext]). Only the rendered
+     * cell uses it; completion keeps using the plain [presentation].
+     */
+    fun presentationWithContext(f: (referenceNode: SourceNodeT, targetNode: TargetNodeT) -> String?) {
+        (template as ReferenceCellTemplate).presentationWithContext = { referenceNode, targetNode ->
+            presentationOf(targetNode) { target -> f(nodeConverter.fromUntyped(referenceNode), target) }
+        }
+    }
+
+    /**
+     * Runs a presentation function against the typed target, logging and swallowing a failure the way the `cell`
+     * builder does, so one broken presentation never brings the whole editor down.
+     */
+    private fun presentationOf(
+        untypedTarget: INode,
+        f: (TargetNodeT) -> String?,
+    ): String? =
+        runCatching { f(targetNodeConverter.fromUntyped(untypedTarget)) }
+            .onFailure { LOG.error(it) { "Failed computing presentation for reference target: $untypedTarget (${untypedTarget.concept})" } }
+            .getOrNull()
 
     fun withTargetNode(body: WithTargetNodeContext.() -> Unit) {
         withUntypedNode { node ->

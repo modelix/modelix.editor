@@ -24,6 +24,7 @@ import org.modelix.editor.after
 import org.modelix.editor.replacement
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.toNonExisting
+import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
 import org.modelix.model.api.IReferenceLink
@@ -35,9 +36,20 @@ import org.modelix.scopes.ScopeAspect
 class ReferenceCellTemplate(
     concept: IConcept,
     val link: IReferenceLink,
-    val presentation: INode.() -> String?,
+    var presentation: INode.() -> String?,
 ) : CellTemplate(concept),
     IGrammarSymbol {
+    /**
+     * How the target is written when the text depends not only on the target but on where it is referenced from.
+     * MPS calls this the referent presentation and passes the reference node as context; almost no concept uses it
+     * (a nested class shown relative to the referencing class, a constructor - see `NodePresentationUtil`), so it
+     * stays off by default and [presentation] is the answer for everything else.
+     *
+     * Only the rendered cell consults it, because only there is the reference node known. Completion keeps using
+     * [presentation], which needs no reference node and often has none yet.
+     */
+    var presentationWithContext: ((referenceNode: INode, targetNode: INode) -> String?)? = null
+
     override fun toParserSymbol(): ISymbol = ReferenceSymbol(link)
 
     override fun toCompletionToken(): ICompletionTokenOrList? = ReferenceCompletionToken(link)
@@ -52,12 +64,26 @@ class ReferenceCellTemplate(
         context: CellCreationContext,
         node: INode,
     ): CellSpecBase {
-        val targetNode = getTargetNode(node)
-        val data = TextCellSpec(targetNode?.let(presentation) ?: "", "<no ${link.getSimpleName()}>")
+        // The two reasons for the cell having no text of its own are told apart: a reference without a target is
+        // `<no [link name]>`, a target that renders as nothing is `<unnamed [link name]>`. One text for both would
+        // let an unset reference pass for a target whose presentation is empty.
+        val data =
+            when (val targetNode = getTargetNode(node)) {
+                null -> {
+                    TextCellSpec("", "<no ${link.getSimpleName()}>")
+                }
+
+                else -> {
+                    val contextual = presentationWithContext
+                    val text = if (contextual != null) contextual(node, targetNode) else presentation(targetNode)
+                    TextCellSpec(text ?: "", "<unnamed ${link.getSimpleName()}>").apply {
+                        // Lets the frontend navigate to the target of the reference (Cmd/Ctrl+click), like MPS does.
+                        properties[CommonCellProperties.referenceTarget] = targetNode.reference
+                    }
+                }
+            }
         data.cellReferences += ReferencedNodeCellReference(node.reference, link.toReference())
         data.properties[CommonCellProperties.tabTarget] = true
-        // Allows the frontend to navigate to the target of the reference (Cmd/Ctrl+click), like MPS does.
-        if (targetNode != null) data.properties[CommonCellProperties.referenceTarget] = targetNode.reference
         data.properties[CellActionProperties.substitute] =
             ReferenceTargetActionProvider(ExistingNode(node), link, { it.getNode()?.let(presentation) ?: "" }).after {
                 context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
@@ -112,3 +138,19 @@ class ReferenceCellTemplate(
         }
     }
 }
+
+/**
+ * How a reference cell renders its target unless the notation says otherwise: the target's name.
+ *
+ * A notation names the presentation only where it is not the obvious one - a qualified name, a concept name, a
+ * property other than `name`. `null` for a target that has no name at all, which the cell shows as `<unnamed ...>`.
+ *
+ * A notation written in the MPS notation language gets the answer from MPS instead, because there is a better one
+ * there: its generator emits `NodePresentationUtil.presentation`, what MPS's own `ref. presentation` cell shows
+ * (`IReferentPresentationProvider.DEFAULT_PRESENTATION`). That is the name too wherever a node has one, but it also
+ * honours a concept's declared presentation and `ISmartReferent`, and it answers `<no name>[Concept]` rather than
+ * nothing for an unnamed target. It is handed the referencing node through [presentationWithContext], so a nested
+ * class is written relative to where it is referenced from, the way MPS writes it. Nothing outside MPS can call it,
+ * which is why this is what the rest of the notations get.
+ */
+fun INode.defaultReferencePresentation(): String? = getPropertyValue(BuiltinLanguages.jetbrains_mps_lang_core.INamedConcept.name)

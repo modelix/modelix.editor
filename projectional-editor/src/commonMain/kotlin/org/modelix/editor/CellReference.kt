@@ -3,6 +3,7 @@ package org.modelix.editor
 import kotlinx.serialization.Serializable
 import org.modelix.metamodel.ITypedNode
 import org.modelix.metamodel.ITypedProperty
+import org.modelix.metamodel.ITypedReferenceLink
 import org.modelix.metamodel.untyped
 import org.modelix.metamodel.untypedReference
 import org.modelix.model.api.IChildLinkReference
@@ -10,6 +11,7 @@ import org.modelix.model.api.INode
 import org.modelix.model.api.INodeReference
 import org.modelix.model.api.IProperty
 import org.modelix.model.api.IPropertyReference
+import org.modelix.model.api.IReferenceLink
 import org.modelix.model.api.IReferenceLinkReference
 
 /**
@@ -72,6 +74,16 @@ data class ReferencedNodeCellReference(
     val sourceNodeRef: INodeReference,
     val link: IReferenceLinkReference,
 ) : CellReference()
+
+fun FrontendEditorComponent.resolveReferenceCell(
+    link: IReferenceLink,
+    nodeRef: INodeReference,
+): Cell? = resolveCell(ReferencedNodeCellReference(nodeRef, link.toReference())).firstOrNull()
+
+fun FrontendEditorComponent.resolveReferenceCell(
+    link: ITypedReferenceLink<*>,
+    node: ITypedNode,
+): Cell? = resolveReferenceCell(link.untyped(), node.untypedReference())
 
 @Serializable
 data class TemplateCellReference(

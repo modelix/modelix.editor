@@ -8,7 +8,7 @@
   <imports>
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" />
     <import index="tp25" ref="r:00000000-0000-4000-0000-011c89590301(jetbrains.mps.lang.smodel.structure)" />
-    <import index="f8gn" ref="r:37580d55-803b-40f6-8108-d95a9fce8d6e(org.modelix.mps.notation.structure)" implicit="true" />
+    <import index="f8gn" ref="r:37580d55-803b-40f6-8108-d95a9fce8d6e(org.modelix.mps.notation.structure)" />
     <import index="wyt6" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.lang(JDK/)" implicit="true" />
     <import index="wsib" ref="r:d1d5cd51-6710-43f8-bd5b-f958da6e1ca2(org.modelix.mps.notation.behavior)" implicit="true" />
     <import index="tpcn" ref="r:00000000-0000-4000-0000-011c8959028b(jetbrains.mps.lang.structure.behavior)" implicit="true" />
@@ -1094,6 +1094,66 @@
     <node concept="1YaCAy" id="1OfAHXwuGZn" role="1YuTPh">
       <property role="TrG5h" value="n" />
       <ref role="1YaFvo" to="f8gn:7QHj_JKkmAq" resolve="ChoiceCell" />
+    </node>
+  </node>
+  <node concept="1YbPZF" id="78kvCZcTGBL">
+    <property role="TrG5h" value="typeof_BL_ReferenceSourceExpression" />
+    <property role="3GE5qa" value="expressions" />
+    <node concept="3clFbS" id="78kvCZcTGBM" role="18ibNy">
+      <node concept="3cpWs8" id="78kvCZcTGBN" role="3cqZAp">
+        <node concept="3cpWsn" id="78kvCZcTGBO" role="3cpWs9">
+          <property role="TrG5h" value="sourceConcept" />
+          <node concept="3Tqbb2" id="78kvCZcTGBP" role="1tU5fm">
+            <ref role="ehGHo" to="tpce:h0PkWnZ" resolve="AbstractConceptDeclaration" />
+          </node>
+          <node concept="2OqwBi" id="78kvCZcTGBR" role="33vP2m">
+            <node concept="2OqwBi" id="78kvCZcTGBS" role="2Oq$k0">
+              <node concept="1YBJjd" id="78kvCZcTGBT" role="2Oq$k0">
+                <ref role="1YBMHb" node="78kvCZcTGCa" resolve="n" />
+              </node>
+              <node concept="2Xjw5R" id="78kvCZcTGBU" role="2OqNvi">
+                <node concept="1xMEDy" id="78kvCZcTGBV" role="1xVPHs">
+                  <node concept="chp4Y" id="78kvCZcTGBW" role="ri$Ld">
+                    <ref role="cht4Q" to="f8gn:7dm8yUsMfHH" resolve="ConceptNotation" />
+                  </node>
+                </node>
+                <node concept="1xIGOp" id="78kvCZcTGBX" role="1xVPHs" />
+              </node>
+            </node>
+            <node concept="3TrEf2" id="78kvCZcTGBY" role="2OqNvi">
+              <ref role="3Tt5mk" to="f8gn:7dm8yUsMfNE" resolve="concept" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="1Z5TYs" id="78kvCZcTGC0" role="3cqZAp">
+        <node concept="mw_s8" id="78kvCZcTGC1" role="1ZfhKB">
+          <node concept="2pJPEk" id="78kvCZcTGC2" role="mwGJk">
+            <node concept="2pJPED" id="78kvCZcTGC3" role="2pJPEn">
+              <ref role="2pJxaS" to="tp25:gzTqbfa" resolve="SNodeType" />
+              <node concept="2pIpSj" id="78kvCZcTGC4" role="2pJxcM">
+                <ref role="2pIpSl" to="tp25:g$ehGDh" resolve="concept" />
+                <node concept="36biLy" id="78kvCZcTGC5" role="28nt2d">
+                  <node concept="37vLTw" id="78kvCZcTGC6" role="36biLW">
+                    <ref role="3cqZAo" node="78kvCZcTGBO" resolve="sourceConcept" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="78kvCZcTGC7" role="1ZfhK$">
+          <node concept="1Z2H0r" id="78kvCZcTGC8" role="mwGJk">
+            <node concept="1YBJjd" id="78kvCZcTGC9" role="1Z2MuG">
+              <ref role="1YBMHb" node="78kvCZcTGCa" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="78kvCZcTGCa" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:78kvCZcNHNJ" resolve="BL_ReferenceSourceExpression" />
     </node>
   </node>
 </model>

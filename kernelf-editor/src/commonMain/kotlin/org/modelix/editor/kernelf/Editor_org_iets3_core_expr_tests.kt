@@ -112,7 +112,7 @@ val Editor_org_iets3_core_expr_tests =
         }
         editor(language.FunctionSubjectAdapter) {
             "function".constant()
-            concept.`fun`.cell({ name })
+            concept.`fun`.cell()
             newLine()
             "results:".constant()
             concept.checkResults.cell()
@@ -125,14 +125,14 @@ val Editor_org_iets3_core_expr_tests =
             "concept".constant()
             noSpace()
             brackets(true, "/", "/") {
-                concept.concept.cell({ name })
+                concept.concept.cell()
             }
         }
         editor(language.InputValue) {
             concept.value.cell()
         }
         editor(language.InterpreterCoverageAssResult) {
-            concept.concept.cell({ name })
+            concept.concept.cell()
             concept.comment.cell()
         }
         editor(language.InterpreterCoverageAssSummary) {
@@ -205,7 +205,7 @@ val Editor_org_iets3_core_expr_tests =
         editor(language.MeasureCoverageFor) {
             "concept".constant()
             brackets(true, "/", "/") {
-                concept.concept.cell({ name })
+                concept.concept.cell()
             }
             "complete?".constant()
             // TODO checkbox
@@ -243,7 +243,7 @@ val Editor_org_iets3_core_expr_tests =
 //        //TODO
 //    }
         editor(language.NamedAssertRef) {
-            concept.item.cell({ name })
+            concept.item.cell()
         }
         editor(language.NoneExpr) {
             "none".constant()
@@ -326,7 +326,7 @@ val Editor_org_iets3_core_expr_tests =
             }
         }
         editor(language.StructuralCoverageAssResult) {
-            concept.concept.cell({ name })
+            concept.concept.cell()
             concept.comment.cell()
         }
         editor(language.StructuralCoverageAssSummary) {

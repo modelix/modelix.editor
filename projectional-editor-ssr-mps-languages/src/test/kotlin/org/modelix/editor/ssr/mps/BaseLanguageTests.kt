@@ -18,6 +18,7 @@ import org.modelix.editor.JSKeyboardEvent
 import org.modelix.editor.JSKeyboardEventType
 import org.modelix.editor.KnownKeys
 import org.modelix.editor.NodeCellReference
+import org.modelix.editor.ReferencedNodeCellReference
 import org.modelix.editor.ancestors
 import org.modelix.editor.applyShadowing
 import org.modelix.editor.descendantsAndSelf
@@ -35,6 +36,7 @@ import org.modelix.model.api.ConceptReference
 import org.modelix.model.api.IChildLinkReference
 import org.modelix.model.api.INode
 import org.modelix.model.api.IPropertyReference
+import org.modelix.model.api.IReferenceLinkReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
@@ -708,6 +710,101 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertNotNull("trimKind was not written", stored)
             assertTrue("Expected a '<memberId>/<name>' value, was '" + stored + "'", stored!!.contains("/"))
             assertEquals("leading", stored.substringAfter("/"))
+        }
+
+    /**
+     * A reference cell that says nothing about how to write its target writes what MPS itself writes there: the
+     * presentation of the target node. That is `IReferentPresentationProvider.DEFAULT_PRESENTATION`, the same value
+     * MPS's own `ref. presentation` cell shows - the name wherever a node has one, but also a concept's declared
+     * presentation, an `ISmartReferent`'s own text, and `<no name>[Concept]` for a target that has neither.
+     *
+     * `ClassifierType` is written as a bare `ReferenceCell` in the derived notation, so the `Class1` below is
+     * entirely the default: the notation names no `render target:` expression at all.
+     */
+    fun `test a reference without a render target is written as the presentation of its target`() =
+        kotlinx.coroutines.test.runTest {
+            writeAction {
+                val statement =
+                    methodBodyNode.addNewChild(
+                        IChildLinkReference.fromName("statement"),
+                        -1,
+                        ConceptReference(BL + "1068581242864")
+                    )
+                val declaration =
+                    statement.addNewChild(
+                        IChildLinkReference.fromName("localVariableDeclaration"),
+                        -1,
+                        ConceptReference(BL + "1068581242863")
+                    )
+                declaration.setPropertyValue(IPropertyReference.fromName("name"), "c")
+                declaration
+                    .addNewChild(
+                        IChildLinkReference.fromName("type"),
+                        -1,
+                        ConceptReference(BL + "1107535904670")
+                    ).setReferenceTarget(IReferenceLinkReference.fromName("classifier"), classNode)
+            }
+
+            assertEditorText("""
+            public class Class1 {
+              public void method1() {
+                Class1 c;
+              }
+            }
+        """)
+        }
+
+    /**
+     * The text of the cell that shows [node]'s reference in [linkName].
+     */
+    private fun referenceCellText(
+        node: IWritableNode,
+        linkName: String,
+    ): String? {
+        val link = readAction { checkNotNull(node.tryGetConcept()).getAllReferenceLinks().first { it.getSimpleName() == linkName } }
+        return editor.resolveCell(ReferencedNodeCellReference(node.getNodeReference(), link.toReference())).firstOrNull()?.getVisibleText()
+    }
+
+    /**
+     * MPS writes a reference to a nested class relative to where it is referenced from: inside `Class1`, the nested
+     * `Inner` is written `Inner`, while from anywhere else it is `Class1.Inner`. `Classifier.getPresentation` is the
+     * one referent presentation in baseLanguage that does anything with its context, so this is what proves the
+     * notation hands the referencing node to it instead of a null - with a null it reads `Class1.Inner`.
+     */
+    fun `test a nested class is written relative to where it is referenced`() =
+        kotlinx.coroutines.test.runTest {
+            val classifierType =
+                writeAction {
+                    val inner =
+                        classNode.addNewChild(
+                            IChildLinkReference.fromName("member"),
+                            -1,
+                            ConceptReference(BL + "1068390468198")
+                        )
+                    inner.setPropertyValue(IPropertyReference.fromName("name"), "Inner")
+                    val statement =
+                        methodBodyNode.addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068581242864")
+                        )
+                    val declaration =
+                        statement.addNewChild(
+                            IChildLinkReference.fromName("localVariableDeclaration"),
+                            -1,
+                            ConceptReference(BL + "1068581242863")
+                        )
+                    declaration.setPropertyValue(IPropertyReference.fromName("name"), "x")
+                    declaration
+                        .addNewChild(
+                            IChildLinkReference.fromName("type"),
+                            -1,
+                            ConceptReference(BL + "1107535904670")
+                        ).also { it.setReferenceTarget(IReferenceLinkReference.fromName("classifier"), inner) }
+                }
+            editor.flush()
+
+            assertEquals("Inner", referenceCellText(classifierType, "classifier"))
         }
 
     companion object {
