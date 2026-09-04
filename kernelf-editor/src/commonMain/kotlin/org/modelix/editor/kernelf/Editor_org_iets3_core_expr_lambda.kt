@@ -7,7 +7,7 @@ import org.modelix.editor.editor
 val Editor_org_iets3_core_expr_lambda =
     languageAspects(L_org_iets3_core_expr_lambda) {
         editor(language.ArgRef) {
-            concept.arg.cell({ name })
+            concept.arg.cell()
         }
         editor(language.AssertExpr) {
             "assert".constant {
@@ -88,7 +88,7 @@ val Editor_org_iets3_core_expr_lambda =
             }
         }
         editor(language.LambdaArgRef) {
-            concept.arg.cell({ name })
+            concept.arg.cell()
         }
         editor(language.LambdaExpression) {
             brackets(true, "|", "|") {
@@ -113,7 +113,7 @@ val Editor_org_iets3_core_expr_lambda =
             concept.expr.cell()
         }
         editor(language.LocalVarRef) {
-            concept.`var`.cell({ name })
+            concept.`var`.cell()
         }
         editor(language.ShortLambdaExpression) {
             brackets(true, "|", "|") {
@@ -141,7 +141,7 @@ val Editor_org_iets3_core_expr_lambda =
             concept.expr.cell()
         }
         editor(language.ValRef) {
-            concept.`val`.cell({ name })
+            concept.`val`.cell()
         }
         editor(language.ValValueInContractExpr) {
             "it".constant()

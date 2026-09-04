@@ -1627,12 +1627,6 @@
         </node>
         <node concept="1yiJt1" id="22f9nDgUKam" role="2OY0$2">
           <ref role="1yiJtc" to="tpee:fIYIWN3" resolve="staticMethodDeclaration" />
-          <node concept="2OqwBi" id="6xJrM0Np2aX" role="1KhJq6">
-            <node concept="1KnsVF" id="6xJrM0Np1P$" role="2Oq$k0" />
-            <node concept="3TrcHB" id="6xJrM0Np4_r" role="2OqNvi">
-              <ref role="3TsBF5" to="tpck:h0TrG11" resolve="name" />
-            </node>
-          </node>
         </node>
         <node concept="1yiDf7" id="22f9nDgVvtK" role="2OY0$2" />
         <node concept="2OY0tg" id="22f9nDgUKaM" role="2OY0$2">

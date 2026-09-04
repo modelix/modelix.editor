@@ -18,7 +18,7 @@
     <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" />
     <import index="o8zo" ref="r:314576fc-3aee-4386-a0a5-a38348ac317d(jetbrains.mps.scope)" />
     <import index="35tq" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/java:jetbrains.mps.scope(MPS.Core/)" />
-    <import index="f8gn" ref="r:37580d55-803b-40f6-8108-d95a9fce8d6e(org.modelix.mps.notation.structure)" implicit="true" />
+    <import index="f8gn" ref="r:37580d55-803b-40f6-8108-d95a9fce8d6e(org.modelix.mps.notation.structure)" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
     <import index="tpcn" ref="r:00000000-0000-4000-0000-011c8959028b(jetbrains.mps.lang.structure.behavior)" implicit="true" />
     <import index="mhbf" ref="8865b7a8-5271-43d3-884c-6fd1d9cfdd34/java:org.jetbrains.mps.openapi.model(MPS.OpenAPI/)" implicit="true" />
@@ -728,6 +728,30 @@
                 <node concept="ANE8D" id="7QHj_JKmDGF" role="2OqNvi" />
               </node>
             </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="1M2fIO" id="78kvCZcTGB_">
+    <property role="3GE5qa" value="expressions" />
+    <ref role="1M2myG" to="f8gn:78kvCZcNHNJ" resolve="BL_ReferenceSourceExpression" />
+    <node concept="9S07l" id="78kvCZcTGBA" role="9Vyp8">
+      <node concept="3clFbS" id="78kvCZcTGBB" role="2VODD2">
+        <node concept="3clFbF" id="78kvCZcTGBC" role="3cqZAp">
+          <node concept="2OqwBi" id="78kvCZcTGBD" role="3clFbG">
+            <node concept="2OqwBi" id="78kvCZcTGBE" role="2Oq$k0">
+              <node concept="nLn13" id="78kvCZcTGBF" role="2Oq$k0" />
+              <node concept="2Xjw5R" id="78kvCZcTGBG" role="2OqNvi">
+                <node concept="1xMEDy" id="78kvCZcTGBH" role="1xVPHs">
+                  <node concept="chp4Y" id="78kvCZcTGBI" role="ri$Ld">
+                    <ref role="cht4Q" to="f8gn:ziPuhEA2a_" resolve="ReferenceCell" />
+                  </node>
+                </node>
+                <node concept="1xIGOp" id="78kvCZcTGBJ" role="1xVPHs" />
+              </node>
+            </node>
+            <node concept="3x8VRR" id="78kvCZcTGBK" role="2OqNvi" />
           </node>
         </node>
       </node>

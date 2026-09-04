@@ -13,7 +13,7 @@ import org.modelix.typesystem.type
 val Editor_org_iets3_core_expr_path =
     languageAspects(L_org_iets3_core_expr_path) {
         editor(language.PathElement) {
-            concept.member.cell({ name })
+            concept.member.cell()
             // TODO replace name with path label
         }
         scope(language.PathElement.member) {

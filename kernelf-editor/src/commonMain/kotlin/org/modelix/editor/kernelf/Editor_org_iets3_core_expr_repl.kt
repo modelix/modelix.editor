@@ -31,7 +31,7 @@ val Editor_org_iets3_core_expr_repl =
             }
         }
         editor(language.CellArgRef) {
-            concept.arg.cell({ name })
+            concept.arg.cell()
         }
         editor(language.CellConstraint) {
             "type:".constant()
@@ -102,11 +102,11 @@ val Editor_org_iets3_core_expr_repl =
             }
         }
         editor(language.NamedCellRef) {
-            concept.label.cell({ name })
+            concept.label.cell()
             // TODO argList if needActuals
         }
         editor(language.NamedSheetFinder) {
-            concept.sheet.cell({ name })
+            concept.sheet.cell()
         }
         editor(language.QuoteExpr) {
             "quote".constant()
@@ -134,7 +134,7 @@ val Editor_org_iets3_core_expr_repl =
                 "new sheet from".constant {
                     iets3keyword()
                 }
-                concept.template.cell({ name })
+                concept.template.cell()
                 "will be".constant {
                     iets3keyword()
                 }
@@ -171,7 +171,7 @@ val Editor_org_iets3_core_expr_repl =
             "sheet".constant()
             noSpace()
             angleBrackets {
-                concept.template.cell({ name })
+                concept.template.cell()
             }
         }
 //    editor(language.TopLevelSheet) {

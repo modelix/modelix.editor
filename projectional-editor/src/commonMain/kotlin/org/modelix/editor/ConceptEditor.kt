@@ -1,10 +1,10 @@
 package org.modelix.editor
 
 import org.modelix.editor.celltemplate.NotationRootCellTemplate
+import org.modelix.editor.celltemplate.defaultReferencePresentation
 import org.modelix.kotlin.utils.AtomicLong
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
-import org.modelix.model.api.IProperty
 import org.modelix.model.api.meta.NullConcept
 import org.modelix.model.api.upcast
 
@@ -61,9 +61,9 @@ val defaultConceptEditor =
                     for (link in subConcept.getAllReferenceLinks()) {
                         newLine()
                         label(link.getSimpleName() + ":")
-                        link.cell(presentation = {
-                            getPropertyValue(IProperty.fromName("name")) ?: reference.serialize()
-                        })
+                        // Not the plain default: a concept without a notation is read to find out what is in the
+                        // model, so an unnamed target is worth more as its node id than as a placeholder.
+                        link.cell(presentation = { defaultReferencePresentation() ?: reference.serialize() })
                     }
                     for (link in subConcept.getAllChildLinks()) {
                         newLine()
