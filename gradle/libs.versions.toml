@@ -23,7 +23,7 @@ modelixBuildtools="2.0.2"
 
 kotlin = "2.2.21"
 
-kotlinx-rpc = "0.10.1"
+kotlinx-rpc = "0.10.3"
 
 ktor="3.3.0"
 
