@@ -19,7 +19,12 @@ plugins {
     alias(libs.plugins.modelix.mps.buildtools)
 }
 
-val generatorOutputDir = buildDir.resolve("apigen").resolve("src_gen")
+val generatorOutputDir =
+    layout.buildDirectory
+        .get()
+        .asFile
+        .resolve("apigen")
+        .resolve("src_gen")
 
 kotlin {
     jvm()
@@ -35,30 +40,30 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.modelix.model.api.gen.runtime)
                 implementation(kotlin("stdlib-common"))
             }
             kotlin.srcDir(generatorOutputDir)
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
             }
         }
@@ -75,7 +80,12 @@ metamodel {
     mpsHeapSize = "2g"
     dependsOn("copyDependencies")
     mpsHome = mpsHomeDir.get().asFile.absoluteFile
-    modulesFrom(buildDir.resolve("mpsbuild/dependencies"))
+    modulesFrom(
+        layout.buildDirectory
+            .get()
+            .asFile
+            .resolve("mpsbuild/dependencies"),
+    )
     includeNamespace("org.iets3.core.expr")
     includeLanguage("org.modelix.model.repositoryconcepts")
     includeLanguage("de.slisson.mps.richtext")

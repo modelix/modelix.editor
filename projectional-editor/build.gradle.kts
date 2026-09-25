@@ -20,7 +20,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(libs.modelix.model.api)
                 implementation(libs.modelix.model.api.gen.runtime)
@@ -34,28 +34,28 @@ kotlin {
                 api(project(":parser"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(coreLibs.kotlin.coroutines.test)
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test-js"))
                 implementation(npm("jsdom-global", "3.0.2"))

@@ -114,32 +114,37 @@ fun fixSourceMap(
     sourceMapFile.writeText(json.toString())
 }
 
-val fixSourceMaps by tasks.registering {
-    dependsOn("assembleJsPackage")
-    doLast {
-        val jsOutputDir = buildDir.resolve("packages/js")
+val fixSourceMaps =
+    tasks.register("fixSourceMaps") {
+        dependsOn("assembleJsPackage")
+        doLast {
+            val jsOutputDir =
+                layout.buildDirectory
+                    .get()
+                    .asFile
+                    .resolve("packages/js")
 //        fixSourceMap(
 //            rootDir.resolve("../modelix.core/editor-runtime/src").canonicalFile,
 //            rootDir.resolve("build/js/packages/modelix.kernelf-kernelf-editor/kotlin/modelix.core-editor-runtime.js.map")
 //        )
-        fixSourceMap(
-            rootDir.resolve("../modelix.core/model-api/src").canonicalFile,
-            jsOutputDir.resolve("modelix.core-model-api.js.map"),
-        )
-        fixSourceMap(
-            rootDir.resolve("../modelix.core/model-api-gen-runtime/src").canonicalFile,
-            jsOutputDir.resolve("modelix.core-model-api-gen-runtime.js.map"),
-        )
-        fixSourceMap(
-            rootDir.resolve("../modelix.core/model-client/src").canonicalFile,
-            jsOutputDir.resolve("modelix.core-model-client.js.map"),
-        )
-        fixSourceMap(
-            rootDir.resolve("../incremental/src").canonicalFile,
-            jsOutputDir.resolve("incremental.js.map"),
-        )
+            fixSourceMap(
+                rootDir.resolve("../modelix.core/model-api/src").canonicalFile,
+                jsOutputDir.resolve("modelix.core-model-api.js.map"),
+            )
+            fixSourceMap(
+                rootDir.resolve("../modelix.core/model-api-gen-runtime/src").canonicalFile,
+                jsOutputDir.resolve("modelix.core-model-api-gen-runtime.js.map"),
+            )
+            fixSourceMap(
+                rootDir.resolve("../modelix.core/model-client/src").canonicalFile,
+                jsOutputDir.resolve("modelix.core-model-client.js.map"),
+            )
+            fixSourceMap(
+                rootDir.resolve("../incremental/src").canonicalFile,
+                jsOutputDir.resolve("incremental.js.map"),
+            )
+        }
     }
-}
 tasks.named("packJsPackage") {
     dependsOn(fixSourceMaps)
 }
@@ -210,7 +215,11 @@ npmPublish {
 
 tasks.named("packJsPackage") {
     doLast {
-        val packagesDir = buildDir.resolve("packages")
+        val packagesDir =
+            layout.buildDirectory
+                .get()
+                .asFile
+                .resolve("packages")
         packagesDir
             .resolve("modelix-kernelf-editor-$version.tgz")
             .copyTo(packagesDir.resolve("modelix-kernelf-editor.tgz"), overwrite = true)
