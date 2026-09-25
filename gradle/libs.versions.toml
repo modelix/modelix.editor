@@ -15,6 +15,8 @@ kotlin-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlinx-r
 
 npm-publish = { id = "dev.petuska.npm.publish", version = "3.5.3" }
 
+intellij = { id = "org.jetbrains.intellij.platform", version = "2.19.0" }
+
 [versions]
 
 modelixCore = "19.4.1"
@@ -49,6 +51,8 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.19" }
 kotlin-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.2" }
 
 playwright = { group = "com.microsoft.playwright", name = "playwright", version = "1.62.0" }
+
+junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 testcontainers = { group = "org.testcontainers", name = "testcontainers", version = "2.0.5" }
 

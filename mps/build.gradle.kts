@@ -1,4 +1,5 @@
 import org.gradle.internal.jvm.Jvm
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.modelix.mpsHomeDir
 
 plugins {
@@ -9,11 +10,19 @@ plugins {
 
 group = "org.modelix.mps.modules"
 
-val repositoryConcepts by configurations.creating
+val repositoryConcepts = configurations.create("repositoryConcepts")
 
 dependencies {
     repositoryConcepts(libs.modelix.mps.repository.concepts)
 }
+
+// The MPS modules depend on the stubs of these plugins, which are generated into their sandboxes.
+val pluginProjects = listOf(":editor-common-mps", ":projectional-editor-ssr-mps", ":react-ssr-mps")
+pluginProjects.forEach { evaluationDependsOn(it) }
+val pluginSandboxDirs =
+    pluginProjects.map { path ->
+        project(path).tasks.named<PrepareSandboxTask>("prepareSandbox").flatMap { it.pluginDirectory }
+    }
 
 val repositoryConceptsFolder = layout.buildDirectory.dir("repositoryConcepts")
 val extractRepositoryConcepts =
@@ -31,9 +40,7 @@ mpsBuild {
     javaHome = Jvm.current().javaHome
     disableParentPublication()
 
-    search("../editor-common-mps/build/idea-sandbox/plugins/editor-common-mps")
-    search("../projectional-editor-ssr-mps/build/idea-sandbox/plugins/projectional-editor-ssr-mps")
-    search("../react-ssr-mps/build/idea-sandbox/plugins/react-ssr-mps")
+    pluginSandboxDirs.forEach { search(it.get().asFile.absolutePath) }
     search(repositoryConceptsFolder.get().asFile.absolutePath)
     search("modules")
     publication("baseLanguage-notation") {
@@ -55,9 +62,7 @@ mpsBuild {
 tasks.all {
     if (name in setOf("assembleMpsModules")) {
         inputs.dir(project.layout.projectDirectory.dir("modules"))
-        inputs.dir(project(":editor-common-mps").layout.buildDirectory.dir("idea-sandbox/plugins/editor-common-mps"))
-        inputs.dir(project(":projectional-editor-ssr-mps").layout.buildDirectory.dir("idea-sandbox/plugins/projectional-editor-ssr-mps"))
-        inputs.dir(project(":react-ssr-mps").layout.buildDirectory.dir("idea-sandbox/plugins/react-ssr-mps"))
+        pluginSandboxDirs.forEach { inputs.dir(it) }
     }
     if (name == "assembleMpsModules") {
         outputs.dir(project.layout.buildDirectory.dir("mpsbuild/packaged-modules"))

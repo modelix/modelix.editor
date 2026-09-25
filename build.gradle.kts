@@ -1,4 +1,4 @@
-import org.jetbrains.intellij.tasks.BuildPluginTask
+import org.jetbrains.intellij.platform.gradle.tasks.BuildPluginTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
@@ -19,7 +19,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.rpc) apply false
-    id("org.jetbrains.intellij") version "1.17.4" apply false
+    alias(libs.plugins.intellij) apply false
     alias(libs.plugins.npm.publish) apply false
 }
 
@@ -154,19 +154,17 @@ tasks.register<Task>("setupNodeEverywhere") {
     dependsOn(":projectional-editor-ssr-common:kotlinNodeJsSetup")
 }
 
-val packageAllPlugins by tasks.registering(Zip::class) {
-    val zipTask = this
-    archiveBaseName = "all-editor-plugins"
-    subprojects {
-        tasks.all {
-            if (this.name == "buildPlugin") {
-                val buildPluginTask = this as BuildPluginTask
-                zipTask.dependsOn(buildPluginTask)
-                zipTask.from(zipTree(buildPluginTask.archiveFile))
+val packageAllPlugins =
+    tasks.register<Zip>("packageAllPlugins") {
+        archiveBaseName = "all-editor-plugins"
+        subprojects.forEach { subproject ->
+            subproject.plugins.withId("org.jetbrains.intellij.platform") {
+                val buildPluginTask = subproject.tasks.named<BuildPluginTask>("buildPlugin")
+                dependsOn(buildPluginTask)
+                from(zipTree(buildPluginTask.flatMap { it.archiveFile }))
             }
         }
     }
-}
 
 // publish all-editor-plugins.zip to GitHub packages to make it appear on the releases page
 publishing {

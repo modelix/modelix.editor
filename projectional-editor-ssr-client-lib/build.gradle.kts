@@ -25,7 +25,7 @@ kotlin {
     }
 
     sourceSets {
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(project(":projectional-editor"))
                 implementation(project(":projectional-editor-ssr-common"))
@@ -39,7 +39,7 @@ kotlin {
                 implementation(libs.kotlinx.rpc.krpc.serialization.json)
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test"))
             }

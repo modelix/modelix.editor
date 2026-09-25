@@ -1,13 +1,15 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.configureMpsTestClasspath
 import org.modelix.configureMpsTestTask
+import org.modelix.copyMps
 import org.modelix.excludeMPSLibraries
-import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.intellij)
 }
 
 kotlin {
@@ -17,7 +19,13 @@ kotlin {
     }
 }
 
-val modelAdaptersPlugin by configurations.registering
+val modelAdaptersPlugin = configurations.register("modelAdaptersPlugin")
+
+repositories {
+    intellijPlatform {
+        localPlatformArtifacts()
+    }
+}
 
 dependencies {
     compileOnly(kotlin("stdlib"))
@@ -28,81 +36,36 @@ dependencies {
     testImplementation(libs.playwright, excludeMPSLibraries)
     testImplementation(coreLibs.kotlin.coroutines.test, excludeMPSLibraries)
     testImplementation(coreLibs.logback.classic, excludeMPSLibraries)
+    // The IntelliJ Platform Gradle Plugin doesn't put the JUnit bundled with MPS on the classpath.
+    testImplementation(libs.junit)
     modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
+
+    intellijPlatform {
+        local(copyMps())
+        localPlugin(project(":projectional-editor-ssr-mps"))
+        localPlugin(project(":editor-common-mps"))
+        localPlugin(project(":react-ssr-mps"))
+        bundledPlugin("jetbrains.mps.core")
+        bundledPlugin("jetbrains.mps.kotlin")
+        testFramework(TestFrameworkType.Bundled)
+    }
 }
 
-// MPS 2025.1+ needs extra platform module jars on the test classpath and MPS's bundled coroutines fork.
 configureMpsTestClasspath()
 
-intellij {
-    localPath = mpsHomeDir.map { it.asFile.absolutePath }
+intellijPlatform {
     instrumentCode = false
-    plugins = listOf(
-        project(":projectional-editor-ssr-mps"),
-        project(":editor-common-mps"),
-        project(":react-ssr-mps"),
-    ) +
-        listOf(
-//        "Git4Idea",
-//        "Subversion",
-//        "com.intellij.copyright",
-//        "com.intellij.laf.macos",
-//        "com.intellij.platform.images",
-//        "com.intellij.properties",
-//        "com.intellij.properties.bundle.editor",
-//        "com.intellij.tasks",
-//        "com.jetbrains.changeReminder",
-//        "jetbrains.jetpad",
-//        "jetbrains.mps.build",
-//        "jetbrains.mps.build.ui",
-//        "jetbrains.mps.console",
-            "jetbrains.mps.core",
-//        "jetbrains.mps.debugger.api",
-//        "jetbrains.mps.debugger.java",
-//        "jetbrains.mps.editor.contextActions",
-//        "jetbrains.mps.editor.diagram",
-//        "jetbrains.mps.editor.spellcheck",
-//        "jetbrains.mps.editor.tooltips",
-//        "jetbrains.mps.execution.api",
-//        "jetbrains.mps.execution.configurations",
-//        "jetbrains.mps.execution.languages",
-//        "jetbrains.mps.git4idea.stubs",
-//        "jetbrains.mps.ide",
-//        "jetbrains.mps.ide.devkit",
-//        "jetbrains.mps.ide.httpsupport",
-//        "jetbrains.mps.ide.java",
-//        "jetbrains.mps.ide.make",
-//        "jetbrains.mps.ide.memtool",
-//        "jetbrains.mps.ide.migration.workbench",
-//        "jetbrains.mps.ide.modelchecker",
-//        "jetbrains.mps.ide.mpsmigration",
-            "jetbrains.mps.kotlin",
-//        "jetbrains.mps.navbar",
-//        "jetbrains.mps.rcp",
-//        "jetbrains.mps.samples",
-//        "jetbrains.mps.testing",
-//        "jetbrains.mps.tool.make",
-//        "jetbrains.mps.trove",
-//        "jetbrains.mps.vcs",
-//        "org.intellij.plugins.markdown",
-//        "org.jetbrains.plugins.github",
-//        "org.jetbrains.settingsRepository",
-//        "com.intellij",
-//        "com.jetbrains.sh",
-//        "org.jetbrains.plugins.terminal",
-        )
+    buildSearchableOptions = false
+    autoReload = true
+    pluginConfiguration {
+        ideaVersion {
+            sinceBuild = "241"
+            untilBuild = "251.*"
+        }
+    }
 }
 
 tasks {
-    patchPluginXml {
-        sinceBuild.set("241")
-        untilBuild.set("251.*")
-    }
-
-    buildSearchableOptions {
-        enabled = false
-    }
-
     test {
         configureMpsTestTask()
     }
@@ -117,39 +80,38 @@ tasks {
 //        token.set(System.getenv("PUBLISH_TOKEN"))
 //    }
 
-    runIde {
-        autoReloadPlugins.set(true)
-    }
-
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
         register<Sync>("installMpsPlugin") {
-            dependsOn(prepareSandbox)
-            from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+            from(prepareSandbox.flatMap { it.pluginDirectory })
             into(pluginDir.resolve(project.name))
         }
     }
 
-    withType<org.jetbrains.intellij.tasks.PrepareSandboxTask>().configureEach {
+    withType<PrepareSandboxTask>().configureEach {
         dependsOn(project(":mps").tasks.named("packageMpsPublications"))
 
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(project.layout.projectDirectory.file("src/main/resources/META-INF"))
-            .exclude("plugin.xml")
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(patchPluginXml.flatMap { it.outputFiles })
-        intoChild(pluginName.map { "$it/plugins" })
-            .from(modelAdaptersPlugin)
+        from(project.layout.projectDirectory.dir("src/main/resources/META-INF")) {
+            exclude("plugin.xml")
+            into(pluginName.map { "$it/META-INF" })
+        }
+        from(patchPluginXml.flatMap { it.outputFile }) {
+            into(pluginName.map { "$it/META-INF" })
+        }
+        from(modelAdaptersPlugin) {
+            into(pluginName.map { "$it/plugins" })
+        }
 
-        intoChild(pluginName.map { "$it/languages" }).let { languagesFolder ->
-            listOf("editor-devkit", "baseLanguage-notation").forEach { publicationName ->
-                languagesFolder
-                    .from(zipTree({ project(":mps").layout.buildDirectory.file("mpsbuild/publications/$publicationName.zip") }))
-                    .eachFile {
-                        path = path.replaceFirst("packaged-modules/", "")
-                    }
+        listOf("editor-devkit", "baseLanguage-notation").forEach { publicationName ->
+            from(zipTree({ project(":mps").layout.buildDirectory.file("mpsbuild/publications/$publicationName.zip") })) {
+                into(pluginName.map { "$it/languages" })
+                eachFile {
+                    path = path.replaceFirst("packaged-modules/", "")
+                }
             }
-            languagesFolder.from(project(":mps").layout.buildDirectory.dir("repositoryConcepts/packaged-modules"))
+        }
+        from(project(":mps").layout.buildDirectory.dir("repositoryConcepts/packaged-modules")) {
+            into(pluginName.map { "$it/languages" })
         }
     }
 }
