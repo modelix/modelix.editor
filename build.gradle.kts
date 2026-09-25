@@ -98,7 +98,7 @@ subprojects {
         sourceFile.copyTo(targetFile)
     }
 
-    val kotlinApiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+    val kotlinApiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_8
     plugins.withType<JavaPlugin> {
         extensions.configure<JavaPluginExtension> {
             toolchain {

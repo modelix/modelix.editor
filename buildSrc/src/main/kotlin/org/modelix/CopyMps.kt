@@ -21,6 +21,8 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.testing.Test
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.kotlin.dsl.exclude
 import java.io.File
 import java.util.zip.ZipEntry
@@ -65,7 +67,12 @@ val Project.mpsPlatformVersion: Int get() {
     return mpsVersion.replace(Regex("""20(\d\d)\.(\d+).*"""), "$1$2").toInt()
 }
 
-val Project.mpsJavaVersion: Int get() = if (mpsPlatformVersion >= 223) 17 else 11
+val Project.mpsJavaVersion: Int get() =
+    when {
+        mpsPlatformVersion >= 251 -> 21
+        mpsPlatformVersion >= 223 -> 17
+        else -> 11
+    }
 
 val Project.mpsHomeDir: Provider<Directory> get() {
     if (project != rootProject) return rootProject.mpsHomeDir
@@ -104,6 +111,15 @@ fun Project.configureMpsTestClasspath() {
     // loaded first and fail with "There is an incompatible JNA native library installed on this system".
     configurations.named("testRuntimeClasspath").configure {
         exclude(group = "net.java.dev.jna", module = "jna")
+
+        // MPS 2025.1+ bundles JetBrains' coroutines fork (lib/util-8.jar) whose BuildersKt has
+        // runBlockingWithParallelismCompensation, which the platform calls during boot. The vanilla
+        // kotlinx-coroutines-core pulled in transitively lacks that method, so keep it off the test
+        // runtime classpath and let MPS's bundled coroutines win.
+        if (mpsPlatformVersion >= 251) {
+            exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+            exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
+        }
     }
 }
 
@@ -112,6 +128,14 @@ fun Project.configureMpsTestClasspath() {
  * [configureMpsTestClasspath] on the owning project.
  */
 fun Test.configureMpsTestTask() {
+    // The tests run MPS itself, which may require a newer Java version (MPS 2025.1+ needs Java 21) than the one the
+    // code is compiled for.
+    javaLauncher.set(
+        project.extensions.getByType(JavaToolchainService::class.java).launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(project.mpsJavaVersion))
+        },
+    )
+
     // MPS 2025.1+ loads platform services (e.g. SettingsController) from module descriptors in
     // lib/modules/*.jar, which the IntelliJ Platform Gradle Plugin doesn't put on the test classpath.
     // They are appended to the classpath instead of being added as dependencies, because dependencies
