@@ -64,8 +64,8 @@ intellijPlatform {
 
 kotlin {
     compilerOptions {
-        // MPS 2024.1 bundles the Kotlin stdlib 1.9, and the plugins run with the stdlib bundled with MPS.
-        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+        // MPS 2023.2 bundles Kotlin 1.8.20, see https://www.jetbrains.com/legal/third-party-software/?product=IIU&version=2023.2
+        apiVersion.set(KotlinVersion.KOTLIN_1_8)
     }
 }
 

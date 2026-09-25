@@ -23,9 +23,9 @@ modelixCore = "19.4.1"
 
 modelixBuildtools="2.0.2"
 
-kotlin = "2.3.21"
+kotlin = "2.2.21"
 
-kotlinx-rpc = "0.10.3"
+kotlinx-rpc = "0.10.1"
 
 ktor="3.3.0"
 
