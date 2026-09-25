@@ -1,16 +1,17 @@
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.buildtools.KnownModuleIds
 import org.modelix.buildtools.ModuleId
 import org.modelix.buildtools.ModuleIdAndName
 import org.modelix.buildtools.buildStubsSolutionJar
+import org.modelix.copyMps
 import org.modelix.excludeMPSLibraries
 import org.modelix.mpsHomeDir
 import org.modelix.mpsPluginsDir
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.intellij)
     alias(libs.plugins.modelix.model.api.gen)
 }
 
@@ -18,48 +19,49 @@ kotlin {
     jvmToolchain(17)
 }
 
+repositories {
+    intellijPlatform {
+        localPlatformArtifacts()
+    }
+}
+
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(project(":editor-common-mps"))
     implementation(project(":react-ssr-server"), excludeMPSLibraries)
     implementation(libs.slf4j.api, excludeMPSLibraries)
+
+    intellijPlatform {
+        local(copyMps())
+        localPlugin(project(":editor-common-mps"))
+    }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    localPath = mpsHomeDir.map { it.asFile.absolutePath }
+intellijPlatform {
     instrumentCode = false
-    plugins.set(listOf(project(":editor-common-mps")))
+    buildSearchableOptions = false
+    autoReload = true
+    pluginConfiguration {
+        ideaVersion {
+            sinceBuild = "241"
+            untilBuild = "251.*"
+        }
+    }
 }
 
 kotlin {
     compilerOptions {
-        // MPS 2023.2 bundles Kotlin 1.8.20, see https://www.jetbrains.com/legal/third-party-software/?product=IIU&version=2023.2
-        apiVersion.set(KotlinVersion.KOTLIN_1_8)
+        // MPS 2024.1 bundles the Kotlin stdlib 1.9, and the plugins run with the stdlib bundled with MPS.
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
     }
 }
 
 tasks {
-    patchPluginXml {
-        sinceBuild.set("241")
-        untilBuild.set("251.*")
-    }
-
-    buildSearchableOptions {
-        enabled = false
-    }
-
-    runIde {
-        autoReloadPlugins.set(true)
-    }
-
     val pluginDir = mpsPluginsDir
     if (pluginDir != null) {
         val installMpsPlugin =
             register<Sync>("installMpsPlugin") {
-                dependsOn(prepareSandbox)
-                from(project.layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}"))
+                from(prepareSandbox.flatMap { it.pluginDirectory })
                 into(pluginDir.resolve(project.name))
             }
         register("installMpsDevPlugins") {
@@ -68,31 +70,34 @@ tasks {
     }
 
     withType(PrepareSandboxTask::class.java) {
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(project.layout.projectDirectory.file("src/main/resources/META-INF"))
-            .exclude("plugin.xml")
-        intoChild(pluginName.map { "$it/META-INF" })
-            .from(patchPluginXml.flatMap { it.outputFiles })
+        from(project.layout.projectDirectory.dir("src/main/resources/META-INF")) {
+            exclude("plugin.xml")
+            into(pluginName.map { "$it/META-INF" })
+        }
+        from(patchPluginXml.flatMap { it.outputFile }) {
+            into(pluginName.map { "$it/META-INF" })
+        }
 
         doLast {
             val jarsInBasePlugin =
-                defaultDestinationDir
+                defaultDestinationDirectory
                     .get()
+                    .asFile
                     .resolve(project(":editor-common-mps").name)
                     .resolve("lib")
                     .list()
                     ?.toHashSet()
                     ?: emptySet<String>()
-            defaultDestinationDir.get().resolve(project.name).resolve("lib").listFiles()?.forEach {
+            pluginDirectory.get().asFile.resolve("lib").listFiles()?.forEach {
                 if (jarsInBasePlugin.contains(it.name)) it.delete()
             }
 
             val ownJar: File = pluginJar.get().asFile
-            val runtimeJars = configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME).resolvedConfiguration.files + ownJar
+            val runtimeJars = configurations.runtimeClasspath.get().files + ownJar
             buildStubsSolutionJar {
                 solutionName("org.modelix.mps.react.ssr.stubs")
                 solutionId("83a7cbdc-dd9d-4dad-be97-957aa1b07375")
-                outputFolder(defaultDestinationDir.get().resolve(project.name).resolve("languages"))
+                outputFolder(pluginDirectory.get().asFile.resolve("languages"))
                 runtimeJars.filterNot { jarsInBasePlugin.contains(it.name) }.forEach {
                     javaJar(it.name)
 //                    kotlinJar(it.name)

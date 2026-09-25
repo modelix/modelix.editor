@@ -15,18 +15,20 @@ dependencies {
 }
 
 val pluginsDir = layout.buildDirectory.dir("plugins")
-val collectPlugins by tasks.registering(Sync::class) {
-    dependsOn(":packageAllPlugins")
-    from(zipTree { rootProject.tasks.named<Zip>("packageAllPlugins").map { it.archiveFile.get() } })
-    into(pluginsDir)
-}
+val collectPlugins =
+    tasks.register<Sync>("collectPlugins") {
+        dependsOn(":packageAllPlugins")
+        from(zipTree { rootProject.tasks.named<Zip>("packageAllPlugins").map { it.archiveFile.get() } })
+        into(pluginsDir)
+    }
 
 val testLanguagesDir = layout.buildDirectory.dir("test-languages")
-val copyTestLanguages by tasks.registering(Sync::class) {
-    dependsOn(":mps:assembleMpsModules")
-    from(project(":mps").layout.projectDirectory.dir("modules/test.org.modelix.webaspect"))
-    into(testLanguagesDir.map { it.dir("test.org.modelix.webaspect") })
-}
+val copyTestLanguages =
+    tasks.register<Sync>("copyTestLanguages") {
+        dependsOn(":mps:assembleMpsModules")
+        from(project(":mps").layout.projectDirectory.dir("modules/test.org.modelix.webaspect"))
+        into(testLanguagesDir.map { it.dir("test.org.modelix.webaspect") })
+    }
 
 tasks {
     test {

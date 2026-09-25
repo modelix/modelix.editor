@@ -21,10 +21,11 @@ import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.exclude
 import java.io.File
+import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 val Project.mpsMajorVersion: String get() {
     if (project != rootProject) return rootProject.mpsMajorVersion
@@ -94,37 +95,33 @@ val excludeMPSLibraries: (ModuleDependency).() -> Unit = {
 }
 
 /**
- * Project-level classpath adjustments for modules whose tests boot MPS via the gradle-intellij-plugin
- * 1.x. Only needed on MPS 2025.1+ (platform >= 251). Configure the test tasks themselves with
- * [configureMpsTestTask].
+ * Project-level adjustments for modules whose tests boot MPS via the IntelliJ Platform Gradle Plugin.
+ * Configure the test tasks themselves with [configureMpsTestTask].
  */
 fun Project.configureMpsTestClasspath() {
-    if (mpsPlatformVersion < 251) return
-
-    // MPS 2025.1+ loads platform services (e.g. SettingsController) from module descriptors in
-    // lib/modules/*.jar. The 1.x plugin doesn't put these on the test classpath, so add them
-    // explicitly; without them the test application fails to boot. Older MPS has no lib/modules.
-    dependencies.add(
-        "testRuntimeOnly",
-        fileTree(mpsHomeDir).matching { include("lib/modules/*.jar") },
-    )
-
-    // MPS bundles JetBrains' coroutines fork (lib/util-8.jar) whose BuildersKt has
-    // runBlockingWithParallelismCompensation, which the platform calls during boot. The vanilla
-    // kotlinx-coroutines-core pulled in transitively lacks that method, so keep it off the test
-    // runtime classpath and let MPS's bundled coroutines win.
+    // MPS bundles JNA (in lib/util-8.jar) together with its native library, which the test JVM is pointed at
+    // (see configureMpsTestTask). A different JNA version on the test classpath (e.g. from testcontainers) would be
+    // loaded first and fail with "There is an incompatible JNA native library installed on this system".
     configurations.named("testRuntimeClasspath").configure {
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
+        exclude(group = "net.java.dev.jna", module = "jna")
     }
 }
 
 /**
- * Configures a single test task that boots MPS via the gradle-intellij-plugin 1.x. Pair it with
+ * Configures a single test task that boots MPS via the IntelliJ Platform Gradle Plugin. Pair it with
  * [configureMpsTestClasspath] on the owning project.
  */
 fun Test.configureMpsTestTask() {
-    // Use a provider to avoid eagerly resolving the MPS home dir
+    // MPS 2025.1+ loads platform services (e.g. SettingsController) from module descriptors in
+    // lib/modules/*.jar, which the IntelliJ Platform Gradle Plugin doesn't put on the test classpath.
+    // They are appended to the classpath instead of being added as dependencies, because dependencies
+    // end up in the test sandbox of the plugin, where they could shadow newer versions of libraries
+    // (e.g. Ktor) that the plugin brings itself. Older MPS has no lib/modules.
+    classpath += project.fileTree(project.mpsHomeDir) { include("lib/modules/*.jar") }
+
+    // Use a provider to avoid eagerly resolving the MPS home dir. It's obtained outside the provider, because the
+    // project must not be accessed at execution time.
+    val mpsHomeDir = project.mpsHomeDir
     jvmArgumentProviders.add {
         buildList {
             // JNA's native libraries live under lib/jna/<arch> in the MPS home. Point the test JVM there
@@ -132,7 +129,7 @@ fun Test.configureMpsTestTask() {
             // Older MPS versions (2022.2) ship no lib/jna and keep the natives inside the classpath jar,
             // so the properties must not be set there — jna.noclasspath would leave JNA with no library.
             val jnaDir =
-                project.mpsHomeDir
+                mpsHomeDir
                     .get()
                     .asFile
                     .resolve("lib/jna/${System.getProperty("os.arch")}")
@@ -148,20 +145,17 @@ fun Test.configureMpsTestTask() {
 }
 
 fun Project.copyMps(): File {
-    if (project != rootProject) return rootProject.copyMps()
-
     val mpsHome = mpsHomeDir.get().asFile
     if (mpsHome.exists()) return mpsHome
 
     println("Extracting MPS ...")
 
-    // Extract MPS during configuration phase, because using it in intellij.localPath requires it to already exist.
-    val mpsZip = configurations.create("mpsZip")
-    dependencies {
-        mpsZip("com.jetbrains:mps:$mpsVersion")
-    }
+    // Extract MPS during configuration phase, because using it in intellijPlatform.local requires it to already exist.
+    // The distribution is resolved in the context of the calling project, because Gradle doesn't allow resolving
+    // a configuration of another project (e.g. the root project) while this one is configured.
+    val mpsZip = configurations.detachedConfiguration(dependencies.create("com.jetbrains:mps:$mpsVersion"))
     sync {
-        from(zipTree({ mpsZip.singleFile }))
+        from(zipTree(mpsZip.singleFile))
         into(mpsHomeDir)
     }
 
@@ -194,24 +188,29 @@ fun Project.copyMps(): File {
                 }
             }
         }
+
+        // The IntelliJ Platform Gradle Plugin refuses to parse XML files with a DOCTYPE declaration (XXE protection)
+        // and silently ignores such plugins. Many MPS plugin descriptors contain one. The copies are only read by the
+        // Gradle plugin, the IDE reads the descriptors from the jars.
+        for (descriptor in (pluginFolder.resolve("META-INF").listFiles() ?: emptyArray()).filter { it.extension == "xml" }) {
+            val text = descriptor.readText()
+            val withoutDoctype = text.replace(Regex("""<!DOCTYPE[^>]*>\s*"""), "")
+            if (withoutDoctype != text) descriptor.writeText(withoutDoctype)
+        }
     }
 
-    // The gradle-intellij-plugin 1.x reads the launch information from product-info.json and injects it into the
-    // forked test JVM. Two pieces of that, meant for launching the real IDE, break the test executor on 2025.1+;
-    // MPS <= 2024.1 ships no product-info.json, so the plugin injects neither and the tests pass. Both are sanitized
-    // here, keeping the file present and valid (it also serves as the PathManager marker).
+    completeProductInfo(mpsHome)
+    provideModuleDescriptors(mpsHome)
+
+    // The launch information in product-info.json is meant for launching the real IDE, but it's also used to
+    // configure the forked test JVM. It's sanitized here, keeping the file present and valid (it also serves as the
+    // PathManager marker).
     val productInfo = mpsHomeDir.get().asFile.resolve("product-info.json")
     if (productInfo.exists()) {
         @Suppress("UNCHECKED_CAST")
         val json = groovy.json.JsonSlurper().parse(productInfo) as MutableMap<String, Any?>
         val launches = json["launch"] as? List<*> ?: emptyList<Any?>()
         for (launch in launches.filterIsInstance<MutableMap<String, Any?>>()) {
-            // resolveIdeHomeVariable assumes every additionalJvmArgument is "key=value" and does split("=")[1],
-            // so an argument without "=" (e.g. -XX:+UseCompressedOops) throws IndexOutOfBoundsException while
-            // configuring the test task. Drop them; OpenedPackages provides the --add-opens the platform needs.
-            if (launch.containsKey("additionalJvmArguments")) {
-                launch["additionalJvmArguments"] = emptyList<String>()
-            }
             // The plugin passes every line of the referenced .vmoptions file to the JVM verbatim, including the
             // "#Common IntelliJ Platform options:" comment lines. The launcher treats such a token as the main
             // class, so the -Djava.system.class.loader=com.intellij.util.lang.PathClassLoader it also sets cannot
@@ -264,4 +263,103 @@ fun Project.copyMps(): File {
 
     println("Extracting MPS done.")
     return mpsHome
+}
+
+/**
+ * The IntelliJ Platform Gradle Plugin requires a product-info.json that lists the bundled plugins and their class
+ * paths (the layout). The Maven distribution of MPS 2024.1 contains no product-info.json at all, and the ones of later
+ * versions list neither the bundled plugins nor the layout. The missing parts are generated from the launcher script
+ * and the plugin descriptors.
+ */
+private fun Project.completeProductInfo(mpsHome: File) {
+    val productInfo = mpsHome.resolve("product-info.json")
+
+    @Suppress("UNCHECKED_CAST")
+    val json: MutableMap<String, Any?> =
+        if (productInfo.exists()) {
+            groovy.json.JsonSlurper().parse(productInfo) as MutableMap<String, Any?>
+        } else {
+            val launcherScript = mpsHome.resolve("bin/mps.sh").readText()
+            linkedMapOf(
+                "name" to "JetBrains MPS",
+                "version" to mpsVersion,
+                "buildNumber" to
+                    mpsHome
+                        .resolve("build.txt")
+                        .readText()
+                        .trim()
+                        .removePrefix("MPS-"),
+                "productCode" to "MPS",
+                "envVarBaseName" to "MPS",
+                "dataDirectoryName" to "MPS$mpsMajorVersion",
+                "svgIconPath" to "bin/mps.svg",
+                "productVendor" to "JetBrains",
+                "launch" to
+                    mutableListOf(
+                        linkedMapOf(
+                            "os" to "Linux",
+                            "arch" to "amd64",
+                            "launcherPath" to "bin/mps.sh",
+                            "javaExecutablePath" to "jbr/bin/java",
+                            "vmOptionsFilePath" to "bin/mps64.vmoptions",
+                            "bootClassPathJarNames" to
+                                Regex("""\${'$'}IDE_HOME/lib/([^":]+\.jar)""")
+                                    .findAll(launcherScript)
+                                    .map { it.groupValues[1] }
+                                    .toList(),
+                            "additionalJvmArguments" to
+                                Regex("""--add-opens=\S+""")
+                                    .findAll(launcherScript)
+                                    .map { it.value }
+                                    .toList(),
+                            "mainClass" to
+                                (Regex("""MAIN_CLASS=(\S+)""").find(launcherScript)?.groupValues?.get(1) ?: "jetbrains.mps.Launcher"),
+                        ),
+                    ),
+            )
+        }
+
+    if (json["layout"] == null) {
+        // The plugin descriptors were copied out of the jars into the META-INF folders by copyMps.
+        val plugins =
+            (mpsHome.resolve("plugins").listFiles() ?: emptyArray()).sortedBy { it.name }.mapNotNull { pluginFolder ->
+                val descriptor = pluginFolder.resolve("META-INF/plugin.xml").takeIf { it.isFile } ?: return@mapNotNull null
+                val descriptorText = descriptor.readText()
+                val pluginId =
+                    (Regex("<id>([^<]+)</id>").find(descriptorText) ?: Regex("<name>([^<]+)</name>").find(descriptorText))
+                        ?.groupValues
+                        ?.get(1)
+                        ?.trim() ?: return@mapNotNull null
+                val classPath =
+                    (pluginFolder.resolve("lib").listFiles() ?: emptyArray())
+                        .filter { it.extension == "jar" }
+                        .sortedBy { it.name }
+                        .map { it.relativeTo(mpsHome).invariantSeparatorsPath }
+                pluginId to classPath
+            }
+        json["bundledPlugins"] = plugins.map { it.first }
+        json["layout"] =
+            plugins.map { (pluginId, classPath) -> linkedMapOf("name" to pluginId, "kind" to "plugin", "classPath" to classPath) }
+    }
+    if (json["modules"] == null) {
+        json["modules"] = emptyList<String>()
+    }
+
+    productInfo.writeText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json)))
+}
+
+/**
+ * The IntelliJ Platform Gradle Plugin expects the descriptors of the product modules in modules/module-descriptors.jar,
+ * which isn't part of the MPS distribution. An empty one is sufficient, because we don't depend on any product modules
+ * (`bundledModule`).
+ */
+private fun provideModuleDescriptors(mpsHome: File) {
+    val moduleDescriptorsJar = mpsHome.resolve("modules/module-descriptors.jar")
+    if (moduleDescriptorsJar.exists()) return
+    moduleDescriptorsJar.parentFile.mkdirs()
+    ZipOutputStream(moduleDescriptorsJar.outputStream()).use { zip ->
+        zip.putNextEntry(ZipEntry("META-INF/MANIFEST.MF"))
+        zip.write("Manifest-Version: 1.0\n".toByteArray())
+        zip.closeEntry()
+    }
 }
