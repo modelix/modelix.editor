@@ -1,5 +1,51 @@
 # Changelog
 
+## [2.0.0](https://github.com/modelix/modelix.editor/compare/1.21.0...2.0.0) (2026-10-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* The published libraries are compiled with Kotlin 2.3.
+
+### Features
+
+* **projectional-editor:** reusable parts of a notation ([d5dc865](https://github.com/modelix/modelix.editor/commit/d5dc86536dfc5dbf44c8e687bb2e880775197b11))
+* **projectional-editor:** reusable parts of a notation ([6db5c79](https://github.com/modelix/modelix.editor/commit/6db5c79e98bdcd55472c9bd5faae8436c76261f3))
+* **projectional-editor:** sensible defaults for reference cells ([8df7fd3](https://github.com/modelix/modelix.editor/commit/8df7fd399de589f962c601abcc21a03c8abbc0af))
+* **projectional-editor:** sensible defaults for reference cells ([80369da](https://github.com/modelix/modelix.editor/commit/80369da000764dbb521ff53de785a5f5e579f670))
+
+
+### Bug Fixes
+
+* **deps:** lock file maintenance ([#577](https://github.com/modelix/modelix.editor/issues/577)) ([362b15e](https://github.com/modelix/modelix.editor/commit/362b15e68cc2404de3bc70d029e38731fcbf06e4))
+* **deps:** lock file maintenance ([#578](https://github.com/modelix/modelix.editor/issues/578)) ([a41934c](https://github.com/modelix/modelix.editor/commit/a41934c025007fddeaa80632c41cc8a2e8c5227f))
+* **deps:** lock file maintenance ([#580](https://github.com/modelix/modelix.editor/issues/580)) ([38580ba](https://github.com/modelix/modelix.editor/commit/38580ba87fdb04c1bf881b7504875832bb3f5c63))
+* **deps:** lock file maintenance ([#582](https://github.com/modelix/modelix.editor/issues/582)) ([3f71a1d](https://github.com/modelix/modelix.editor/commit/3f71a1d4b040113f96c0ca28e1520606258a49ff))
+* **deps:** lock file maintenance ([#585](https://github.com/modelix/modelix.editor/issues/585)) ([f098b03](https://github.com/modelix/modelix.editor/commit/f098b03f87b9ede2060b42acb35808a12696f59f))
+* **deps:** lock file maintenance ([#586](https://github.com/modelix/modelix.editor/issues/586)) ([5256856](https://github.com/modelix/modelix.editor/commit/5256856685c683a194ba3c7e72aa00dd00bbdcee))
+* **deps:** lock file maintenance ([#587](https://github.com/modelix/modelix.editor/issues/587)) ([1499d30](https://github.com/modelix/modelix.editor/commit/1499d30ebe793143b6b4c8ddd3682857c6f2d5f8))
+* **deps:** lock file maintenance ([#588](https://github.com/modelix/modelix.editor/issues/588)) ([3825608](https://github.com/modelix/modelix.editor/commit/38256086c5b47c6f7e94a75e37d491f08c3f5d42))
+* **deps:** lock file maintenance ([#589](https://github.com/modelix/modelix.editor/issues/589)) ([adb282d](https://github.com/modelix/modelix.editor/commit/adb282dc408cb2a36157d4e1d3443c3325aa9bb4))
+* **deps:** update dependency org.jetbrains.kotlinx:kotlinx-collections-immutable to v0.5.2 ([#567](https://github.com/modelix/modelix.editor/issues/567)) ([4d574a9](https://github.com/modelix/modelix.editor/commit/4d574a94724f8cc70bd63b7c0976c4faad2dffd9))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.19 ([#575](https://github.com/modelix/modelix.editor/issues/575)) ([cf952ba](https://github.com/modelix/modelix.editor/commit/cf952ba2de16f348e6d767f52f9d0687460243ff))
+* **deps:** update modelixcore to v19.4.1 ([#570](https://github.com/modelix/modelix.editor/issues/570)) ([ff9a9b7](https://github.com/modelix/modelix.editor/commit/ff9a9b7314ff422d91e9902fa2a690035bb79b3b))
+* **deps:** update pnpm to v11.24.0 ([#571](https://github.com/modelix/modelix.editor/issues/571)) ([ed7f102](https://github.com/modelix/modelix.editor/commit/ed7f102bc4c8d1d9dcc388e8753dbfeb8589be04))
+* **deps:** update pnpm to v11.25.0 ([#576](https://github.com/modelix/modelix.editor/issues/576)) ([7de2c29](https://github.com/modelix/modelix.editor/commit/7de2c299095f71d79c77b83516011206d9c4281f))
+* **deps:** update pnpm to v11.26.0 ([#579](https://github.com/modelix/modelix.editor/issues/579)) ([ec6a269](https://github.com/modelix/modelix.editor/commit/ec6a269a4807462570acf253a0a9252f1418acb5))
+* **deps:** update pnpm to v11.27.0 ([#581](https://github.com/modelix/modelix.editor/issues/581)) ([965e447](https://github.com/modelix/modelix.editor/commit/965e4479787444c5b8978c91f2b2401265262a65))
+* **deps:** update pnpm to v11.27.1 ([#584](https://github.com/modelix/modelix.editor/issues/584)) ([ac4face](https://github.com/modelix/modelix.editor/commit/ac4faced302bad1777f413058c22984085f78654))
+* **mps-plugin:** bundle the Kotlin stdlib of the Kotlin Gradle plugin again ([bc0c357](https://github.com/modelix/modelix.editor/commit/bc0c3574792b26d23c34fabb7ff52ef06a1453d7))
+
+
+### Code Refactoring
+
+* **projectional-editor:** share the repeated cells of the baseLanguage notations ([058c847](https://github.com/modelix/modelix.editor/commit/058c84764cbf2c57c04d4ac7fcd02928c13c61a6))
+
+
+### Build System
+
+* migrate to Gradle 9.8 and IntelliJ Platform Gradle Plugin 2.x ([a56b469](https://github.com/modelix/modelix.editor/commit/a56b46942a10651731f2669161c885b53e25814c))
+
 ## [1.21.0](https://github.com/modelix/modelix.editor/compare/1.20.0...1.21.0) (2026-08-28)
 
 
