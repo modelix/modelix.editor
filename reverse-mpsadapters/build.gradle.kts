@@ -1,5 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.modelix.mpsHomeDir
+import org.modelix.gradle.mpsplatform.mpsHomeDir
 
 plugins {
     kotlin("jvm")

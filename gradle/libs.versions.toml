@@ -4,6 +4,8 @@
 modelix-model-api-gen = { id = "org.modelix.model-api-gen", version.ref = "modelixCore" }
 
 modelix-mps-buildtools = { id = "org.modelix.mps.build-tools", version.ref = "modelixBuildtools" }
+modelix-mps-platform = { id = "org.modelix.mps.platform", version.ref = "modelixBuildtools" }
+modelix-mps-plugin = { id = "org.modelix.mps.plugin", version.ref = "modelixBuildtools" }
 
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
@@ -15,13 +17,12 @@ kotlin-rpc = { id = "org.jetbrains.kotlinx.rpc.plugin", version.ref = "kotlinx-r
 
 npm-publish = { id = "dev.petuska.npm.publish", version = "3.5.3" }
 
-intellij = { id = "org.jetbrains.intellij.platform", version = "2.19.0" }
 
 [versions]
 
 modelixCore = "19.4.1"
 
-modelixBuildtools="2.0.2"
+modelixBuildtools="2.1.0"
 
 kotlin = "2.2.21"
 

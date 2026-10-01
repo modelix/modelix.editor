@@ -1,12 +1,12 @@
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.modelix.copyMps
-import org.modelix.excludeMPSLibraries
-import org.modelix.mpsPluginsDir
+import org.modelix.gradle.mpsplatform.excludeMPSLibraries
+import org.modelix.gradle.mpsplatform.includeMetaInfFolder
+import org.modelix.gradle.mpsplatform.publishMpsPlugin
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.intellij)
+    id("org.modelix.mps.plugin")
 }
 
 kotlin {
@@ -16,32 +16,13 @@ kotlin {
     }
 }
 
-repositories {
-    intellijPlatform {
-        localPlatformArtifacts()
-    }
-}
-
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(project(":editor-common-mps"))
     implementation(libs.slf4j.api, excludeMPSLibraries)
 
     intellijPlatform {
-        local(copyMps())
         localPlugin(project(":editor-common-mps"))
-    }
-}
-
-intellijPlatform {
-    instrumentCode = false
-    buildSearchableOptions = false
-    autoReload = true
-    pluginConfiguration {
-        ideaVersion {
-            sinceBuild = "241"
-            untilBuild = "251.*"
-        }
     }
 }
 
@@ -56,26 +37,14 @@ tasks {
 //        token.set(System.getenv("PUBLISH_TOKEN"))
 //    }
 
-    val pluginDir = mpsPluginsDir
-    if (pluginDir != null) {
-        val installMpsPlugin =
-            register<Sync>("installMpsPlugin") {
-                from(prepareSandbox.flatMap { it.pluginDirectory })
-                into(pluginDir.resolve(project.name))
-            }
+    if (names.contains("installMpsPlugin")) {
         register("installMpsDevPlugins") {
-            dependsOn(installMpsPlugin)
+            dependsOn("installMpsPlugin")
         }
     }
 
     withType(PrepareSandboxTask::class.java) {
-        from(project.layout.projectDirectory.dir("src/main/resources/META-INF")) {
-            exclude("plugin.xml")
-            into(pluginName.map { "$it/META-INF" })
-        }
-        from(patchPluginXml.flatMap { it.outputFile }) {
-            into(pluginName.map { "$it/META-INF" })
-        }
+        includeMetaInfFolder()
 
         doLast {
             val jarsInBasePlugin =
@@ -96,13 +65,4 @@ tasks {
 
 group = "org.modelix.mps"
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "mps-image-editor-server"
-            artifact(tasks.buildPlugin) {
-                extension = "zip"
-            }
-        }
-    }
-}
+publishMpsPlugin()
