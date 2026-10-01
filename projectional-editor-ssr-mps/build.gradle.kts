@@ -55,6 +55,12 @@ sourceSets {
 intellijPlatform {
     instrumentCode = false
     buildSearchableOptions = false
+    pluginVerification {
+        ides {
+            // Without any IDEs configured, the recommended ones would be downloaded (e.g. by the IDE sync).
+            current()
+        }
+    }
     autoReload = true
     pluginConfiguration {
         ideaVersion {
