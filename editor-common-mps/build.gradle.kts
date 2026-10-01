@@ -15,7 +15,9 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
+    // The plugins bundle a newer Kotlin stdlib than the one shipped with MPS (see gradle.properties).
+    // It's declared explicitly, because excludeMPSLibraries removes it from the other dependencies.
+    implementation(kotlin("stdlib"))
     compileOnly(coreLibs.kotlin.coroutines.core)
     compileOnly(coreLibs.kotlin.serialization.json)
 
