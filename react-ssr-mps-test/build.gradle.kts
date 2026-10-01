@@ -1,4 +1,4 @@
-import org.modelix.mpsVersion
+import org.modelix.gradle.mpsplatform.mpsVersion
 
 plugins {
     kotlin("jvm")

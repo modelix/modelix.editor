@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
-import org.modelix.copyMps
+import org.modelix.gradle.mpsplatform.copyMps
 
 buildscript {
     dependencies {
@@ -19,7 +19,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.rpc) apply false
-    alias(libs.plugins.intellij) apply false
+    alias(libs.plugins.modelix.mps.platform) apply false
+    alias(libs.plugins.modelix.mps.plugin) apply false
     alias(libs.plugins.npm.publish) apply false
 }
 

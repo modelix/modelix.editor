@@ -1,15 +1,12 @@
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.modelix.configureMpsTestClasspath
-import org.modelix.configureMpsTestTask
-import org.modelix.copyMps
-import org.modelix.excludeMPSLibraries
-import org.modelix.mpsPluginsDir
+import org.modelix.gradle.mpsplatform.excludeMPSLibraries
+import org.modelix.gradle.mpsplatform.includeMetaInfFolder
+import org.modelix.gradle.mpsplatform.publishMpsPlugin
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.intellij)
+    id("org.modelix.mps.plugin")
 }
 
 kotlin {
@@ -20,12 +17,6 @@ kotlin {
 }
 
 val modelAdaptersPlugin = configurations.register("modelAdaptersPlugin")
-
-repositories {
-    intellijPlatform {
-        localPlatformArtifacts()
-    }
-}
 
 dependencies {
     compileOnly(kotlin("stdlib"))
@@ -41,35 +32,15 @@ dependencies {
     modelAdaptersPlugin(libs.modelix.mps.model.adapters.plugin)
 
     intellijPlatform {
-        local(copyMps())
         localPlugin(project(":projectional-editor-ssr-mps"))
         localPlugin(project(":editor-common-mps"))
         localPlugin(project(":react-ssr-mps"))
         bundledPlugin("jetbrains.mps.core")
         bundledPlugin("jetbrains.mps.kotlin")
-        testFramework(TestFrameworkType.Bundled)
-    }
-}
-
-configureMpsTestClasspath()
-
-intellijPlatform {
-    instrumentCode = false
-    buildSearchableOptions = false
-    autoReload = true
-    pluginConfiguration {
-        ideaVersion {
-            sinceBuild = "241"
-            untilBuild = "251.*"
-        }
     }
 }
 
 tasks {
-    test {
-        configureMpsTestTask()
-    }
-
 //    signPlugin {
 //        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
 //        privateKey.set(System.getenv("PRIVATE_KEY"))
@@ -80,24 +51,10 @@ tasks {
 //        token.set(System.getenv("PUBLISH_TOKEN"))
 //    }
 
-    val pluginDir = mpsPluginsDir
-    if (pluginDir != null) {
-        register<Sync>("installMpsPlugin") {
-            from(prepareSandbox.flatMap { it.pluginDirectory })
-            into(pluginDir.resolve(project.name))
-        }
-    }
-
     withType<PrepareSandboxTask>().configureEach {
         dependsOn(project(":mps").tasks.named("packageMpsPublications"))
 
-        from(project.layout.projectDirectory.dir("src/main/resources/META-INF")) {
-            exclude("plugin.xml")
-            into(pluginName.map { "$it/META-INF" })
-        }
-        from(patchPluginXml.flatMap { it.outputFile }) {
-            into(pluginName.map { "$it/META-INF" })
-        }
+        includeMetaInfFolder()
         from(modelAdaptersPlugin) {
             into(pluginName.map { "$it/plugins" })
         }
@@ -118,13 +75,4 @@ tasks {
 
 group = "org.modelix.mps"
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifactId = "projectional-editor-languages-plugin"
-            artifact(tasks.buildPlugin) {
-                extension = "zip"
-            }
-        }
-    }
-}
+publishMpsPlugin("projectional-editor-languages-plugin")

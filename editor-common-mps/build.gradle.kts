@@ -2,23 +2,16 @@ import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.modelix.buildtools.KnownModuleIds
 import org.modelix.buildtools.buildStubsSolutionJar
-import org.modelix.copyMps
-import org.modelix.excludeMPSLibraries
-import org.modelix.mpsPluginsDir
+import org.modelix.gradle.mpsplatform.excludeMPSLibraries
+import org.modelix.gradle.mpsplatform.includeMetaInfFolder
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.intellij)
+    id("org.modelix.mps.plugin")
 }
 
 kotlin {
     jvmToolchain(17)
-}
-
-repositories {
-    intellijPlatform {
-        localPlatformArtifacts()
-    }
 }
 
 dependencies {
@@ -44,22 +37,6 @@ dependencies {
     api(libs.modelix.mps.model.adapters, excludeMPSLibraries)
     api(libs.modelix.model.api.gen.runtime, excludeMPSLibraries)
     api(project(":reverse-mpsadapters"), excludeMPSLibraries)
-
-    intellijPlatform {
-        local(copyMps())
-    }
-}
-
-intellijPlatform {
-    instrumentCode = false
-    buildSearchableOptions = false
-    autoReload = true
-    pluginConfiguration {
-        ideaVersion {
-            sinceBuild = "241"
-            untilBuild = "251.*"
-        }
-    }
 }
 
 kotlin {
@@ -70,26 +47,14 @@ kotlin {
 }
 
 tasks {
-    val pluginDir = mpsPluginsDir
-    if (pluginDir != null) {
-        val installMpsPlugin =
-            register<Sync>("installMpsPlugin") {
-                from(prepareSandbox.flatMap { it.pluginDirectory })
-                into(pluginDir.resolve(project.name))
-            }
+    if (names.contains("installMpsPlugin")) {
         register("installMpsDevPlugins") {
-            dependsOn(installMpsPlugin)
+            dependsOn("installMpsPlugin")
         }
     }
 
     withType(PrepareSandboxTask::class.java) {
-        from(project.layout.projectDirectory.dir("src/main/resources/META-INF")) {
-            exclude("plugin.xml")
-            into(pluginName.map { "$it/META-INF" })
-        }
-        from(patchPluginXml.flatMap { it.outputFile }) {
-            into(pluginName.map { "$it/META-INF" })
-        }
+        includeMetaInfFolder()
 
         doLast {
             val ownJar: File = pluginJar.get().asFile

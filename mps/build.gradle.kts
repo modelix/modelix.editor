@@ -1,6 +1,6 @@
 import org.gradle.internal.jvm.Jvm
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
-import org.modelix.mpsHomeDir
+import org.modelix.gradle.mpsplatform.mpsHomeDir
 
 plugins {
     base
