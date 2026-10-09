@@ -5,8 +5,10 @@ import io.github.oshai.kotlinlogging.Level
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.js.Js
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.http.DEFAULT_PORT
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
+import io.ktor.http.encodedPath
 import io.ktor.util.PlatformUtils
 import kotlinx.browser.document
 import kotlinx.rpc.krpc.ktor.client.installKrpc
@@ -18,6 +20,9 @@ import org.w3c.dom.HTMLElement
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 object ClientSideEditorsAPI {
+    private const val TEXT_EDITOR_PORT = 43593
+    private val PROXY_PORT_PATH = Regex("^(.*?/port/)[0-9]+/")
+
     private lateinit var client: ModelixSSRClient
 
     fun init() {
@@ -26,13 +31,21 @@ object ClientSideEditorsAPI {
         println("ClientSideEditorsAPI.init()")
         KotlinLoggingConfiguration.logLevel = Level.TRACE
         val currentUrl = document.location!!
+        // Behind the proxy of a workspace instance, which forwards `.../port/<port>/...` to that port of the instance,
+        // other ports aren't reachable directly. The text editor server is then addressed by its port in the path.
+        val proxyPathPrefix = PROXY_PORT_PATH.find(currentUrl.pathname)?.groupValues?.get(1)
         val wsUrl =
             URLBuilder()
                 .apply {
                     protocol = if (currentUrl.protocol.lowercase().trimEnd(':') == "http") URLProtocol.WS else URLProtocol.WSS
                     host = currentUrl.hostname
-                    port = 43593 // currentUrl.port.toIntOrNull() ?: io.ktor.http.DEFAULT_PORT
-                    pathSegments = listOf("rpc")
+                    if (proxyPathPrefix == null) {
+                        port = TEXT_EDITOR_PORT
+                        encodedPath = "/rpc"
+                    } else {
+                        port = currentUrl.port.toIntOrNull() ?: DEFAULT_PORT
+                        encodedPath = "$proxyPathPrefix$TEXT_EDITOR_PORT/rpc"
+                    }
                 }.buildString()
         console.log("Text editor URL: $wsUrl")
         initWithUrl(wsUrl)
