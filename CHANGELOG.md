@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.1](https://github.com/modelix/modelix.editor/compare/2.0.0...2.0.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* connect to the text and image editors through the workspace instance proxy ([c89968d](https://github.com/modelix/modelix.editor/commit/c89968db56ab0273374bcf1450bfe23cec4b27df))
+* **deps:** update dependency org.slf4j:slf4j-api to v2.0.20 ([#592](https://github.com/modelix/modelix.editor/issues/592)) ([f6c220b](https://github.com/modelix/modelix.editor/commit/f6c220bec83bb02d7870ed06a88d1ee2604add97))
+* **deps:** update pnpm to v11.28.4 ([#593](https://github.com/modelix/modelix.editor/issues/593)) ([4e6088f](https://github.com/modelix/modelix.editor/commit/4e6088f66cb90e91e4435da2d966b7ba830ad15c))
+* **projectional-editor:** connect to the text editor through the workspace instance proxy ([ebbc586](https://github.com/modelix/modelix.editor/commit/ebbc586310779cd64ecae040507169e719c896ed))
+* **react:** connect to the image editor through the workspace instance proxy ([4a58128](https://github.com/modelix/modelix.editor/commit/4a58128f0785c07077dc1a450b7daf01450bb974))
+
 ## [2.0.0](https://github.com/modelix/modelix.editor/compare/1.21.0...2.0.0) (2026-10-01)
 
 
