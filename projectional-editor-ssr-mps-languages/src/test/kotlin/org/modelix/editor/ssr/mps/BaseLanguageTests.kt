@@ -807,9 +807,77 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEquals("Inner", referenceCellText(classifierType, "classifier"))
         }
 
+    fun `test node attribute wraps the node it is attached to`() =
+        kotlinx.coroutines.test.runTest {
+            writeAction {
+                methodNode
+                    .addNewChild(SMODEL_ATTRIBUTE, -1, REVIEW_MIGRATION)
+                    .setPropertyValue(IPropertyReference.fromName("reasonShort"), "check")
+            }
+            assertFinalEditorText("""
+            public class Class1 {
+              @Review(check)
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
+    fun `test typing the notation of a node attribute in front of a node adds it`() =
+        kotlinx.coroutines.test.runTest {
+            // The method's `public`, not the class's: both start the cells of several nodes, and the attribute goes
+            // to the outermost one, the method.
+            val methodPublic =
+                editor
+                    .resolveCell(NodeCellReference(methodNode.getNodeReference()))
+                    .single()
+                    .descendantsAndSelf()
+                    .first { it.getVisibleText() == "public" }
+            editor.doChangeSelection(CaretSelection(methodPublic.layoutable()!!, 0))
+            // Typed key by key, as in the browser: the first key opens the completion menu of the left transform.
+            typeText("@Review")
+            editor.flush()
+            assertEquals(
+                listOf("ReviewMigration"),
+                readAction {
+                    methodNode.getAllChildren().filter { it.getContainmentLink().getSimpleName() == "smodelAttribute" }.map {
+                        it
+                            .getConceptReference()
+                            .getUID()
+                    }
+                }.map { if (it == REVIEW_MIGRATION.getUID()) "ReviewMigration" else it },
+            )
+            assertFinalEditorText("""
+            public class Class1 {
+              @Review
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
+    fun `test deleting the text of a node attribute removes it but keeps the node`() =
+        kotlinx.coroutines.test.runTest {
+            writeAction { methodNode.addNewChild(SMODEL_ATTRIBUTE, -1, REVIEW_MIGRATION) }
+            editor.flush()
+            placeCaretIntoCellWithText("@Review", 0)
+            pressKey(KnownKeys.Backspace)
+            assertFinalEditorText("""
+            public class Class1 {
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
     companion object {
         /** `jetbrains.mps.baseLanguage`, as modelix spells a concept reference: `mps:<languageId>/<conceptId>`. */
         private const val BL = "mps:f3061a53-9226-4cc5-a443-f952ceaf5816/"
+        private val SMODEL_ATTRIBUTE = IChildLinkReference.fromName("smodelAttribute")
+        private val REVIEW_MIGRATION = ConceptReference("mps:ceab5195-25ea-4f22-9b92-103b95ca8c0c/8703179436979359238")
         private val TRIM_KIND = IPropertyReference.fromName("trimKind")
     }
 }

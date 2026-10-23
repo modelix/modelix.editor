@@ -1,5 +1,8 @@
 package org.modelix.editor
 
+import org.modelix.editor.celltemplate.NotationRootCellTemplate
+import org.modelix.editor.celltemplate.getAttributeSideTransformActions
+import org.modelix.editor.celltemplate.hasSymbolsBesideAttributedCell
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.INode
 import org.modelix.model.api.getInstantiatableSubConcepts
@@ -64,6 +67,10 @@ class SideTransformNode(
 ) : ICodeCompletionActionProvider {
     override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> {
         val engine = parameters.editor.engine ?: return emptyList()
+        return getWrapperActions(engine) + getAttributeActions(engine)
+    }
+
+    fun getWrapperActions(engine: EditorEngine): List<IActionOrProvider> {
         val location = ExistingNode(node)
         val expectedConcept = location.expectedConcept() ?: return emptyList()
         val allowedConcepts = expectedConcept.getInstantiatableSubConcepts()
@@ -74,6 +81,42 @@ class SideTransformNode(
         return cellModels.flatMap {
             it.getSideTransformActions(before, node) ?: emptyList()
         }
+    }
+
+    /**
+     * Node attributes added on the border of the node's own cell go inside all existing ones.
+     */
+    private fun getAttributeActions(engine: EditorEngine): List<IActionOrProvider> {
+        val innermostLayer = engine.getNodeAttributeLayers(node).lastOrNull()
+        val index = innermostLayer?.let { layer -> node.getAttributes().indexOfFirst { it.reference == layer.reference } + 1 } ?: 0
+        return engine.getNodeAttributeTemplates().flatMap { it.getAttributeSideTransformActions(before, node, index) }
+    }
+}
+
+/**
+ * The side transforms on the border of a node attribute's cell, which wraps the cell of the node it is attached to.
+ *
+ * A node attribute added here goes directly outside of [attribute]. On the border of the outermost attribute the
+ * side transforms of the attributed node apply as well, because that border is where its parent sees it.
+ */
+class AttributeLayerSideTransform(
+    val before: Boolean,
+    val attribute: INode,
+) : ICodeCompletionActionProvider {
+    override fun getApplicableActions(parameters: CodeCompletionParameters): List<IActionOrProvider> {
+        val engine = parameters.editor.engine ?: return emptyList()
+        val attributedNode = attribute.getAttributedNode() ?: return emptyList()
+        val attributeConcept = attribute.concept ?: return emptyList()
+        val template = engine.createCellModel(attributeConcept) as? NotationRootCellTemplate ?: return emptyList()
+        // Otherwise this border is the border of the next layer inward, which offers the same actions.
+        if (!template.hasSymbolsBesideAttributedCell(before)) return emptyList()
+
+        val isOutermost = engine.getNodeAttributeLayers(attributedNode).firstOrNull()?.reference == attribute.reference
+        val wrapperActions = if (isOutermost) SideTransformNode(before, attributedNode).getWrapperActions(engine) else emptyList()
+        val index = attributedNode.getAttributes().indexOfFirst { it.reference == attribute.reference }
+        val attributeActions =
+            engine.getNodeAttributeTemplates().flatMap { it.getAttributeSideTransformActions(before, attributedNode, index) }
+        return wrapperActions + attributeActions
     }
 }
 

@@ -140,9 +140,9 @@ class CodeCompletionTest {
             val knownDuplicates =
                 setOf(
                     "it",
-                    "ParamRef { <shortDescription> <virtualPackage> <param> <smodelAttribute> }",
-                    "StripUnitExpression { <shortDescription> <virtualPackage> <expr> <smodelAttribute> }",
-                    "ValExpression { <shortDescription> <virtualPackage> <smodelAttribute> }"
+                    "ParamRef { <shortDescription> <virtualPackage> <param> }",
+                    "StripUnitExpression { <shortDescription> <virtualPackage> <expr> }",
+                    "ValExpression { <shortDescription> <virtualPackage> }"
                 )
             val actualDuplicates = actions.groupBy { it.getCompletionPattern() }.filter { it.value.size > 1 }.map { it.key }
             val unexpectedDuplicates = actualDuplicates - knownDuplicates

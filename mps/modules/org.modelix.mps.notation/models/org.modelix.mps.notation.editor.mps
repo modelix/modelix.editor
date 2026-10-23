@@ -1282,5 +1282,20 @@
       </node>
     </node>
   </node>
+  <node concept="24kQdi" id="2rrsE_N4Z0V">
+    <ref role="1XX52x" to="f8gn:2rrsE_MZXcp" resolve="AttributedCell" />
+    <node concept="PMmxH" id="2rrsE_N4Z0X" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
+      <node concept="Vb9p2" id="2rrsE_N4Z0Y" role="3F10Kt">
+        <property role="Vbekb" value="g1_k_vY/BOLD" />
+      </node>
+    </node>
+    <node concept="3EZMnI" id="2rrsE_N4Z0Z" role="6VMZX">
+      <node concept="2iRkQZ" id="2rrsE_N4Z10" role="2iSdaV" />
+      <node concept="PMmxH" id="2rrsE_N4Z11" role="3EZMnx">
+        <ref role="PMmxG" node="43rgS5P5db$" resolve="StyleItems" />
+      </node>
+    </node>
+  </node>
 </model>
 

@@ -680,5 +680,12 @@
       <ref role="PrY4T" node="7dm8yUsMxhg" resolve="ICell" />
     </node>
   </node>
+  <node concept="1TIwiD" id="2rrsE_MZXcp">
+    <property role="EcuMT" value="6199368373628079664" />
+    <property role="TrG5h" value="AttributedCell" />
+    <property role="34LRSv" value="attributed" />
+    <property role="R4oN_" value="the node a node attribute is attached to, in the notation of that attribute" />
+    <ref role="1TJDcQ" node="7dm8yUsMxww" resolve="Cell" />
+  </node>
 </model>
 
