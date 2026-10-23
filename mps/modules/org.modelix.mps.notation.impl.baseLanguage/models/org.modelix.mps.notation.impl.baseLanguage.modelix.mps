@@ -117,6 +117,7 @@
       <concept id="2164428496225295350" name="org.modelix.mps.notation.structure.ApplyStyleClass" flags="ng" index="3Pd4f9">
         <reference id="4758389092131838426" name="styleClass" index="1h_qxL" />
       </concept>
+      <concept id="6199368373628079664" name="org.modelix.mps.notation.structure.AttributedCell" flags="ng" index="3VV1E0" />
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
       <concept id="1177026924588" name="jetbrains.mps.lang.smodel.structure.RefConcept_Reference" flags="nn" index="chp4Y">
@@ -8506,8 +8507,33 @@
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNS" role="3JBHiB">
       <ref role="3JBHV4" to="tpck:7z7TTo_CSS6" resolve="ReviewMigration" />
-      <node concept="3JB3jO" id="3$1Yp8wiHNT" role="3JBHQ1">
-        <property role="3JB3xJ" value="jetbrains.mps.lang.core.structure.ReviewMigration" />
+      <node concept="2OY0tg" id="7zLB3BViYMj" role="3JBHQ1">
+        <node concept="3JB3jO" id="7zLB3BViYMk" role="2OY0$2">
+          <property role="3JB3xJ" value="@Review" />
+          <node concept="PNT1P" id="7zLB3BViYMl" role="PNT5y">
+            <node concept="PNT9I" id="7zLB3BViYMm" role="PNT5z">
+              <property role="PNT7D" value="006400" />
+            </node>
+          </node>
+        </node>
+        <node concept="1yhmst" id="7zLB3BViYMn" role="2OY0$2">
+          <node concept="2OY0tg" id="7zLB3BViYMp" role="1yhmsp">
+            <node concept="1yiDf7" id="7zLB3BViYMq" role="2OY0$2" />
+            <node concept="3JB3jO" id="7zLB3BViYMr" role="2OY0$2">
+              <property role="3JB3xJ" value="(" />
+            </node>
+            <node concept="1yiDf7" id="7zLB3BViYMs" role="2OY0$2" />
+            <node concept="2OYlUR" id="7zLB3BViYMt" role="2OY0$2">
+              <ref role="2OYlZd" to="tpck:7z7TTo_CSS7" resolve="reasonShort" />
+            </node>
+            <node concept="1yiDf7" id="7zLB3BViYMu" role="2OY0$2" />
+            <node concept="3JB3jO" id="7zLB3BViYMv" role="2OY0$2">
+              <property role="3JB3xJ" value=")" />
+            </node>
+          </node>
+        </node>
+        <node concept="IzWyk" id="7zLB3BViYMw" role="2OY0$2" />
+        <node concept="3VV1E0" id="7zLB3BViYMx" role="2OY0$2" />
       </node>
     </node>
     <node concept="3JBH_3" id="3$1Yp8wiHNW" role="3JBHiB">

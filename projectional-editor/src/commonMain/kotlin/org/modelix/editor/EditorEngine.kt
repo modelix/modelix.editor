@@ -4,8 +4,11 @@ import org.modelix.checks.CheckMessage
 import org.modelix.checks.CheckMessageTarget
 import org.modelix.checks.ModelCheckAspect
 import org.modelix.checks.addCheckMessages
+import org.modelix.editor.celltemplate.AttributedCellTemplate
 import org.modelix.editor.celltemplate.CellTemplate
+import org.modelix.editor.celltemplate.NotationRootCellTemplate
 import org.modelix.editor.celltemplate.ParserForEditor
+import org.modelix.editor.celltemplate.descendants
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.text.shared.celltree.IMutableCellTree
 import org.modelix.editor.text.shared.celltree.cellReferences
@@ -62,25 +65,86 @@ class EditorEngine(
             when (call) {
                 is NodeCellCreationCall -> {
                     val node = call.node.asLegacyNode()
-                    val cellData = doCreateCellData(editorState, node)
-                    cellData.properties[CommonCellProperties.node] = node.toNonExisting()
-                    cellData.properties[CommonCellProperties.cellCall] = call
-                    // Messages whose target cell (a property or reference cell) is rendered are attached to that
-                    // cell by the respective cell template. Everything else is attached here, to the node's own cell:
-                    //  - whole-node messages (they underline the node's whole cell range; the range is derived by
-                    //    the renderer, which walks up the cell tree from each layoutable),
-                    //  - targeted messages whose feature cell the editor does not render,
-                    //  - all messages of descendants that are not rendered at all (this is the nearest visible ancestor).
-                    val messages =
-                        collectUnattachedOwnMessages(node, cellData) +
-                            collectHiddenDescendantMessages(node, cellData)
-                    if (messages.isNotEmpty()) applyCheckMessages(cellData, messages)
-                    cellData.freeze()
-                    LOG.trace { "Cell created for $node: $cellData" }
-                    cellData
+                    createAttributeLayerSpec(editorState, node, getNodeAttributeLayers(node).firstOrNull())
+                }
+
+                is AttributedNodeCellCreationCall -> {
+                    createAttributeLayerSpec(editorState, call.node.asLegacyNode(), call.attribute?.asLegacyNode())
                 }
             }
         }
+
+    /**
+     * The cell of [node] wrapped by its node attributes from [attribute] inward.
+     *
+     * An attribute is rendered by its own notation, which contains an `attributed` cell for the next layer inward
+     * (see [AttributedCellTemplate]). So the layer *is* the attribute's node cell, and attributes of the attribute
+     * apply to it the same way. Below the innermost attribute is the node's own notation.
+     */
+    private fun createAttributeLayerSpec(
+        cellTreeState: CellTreeState,
+        node: INode,
+        attribute: INode?,
+    ): CellSpecBase {
+        if (attribute != null) {
+            return createCellSpecIncremental(cellTreeState, NodeCellCreationCall(attribute.asWritableNode()))
+        }
+
+        val cellData = doCreateCellData(cellTreeState, node)
+        cellData.properties[CommonCellProperties.node] = node.toNonExisting()
+        cellData.properties[CommonCellProperties.cellCall] = AttributedNodeCellCreationCall(node.asWritableNode(), null)
+        // Messages whose target cell (a property or reference cell) is rendered are attached to that
+        // cell by the respective cell template. Everything else is attached here, to the node's own cell:
+        //  - whole-node messages (they underline the node's whole cell range; the range is derived by
+        //    the renderer, which walks up the cell tree from each layoutable),
+        //  - targeted messages whose feature cell the editor does not render,
+        //  - all messages of descendants that are not rendered at all (this is the nearest visible ancestor).
+        val messages =
+            collectUnattachedOwnMessages(node, cellData) +
+                collectHiddenDescendantMessages(node, cellData)
+        if (messages.isNotEmpty()) applyCheckMessages(cellData, messages)
+        cellData.freeze()
+        LOG.trace { "Cell created for $node: $cellData" }
+        return cellData
+    }
+
+    /**
+     * The node attributes of [node] that wrap its cell, outermost first. This is the order MPS uses: the first
+     * attribute is the outermost one.
+     *
+     * An attribute only wraps the node if its notation contains an `attributed` cell. Otherwise rendering it would
+     * hide the node it is attached to, so it is not rendered at all, as before node attributes were supported. Its
+     * check messages are then shown on the attributed node.
+     */
+    fun getNodeAttributeLayers(node: INode): List<INode> = node.getAttributes().filter { isRenderedAsLayer(it) }
+
+    private fun isRenderedAsLayer(attribute: INode): Boolean {
+        val concept = attribute.concept ?: return false
+        if (!concept.isNodeAttribute()) return false
+        val template =
+            resolveConceptEditor(concept)
+                .asSequence()
+                .map { it.apply(concept) }
+                .firstOrNull { it.condition?.invoke(attribute) != false } ?: return false
+        return template.descendants(includeSelf = true).any { it is AttributedCellTemplate }
+    }
+
+    /**
+     * The notations of node attributes that can be added in the editor, by typing the text of their notation next to
+     * the node they wrap. Only notations that render the attributed node qualify.
+     */
+    fun getNodeAttributeTemplates(): List<NotationRootCellTemplate> =
+        getAllConceptEditors()
+            .asSequence()
+            .mapNotNull { editor -> editor.declaredConcept?.let { editor to it } }
+            .filter { (_, concept) -> !concept.isAbstract() && concept.isNodeAttribute() }
+            .map { (editor, concept) -> editor.apply(concept) }
+            .filter { template -> template.descendants(includeSelf = true).any { it is AttributedCellTemplate } }
+            .distinctBy { it.concept.getUID() }
+            .toList()
+
+    private fun getAllConceptEditors(): List<ConceptEditor> =
+        editorsForConcept.values.flatten() + conceptEditorRegistries.flatMap { it.getAllConceptEditors() }
 
     fun addRegistry(registry: IConceptEditorRegistry) {
         conceptEditorRegistries += registry
@@ -173,7 +237,7 @@ class EditorEngine(
                     }
 
                     is ChildSpecReference -> {
-                        createCell(cellTreeState, childRef.childNode)
+                        createCell(cellTreeState, childRef.call)
                     }
                 }
             if (childCell.getParent() != cell) {
@@ -208,8 +272,13 @@ class EditorEngine(
 
             data.properties[CellActionProperties.substitute] = ReplaceNodeActionProvider(ExistingNode(node))
             data.cellReferences += NodeCellReference(node.reference)
-            data.properties[CellActionProperties.transformBefore] = SideTransformNode(true, node)
-            data.properties[CellActionProperties.transformAfter] = SideTransformNode(false, node)
+            if (node.getAttributedNode() != null && node.concept?.isNodeAttribute() == true) {
+                data.properties[CellActionProperties.transformBefore] = AttributeLayerSideTransform(true, node)
+                data.properties[CellActionProperties.transformAfter] = AttributeLayerSideTransform(false, node)
+            } else {
+                data.properties[CellActionProperties.transformBefore] = SideTransformNode(true, node)
+                data.properties[CellActionProperties.transformAfter] = SideTransformNode(false, node)
+            }
             data.properties[CommonCellProperties.selectable] = true
             data.properties[CellActionProperties.delete] = DeleteNodeCellAction(node)
             return data
@@ -239,6 +308,8 @@ class EditorEngine(
     ): List<CheckMessage> {
         val renderedChildren = HashSet<INodeReference>()
         collectRenderedChildNodes(cellData, renderedChildren)
+        // Node attributes are not referenced by the node's own cell, they wrap it.
+        getNodeAttributeLayers(node).forEach { renderedChildren.add(it.reference) }
         return node.allChildren
             .filter { it.reference !in renderedChildren }
             .flatMap { allSubtreeMessages(it) }
@@ -249,8 +320,17 @@ class EditorEngine(
         acc: MutableSet<INodeReference>,
     ) {
         when (spec) {
-            is ChildSpecReference -> acc.add(spec.childNode.reference)
-            is CellSpecBase -> spec.children.forEach { collectRenderedChildNodes(it, acc) }
+            is ChildSpecReference -> {
+                acc.add(
+                    spec.call.node
+                        .asLegacyNode()
+                        .reference
+                )
+            }
+
+            is CellSpecBase -> {
+                spec.children.forEach { collectRenderedChildNodes(it, acc) }
+            }
         }
     }
 
@@ -379,8 +459,25 @@ private class RenderedFeatures {
     val references: MutableList<IReferenceLinkReference> = ArrayList()
 }
 
-sealed class CellCreationCall
+sealed class CellCreationCall {
+    abstract val node: IWritableNode
+}
 
+/**
+ * The cell of [node] as its parent embeds it: wrapped by all of its node attributes.
+ */
 data class NodeCellCreationCall(
-    val node: IWritableNode,
+    override val node: IWritableNode,
+) : CellCreationCall()
+
+/**
+ * The cell of [node] wrapped only by its node attributes from [attribute] inward, or the node's own notation if
+ * [attribute] is null. This is what the `attributed` cell of the attribute one layer further out renders.
+ *
+ * The next attribute is part of the call, rather than its position, so that adding or removing an attribute only
+ * changes the layers next to it. The cells of all other layers are reused.
+ */
+data class AttributedNodeCellCreationCall(
+    override val node: IWritableNode,
+    val attribute: IWritableNode?,
 ) : CellCreationCall()
