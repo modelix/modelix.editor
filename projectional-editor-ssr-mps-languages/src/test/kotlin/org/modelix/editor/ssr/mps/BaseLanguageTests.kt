@@ -846,13 +846,7 @@ class BaseLanguageTests : TestBase("SimpleProject") {
                             -1,
                             ConceptReference(BL + "1068498886296")
                         )
-                // Declared by a super concept, which a link looked up by name alone does not find.
-                val link =
-                    variableReference
-                        .getConcept()
-                        .getAllReferenceLinks()
-                        .first { it.getSimpleName() == "variableDeclaration" }
-                variableReference.setReferenceTarget(link.toReference(), declaration)
+                variableReference.setReferenceTarget(IReferenceLinkReference.fromName("variableDeclaration"), declaration)
             }
             editor.flush()
             // What MPS writes for an unnamed node: the alias of LocalVariableDeclaration is `<type> <var>`.
