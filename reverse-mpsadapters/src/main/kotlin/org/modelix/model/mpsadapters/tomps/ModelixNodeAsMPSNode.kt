@@ -6,10 +6,12 @@ import org.jetbrains.mps.openapi.language.SConcept
 import org.jetbrains.mps.openapi.language.SContainmentLink
 import org.jetbrains.mps.openapi.language.SProperty
 import org.jetbrains.mps.openapi.language.SReferenceLink
+import org.jetbrains.mps.openapi.model.ResolveInfo
 import org.jetbrains.mps.openapi.model.SModelReference
 import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.model.SNodeId
 import org.jetbrains.mps.openapi.model.SNodeReference
+import org.jetbrains.mps.openapi.model.SReference
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IChildLinkReference
 import org.modelix.model.api.INode
@@ -26,6 +28,9 @@ import org.modelix.model.mpsadapters.MPSNode
 import org.modelix.model.mpsadapters.MPSProperty
 import org.modelix.model.mpsadapters.MPSReferenceLink
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.model.mpsadapters.toMPS
+import org.modelix.model.mpsadapters.toModelix
+import org.modelix.mps.multiplatform.model.MPSNodeReference
 
 data class ModelixNodeAsMPSNode(
     val node: IReadableNode,
@@ -127,10 +132,16 @@ data class ModelixNodeAsMPSNode(
 
     override fun getReference(): SNodeReference = forceUnwrapMPSNode(this).reference
 
-    override fun getReference(link: SReferenceLink): jetbrains.mps.smodel.SReference? =
-        ReferenceAdapter(link).takeIf {
-            node.getReferenceTarget(MPSReferenceLink(link).toReference()) != null
+    /**
+     * A reference exists as soon as it points somewhere, whether or not the target can be resolved, as in MPS: a
+     * broken reference is how MPS code finds out that it is broken.
+     */
+    override fun getReference(link: SReferenceLink): jetbrains.mps.smodel.SReference? {
+        val linkReference = MPSReferenceLink(link).toReference()
+        return ReferenceAdapter(link).takeIf {
+            node.getReferenceTargetRef(linkReference) != null || node.getReferenceTarget(linkReference) != null
         }
+    }
 
     override fun getConcept(): SConcept {
         val concept = node.getConcept()
@@ -257,6 +268,50 @@ data class ModelixNodeAsMPSNode(
         writableNode.setReferenceTargetRef(MPSReferenceLink(link).toReference(), null)
     }
 
+    override fun setReference(
+        link: SReferenceLink,
+        target: SNodeReference,
+    ) {
+        writableNode.setReferenceTargetRef(MPSReferenceLink(link).toReference(), target.toModelix())
+    }
+
+    /**
+     * Only a [ResolveInfo] that names the target node can be stored by modelix. The others carry the text MPS
+     * resolves the target from, which only the MPS node can store.
+     */
+    override fun setReference(
+        link: SReferenceLink,
+        resolveInfo: ResolveInfo?,
+    ) {
+        when (resolveInfo) {
+            null -> dropReference(link)
+
+            // Its node may be one of these wrappers, which must not end up stored in the MPS node.
+            is ResolveInfo.N -> setReferenceTarget(link, resolveInfo.targetNode)
+
+            else -> forceUnwrapMPSNode(this).setReference(link, resolveInfo)
+        }
+    }
+
+    /**
+     * MPS only accepts a reference that already belongs to this node and copies its internal data. A reference that
+     * comes from elsewhere, like one of another node that is copied, is stored as what it points to instead.
+     */
+    override fun setReference(
+        link: SReferenceLink,
+        reference: SReference?,
+    ) {
+        if (reference == null) return dropReference(link)
+        val target = reference.targetNodeReference
+        val resolveInfo = (reference as? jetbrains.mps.smodel.SReference)?.resolveInfo
+        when {
+            target != null && resolveInfo != null -> setReference(link, ResolveInfo.of(target, resolveInfo))
+            target != null -> setReference(link, target)
+            resolveInfo != null -> setReference(link, ResolveInfo.of(resolveInfo))
+            else -> dropReference(link)
+        }
+    }
+
     override fun getReferences(): List<jetbrains.mps.smodel.SReference> =
         node
             .getReferenceLinks()
@@ -294,11 +349,35 @@ data class ModelixNodeAsMPSNode(
         writableNode.setPropertyValue(IPropertyReference.fromName(role), value)
     }
 
-    override fun getUserObject(key: Any?): Any? = null
+    /**
+     * User objects are caches that MPS code attaches to a node, not model content, so they need no dependency
+     * tracking. They are kept on the MPS node, where they outlive this wrapper and are shared with code that uses the
+     * MPS node directly. Only a node of another kind keeps them here.
+     */
+    private val ownUserObjects = java.util.concurrent.ConcurrentHashMap<Any, Any>()
+
+    private fun userObjectHolder(): SNode? = (node as? MPSWritableNode)?.node
+
+    override fun getUserObject(key: Any?): Any? {
+        userObjectHolder()?.let { return it.getUserObject(key) }
+        return ownUserObjects[key ?: return null]
+    }
+
+    override fun putUserObject(
+        key: Any?,
+        value: Any?,
+    ) {
+        userObjectHolder()?.let { return it.putUserObject(key, value) }
+        if (key == null) return
+        if (value == null) ownUserObjects.remove(key) else ownUserObjects[key] = value
+    }
+
+    override fun getUserObjectKeys(): MutableIterable<Any> {
+        userObjectHolder()?.let { return it.userObjectKeys.toMutableList() }
+        return ownUserObjects.keys.toMutableList()
+    }
 
     override fun toString(): String = "ModelixNodeAsMPSNode[$node]"
-
-    override fun getUserObjectKeys(): MutableIterable<Any> = mutableListOf()
 
     override fun getRoleInParent(): String? = containmentLink?.name
 
@@ -326,10 +405,28 @@ data class ModelixNodeAsMPSNode(
         override fun getTargetNode_internal(reporter: jetbrains.mps.smodel.SReference.ProblemReporter?): SNode? =
             this@ModelixNodeAsMPSNode.getReferenceTarget(link)
 
-        override fun getTargetNodeReference(): SNodeReference? = targetNode?.reference
+        /**
+         * What the reference points to as it is stored, without resolving it, so that a reference that cannot be
+         * resolved still says where it points to. Only a target that is not an MPS node is resolved for it.
+         */
+        override fun getTargetNodeReference(): SNodeReference? {
+            val stored = node.getReferenceTargetRef(MPSReferenceLink(link).toReference())
+            stored?.let { MPSNodeReference.tryConvert(it) }?.let { return it.toMPS() }
+            return targetNode?.reference
+        }
 
-        override fun getTargetSModelReference(): SModelReference? = targetNode?.reference?.modelReference
+        override fun getTargetSModelReference(): SModelReference? = targetNodeReference?.modelReference
 
-        override fun getTargetNodeId(): SNodeId? = targetNode?.reference?.nodeId
+        override fun getTargetNodeId(): SNodeId? = targetNodeReference?.nodeId
+
+        /**
+         * The name MPS keeps for the target, which it shows for a reference that cannot be resolved.
+         */
+        override fun getResolveInfo(): String? {
+            // Only for the dependency: the MPS reference the name is read from changes together with the target.
+            node.getReferenceTargetRef(MPSReferenceLink(link).toReference())
+            val mpsNode = (node as? MPSWritableNode)?.node as? jetbrains.mps.smodel.SNode ?: return null
+            return mpsNode.getReference(link)?.resolveInfo
+        }
     }
 }
