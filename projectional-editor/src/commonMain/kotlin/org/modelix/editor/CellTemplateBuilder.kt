@@ -1,6 +1,7 @@
 package org.modelix.editor
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.modelix.editor.celltemplate.AttributedCellTemplate
 import org.modelix.editor.celltemplate.CellTemplate
 import org.modelix.editor.celltemplate.ChildCellTemplate
 import org.modelix.editor.celltemplate.ChoiceCellTemplate
@@ -485,6 +486,16 @@ open class CellTemplateBuilder<NodeT : Any, ConceptT : Any>(
             .also(template::addChild)
     }
 
+    /**
+     * In the notation of a node attribute: the node the attribute is attached to. See [AttributedCellTemplate].
+     */
+    fun attributed(body: AttributedCellTemplateBuilder<NodeT, ConceptT>.() -> Unit = {}) {
+        AttributedCellTemplateBuilder<NodeT, ConceptT>(AttributedCellTemplate(template.concept), concept, nodeConverter)
+            .also(body)
+            .template
+            .also(template::addChild)
+    }
+
     fun modelAccess(body: ModelAccessBuilder.() -> Unit) {
         var setter: ((String?) -> Unit)? = null
         var getter: () -> String? = { "<getter missing>" }
@@ -569,6 +580,27 @@ class PropertyCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
 
     fun placeholderText(placeholderText: String) {
         (template as PropertyCellTemplate).placeholderText = placeholderText
+    }
+}
+
+class AttributedCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
+    template: AttributedCellTemplate,
+    concept: ConceptT,
+    nodeConverter: INodeConverter<NodeT>,
+) : CellTemplateBuilder<NodeT, ConceptT>(template, concept, nodeConverter) {
+    /**
+     * Restricts the concepts the attribute can be attached to. Called once per concept of the attribute's
+     * `@attribute info`. Without any call, the attribute can be attached to any node.
+     */
+    fun attributedConcept(attributedConcept: IConcept) {
+        (template as AttributedCellTemplate).attributedConcepts += attributedConcept
+    }
+
+    /**
+     * Allows a node to have several attributes of this concept.
+     */
+    fun multiple(value: Boolean) {
+        (template as AttributedCellTemplate).multiple = value
     }
 }
 

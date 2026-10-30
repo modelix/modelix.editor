@@ -65,7 +65,8 @@ val defaultConceptEditor =
                         // model, so an unnamed target is worth more as its node id than as a placeholder.
                         link.cell(presentation = { defaultReferencePresentation() ?: reference.serialize() })
                     }
-                    for (link in subConcept.getAllChildLinks()) {
+                    // Node attributes wrap the node's cell instead of being listed as its children.
+                    for (link in subConcept.getAllChildLinks().filterNot { it.isSmodelAttribute() }) {
                         newLine()
                         label(link.getSimpleName() + ":")
                         if (link.isMultiple) {
@@ -76,6 +77,11 @@ val defaultConceptEditor =
                         } else {
                             link.cell()
                         }
+                    }
+                    if (subConcept.isNodeAttribute()) {
+                        newLine()
+                        label("attributed node:")
+                        attributed()
                     }
                 }
             }.template as NotationRootCellTemplate

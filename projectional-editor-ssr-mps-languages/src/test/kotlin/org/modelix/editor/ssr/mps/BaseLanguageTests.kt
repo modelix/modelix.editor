@@ -41,6 +41,7 @@ import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.mps.editor.common.IncrementalModelChecker
 
 /**
  * Test editor for MPS baseLanguage ClassConcept
@@ -649,6 +650,63 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEquals(emptyList<CheckMessage>(), errorMessages())
         }
 
+    fun `test model check messages are shown in the editor after the check finished in the background`() =
+        kotlinx.coroutines.test.runTest {
+            assertEquals(emptyList<String>(), awaitErrorMessagesInEditor(present = false))
+
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
+            typeText("return")
+            typeText("10")
+            assertNotEmpty(awaitErrorMessagesInEditor(present = true))
+
+            pressKey(KnownKeys.Delete)
+            placeCaretIntoCellWithText("return")
+            pressKey(KnownKeys.Delete)
+            assertEditorText("""
+            public class Class1 {
+              public void method1() {
+
+              }
+            }
+        """)
+            assertEquals(emptyList<String>(), awaitErrorMessagesInEditor(present = false))
+        }
+
+    fun `test a cancelled model check is executed again after retrying it`() {
+        val engine = IncrementalEngine()
+        try {
+            val checker = IncrementalModelChecker(engine)
+            val root = classNode.asLegacyNode()
+            assertNull(readAction { checker.runCancellable({ true }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+            // Without retrying, the cancelled checks would still be cached as failed.
+            assertNull(readAction { checker.runCancellable({ false }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+
+            checker.retryCancelledChecks()
+            assertNotNull(readAction { checker.runCancellable({ false }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+        } finally {
+            engine.dispose()
+        }
+    }
+
+    /**
+     * The model checker publishes its messages asynchronously, so they are only shown eventually.
+     */
+    private suspend fun awaitErrorMessagesInEditor(present: Boolean): List<String> {
+        val deadline = System.currentTimeMillis() + 30_000
+        while (true) {
+            editor.flush()
+            val messages =
+                editor
+                    .getRootCell()
+                    .descendantsAndSelf()
+                    .mapNotNull { it.getProperty(CommonCellProperties.errorMessage) }
+                    .toList()
+            if (messages.isNotEmpty() == present || System.currentTimeMillis() > deadline) return messages
+            // Not delay(), because runTest skips it in virtual time.
+            Thread.sleep(100)
+        }
+    }
+
     /**
      * MPS holds an enumeration value as `<memberId>/<name>` and its editor shows the name, converting in
      * `PropertyAccessor` rather than in the model - so that persistence and synchronisation keep seeing the stored
@@ -755,6 +813,51 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         }
 
     /**
+     * The presentation of a target is asked for on the tracked wrapper of the node, not the node itself: MPS's
+     * `getPresentation` behavior, which reads the name the way MPS code does - honouring a property getter in the
+     * constraints, as an optionally named concept has. A target whose name is not stored used to be written as the
+     * `toString()` of the modelix node (`MPSWritableNode(node=...)`), and naming it later has to update the cell,
+     * which it only does if the reads the behavior makes are dependency tracked.
+     */
+    fun `test a reference to an unnamed target is written as its presentation and follows its name`() =
+        kotlinx.coroutines.test.runTest {
+            lateinit var declaration: IWritableNode
+            lateinit var variableReference: IWritableNode
+            writeAction {
+                declaration =
+                    methodBodyNode
+                        .addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068581242864")
+                        ).addNewChild(
+                            IChildLinkReference.fromName("localVariableDeclaration"),
+                            -1,
+                            ConceptReference(BL + "1068581242863")
+                        )
+                variableReference =
+                    methodBodyNode
+                        .addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068580123155")
+                        ).addNewChild(
+                            IChildLinkReference.fromName("expression"),
+                            -1,
+                            ConceptReference(BL + "1068498886296")
+                        )
+                variableReference.setReferenceTarget(IReferenceLinkReference.fromName("variableDeclaration"), declaration)
+            }
+            editor.flush()
+            // What MPS writes for an unnamed node: the alias of LocalVariableDeclaration is `<type> <var>`.
+            assertEquals("<no name>[<type> <var>]", referenceCellText(variableReference, "variableDeclaration"))
+
+            writeAction { declaration.setPropertyValue(IPropertyReference.fromName("name"), "x") }
+            editor.flush()
+            assertEquals("x", referenceCellText(variableReference, "variableDeclaration"))
+        }
+
+    /**
      * The text of the cell that shows [node]'s reference in [linkName].
      */
     private fun referenceCellText(
@@ -807,9 +910,77 @@ class BaseLanguageTests : TestBase("SimpleProject") {
             assertEquals("Inner", referenceCellText(classifierType, "classifier"))
         }
 
+    fun `test node attribute wraps the node it is attached to`() =
+        kotlinx.coroutines.test.runTest {
+            writeAction {
+                methodNode
+                    .addNewChild(SMODEL_ATTRIBUTE, -1, REVIEW_MIGRATION)
+                    .setPropertyValue(IPropertyReference.fromName("reasonShort"), "check")
+            }
+            assertFinalEditorText("""
+            public class Class1 {
+              @Review(check)
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
+    fun `test typing the notation of a node attribute in front of a node adds it`() =
+        kotlinx.coroutines.test.runTest {
+            // The method's `public`, not the class's: both start the cells of several nodes, and the attribute goes
+            // to the outermost one, the method.
+            val methodPublic =
+                editor
+                    .resolveCell(NodeCellReference(methodNode.getNodeReference()))
+                    .single()
+                    .descendantsAndSelf()
+                    .first { it.getVisibleText() == "public" }
+            editor.doChangeSelection(CaretSelection(methodPublic.layoutable()!!, 0))
+            // Typed key by key, as in the browser: the first key opens the completion menu of the left transform.
+            typeText("@Review")
+            editor.flush()
+            assertEquals(
+                listOf("ReviewMigration"),
+                readAction {
+                    methodNode.getAllChildren().filter { it.getContainmentLink().getSimpleName() == "smodelAttribute" }.map {
+                        it
+                            .getConceptReference()
+                            .getUID()
+                    }
+                }.map { if (it == REVIEW_MIGRATION.getUID()) "ReviewMigration" else it },
+            )
+            assertFinalEditorText("""
+            public class Class1 {
+              @Review
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
+    fun `test deleting the text of a node attribute removes it but keeps the node`() =
+        kotlinx.coroutines.test.runTest {
+            writeAction { methodNode.addNewChild(SMODEL_ATTRIBUTE, -1, REVIEW_MIGRATION) }
+            editor.flush()
+            placeCaretIntoCellWithText("@Review", 0)
+            pressKey(KnownKeys.Backspace)
+            assertFinalEditorText("""
+            public class Class1 {
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
     companion object {
         /** `jetbrains.mps.baseLanguage`, as modelix spells a concept reference: `mps:<languageId>/<conceptId>`. */
         private const val BL = "mps:f3061a53-9226-4cc5-a443-f952ceaf5816/"
+        private val SMODEL_ATTRIBUTE = IChildLinkReference.fromName("smodelAttribute")
+        private val REVIEW_MIGRATION = ConceptReference("mps:ceab5195-25ea-4f22-9b92-103b95ca8c0c/8703179436979359238")
         private val TRIM_KIND = IPropertyReference.fromName("trimKind")
     }
 }

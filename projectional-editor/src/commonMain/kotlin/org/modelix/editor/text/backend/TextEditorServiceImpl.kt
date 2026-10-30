@@ -298,10 +298,14 @@ class TextEditorServiceImpl(
         pattern: String,
     ): EditorUpdateData =
         runWithCell(editorId, cellId) { updateChannel, cell ->
-            val providers = cell.getSubstituteActions().toList()
+            // The menu that was opened knows its providers: the side transforms of the anchor's border if it was
+            // opened by typing next to a cell, which the substitute actions of the cell do not include.
+            val entries =
+                updateChannel.editor.completionMenu?.updateActions(pattern)
+                    ?: updateChannel.editor.loadCompletionEntries(cell.getSubstituteActions().toList(), pattern)
             updateChannel.createUpdate().copy(
                 completionEntries =
-                    updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
+                    entries.mapIndexed { index, entry ->
                         CompletionMenuEntryData(
                             id = index,
                             matchingText = entry.getMatchingText(),

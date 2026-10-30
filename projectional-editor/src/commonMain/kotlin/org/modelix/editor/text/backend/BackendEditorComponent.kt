@@ -7,7 +7,6 @@ import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
-import org.modelix.editor.NodeCellCreationCall
 import org.modelix.editor.Selection
 import org.modelix.editor.applyShadowing
 import org.modelix.editor.getCompletionPattern
@@ -55,15 +54,9 @@ class BackendEditorComponent(
             it.updateActions(pattern)
         }
 
-    fun <R> runWrite(body: () -> R): R =
-        when (rootCall) {
-            is NodeCellCreationCall -> rootCall.node.getModel().executeWrite(body)
-        }
+    fun <R> runWrite(body: () -> R): R = rootCall.node.getModel().executeWrite(body)
 
-    fun <R> runRead(body: () -> R): R =
-        when (rootCall) {
-            is NodeCellCreationCall -> rootCall.node.getModel().executeRead(body)
-        }
+    fun <R> runRead(body: () -> R): R = rootCall.node.getModel().executeRead(body)
 
     inner class CompletionMenuBackend(
         val providers: List<ICodeCompletionActionProvider>,
