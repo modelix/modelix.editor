@@ -12,10 +12,12 @@ import jetbrains.mps.typechecking.TypecheckingFacade
 import jetbrains.mps.typechecking.TypecheckingSession
 import jetbrains.mps.typesystem.LegacyTypecheckingQueries
 import jetbrains.mps.typesystem.inference.TypeCheckingContext
+import jetbrains.mps.util.Cancellable
 import org.jetbrains.mps.openapi.language.SConceptFeature
 import org.jetbrains.mps.openapi.model.SNode
 import org.jetbrains.mps.openapi.util.Consumer
 import org.modelix.incremental.IIncrementalEngine
+import org.modelix.incremental.TrackableValue
 import org.modelix.incremental.incrementalFunction
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.INode
@@ -29,15 +31,23 @@ import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
  *
  * The typesystem and non-typesystem rules are cached per root node, because type inference is root-wide.
  * The constraints are cached per node, so a model change only re-executes them for the nodes whose input changed.
+ *
+ * The checks can be cancelled with [runCancellable], e.g. to run them in the background. A cancelled check is not
+ * cached as failed forever, but re-executed after [retryCancelledChecks].
  */
 class IncrementalModelChecker(
     private val engine: IIncrementalEngine,
 ) {
     private val constraintsChecker = ConstraintsChecker(null)
 
+    /**
+     * Only read by checks that were cancelled, so that modifying it invalidates exactly those.
+     */
+    private val cancellations = TrackableValue(0)
+
     private val fCheckTypesystemForRoot =
         incrementalFunction<List<NodeReportItem>, INode>("checkTypesystemForRoot") { context, node ->
-            runTypesystemChecks(ModelixNodeAsMPSNode.toMPSNode(node))
+            cancellable { runTypesystemChecks(ModelixNodeAsMPSNode.toMPSNode(node)) }
         }
 
     /**
@@ -45,7 +55,7 @@ class IncrementalModelChecker(
      */
     private val fCheckNodeConstraints =
         incrementalFunction<List<NodeReportItem>, INode>("checkNodeConstraints") { context, node ->
-            runConstraintsCheck(ModelixNodeAsMPSNode.toMPSNode(node))
+            cancellable { runConstraintsCheck(ModelixNodeAsMPSNode.toMPSNode(node)) }
         }
 
     /**
@@ -55,25 +65,26 @@ class IncrementalModelChecker(
      */
     private val fCheckSubtreeConstraints =
         incrementalFunction<List<NodeReportItem>, INode>("checkSubtreeConstraints") { context, node ->
-            val skipCondition = constraintsChecker.skipCondition()
-            val mpsNode = ModelixNodeAsMPSNode.toMPSNode(node)
-            if (skipCondition.skipSubtree(mpsNode)) {
-                emptyList()
-            } else {
-                val ownMessages = if (skipCondition.skipSingleNode(mpsNode)) emptyList() else checkNodeConstraints(node)
-                ownMessages + node.allChildren.flatMap { checkSubtreeConstraints(it) }
+            cancellable {
+                val skipCondition = constraintsChecker.skipCondition()
+                val mpsNode = ModelixNodeAsMPSNode.toMPSNode(node)
+                if (skipCondition.skipSubtree(mpsNode)) {
+                    emptyList()
+                } else {
+                    val ownMessages = if (skipCondition.skipSingleNode(mpsNode)) emptyList() else checkNodeConstraints(node)
+                    ownMessages + node.allChildren.flatMap { checkSubtreeConstraints(it) }
+                }
             }
         }
 
     private val fGetRootNode =
         incrementalFunction<INode, INode>("getRootNode") { context, node ->
-            if (node.getContainmentLink()?.getUID() ==
-                BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
-                    .getUID()
-            ) {
-                node
-            } else {
-                getRootNode(node.parent ?: return@incrementalFunction node)
+            cancellable {
+                if (node.isRootNode()) {
+                    node
+                } else {
+                    node.parent?.let { getRootNode(it) } ?: node
+                }
             }
         }
 
@@ -91,6 +102,46 @@ class IncrementalModelChecker(
         target: MessageTarget,
     ): List<NodeReportItem> = getAllMessages(node).filter { it.messageTarget.sameAs(target) }
 
+    /**
+     * The messages of all nodes in the root node that contains [node], grouped by node.
+     * Returns null if [node] is not part of a model.
+     */
+    fun getMessagesOfRoot(node: INode): Map<INodeReference, List<NodeReportItem>>? = getRootNodeOrNull(node)?.let { checkRoot(it) }
+
+    /**
+     * The root node that contains [node], or null if [node] is not part of a model.
+     */
+    fun getRootNodeOrNull(node: INode): INode? = getRootNode(node).takeIf { it.isRootNode() }
+
+    /**
+     * Executes [body] so that the checks it runs stop early when [isCancelled] returns true.
+     * Returns null if they were cancelled.
+     *
+     * MPS executes model access in a non-cancelable section, so the checks can't be cancelled through the
+     * ProgressManager.
+     */
+    fun <R : Any> runCancellable(
+        isCancelled: () -> Boolean,
+        body: () -> R,
+    ): R? {
+        val previous = cancellationCheck.get()
+        cancellationCheck.set(isCancelled)
+        try {
+            return body()
+        } catch (ex: CheckCancelledException) {
+            return null
+        } finally {
+            cancellationCheck.set(previous)
+        }
+    }
+
+    /**
+     * Re-executes the checks that were cancelled when they are requested the next time.
+     */
+    fun retryCancelledChecks() {
+        cancellations.setValue(cancellations.getValue() + 1)
+    }
+
     private fun checkRoot(rootNode: INode): Map<INodeReference, List<NodeReportItem>> {
         val messages = checkTypesystemForRoot(rootNode) + checkSubtreeConstraints(rootNode)
         return messages.groupBy { it.node.toModelix() }
@@ -103,6 +154,35 @@ class IncrementalModelChecker(
     private fun checkSubtreeConstraints(node: INode): List<NodeReportItem> = fCheckSubtreeConstraints(node).bind(engine).invoke()
 
     private fun getRootNode(node: INode): INode = fGetRootNode(node).bind(engine).invoke()
+
+    /**
+     * Executes the body of an incremental function so that a cancellation isn't cached as its result.
+     * A cancelled MPS checker returns an incomplete result, which is why the cancellation is checked again afterward.
+     */
+    private fun <R> cancellable(body: () -> R): R {
+        try {
+            checkCancelled()
+            val result = body()
+            checkCancelled()
+            return result
+        } catch (ex: CheckCancelledException) {
+            cancellations.getValue()
+            throw ex
+        }
+    }
+
+    private fun isCancelled() = cancellationCheck.get()?.invoke() == true
+
+    private fun checkCancelled() {
+        if (isCancelled()) throw CheckCancelledException()
+    }
+
+    private class CheckCancelledException : RuntimeException("Model check cancelled")
+
+    private fun INode.isRootNode() =
+        getContainmentLink()?.getUID() ==
+            BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
+                .getUID()
 
     /**
      * Checks the typesystem and the non-typesystem rules in a single typechecking session.
@@ -147,7 +227,10 @@ class IncrementalModelChecker(
                     val typeCheckingContext = legacyQueries.typeCheckingContext
                     try {
                         typeCheckingContext.setNonTypesystemComputationMode(TypeCheckingContext.NonTypesystemComputationMode.NORMAL)
-                        typeCheckingContext.baseNodeTypesComponent.applyNonTypesystemRulesToRoot(typeCheckingContext)
+                        typeCheckingContext.baseNodeTypesComponent.applyNonTypesystemRulesToRoot(
+                            typeCheckingContext,
+                            Cancellable { isCancelled() },
+                        )
                     } finally {
                         typeCheckingContext.setNonTypesystemComputationMode(TypeCheckingContext.NonTypesystemComputationMode.OFF)
                     }
@@ -188,6 +271,8 @@ class IncrementalModelChecker(
                 .logger {}
 
         private val instances = java.util.WeakHashMap<IIncrementalEngine, IncrementalModelChecker>()
+
+        private val cancellationCheck = ThreadLocal<(() -> Boolean)?>()
 
         /**
          * Returns a checker whose results are cached in the given engine.

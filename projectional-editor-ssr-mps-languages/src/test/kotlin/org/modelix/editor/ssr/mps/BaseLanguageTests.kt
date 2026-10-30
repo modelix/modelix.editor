@@ -41,6 +41,7 @@ import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.mps.editor.common.IncrementalModelChecker
 
 /**
  * Test editor for MPS baseLanguage ClassConcept
@@ -648,6 +649,63 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
             assertEquals(emptyList<CheckMessage>(), errorMessages())
         }
+
+    fun `test model check messages are shown in the editor after the check finished in the background`() =
+        kotlinx.coroutines.test.runTest {
+            assertEquals(emptyList<String>(), awaitErrorMessagesInEditor(present = false))
+
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
+            typeText("return")
+            typeText("10")
+            assertNotEmpty(awaitErrorMessagesInEditor(present = true))
+
+            pressKey(KnownKeys.Delete)
+            placeCaretIntoCellWithText("return")
+            pressKey(KnownKeys.Delete)
+            assertEditorText("""
+            public class Class1 {
+              public void method1() {
+
+              }
+            }
+        """)
+            assertEquals(emptyList<String>(), awaitErrorMessagesInEditor(present = false))
+        }
+
+    fun `test a cancelled model check is executed again after retrying it`() {
+        val engine = IncrementalEngine()
+        try {
+            val checker = IncrementalModelChecker(engine)
+            val root = classNode.asLegacyNode()
+            assertNull(readAction { checker.runCancellable({ true }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+            // Without retrying, the cancelled checks would still be cached as failed.
+            assertNull(readAction { checker.runCancellable({ false }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+
+            checker.retryCancelledChecks()
+            assertNotNull(readAction { checker.runCancellable({ false }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+        } finally {
+            engine.dispose()
+        }
+    }
+
+    /**
+     * The model checker publishes its messages asynchronously, so they are only shown eventually.
+     */
+    private suspend fun awaitErrorMessagesInEditor(present: Boolean): List<String> {
+        val deadline = System.currentTimeMillis() + 30_000
+        while (true) {
+            editor.flush()
+            val messages =
+                editor
+                    .getRootCell()
+                    .descendantsAndSelf()
+                    .mapNotNull { it.getProperty(CommonCellProperties.errorMessage) }
+                    .toList()
+            if (messages.isNotEmpty() == present || System.currentTimeMillis() > deadline) return messages
+            // Not delay(), because runTest skips it in virtual time.
+            Thread.sleep(100)
+        }
+    }
 
     /**
      * MPS holds an enumeration value as `<memberId>/<name>` and its editor shows the name, converting in
