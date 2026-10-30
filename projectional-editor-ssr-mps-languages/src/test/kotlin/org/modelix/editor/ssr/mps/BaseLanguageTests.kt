@@ -813,6 +813,57 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         }
 
     /**
+     * The presentation of a target is asked for on the tracked wrapper of the node, not the node itself: MPS's
+     * `getPresentation` behavior, which reads the name the way MPS code does - honouring a property getter in the
+     * constraints, as an optionally named concept has. A target whose name is not stored used to be written as the
+     * `toString()` of the modelix node (`MPSWritableNode(node=...)`), and naming it later has to update the cell,
+     * which it only does if the reads the behavior makes are dependency tracked.
+     */
+    fun `test a reference to an unnamed target is written as its presentation and follows its name`() =
+        kotlinx.coroutines.test.runTest {
+            lateinit var declaration: IWritableNode
+            lateinit var variableReference: IWritableNode
+            writeAction {
+                declaration =
+                    methodBodyNode
+                        .addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068581242864")
+                        ).addNewChild(
+                            IChildLinkReference.fromName("localVariableDeclaration"),
+                            -1,
+                            ConceptReference(BL + "1068581242863")
+                        )
+                variableReference =
+                    methodBodyNode
+                        .addNewChild(
+                            IChildLinkReference.fromName("statement"),
+                            -1,
+                            ConceptReference(BL + "1068580123155")
+                        ).addNewChild(
+                            IChildLinkReference.fromName("expression"),
+                            -1,
+                            ConceptReference(BL + "1068498886296")
+                        )
+                // Declared by a super concept, which a link looked up by name alone does not find.
+                val link =
+                    variableReference
+                        .getConcept()
+                        .getAllReferenceLinks()
+                        .first { it.getSimpleName() == "variableDeclaration" }
+                variableReference.setReferenceTarget(link.toReference(), declaration)
+            }
+            editor.flush()
+            // What MPS writes for an unnamed node: the alias of LocalVariableDeclaration is `<type> <var>`.
+            assertEquals("<no name>[<type> <var>]", referenceCellText(variableReference, "variableDeclaration"))
+
+            writeAction { declaration.setPropertyValue(IPropertyReference.fromName("name"), "x") }
+            editor.flush()
+            assertEquals("x", referenceCellText(variableReference, "variableDeclaration"))
+        }
+
+    /**
      * The text of the cell that shows [node]'s reference in [linkName].
      */
     private fun referenceCellText(

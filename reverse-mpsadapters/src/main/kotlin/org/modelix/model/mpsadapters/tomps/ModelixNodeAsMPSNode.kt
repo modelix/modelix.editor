@@ -140,7 +140,12 @@ data class ModelixNodeAsMPSNode(
 
     override fun isInstanceOfConcept(superConcept: SAbstractConcept): Boolean = node.getConcept().isSubConceptOf(MPSConcept(superConcept))
 
-    override fun getPresentation(): String = getName() ?: node.toString()
+    /**
+     * What [jetbrains.mps.smodel.SNode.getPresentation] does: the `getPresentation` behavior, which also honours
+     * property getters in the constraints (a derived `name`). It runs on this wrapper rather than the unwrapped node,
+     * so every read it makes is dependency tracked.
+     */
+    override fun getPresentation(): String = SNodeUtil.getPresentation(this).orEmpty()
 
     override fun getName(): String? = getProperty(SNodeUtil.property_INamedConcept_name)
 
