@@ -142,6 +142,68 @@
     padding: 3px 6px;
 }
 
+.editor .context-actions-menu {
+    position: absolute;
+    z-index: 1;
+    min-width: 200px;
+    white-space: nowrap;
+    font-family: sans-serif;
+    font-size: 10pt;
+    color: black;
+    background-color: white;
+    border: 1px solid #acacac;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 2px 2px 12px 0 rgba(0, 0, 0, 0.35);
+}
+
+.editor .context-actions-menu .context-actions-title {
+    padding: 2px 8px;
+    font-size: 9pt;
+    color: #555;
+    background-color: #ededed;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.editor .context-actions-menu .context-actions-search {
+    padding: 2px 8px;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.editor .context-actions-menu .context-actions-pattern {
+    display: inline-block;
+}
+
+.editor .context-actions-menu .context-actions-entries {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.editor .context-actions-menu .context-action {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 3px 8px;
+}
+
+.editor .context-actions-menu .context-action.selected {
+    background-color: #1055d1;
+    color: white;
+}
+
+.editor .context-actions-menu .context-action-description {
+    color: #808080;
+}
+
+.editor .context-actions-menu .context-action.selected .context-action-description {
+    color: #d5e0f5;
+}
+
+.editor .context-actions-menu .context-actions-empty {
+    padding: 3px 8px;
+    color: #808080;
+}
+
 /* Cmd/Ctrl+click navigates to the target of a reference. While the modifier is held, the reference cell under the
    mouse is marked as clickable, like MPS does. The class on the container is set by the client that dispatches the
    keyboard events. */

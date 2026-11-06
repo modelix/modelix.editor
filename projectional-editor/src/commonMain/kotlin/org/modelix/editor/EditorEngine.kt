@@ -118,6 +118,15 @@ class EditorEngine(
      */
     fun getNodeAttributeLayers(node: INode): List<INode> = node.getAttributes().filter { isRenderedAsLayer(it) }
 
+    /**
+     * The position in the `smodelAttribute` role of a new attribute of [node] that goes inside all its existing layers,
+     * directly around the node's own cell.
+     */
+    fun getIndexInsideNodeAttributes(node: INode): Int {
+        val innermostLayer = getNodeAttributeLayers(node).lastOrNull() ?: return 0
+        return node.getAttributes().indexOfFirst { it.reference == innermostLayer.reference } + 1
+    }
+
     private fun isRenderedAsLayer(attribute: INode): Boolean {
         val concept = attribute.concept ?: return false
         if (!concept.isNodeAttribute()) return false
@@ -131,7 +140,7 @@ class EditorEngine(
 
     /**
      * The notations of node attributes that can be added in the editor, by typing the text of their notation next to
-     * the node they wrap. Only notations that render the attributed node qualify.
+     * the node they wrap or with a context action. Only notations that render the attributed node qualify.
      */
     fun getNodeAttributeTemplates(): List<NotationRootCellTemplate> =
         getAllConceptEditors()
@@ -281,6 +290,7 @@ class EditorEngine(
             }
             data.properties[CommonCellProperties.selectable] = true
             data.properties[CellActionProperties.delete] = DeleteNodeCellAction(node)
+            data.properties[CellActionProperties.contextActions] = NodeContextActions(node)
             return data
         } catch (ex: Exception) {
             LOG.error(ex) { "Failed to create cell for $node" }

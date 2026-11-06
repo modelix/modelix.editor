@@ -27,6 +27,7 @@ import org.modelix.editor.getActionsAfter
 import org.modelix.editor.getActionsBefore
 import org.modelix.editor.getBordersBetween
 import org.modelix.editor.getCompletionPattern
+import org.modelix.editor.getContextActions
 import org.modelix.editor.getSubstituteActions
 import org.modelix.editor.isTabTarget
 import org.modelix.editor.isVisible
@@ -39,6 +40,7 @@ import org.modelix.editor.text.frontend.getSelectableText
 import org.modelix.editor.text.frontend.type
 import org.modelix.editor.text.shared.CompletionMenuEntryData
 import org.modelix.editor.text.shared.CompletionMenuTrigger
+import org.modelix.editor.text.shared.ContextActionsMenuTrigger
 import org.modelix.editor.text.shared.EditorId
 import org.modelix.editor.text.shared.EditorUpdateData
 import org.modelix.editor.text.shared.ServiceCallResult
@@ -242,21 +244,14 @@ class TextEditorServiceImpl(
                         return@runWithCell matchingActions.first().executeAndUpdateSelection(updateChannel)
                     }
                     return@runWithCell updateChannel.createUpdate().copy(
-                        completionMenuTrigger =
+                        menuTrigger =
                             CompletionMenuTrigger(
                                 anchor = cell.getId(),
                                 completionPosition = completionPosition,
                                 pattern = replacement,
                                 caretPosition = replacement.length
                             ),
-                        completionEntries =
-                            updateChannel.editor.loadCompletionEntries(providers, replacement).mapIndexed { index, entry ->
-                                CompletionMenuEntryData(
-                                    id = index,
-                                    matchingText = entry.getMatchingText(),
-                                    description = entry.getDescription()
-                                )
-                            }
+                        completionEntries = updateChannel.editor.loadCompletionEntries(providers, replacement).toEntryData()
                     )
                 }
             }
@@ -274,21 +269,26 @@ class TextEditorServiceImpl(
             val pattern = fullPattern.take(caretPosition)
             val providers = cell.getSubstituteActions().toList()
             updateChannel.createUpdate().copy(
-                completionMenuTrigger =
+                menuTrigger =
                     CompletionMenuTrigger(
                         anchor = cell.getId(),
                         completionPosition = CompletionPosition.CENTER,
                         pattern = fullPattern,
                         caretPosition = caretPosition
                     ),
-                completionEntries =
-                    updateChannel.editor.loadCompletionEntries(providers, pattern).mapIndexed { index, entry ->
-                        CompletionMenuEntryData(
-                            id = index,
-                            matchingText = entry.getMatchingText(),
-                            description = entry.getDescription()
-                        )
-                    }
+                completionEntries = updateChannel.editor.loadCompletionEntries(providers, pattern).toEntryData()
+            )
+        }
+
+    override suspend fun triggerContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData =
+        runWithCell(editorId, cellId) { updateChannel, cell ->
+            updateChannel.createUpdate().copy(
+                menuTrigger = ContextActionsMenuTrigger(anchorCellId),
+                completionEntries = updateChannel.editor.loadCompletionEntries(listOfNotNull(cell.getContextActions()), "").toEntryData()
             )
         }
 
@@ -303,16 +303,7 @@ class TextEditorServiceImpl(
             val entries =
                 updateChannel.editor.completionMenu?.updateActions(pattern)
                     ?: updateChannel.editor.loadCompletionEntries(cell.getSubstituteActions().toList(), pattern)
-            updateChannel.createUpdate().copy(
-                completionEntries =
-                    entries.mapIndexed { index, entry ->
-                        CompletionMenuEntryData(
-                            id = index,
-                            matchingText = entry.getMatchingText(),
-                            description = entry.getDescription()
-                        )
-                    }
-            )
+            updateChannel.createUpdate().copy(completionEntries = entries.toEntryData())
         }
 
     override suspend fun hasCodeCompletionActions(
@@ -419,6 +410,15 @@ class TextEditorServiceImpl(
 
     override suspend fun flush(editorId: Int): EditorUpdateData =
         runWithEditor(editorId) { updateChannel, editor -> updateChannel.createUpdate() }
+
+    private fun List<ICodeCompletionAction>.toEntryData(): List<CompletionMenuEntryData> =
+        mapIndexed { index, entry ->
+            CompletionMenuEntryData(
+                id = index,
+                matchingText = entry.getMatchingText(),
+                description = entry.getDescription()
+            )
+        }
 
     private fun ICellAction.executeAndUpdateSelection(channel: EditorUpdateChannel): EditorUpdateData =
         channel.createSelection(execute(channel.editor))

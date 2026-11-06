@@ -17,6 +17,7 @@ import org.modelix.editor.ICodeCompletionActionProvider
 import org.modelix.editor.JSKeyboardEvent
 import org.modelix.editor.JSKeyboardEventType
 import org.modelix.editor.KnownKeys
+import org.modelix.editor.Modifiers
 import org.modelix.editor.NodeCellReference
 import org.modelix.editor.ReferencedNodeCellReference
 import org.modelix.editor.ancestors
@@ -951,6 +952,26 @@ class BaseLanguageTests : TestBase("SimpleProject") {
                     }
                 }.map { if (it == REVIEW_MIGRATION.getUID()) "ReviewMigration" else it },
             )
+            assertFinalEditorText("""
+            public class Class1 {
+              @Review
+              public void method1() {
+
+              }
+            }
+        """)
+        }
+
+    fun `test the context actions menu adds a node attribute to the selected node`() =
+        kotlinx.coroutines.test.runTest {
+            placeCaretIntoCellWithText("method1", 0)
+            editor.processKeyEvent(
+                JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, null, KnownKeys.Enter, KnownKeys.Enter.name, Modifiers.ALT),
+            )
+            editor.flush()
+            typeText("review")
+            pressEnter()
+            editor.flush()
             assertFinalEditorText("""
             public class Class1 {
               @Review

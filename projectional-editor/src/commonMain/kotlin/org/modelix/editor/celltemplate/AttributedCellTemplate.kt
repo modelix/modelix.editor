@@ -6,6 +6,7 @@ import org.modelix.editor.CellCreationContext
 import org.modelix.editor.CellSpec
 import org.modelix.editor.CellSpecBase
 import org.modelix.editor.ChildSpecReference
+import org.modelix.editor.CodeCompletionActionWithDescription
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICompletionTokenOrList
@@ -21,6 +22,7 @@ import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.BuiltinLanguages
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
+import org.modelix.model.api.conceptAlias
 import org.modelix.model.api.upcast
 import org.modelix.parser.ISymbol
 import org.modelix.parser.SubConceptsSymbol
@@ -104,6 +106,24 @@ fun NotationRootCellTemplate.getAttributeSideTransformActions(
     val sideSymbols = if (before) symbols.take(attributedIndex) else symbols.drop(attributedIndex + 1)
     val token = sideSymbols.filterIsInstance<ConstantCellTemplate>().firstOrNull() ?: return emptyList()
     return listOf(AddNodeAttributeAction(token.text, concept, attributedNode, index))
+}
+
+/**
+ * Adding a node attribute with a context action. Unlike [getAttributeSideTransformActions] this doesn't depend on the
+ * notation having text on the side of the caret, so it also covers notations with no constant at all.
+ */
+fun NotationRootCellTemplate.getAddAttributeContextAction(
+    attributedNode: INode,
+    index: Int,
+): ICodeCompletionAction? {
+    val attributedCell = descendants(includeSelf = true).filterIsInstance<AttributedCellTemplate>().firstOrNull() ?: return null
+    if (!attributedCell.isApplicableTo(attributedNode)) return null
+    // An alias can be a symbol (`...`), which reads as nothing in a menu entry.
+    val attributeName = concept.conceptAlias()?.takeIf { alias -> alias.any { it.isLetterOrDigit() } } ?: concept.getShortName()
+    return CodeCompletionActionWithDescription(
+        AddNodeAttributeAction("Add $attributeName", concept, attributedNode, index),
+        "Attribute of ${attributedNode.concept?.getShortName()}",
+    )
 }
 
 /**

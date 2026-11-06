@@ -10,13 +10,17 @@ import org.iets3.core.expr.simpleTypes.C_NumberLiteral
 import org.iets3.core.expr.tests.C_OldNodeAnnotation
 import org.modelix.editor.CaretSelection
 import org.modelix.editor.Cell
+import org.modelix.editor.CellSelection
+import org.modelix.editor.ContextActionsMenu
 import org.modelix.editor.EditorAspect
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.FrontendEditorComponent
 import org.modelix.editor.JSKeyboardEvent
 import org.modelix.editor.JSKeyboardEventType
 import org.modelix.editor.KeyLocation
+import org.modelix.editor.KnownKeys
 import org.modelix.editor.Modifiers
+import org.modelix.editor.NodeCellReference
 import org.modelix.editor.descendants
 import org.modelix.editor.layoutable
 import org.modelix.editor.text.backend.TextEditorServiceImpl
@@ -32,7 +36,9 @@ import org.modelix.model.area.PArea
 import org.modelix.model.withIncrementalComputationSupport
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -201,6 +207,190 @@ class NodeAttributeTest {
             assertEquals("(200)", renderedText())
         }
 
+    @Test
+    fun altEnterOffersTheAttributesOfTheSelectedNode() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+
+            assertEquals(listOf(ADD_BOOKMARK, ADD_TODO, ADD_OLD_NODE), contextActions())
+            assertEquals(emptyList(), attributeConcepts())
+        }
+
+    @Test
+    fun enterExecutesTheSelectedContextAction() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            pressKey(KnownKeys.ArrowDown)
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(listOf("DotDotDot"), attributeConcepts())
+            assertEquals("(todo 200)", renderedText())
+            assertNull(editor.getActionMenu())
+        }
+
+    @Test
+    fun escapeClosesTheContextActionsMenu() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            pressKey(KnownKeys.Escape)
+
+            assertNull(editor.getActionMenu())
+            assertEquals(emptyList(), attributeConcepts())
+        }
+
+    @Test
+    fun enterWithoutAltDoesNotOpenTheContextActionsMenu() =
+        runAttributeTest {
+            selectText(cellWithText("200"))
+            pressKey(KnownKeys.Enter)
+
+            assertNull(editor.getActionMenu())
+        }
+
+    @Test
+    fun searchingUsesTheWholePatternWhereverTheCaretIs() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            typeIntoMenu("mark")
+            pressKey(KnownKeys.ArrowLeft)
+
+            assertEquals(listOf(ADD_BOOKMARK), contextActions())
+        }
+
+    @Test
+    fun typingSearchesTheContextActionsAnywhereInTheirTextIgnoringTheCase() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            typeIntoMenu("MARK")
+
+            assertEquals(listOf(ADD_BOOKMARK), contextActions())
+        }
+
+    @Test
+    fun aContextActionIsNotExecutedBeforeItIsConfirmed() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            typeIntoMenu(ADD_BOOKMARK)
+
+            assertEquals(emptyList(), attributeConcepts())
+            pressKey(KnownKeys.Enter)
+            assertEquals(listOf("BookmarkAnnotation"), attributeConcepts())
+        }
+
+    @Test
+    fun narrowingTheContextActionsKeepsAnEntrySelected() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            pressKey(KnownKeys.ArrowUp) // wraps around to the last one
+            typeIntoMenu("bookmark")
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(listOf("BookmarkAnnotation"), attributeConcepts())
+        }
+
+    @Test
+    fun anAttributeWithoutTextOfItsOwnCanBeAddedWithAContextAction() =
+        runAttributeTest({ conceptEditor(C_NameAnnotation) { attributed() } }) {
+            openContextActions(cellWithText("200"))
+            typeIntoMenu(C_NameAnnotation.untyped().getShortName())
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(listOf("NameAnnotation"), attributeConcepts())
+            assertEquals("(200)", renderedText())
+        }
+
+    @Test
+    fun aContextActionIsOnlyOfferedForAnAttributeThatCanBeAdded() =
+        runAttributeTest {
+            addAttribute(C_BookmarkAnnotation.untyped()) { it.setPropertyValue("label", "b1") }
+
+            openContextActions(cellWithText("200"))
+
+            assertEquals(listOf(ADD_TODO, ADD_OLD_NODE), contextActions())
+        }
+
+    @Test
+    fun aContextActionAppliesToTheSelectedParentNode() =
+        runAttributeTest {
+            // OldNodeAnnotation can only be attached to a number literal.
+            val parensCell = editor.resolveCell(NodeCellReference(parens.reference)).single()
+            editor.doChangeSelection(CellSelection(editor, parensCell, true, null))
+            pressKey(KnownKeys.Enter, Modifiers.ALT)
+            assertEquals(listOf(ADD_BOOKMARK, ADD_TODO), contextActions())
+
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(emptyList(), attributeConcepts())
+            assertEquals(listOf("BookmarkAnnotation"), attributeConcepts(parens))
+        }
+
+    @Test
+    fun anAttributeAddedOnTheNodeGoesInsideTheExistingOnes() =
+        runAttributeTest {
+            addAttribute(C_DotDotDot.untyped())
+
+            openContextActions(cellWithText("200"))
+            typeIntoMenu("bookmark")
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(listOf("DotDotDot", "BookmarkAnnotation"), attributeConcepts())
+        }
+
+    @Test
+    fun anAttributeAddedOnAnotherOneGoesOutsideOfIt() =
+        runAttributeTest {
+            addAttribute(C_DotDotDot.untyped())
+
+            openContextActions(cellWithText("todo"))
+            typeIntoMenu("bookmark")
+            pressKey(KnownKeys.Enter)
+
+            assertEquals(listOf("BookmarkAnnotation", "DotDotDot"), attributeConcepts())
+        }
+
+    private suspend fun selectText(cell: Cell) {
+        editor.flushAndUpdateSelection { CaretSelection(editor, cell.layoutable()!!, 0) }
+        editor.flush()
+    }
+
+    private suspend fun openContextActions(cell: Cell) {
+        selectText(cell)
+        pressKey(KnownKeys.Enter, Modifiers.ALT)
+    }
+
+    private suspend fun pressKey(
+        key: KnownKeys,
+        modifiers: Modifiers = Modifiers.NONE,
+    ) {
+        editor.processKeyEvent(
+            JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, null, key, key.name, modifiers, KeyLocation.STANDARD, false, false),
+        )
+        editor.flush()
+    }
+
+    private suspend fun typeIntoMenu(text: String) {
+        for (c in text) {
+            editor.processKeyEvent(
+                JSKeyboardEvent(
+                    JSKeyboardEventType.KEYDOWN,
+                    c.toString(),
+                    null,
+                    c.toString(),
+                    Modifiers.NONE,
+                    KeyLocation.STANDARD,
+                    false,
+                    false
+                ),
+            )
+            editor.flush()
+        }
+    }
+
+    private fun contextActions(): List<String> =
+        assertIs<ContextActionsMenu>(editor.getActionMenu(), "The context actions menu is not open")
+            .getVisibleEntries()
+            .map { it.matchingText }
+
     private suspend fun addAttribute(
         concept: IConcept,
         init: (INode) -> Unit = {},
@@ -227,8 +417,8 @@ class NodeAttributeTest {
         editor.flushAndUpdateSelection { null }
     }
 
-    private fun attributeConcepts(): List<String> =
-        branch.computeRead { literal.getChildren("smodelAttribute").map { it.concept!!.getShortName() }.toList() }
+    private fun attributeConcepts(node: INode = literal): List<String> =
+        branch.computeRead { node.getChildren("smodelAttribute").map { it.concept!!.getShortName() }.toList() }
 
     private fun cellWithText(text: String): Cell =
         assertNotNull(
@@ -290,4 +480,10 @@ class NodeAttributeTest {
                 "!!".constant()
             }
         }
+
+    private companion object {
+        const val ADD_BOOKMARK = "Add BookmarkAnnotation"
+        const val ADD_TODO = "Add DotDotDot"
+        const val ADD_OLD_NODE = "Add OldNodeAnnotation"
+    }
 }

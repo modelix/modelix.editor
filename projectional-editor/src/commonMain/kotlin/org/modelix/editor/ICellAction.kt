@@ -59,6 +59,7 @@ object CellActionProperties {
     val delete = BackendCellPropertyKey<ICellAction?>("delete", null)
     val show = BackendCellPropertyKey<ICellAction?>("show", null)
     val replaceText = BackendCellPropertyKey<ITextChangeAction?>("replaceText", null)
+    val contextActions = BackendCellPropertyKey<ICodeCompletionActionProvider?>("contextActions", null)
 }
 
 class SideTransformNode(
@@ -87,8 +88,7 @@ class SideTransformNode(
      * Node attributes added on the border of the node's own cell go inside all existing ones.
      */
     private fun getAttributeActions(engine: EditorEngine): List<IActionOrProvider> {
-        val innermostLayer = engine.getNodeAttributeLayers(node).lastOrNull()
-        val index = innermostLayer?.let { layer -> node.getAttributes().indexOfFirst { it.reference == layer.reference } + 1 } ?: 0
+        val index = engine.getIndexInsideNodeAttributes(node)
         return engine.getNodeAttributeTemplates().flatMap { it.getAttributeSideTransformActions(before, node, index) }
     }
 }

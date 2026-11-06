@@ -7,133 +7,66 @@ import kotlinx.html.td
 import kotlinx.html.tr
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.text.shared.CompletionMenuEntryData
-import org.modelix.editor.text.shared.celltree.cellReferences
-
-class ReresolvableLayoutable(
-    initial: LayoutableCell,
-) {
-    private var current: LayoutableCell = initial
-    private var references = initial.cell.cellReferences
-
-    fun get(editor: FrontendEditorComponent): LayoutableCell {
-        if (!current.cell.isAttached()) {
-            val resolvedCell =
-                checkNotNull(references.firstNotNullOfOrNull { editor.resolveCell(it).firstOrNull() }) {
-                    "Cell not found: $references"
-                }
-            current =
-                checkNotNull(editor.resolveLayoutable(resolvedCell)) {
-                    "Layoutable not found for cell $resolvedCell"
-                }
-        }
-        return current
-    }
-}
 
 class CodeCompletionMenu(
-    val editor: FrontendEditorComponent,
+    editor: FrontendEditorComponent,
     anchor: LayoutableCell,
     val completionPosition: CompletionPosition,
     initialEntries: List<CompletionMenuEntryData>,
     initialPattern: String = "",
     initialCaretPosition: Int? = null,
-) : IProducesHtml,
-    IKeyboardHandler {
-    val patternEditor = PatternEditor(initialPattern, initialCaretPosition)
-    private var selectedIndex: Int = 0
-    private var allEntries: List<CompletionMenuEntryData> = initialEntries
-    private var filteredEntries: List<CompletionMenuEntryData> = allEntries
-    private val anchor = ReresolvableLayoutable(anchor)
+) : ActionMenu(editor, anchor, initialEntries, initialPattern, initialCaretPosition) {
+    override val patternClass: String get() = "ccmenu-pattern"
+    override val selectedEntryClass: String get() = "ccSelectedEntry"
 
-    init {
-        applyFilter()
-    }
+    override fun matches(entry: CompletionMenuEntryData): Boolean = entry.matches(patternEditor.getTextBeforeCaret())
 
-    fun getAnchor() = anchor.get(editor)
-
-    override fun isHtmlOutputValid(): Boolean = false
-
-    fun loadEntries(newActions: List<CompletionMenuEntryData>) {
-        allEntries = newActions
-        applyFilter()
-    }
-
-    fun applyFilter() {
-        val pattern = patternEditor.getTextBeforeCaret()
-        filteredEntries = allEntries.filter { it.matches(pattern) }
-    }
-
-    suspend fun updateActions() {
+    override suspend fun updateEntries() {
         editor.updateCodeCompletionActions(getAnchor().cell, patternEditor.getTextBeforeCaret())
     }
 
-    fun selectNext() {
-        selectedIndex++
-        if (selectedIndex >= filteredEntries.size) selectedIndex = 0
-        editor.invalidateCompletionMenu()
+    override suspend fun onPatternEdited() {
+        updateEntries()
+        executeIfSingleAction()
     }
 
-    fun selectPrevious() {
-        selectedIndex--
-        if (selectedIndex < 0) selectedIndex = (filteredEntries.size - 1).coerceAtLeast(0)
-        editor.invalidateCompletionMenu()
-    }
-
-    fun getSelectedEntry(): CompletionMenuEntryData? = filteredEntries.getOrNull(selectedIndex)
-
-    override suspend fun processKeyDown(event: JSKeyboardEvent): Boolean {
-        when (event.knownKey) {
-            KnownKeys.ArrowUp -> {
-                selectPrevious()
+    override suspend fun onTextInserted(
+        oldTextBeforeCaret: String,
+        remainingText: String,
+    ) {
+        val exactMatches = allEntries.filter { it.matchesExactly(oldTextBeforeCaret) }
+        if (exactMatches.size == 1 &&
+            !editor.serviceCall {
+                hasCodeCompletionActions(editor.editorId, getAnchor().cell.getId(), patternEditor.getTextBeforeCaret())
             }
-
-            KnownKeys.ArrowDown -> {
-                selectNext()
-            }
-
-            KnownKeys.ArrowLeft -> {
-                patternEditor.moveCaret(-1)
-            }
-
-            KnownKeys.ArrowRight -> {
-                patternEditor.moveCaret(1)
-            }
-
-            KnownKeys.Escape -> {
-                editor.closeCodeCompletionMenu()
-            }
-
-            KnownKeys.Enter -> {
-                getSelectedEntry()?.execute()
-            }
-
-            KnownKeys.Backspace -> {
-                patternEditor.deleteText(true)
-            }
-
-            KnownKeys.Delete -> {
-                patternEditor.deleteText(false)
-            }
-
-            else -> {
-                if (event.typedText.isNullOrEmpty()) return false
-                if (event.typedText == " " && event.modifiers.ctrl) {
-                    patternEditor.moveCaret(-patternEditor.caretPos)
-                } else {
-                    patternEditor.insertText(event.typedText)
+        ) {
+            execute(exactMatches.single())
+            editor.closeActionMenu()
+            if (remainingText.isNotEmpty()) {
+                editor.enqueueUpdate {
+                    (editor.getSelection() as CaretSelection).processTypedText(remainingText)
                 }
             }
+        } else {
+            onPatternEdited()
         }
-        editor.flushLocalLater()
-        return true
     }
 
-    private suspend fun CompletionMenuEntryData.execute() {
-        val entry = this
-        editor.serviceCall {
-            executeCodeCompletionAction(editor.editorId, entry.id)
+    suspend fun executeIfSingleAction() {
+        val singleEntry = filteredEntries.singleOrNull() ?: return
+        if (singleEntry.matchesExactly(patternEditor.getTextBeforeCaret())) {
+            execute(singleEntry)
         }
-        editor.closeCodeCompletionMenu()
+    }
+
+    override fun getPosition(anchorBounds: Bounds): Position {
+        val left =
+            when (completionPosition) {
+                CompletionPosition.CENTER -> anchorBounds.x
+                CompletionPosition.LEFT -> anchorBounds.x - (getPatternElement()?.getOuterBounds()?.width ?: 0.0)
+                CompletionPosition.RIGHT -> anchorBounds.maxX()
+            }
+        return Position(left, anchorBounds.y)
     }
 
     override fun <T> produceHtml(consumer: TagConsumer<T>) {
@@ -142,7 +75,7 @@ class CodeCompletionMenu(
             div("ccmenu") {
                 table {
                     filteredEntries.forEachIndexed { index, action ->
-                        tr("ccSelectedEntry".takeIf { index == selectedIndex }) {
+                        tr(selectedEntryClass.takeIf { index == selectedIndex }) {
                             td("matchingText") {
                                 +action.matchingText
                             }
@@ -159,80 +92,6 @@ class CodeCompletionMenu(
                         }
                     }
                 }
-            }
-        }
-    }
-
-    suspend fun executeIfSingleAction() {
-        val singleEntry = filteredEntries.singleOrNull() ?: return
-        if (singleEntry.matchesExactly(patternEditor.getTextBeforeCaret())) {
-            singleEntry.execute()
-        }
-    }
-
-    inner class PatternEditor(
-        initialPattern: String,
-        initialCaretPosition: Int?,
-    ) : IProducesHtml {
-        private var patternCell: Cell? = null
-        var caretPos: Int = initialCaretPosition ?: initialPattern.length
-        var pattern: String = initialPattern
-
-        override fun isHtmlOutputValid(): Boolean = false
-
-        fun getTextBeforeCaret() = pattern.substring(0, caretPos)
-
-        suspend fun deleteText(before: Boolean): Boolean {
-            if (before) {
-                if (caretPos == 0) return false
-                pattern = pattern.removeRange((caretPos - 1) until caretPos)
-                caretPos--
-            } else {
-                if (caretPos == pattern.length) return false
-                pattern = pattern.removeRange(caretPos..caretPos)
-            }
-            updateActions()
-            executeIfSingleAction()
-            return true
-        }
-
-        suspend fun insertText(text: String) {
-            val oldTextBeforeCaret = pattern.substring(0, caretPos)
-            pattern = pattern.replaceRange(caretPos until caretPos, text)
-            val remainingText = pattern.substring(caretPos)
-            caretPos += text.length
-            val newTextBeforeCaret = pattern.substring(0, caretPos)
-
-            val exactMatches = allEntries.filter { it.matchesExactly(oldTextBeforeCaret) }
-            if (exactMatches.size == 1 &&
-                !editor.serviceCall {
-                    hasCodeCompletionActions(editor.editorId, getAnchor().cell.getId(), newTextBeforeCaret)
-                }
-            ) {
-                exactMatches.single().execute()
-                editor.closeCodeCompletionMenu()
-                if (remainingText.isNotEmpty()) {
-                    editor.enqueueUpdate {
-                        (editor.getSelection() as CaretSelection).processTypedText(remainingText)
-                    }
-                }
-            } else {
-                updateActions()
-                executeIfSingleAction()
-            }
-        }
-
-        suspend fun moveCaret(delta: Int) {
-            caretPos = (caretPos + delta).coerceIn(0..pattern.length)
-            updateActions()
-        }
-
-        override fun <T> produceHtml(consumer: TagConsumer<T>) {
-            consumer.div {
-                div("ccmenu-pattern") {
-                    +pattern.useNbsp()
-                }
-                div("caret own") { }
             }
         }
     }

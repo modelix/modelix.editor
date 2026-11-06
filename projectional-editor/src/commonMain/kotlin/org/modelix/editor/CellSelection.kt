@@ -74,6 +74,13 @@ data class CellSelection(
                 }
             }
 
+            KnownKeys.Enter -> {
+                val anchor = getLayoutables().filterIsInstance<LayoutableCell>().firstOrNull()
+                if (event.modifiers == Modifiers.ALT && anchor != null) {
+                    editor.serviceCall { triggerContextActions(editor.editorId, cell.getId(), anchor.cell.getId()) }
+                }
+            }
+
             else -> {
                 val typedText = event.typedText
                 if (!typedText.isNullOrEmpty()) {
