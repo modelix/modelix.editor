@@ -55,6 +55,16 @@ interface TextEditorService {
         caretPosition: Int,
     ): EditorUpdateData
 
+    /**
+     * Opens the context actions menu with the actions of [cellId]. [anchorCellId] is the text cell the menu is shown
+     * at. They differ if a whole node is selected, which has no text cell of its own.
+     */
+    suspend fun triggerContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData
+
     suspend fun updateCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
@@ -136,6 +146,14 @@ class NullTextEditorService : TextEditorService {
         TODO("Not yet implemented")
     }
 
+    override suspend fun triggerContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
@@ -187,17 +205,30 @@ data class ServiceCallResult<E>(
 data class EditorUpdateData(
     val cellTreeChanges: List<CellTreeOp> = emptyList(),
     val selectionChange: ICaretPositionPolicy? = null,
-    val completionMenuTrigger: CompletionMenuTrigger? = null,
+    val menuTrigger: ActionMenuTrigger? = null,
     val completionEntries: List<CompletionMenuEntryData>? = null,
 )
 
+/**
+ * Opens an [org.modelix.editor.ActionMenu] at the cell [anchor].
+ */
+@Serializable
+sealed interface ActionMenuTrigger {
+    val anchor: CellInstanceId
+}
+
 @Serializable
 data class CompletionMenuTrigger(
-    val anchor: CellInstanceId,
+    override val anchor: CellInstanceId,
     val completionPosition: CompletionPosition = CompletionPosition.CENTER,
     val pattern: String = "",
     val caretPosition: Int = 0,
-)
+) : ActionMenuTrigger
+
+@Serializable
+data class ContextActionsMenuTrigger(
+    override val anchor: CellInstanceId,
+) : ActionMenuTrigger
 
 @Serializable
 data class CompletionMenuEntryData(
@@ -205,9 +236,12 @@ data class CompletionMenuEntryData(
     val matchingText: String,
     val description: String,
 ) {
-    fun matches(pattern: String): Boolean {
+    fun matches(
+        pattern: String,
+        ignoreCase: Boolean = false,
+    ): Boolean {
         // TODO more sophisticated pattern matching
-        return matchingText.contains(pattern)
+        return matchingText.contains(pattern, ignoreCase)
     }
 
     fun matchesExactly(pattern: String): Boolean = matchingText == pattern

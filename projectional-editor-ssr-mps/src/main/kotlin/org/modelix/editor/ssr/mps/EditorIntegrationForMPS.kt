@@ -16,6 +16,7 @@ class EditorIntegrationForMPS(
     private var aspectsFromMPS: LanguageAspectsFromMPSModules? = null
     private var mpsChangeTranslator: MPSChangeTranslator? = null
     private var mpsLanguageRepository: MPSLanguageRepository? = null
+    private var modelChecker: AsyncMPSModelChecker? = null
 
     fun init(repository: SRepository) {
         mpsLanguageRepository = MPSLanguageRepository(repository)
@@ -26,7 +27,7 @@ class EditorIntegrationForMPS(
         ScopeAspect.registerScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.add(MPSConstraints)
         PropertyPresentationAspect.providers.add(MPSPropertyPresentation)
-        ModelCheckAspect.checkers.add(MPSModelChecker)
+        modelChecker = AsyncMPSModelChecker(repository).also { ModelCheckAspect.checkers.add(it) }
         editorEngine.addRegistry(aspectsFromMPS!!)
     }
 
@@ -37,7 +38,11 @@ class EditorIntegrationForMPS(
         ScopeAspect.unregisterScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.remove(MPSConstraints)
         PropertyPresentationAspect.providers.remove(MPSPropertyPresentation)
-        ModelCheckAspect.checkers.remove(MPSModelChecker)
+        modelChecker?.let {
+            ModelCheckAspect.checkers.remove(it)
+            it.dispose()
+        }
+        modelChecker = null
 
         // The change translator and the aspects registry attach listeners to MPS. Leaving them registered would keep
         // this plugin's classes referenced from MPS and prevent the plugin from being unloaded.

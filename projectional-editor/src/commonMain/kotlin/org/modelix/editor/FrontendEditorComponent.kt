@@ -18,8 +18,10 @@ import kotlinx.html.div
 import org.modelix.editor.text.backend.AtomicReference
 import org.modelix.editor.text.frontend.FrontendCellTree
 import org.modelix.editor.text.frontend.getSelectableText
+import org.modelix.editor.text.shared.ActionMenuTrigger
 import org.modelix.editor.text.shared.CompletionMenuEntryData
 import org.modelix.editor.text.shared.CompletionMenuTrigger
+import org.modelix.editor.text.shared.ContextActionsMenuTrigger
 import org.modelix.editor.text.shared.EditorId
 import org.modelix.editor.text.shared.EditorUpdateData
 import org.modelix.editor.text.shared.ServiceCallResult
@@ -151,8 +153,8 @@ open class FrontendEditorComponent(
         LOG.trace { "enqueueUpdate $updateData" }
         runSynchronized(state) {
             state.updateCellTree(updateData.cellTreeChanges)
-            if (updateData.completionMenuTrigger != null) {
-                state.triggerCodeCompletionMenu(updateData.completionMenuTrigger)
+            if (updateData.menuTrigger != null) {
+                state.triggerActionMenu(updateData.menuTrigger)
             }
             if (updateData.completionEntries != null) {
                 state.updateCompletionEntries(updateData.completionEntries)
@@ -192,7 +194,7 @@ open class FrontendEditorComponent(
 
     fun doChangeSelection(newSelection: Selection) {
         state.setSelection(newSelection)
-        state.closeCompletionMenu()
+        state.closeActionMenu()
     }
 
     fun changeSelectionLater(newSelection: Selection): UIEventDispatcher.Event<Unit> =
@@ -212,9 +214,11 @@ open class FrontendEditorComponent(
         state.showCodeCompletionMenu(anchor, position, entries, pattern, caretPosition)
     }
 
-    fun closeCodeCompletionMenu() =
+    fun getActionMenu(): ActionMenu? = state.getActionMenu()
+
+    fun closeActionMenu() =
         eventQueue.invokeLater {
-            state.closeCompletionMenu()
+            state.closeActionMenu()
         }
 
     open fun dispose() {
@@ -246,7 +250,7 @@ open class FrontendEditorComponent(
                 // state.reset()
                 return true
             }
-            for (handler in listOfNotNull(state.getCodeCompletionMenu(), state.getSelection())) {
+            for (handler in listOfNotNull(state.getActionMenu(), state.getSelection())) {
                 if (handler.processKeyDown(event)) return true
             }
             return false
@@ -404,7 +408,7 @@ open class FrontendEditorComponent(
                 produceChild(state.getSelectionView())
             }
             div("popup-layer relative-layer") {
-                produceChild(state.getCodeCompletionMenu())
+                produceChild(state.getActionMenu())
             }
         }
     }
@@ -416,10 +420,10 @@ open class FrontendEditorComponent(
         serviceCall {
             this.updateCodeCompletionActions(editorId, anchorCell.getId(), pattern)
         }
-        state.getCodeCompletionMenu() // flus pending updates of completion entries
+        state.getActionMenu() // flus pending updates of completion entries
     }
 
-    fun invalidateCompletionMenu() = state.invalidateCompletionMenu()
+    fun invalidateActionMenu() = state.invalidateActionMenu()
 
     fun scrollIntoViewLater(element: () -> IVirtualDom.HTMLElement?) {
         eventQueue.invokeLater { element()?.let { scrollIntoView(it) } }
@@ -603,20 +607,29 @@ class FrontendEditorComponentState(
         }.also {
             it.addDependency(cellTree)
         }
-    private val codeCompletionMenu =
-        Substate<CompletionMenuState>(CompletionMenuState()) { oldState ->
+    private val actionMenu =
+        Substate<ActionMenuState>(ActionMenuState()) { oldState ->
             for (trigger in oldState.pendingTriggers.asReversed()) {
                 val anchor = getCell(trigger.anchor).layoutable() ?: continue
+                val entries = oldState.pendingEntriesUpdate.orEmpty()
                 return@Substate oldState.copy(
                     menu =
-                        CodeCompletionMenu(
-                            editorComponent,
-                            anchor,
-                            trigger.completionPosition,
-                            oldState.pendingEntriesUpdate.orEmpty(),
-                            trigger.pattern,
-                            trigger.caretPosition,
-                        ),
+                        when (trigger) {
+                            is CompletionMenuTrigger -> {
+                                CodeCompletionMenu(
+                                    editorComponent,
+                                    anchor,
+                                    trigger.completionPosition,
+                                    entries,
+                                    trigger.pattern,
+                                    trigger.caretPosition,
+                                )
+                            }
+
+                            is ContextActionsMenuTrigger -> {
+                                ContextActionsMenu(editorComponent, anchor, entries)
+                            }
+                        },
                     pendingTriggers = emptyList(),
                     pendingEntriesUpdate = null
                 )
@@ -671,7 +684,7 @@ class FrontendEditorComponentState(
             newHighlightedCell?.addClass("highlighted-cell")
 
             selectionView.getValidState()?.update()
-            codeCompletionMenu.getValidState().menu?.let { CodeCompletionMenuUI(it, editorComponent).updateBounds() }
+            actionMenu.getValidState().menu?.updateBounds()
 
             oldState.copy(
                 highlightedLine = newHighlightedLine,
@@ -685,7 +698,7 @@ class FrontendEditorComponentState(
             it.addDependency(layoutablesIndex)
             it.addDependency(selection)
             it.addDependency(selectionView)
-            it.addDependency(codeCompletionMenu)
+            it.addDependency(actionMenu)
         }
 
     @JvmSynchronized
@@ -703,8 +716,8 @@ class FrontendEditorComponentState(
     }
 
     @JvmSynchronized
-    fun invalidateCompletionMenu() {
-        codeCompletionMenu.invalidate()
+    fun invalidateActionMenu() {
+        actionMenu.invalidate()
     }
 
     @JvmSynchronized
@@ -727,7 +740,7 @@ class FrontendEditorComponentState(
     fun resetCellTree() {
         cellTree.setState(CellTreeState(FrontendCellTree(editorComponent), emptyList()))
         selection.setState(SelectionState())
-        codeCompletionMenu.setState(CompletionMenuState())
+        actionMenu.setState(ActionMenuState())
     }
 
     @JvmSynchronized
@@ -739,7 +752,7 @@ class FrontendEditorComponentState(
     }
 
     @JvmSynchronized
-    fun getCodeCompletionMenu() = codeCompletionMenu.getValidState().menu
+    fun getActionMenu() = actionMenu.getValidState().menu
 
     @JvmSynchronized
     fun getSelectionView() = selectionView.getValidState()
@@ -762,8 +775,8 @@ class FrontendEditorComponentState(
     fun getSelection() = selection.getValidState().selection
 
     @JvmSynchronized
-    fun closeCompletionMenu() {
-        codeCompletionMenu.changeState { CompletionMenuState() }
+    fun closeActionMenu() {
+        actionMenu.changeState { ActionMenuState() }
     }
 
     @JvmSynchronized
@@ -774,21 +787,21 @@ class FrontendEditorComponentState(
         pattern: String = "",
         caretPosition: Int? = null,
     ) {
-        codeCompletionMenu.setState(
-            CompletionMenuState(
+        actionMenu.setState(
+            ActionMenuState(
                 menu = CodeCompletionMenu(editorComponent, anchor, position, entries, pattern, caretPosition)
             )
         )
     }
 
     @JvmSynchronized
-    fun triggerCodeCompletionMenu(trigger: CompletionMenuTrigger) {
-        codeCompletionMenu.changeState { it.copy(pendingTriggers = it.pendingTriggers + trigger) }
+    fun triggerActionMenu(trigger: ActionMenuTrigger) {
+        actionMenu.changeState { it.copy(pendingTriggers = it.pendingTriggers + trigger) }
     }
 
     @JvmSynchronized
     fun updateCompletionEntries(newEntries: List<CompletionMenuEntryData>) {
-        codeCompletionMenu.changeState { it.copy(pendingEntriesUpdate = newEntries) }
+        actionMenu.changeState { it.copy(pendingEntriesUpdate = newEntries) }
     }
 
     data class CellTreeState(
@@ -807,9 +820,9 @@ class FrontendEditorComponentState(
         val pendingSelectionUpdates: List<ICaretPositionPolicy> = emptyList(),
     )
 
-    data class CompletionMenuState(
-        val menu: CodeCompletionMenu? = null,
-        val pendingTriggers: List<CompletionMenuTrigger> = emptyList(),
+    data class ActionMenuState(
+        val menu: ActionMenu? = null,
+        val pendingTriggers: List<ActionMenuTrigger> = emptyList(),
         val pendingEntriesUpdate: List<CompletionMenuEntryData>? = null,
     )
 }

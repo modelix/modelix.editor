@@ -83,6 +83,8 @@ import org.modelix.model.mpsadapters.MPSProperty
 import org.modelix.model.mpsadapters.MPSReferenceLink
 import org.modelix.model.mpsadapters.MPSRepositoryAsNode
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.mps.editor.common.stopBeforeDisposal
+import org.modelix.mps.editor.common.stopBounded
 import org.modelix.presentation.IPropertyPresentation
 import org.modelix.scopes.IScope
 import org.modelix.scopes.IScopeProvider
@@ -116,6 +118,13 @@ class ModelixSSRServerForMPS : Disposable {
     companion object {
         private const val SHUTDOWN_GRACE_PERIOD_MS = 1_000L
         private const val SHUTDOWN_TIMEOUT_MS = 5_000L
+        private const val SHUTDOWN_MAX_WAIT_MS = 10_000L
+    }
+
+    init {
+        // Stopping the server in dispose() is only the fallback. dispose() is called inside a write action, where
+        // request handlers that wait for a read action can't finish.
+        stopBeforeDisposal(this, javaClass) { ensureStopped() }
     }
 
     private var ssrServer: ModelixSSRServer? = null
@@ -259,9 +268,9 @@ class ModelixSSRServerForMPS : Disposable {
         runSynchronized(this) {
             if (ktorServer == null) return
             println("stopping projectional editor SSR server")
-            // A bounded timeout is required. An unbounded stop() can block forever, which would block the plugin
+            // A bounded wait is required. An unbounded stop() can block forever, which would block the plugin
             // unloading and the MPS shutdown.
-            ktorServer?.stop(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS)
+            ktorServer?.stopBounded(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS, SHUTDOWN_MAX_WAIT_MS)
             ktorServer = null
             ssrServer?.dispose()
             ssrServer = null

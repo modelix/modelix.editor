@@ -658,6 +658,13 @@
       <property role="20lbJX" value="fLJekj4/_1" />
       <ref role="20lvS9" node="7dm8yUsMxhg" resolve="ICell" />
     </node>
+    <node concept="1TJgyj" id="4djtaRZALOl" role="1TKVEi">
+      <property role="IQ2ns" value="9098549507543080718" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="parameters" />
+      <property role="20lbJX" value="fLJekj5/_0__n" />
+      <ref role="20lvS9" node="4djtaRZALI$" resolve="CellParameter" />
+    </node>
     <node concept="1TJgyj" id="3NQOi27s29Y" role="1TKVEi">
       <property role="IQ2ns" value="5475292998606619439" />
       <property role="20kJfa" value="concept" />
@@ -670,6 +677,13 @@
     <property role="TrG5h" value="ComponentCell" />
     <property role="34LRSv" value="component" />
     <property role="R4oN_" value="includes the cells of a NotationComponent" />
+    <node concept="1TJgyj" id="4djtaRZALQh" role="1TKVEi">
+      <property role="IQ2ns" value="546220611998281691" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="arguments" />
+      <property role="20lbJX" value="fLJekj5/_0__n" />
+      <ref role="20lvS9" node="4djtaRZALMo" resolve="ComponentArgument" />
+    </node>
     <node concept="1TJgyj" id="3NQOi27s2bI" role="1TKVEi">
       <property role="IQ2ns" value="7763732591390734169" />
       <property role="20kJfa" value="component" />
@@ -678,6 +692,57 @@
     </node>
     <node concept="PrWs8" id="3NQOi27zp7y" role="PzmwI">
       <ref role="PrY4T" node="7dm8yUsMxhg" resolve="ICell" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="2rrsE_MZXcp">
+    <property role="EcuMT" value="6199368373628079664" />
+    <property role="TrG5h" value="AttributedCell" />
+    <property role="34LRSv" value="attributed" />
+    <property role="R4oN_" value="the node a node attribute is attached to, in the notation of that attribute" />
+    <ref role="1TJDcQ" node="7dm8yUsMxww" resolve="Cell" />
+  </node>
+  <node concept="1TIwiD" id="4djtaRZALI$">
+    <property role="EcuMT" value="3961379151862238755" />
+    <property role="TrG5h" value="CellParameter" />
+    <property role="R4oN_" value="a slot of a NotationComponent, filled with a cell where the component is included" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="PrWs8" id="4djtaRZALI_" role="PzmwI">
+      <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="4djtaRZALKs">
+    <property role="EcuMT" value="3661508566190089188" />
+    <property role="TrG5h" value="ParameterCell" />
+    <property role="34LRSv" value="slot" />
+    <property role="R4oN_" value="the place in a component where the cell of a parameter is inserted" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="PrWs8" id="4djtaRZALKt" role="PzmwI">
+      <ref role="PrY4T" node="7dm8yUsMxhg" resolve="ICell" />
+    </node>
+    <node concept="1TJgyj" id="4djtaRZALKu" role="1TKVEi">
+      <property role="IQ2ns" value="8085237156007291621" />
+      <property role="20kJfa" value="parameter" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="4djtaRZALI$" resolve="CellParameter" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="4djtaRZALMo">
+    <property role="EcuMT" value="7854390568049221343" />
+    <property role="TrG5h" value="ComponentArgument" />
+    <property role="R4oN_" value="the cell that fills a parameter of the included component" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="1TJgyj" id="4djtaRZALMp" role="1TKVEi">
+      <property role="IQ2ns" value="130353467598921169" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="cell" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="7dm8yUsMxhg" resolve="ICell" />
+    </node>
+    <node concept="1TJgyj" id="4djtaRZALMq" role="1TKVEi">
+      <property role="IQ2ns" value="7278385254273372431" />
+      <property role="20kJfa" value="parameter" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="4djtaRZALI$" resolve="CellParameter" />
     </node>
   </node>
 </model>

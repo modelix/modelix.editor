@@ -21,7 +21,7 @@ object MPSModelChecker : IModelChecker {
         node: INode,
     ): List<CheckMessage> = IncrementalModelChecker.getInstance(engine).getAllMessages(node).mapNotNull { it.toCheckMessage() }
 
-    private fun NodeReportItem.toCheckMessage(): CheckMessage? {
+    internal fun NodeReportItem.toCheckMessage(): CheckMessage? {
         val severity =
             when (severity) {
                 MessageStatus.ERROR -> CheckSeverity.ERROR
