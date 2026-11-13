@@ -1523,5 +1523,64 @@
       <ref role="1YaFvo" to="f8gn:4djtaRZALI$" resolve="CellParameter" />
     </node>
   </node>
+  <node concept="1YbPZF" id="2qn8IalkYP3">
+    <property role="TrG5h" value="typeof_BL_NotationConceptExpression" />
+    <property role="3GE5qa" value="expressions" />
+    <node concept="3clFbS" id="2qn8IalkYP6" role="18ibNy">
+      <node concept="3cpWs8" id="2qn8IalkYP7" role="3cqZAp">
+        <node concept="3cpWsn" id="2qn8IalkYPa" role="3cpWs9">
+          <property role="TrG5h" value="concept" />
+          <node concept="3Tqbb2" id="2qn8IalkYPc" role="1tU5fm">
+            <ref role="ehGHo" to="tpce:h0PkWnZ" resolve="AbstractConceptDeclaration" />
+          </node>
+          <node concept="2OqwBi" id="2qn8IalkYPd" role="33vP2m">
+            <node concept="2OqwBi" id="2qn8IalkYPg" role="2Oq$k0">
+              <node concept="1YBJjd" id="2qn8IalkYPj" role="2Oq$k0">
+                <ref role="1YBMHb" node="2qn8IalkYPH" resolve="n" />
+              </node>
+              <node concept="2Xjw5R" id="2qn8IalkYPk" role="2OqNvi">
+                <node concept="1xMEDy" id="2qn8IalkYPn" role="1xVPHs">
+                  <node concept="chp4Y" id="2qn8IalkYPp" role="ri$Ld">
+                    <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
+                  </node>
+                </node>
+              </node>
+            </node>
+            <node concept="2qgKlT" id="2qn8IalkYPq" role="2OqNvi">
+              <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="1Z5TYs" id="2qn8IalkYPr" role="3cqZAp">
+        <node concept="mw_s8" id="2qn8IalkYPu" role="1ZfhKB">
+          <node concept="2pJPEk" id="2qn8IalkYPw" role="mwGJk">
+            <node concept="2pJPED" id="2qn8IalkYPy" role="2pJPEn">
+              <ref role="2pJxaS" to="tp25:5MFgGQnlLNI" resolve="SConceptType" />
+              <node concept="2pIpSj" id="2qn8IalkYPz" role="2pJxcM">
+                <ref role="2pIpSl" to="tp25:5MFgGQnlLNJ" />
+                <node concept="36biLy" id="2qn8IalkYP_" role="28nt2d">
+                  <node concept="37vLTw" id="2qn8IalkYPB" role="36biLW">
+                    <ref role="3cqZAo" node="2qn8IalkYPa" resolve="concept" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="2qn8IalkYPC" role="1ZfhK$">
+          <node concept="1Z2H0r" id="2qn8IalkYPE" role="mwGJk">
+            <node concept="1YBJjd" id="2qn8IalkYPG" role="1Z2MuG">
+              <ref role="1YBMHb" node="2qn8IalkYPH" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="2qn8IalkYPH" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:2qn8IalkT2W" resolve="BL_NotationConceptExpression" />
+    </node>
+  </node>
 </model>
 

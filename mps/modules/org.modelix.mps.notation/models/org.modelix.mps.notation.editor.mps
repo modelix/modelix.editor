@@ -295,6 +295,24 @@
         <node concept="2iRfu4" id="1zXwHaHvloE" role="2iSdaV" />
       </node>
       <node concept="2iRkQZ" id="3DO$SWhY8vl" role="2iSdaV" />
+      <node concept="3EZMnI" id="2qn8IalkVdr" role="3EZMnx">
+        <node concept="2iRfu4" id="2qn8IalkVds" role="2iSdaV" />
+        <node concept="3F0ifn" id="2qn8IalkVdt" role="3EZMnx">
+          <property role="3F0ifm" value="precedence:" />
+        </node>
+        <node concept="3F1sOY" id="2qn8IalkVdu" role="3EZMnx">
+          <ref role="1NtTu8" to="f8gn:2qn8IalkT0X" />
+        </node>
+      </node>
+      <node concept="3EZMnI" id="2qn8IalkVdv" role="3EZMnx">
+        <node concept="2iRfu4" id="2qn8IalkVdw" role="2iSdaV" />
+        <node concept="3F0ifn" id="2qn8IalkVdx" role="3EZMnx">
+          <property role="3F0ifm" value="right associative:" />
+        </node>
+        <node concept="3F0A7n" id="2qn8IalkVdy" role="3EZMnx">
+          <ref role="1NtTu8" to="f8gn:2qn8IalkT0W" resolve="rightAssociative" />
+        </node>
+      </node>
     </node>
   </node>
   <node concept="24kQdi" id="3DO$SWhY8Lt">
@@ -1488,6 +1506,13 @@
       <node concept="3F1sOY" id="4djtaRZCtnK" role="3EZMnx">
         <ref role="1NtTu8" to="f8gn:4djtaRZALMp" resolve="cell" />
       </node>
+    </node>
+  </node>
+  <node concept="24kQdi" id="2qn8IalkTbW">
+    <property role="3GE5qa" value="expressions" />
+    <ref role="1XX52x" to="f8gn:2qn8IalkT2W" resolve="BL_NotationConceptExpression" />
+    <node concept="PMmxH" id="2qn8IalkTbY" role="2wV5jI">
+      <ref role="PMmxG" to="tpco:2wZex4PafBj" resolve="alias" />
     </node>
   </node>
 </model>

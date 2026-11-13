@@ -91,7 +91,7 @@ class SideTransformNode(
                 engine.createCellModel(concept)
             }
         return cellModels.flatMap {
-            it.getSideTransformActions(before, node) ?: emptyList()
+            it.getSideTransformActions(before, node, engine) ?: emptyList()
         }
     }
 

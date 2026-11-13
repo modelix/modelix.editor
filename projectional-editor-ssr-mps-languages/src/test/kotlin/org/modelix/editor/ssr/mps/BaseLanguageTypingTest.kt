@@ -5,6 +5,9 @@ import org.modelix.editor.KnownKeys
 import org.modelix.editor.descendantsAndSelf
 import org.modelix.editor.layoutable
 import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.model.api.INode
+import org.modelix.model.api.IPropertyReference
+import org.modelix.model.api.getDescendants
 
 /**
  * Typing baseLanguage code the way it's written in a text editor, key by key, and editing it again.
@@ -255,5 +258,71 @@ class BaseLanguageTypingTest : BaseLanguageTestBase() {
             pressKey(KnownKeys.Backspace)
             typeText("-")
             assertBody("int x = 1 - 2;")
+        }
+
+    // Operators wrap the nodes their precedence takes. The text looks the same either way, so the tree is checked.
+
+    /**
+     * The tree of the initializer of the last variable declared in `method1`, like `Plus(Mul(1, 2), 3)`.
+     */
+    private fun lastInitializer(): String =
+        readAction {
+            fun describe(node: INode): String {
+                val name =
+                    node.concept
+                        ?.getShortName()
+                        ?.removeSuffix("Expression")
+                        ?.removeSuffix("Constant") ?: "?"
+                val value = node.asWritableNode().getPropertyValue(IPropertyReference.fromName("value"))
+                val children = node.allChildren.toList()
+                return when {
+                    children.isNotEmpty() -> name + children.joinToString(", ", "(", ")") { describe(it) }
+                    name == "Boolean" -> value ?: "false"
+                    value != null -> value
+                    else -> name
+                }
+            }
+            val declaration =
+                methodBodyNode
+                    .asLegacyNode()
+                    .getDescendants(false)
+                    .last { it.concept?.getShortName() == "LocalVariableDeclaration" }
+            describe(declaration.allChildren.last())
+        }
+
+    fun `test an operator that binds looser wraps the operator in front of it`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("int x=1*2+3", "int x = 1 * 2 + 3;")
+            assertEquals("Plus(Mul(1, 2), 3)", lastInitializer())
+        }
+
+    fun `test an operator that binds tighter wraps only the last operand`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("int x=1+2*3", "int x = 1 + 2 * 3;")
+            assertEquals("Plus(1, Mul(2, 3))", lastInitializer())
+        }
+
+    fun `test operators of the same precedence are grouped from the left`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("int x=1-2+3", "int x = 1 - 2 + 3;")
+            assertEquals("Plus(Minus(1, 2), 3)", lastInitializer())
+        }
+
+    fun `test a chain of precedences`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("boolean b=1+2*3<4||!true&&false", "boolean b = 1 + 2 * 3 < 4 || !true && false;")
+            assertEquals("Or(LessThan(Plus(1, Mul(2, 3)), 4), And(Not(true), false))", lastInitializer())
+        }
+
+    fun `test the branches of a ternary operator`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("int x=true?1+2:3*4", "int x = true ? 1 + 2 : 3 * 4;")
+            assertEquals("TernaryOperator(true, Plus(1, 2), Mul(3, 4))", lastInitializer())
+        }
+
+    fun `test parentheses keep what they contain together`() =
+        kotlinx.coroutines.test.runTest {
+            typeIntoBody("int x=(1+2)*3", "int x = (1 + 2) * 3;")
+            assertEquals("Mul(Parenthesized(Plus(1, 2)), 3)", lastInitializer())
         }
 }

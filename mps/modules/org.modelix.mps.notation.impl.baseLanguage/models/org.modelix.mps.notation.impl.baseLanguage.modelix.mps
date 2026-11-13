@@ -19,7 +19,9 @@
     <import index="5ds8" ref="r:00d5aa52-8575-44dd-8a7e-68abaac24f2c(jetbrains.mps.lang.slanguage.structure)" />
     <import index="3xdn" ref="r:935ba0ee-7291-4caa-a807-d76e8fc69391(jetbrains.mps.lang.smodel.query.structure)" />
     <import index="wyt6" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.lang(JDK/)" />
+    <import index="tpcz" ref="r:00000000-0000-4000-0000-011c895902bf(jetbrains.mps.baseLanguage.actions)" />
     <import index="tpck" ref="r:00000000-0000-4000-0000-011c89590288(jetbrains.mps.lang.core.structure)" implicit="true" />
+    <import index="tpek" ref="r:00000000-0000-4000-0000-011c895902c0(jetbrains.mps.baseLanguage.behavior)" implicit="true" />
     <import index="tpce" ref="r:00000000-0000-4000-0000-011c89590292(jetbrains.mps.lang.structure.structure)" implicit="true" />
     <import index="tp2q" ref="r:00000000-0000-4000-0000-011c8959032e(jetbrains.mps.baseLanguage.collections.structure)" implicit="true" />
     <import index="tp2c" ref="r:00000000-0000-4000-0000-011c89590338(jetbrains.mps.baseLanguage.closures.structure)" implicit="true" />
@@ -32,6 +34,10 @@
         <child id="1197027771414" name="operand" index="2Oq$k0" />
         <child id="1197027833540" name="operation" index="2OqNvi" />
       </concept>
+      <concept id="1083260308424" name="jetbrains.mps.baseLanguage.structure.EnumConstantReference" flags="nn" index="Rm8GO">
+        <reference id="1083260308426" name="enumConstantDeclaration" index="Rm8GQ" />
+        <reference id="1144432896254" name="enumClass" index="1Px2BO" />
+      </concept>
       <concept id="1070475926800" name="jetbrains.mps.baseLanguage.structure.StringLiteral" flags="nn" index="Xl_RD">
         <property id="1070475926801" name="value" index="Xl_RC" />
       </concept>
@@ -42,6 +48,7 @@
       <concept id="1068580320020" name="jetbrains.mps.baseLanguage.structure.IntegerConstant" flags="nn" index="3cmrfG">
         <property id="1068580320021" name="value" index="3cmrfH" />
       </concept>
+      <concept id="1068581242869" name="jetbrains.mps.baseLanguage.structure.MinusExpression" flags="nn" index="3cpWsd" />
       <concept id="1081516740877" name="jetbrains.mps.baseLanguage.structure.NotExpression" flags="nn" index="3fqX7Q">
         <child id="1081516765348" name="expression" index="3fr31v" />
       </concept>
@@ -72,6 +79,7 @@
       <concept id="339429764947997119" name="org.modelix.mps.notation.structure.StyleClass" flags="ng" index="2xnDgH">
         <child id="2814434073180947567" name="styleItems" index="3wIyif" />
       </concept>
+      <concept id="2323101577378767807" name="org.modelix.mps.notation.structure.BL_NotationConceptExpression" flags="ng" index="2CWJcG" />
       <concept id="4861157503443502186" name="org.modelix.mps.notation.structure.NewLineCell" flags="ng" index="IzWyk" />
       <concept id="737165568293720756" name="org.modelix.mps.notation.structure.IndentCell" flags="ng" index="2OWiap" />
       <concept id="737165568293545234" name="org.modelix.mps.notation.structure.ChildrenCollectionCell" flags="ng" index="2OWXkZ">
@@ -139,7 +147,9 @@
       </concept>
       <concept id="8310867745953086317" name="org.modelix.mps.notation.structure.ConceptNotation" flags="ng" index="3JBH_3">
         <property id="1800739267383358938" name="applicableToSubconcepts" index="2PxJs8" />
+        <property id="5936120991292218376" name="rightAssociative" index="1BPKEv" />
         <reference id="8310867745953086698" name="concept" index="3JBHV4" />
+        <child id="3281403326287475253" name="precedence" index="2xFT35" />
         <child id="8310867745953087407" name="cell" index="3JBHQ1" />
         <child id="8310867745953087464" name="condition" index="3JBHR6" />
       </concept>
@@ -158,6 +168,7 @@
       <concept id="1138411891628" name="jetbrains.mps.lang.smodel.structure.SNodeOperation" flags="nn" index="eCIE_">
         <child id="1144104376918" name="parameter" index="1xVPHs" />
       </concept>
+      <concept id="1179409122411" name="jetbrains.mps.lang.smodel.structure.Node_ConceptMethodCall" flags="nn" index="2qgKlT" />
       <concept id="1171407110247" name="jetbrains.mps.lang.smodel.structure.Node_GetAncestorOperation" flags="nn" index="2Xjw5R" />
       <concept id="1144101972840" name="jetbrains.mps.lang.smodel.structure.OperationParm_Concept" flags="ng" index="1xMEDy">
         <child id="1207343664468" name="conceptArgument" index="ri$Ld" />
@@ -449,6 +460,28 @@
           <ref role="1yiDfm" to="tpee:hqOqNr4" resolve="operation" />
         </node>
       </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Be" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Bf" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1Bg" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Bh" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1Bi" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1Bj" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1Bk" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1Bl" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Bm" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+      </node>
     </node>
     <node concept="3JBH_3" id="26N7cZTMFhU" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:fzcpWvK" resolve="LocalVariableDeclarationStatement" />
@@ -487,6 +520,28 @@
         <node concept="1yh6fm" id="26N7cZTNRwX" role="2OY0$2" />
         <node concept="1yiDfa" id="26N7cZTNRx5" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:fJuHU4r" resolve="rightExpression" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Bn" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Bo" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1Bp" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Bq" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1Br" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1Bs" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1Bt" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1Bu" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Bv" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -678,6 +733,28 @@
         </node>
         <node concept="1yiDfa" id="4dQjfTHYg0r" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:f_0QFTc" resolve="expression" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Bw" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Bx" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1By" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Bz" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1B$" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1B_" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1BA" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1BB" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BC" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -1311,6 +1388,28 @@
           <ref role="1yiDfm" to="tpee:fIZW68p" resolve="classType" />
         </node>
       </node>
+      <node concept="3cpWsd" id="2qn8Ialr1BD" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1BE" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1BF" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BG" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1BH" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1BI" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1BJ" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1BK" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BL" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+      </node>
     </node>
     <node concept="3JBH_3" id="V$E1oHCOUg" role="3JBHiB">
       <property role="2PxJs8" value="true" />
@@ -1376,6 +1475,7 @@
     </node>
     <node concept="3JBH_3" id="22f9nDgLxrW" role="3JBHiB">
       <property role="2PxJs8" value="true" />
+      <property role="1BPKEv" value="true" />
       <ref role="3JBHV4" to="tpee:hGd03cG" resolve="BaseAssignmentExpression" />
       <node concept="2OY0tg" id="22f9nDgLxys" role="3JBHQ1">
         <node concept="1yiDfa" id="22f9nDgLxyt" role="2OY0$2">
@@ -1384,6 +1484,28 @@
         <node concept="1yh6fm" id="22f9nDgLxyu" role="2OY0$2" />
         <node concept="1yiDfa" id="22f9nDgLxyv" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:fz7vLUp" resolve="rValue" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1BM" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1BN" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1BO" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BP" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1BQ" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1BR" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1BS" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1BT" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BU" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -1434,6 +1556,28 @@
           <property role="3JB3xJ" value=")" />
         </node>
       </node>
+      <node concept="3cpWsd" id="2qn8Ialr1BV" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1BW" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1BX" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1BY" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1BZ" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1C0" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1C1" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1C2" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1C3" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+      </node>
     </node>
     <node concept="3JBH_3" id="22f9nDgWNQH" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:hFuNrjK" resolve="PostfixIncrementExpression" />
@@ -1444,6 +1588,28 @@
         <node concept="1yiDf7" id="22f9nDgWNY8" role="2OY0$2" />
         <node concept="3JB3jO" id="22f9nDgWNY0" role="2OY0$2">
           <property role="3JB3xJ" value="++" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1C4" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1C5" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1C6" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1C7" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1C8" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1C9" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1Ca" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1Cb" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cc" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -1467,6 +1633,28 @@
           <ref role="1yiDfm" to="tpee:fJfr32$" resolve="expression" />
         </node>
       </node>
+      <node concept="3cpWsd" id="2qn8IalqbNW" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8IalqbNZ" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8IalqbO2" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8IalqbO3" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8IalqbO4" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8IalqbO7" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8IalqbOa" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8IalqbOb" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8IalqbOc" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+      </node>
     </node>
     <node concept="3JBH_3" id="6xJrM0Nv0B8" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:fzclF8l" resolve="Statement" />
@@ -1482,6 +1670,7 @@
       </node>
     </node>
     <node concept="3JBH_3" id="58hR5f$kRmj" role="3JBHiB">
+      <property role="1BPKEv" value="true" />
       <ref role="3JBHV4" to="tpee:gVK4zB9" resolve="TernaryOperatorExpression" />
       <node concept="2OY0tg" id="58hR5f$kRv8" role="3JBHQ1">
         <node concept="1yiDfa" id="58hR5f$kRvb" role="2OY0$2">
@@ -1498,6 +1687,28 @@
         </node>
         <node concept="1yiDfa" id="58hR5f$kRvI" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:gVK4GVs" resolve="ifFalse" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Cd" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Ce" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1Cf" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cg" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1Ch" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1Ci" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1Cj" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1Ck" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cl" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -2760,6 +2971,28 @@
           <ref role="1yiDfm" to="tpee:i2$L3eA" resolve="expression" />
         </node>
       </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Cm" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Cn" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1Co" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cp" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1Cq" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1Cr" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1Cs" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1Ct" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cu" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+      </node>
     </node>
     <node concept="3JBH_3" id="4cpiv6ohhng" role="3JBHiB">
       <ref role="3JBHV4" to="tpee:6vzydrFu8hP" resolve="FormatOperation" />
@@ -2825,6 +3058,28 @@
         <node concept="1yiDf7" id="4cpiv6orIL3" role="2OY0$2" />
         <node concept="1yiDfa" id="4cpiv6orIKV" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:i2$L3eA" resolve="expression" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1Cv" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1Cw" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1Cx" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1Cy" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1Cz" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1C$" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1C_" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1CA" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CB" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -2952,6 +3207,28 @@
         <node concept="1yiDf7" id="4cpiv6orL13" role="2OY0$2" />
         <node concept="3JB3jO" id="4cpiv6orL0V" role="2OY0$2">
           <property role="3JB3xJ" value="--" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1CC" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1CD" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1CE" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CF" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1CG" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1CH" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1CI" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1CJ" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CK" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -3104,6 +3381,28 @@
         <node concept="1yiDf7" id="4cpiv6os5a9" role="2OY0$2" />
         <node concept="1yiDfa" id="4cpiv6os5ah" role="2OY0$2">
           <ref role="1yiDfm" to="tpee:i2$L3eA" resolve="expression" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1CL" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1CM" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1CN" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CO" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1CP" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1CQ" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1CR" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1CS" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CT" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>
@@ -3400,6 +3699,28 @@
         <node concept="1yiDf7" id="4LGiksPnu_Z" role="2OY0$2" />
         <node concept="3JB3jO" id="4LGiksPnu_S" role="2OY0$2">
           <property role="3JB3xJ" value=")" />
+        </node>
+      </node>
+      <node concept="3cpWsd" id="2qn8Ialr1CU" role="2xFT35">
+        <node concept="2OqwBi" id="2qn8Ialr1CV" role="3uHU7B">
+          <node concept="Rm8GO" id="2qn8Ialr1CW" role="2Oq$k0">
+            <ref role="1Px2BO" to="tpcz:18ik2d67I23" resolve="PrecedenceUtil.Precedence" />
+            <ref role="Rm8GQ" to="tpcz:18ik2d67I2p" resolve="DEFAULT" />
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1CX" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
+        </node>
+        <node concept="2OqwBi" id="2qn8Ialr1CY" role="3uHU7w">
+          <node concept="2OqwBi" id="2qn8Ialr1CZ" role="2Oq$k0">
+            <node concept="2CWJcG" id="2qn8Ialr1D0" role="2Oq$k0" />
+            <node concept="2qgKlT" id="2qn8Ialr1D1" role="2OqNvi">
+              <ref role="37wK5l" to="tpek:1O90zDONSxM" resolve="getPrecedenceLevel" />
+            </node>
+          </node>
+          <node concept="liA8E" id="2qn8Ialr1D2" role="2OqNvi">
+            <ref role="37wK5l" to="wyt6:~Enum.ordinal()" resolve="ordinal" />
+          </node>
         </node>
       </node>
     </node>

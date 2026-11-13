@@ -33,6 +33,7 @@ import org.modelix.model.api.INode
 import org.modelix.model.api.IProperty
 import org.modelix.model.api.IReferenceLink
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
 private val LOG = KotlinLogging.logger { }
@@ -542,6 +543,17 @@ class NotationRootCellTemplateBuilder<NodeT : Any, ConceptT : Any>(
 ) : CellTemplateBuilder<NodeT, ConceptT>(template, concept, nodeConverter) {
     fun condition(condition: (INode) -> Boolean) {
         (template as NotationRootCellTemplate).condition = condition
+    }
+
+    /**
+     * Declares how tightly the notation of an operator binds its operands. See [Precedence].
+     */
+    @JvmOverloads
+    fun precedence(
+        level: Int,
+        rightAssociative: Boolean = false,
+    ) {
+        (template as NotationRootCellTemplate).precedence = Precedence(level, rightAssociative)
     }
 
     fun hideInCodeCompletion() = completionText("")

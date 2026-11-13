@@ -116,6 +116,12 @@
       <property role="20kJfa" value="condition" />
       <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
     </node>
+    <node concept="1TJgyj" id="2qn8IalkT0X" role="1TKVEi">
+      <property role="IQ2ns" value="3281403326287475253" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="precedence" />
+      <ref role="20lvS9" to="tpee:fz3vP1J" resolve="Expression" />
+    </node>
     <node concept="1TJgyj" id="7dm8yUsMfNE" role="1TKVEi">
       <property role="IQ2ns" value="8310867745953086698" />
       <property role="20kJfa" value="concept" />
@@ -127,6 +133,11 @@
     </node>
     <node concept="PrWs8" id="3NQOi27s2du" role="PzmwI">
       <ref role="PrY4T" node="3NQOi27s28c" resolve="ICellContainer" />
+    </node>
+    <node concept="1TJgyi" id="2qn8IalkT0W" role="1TKVEl">
+      <property role="IQ2nx" value="5936120991292218376" />
+      <property role="TrG5h" value="rightAssociative" />
+      <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
     </node>
   </node>
   <node concept="PlHQZ" id="7dm8yUsMxhg">
@@ -744,6 +755,13 @@
       <property role="20lbJX" value="fLJekj4/_1" />
       <ref role="20lvS9" node="4djtaRZALI$" resolve="CellParameter" />
     </node>
+  </node>
+  <node concept="1TIwiD" id="2qn8IalkT2W">
+    <property role="EcuMT" value="2323101577378767807" />
+    <property role="TrG5h" value="BL_NotationConceptExpression" />
+    <property role="34LRSv" value="concept" />
+    <property role="3GE5qa" value="expressions" />
+    <ref role="1TJDcQ" to="tpee:fz3vP1J" resolve="Expression" />
   </node>
 </model>
 

@@ -1,17 +1,25 @@
 package org.modelix.editor.celltemplate
 
+import org.modelix.editor.EditorEngine
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.IParseTreeToAstBuilder
+import org.modelix.editor.Precedence
 import org.modelix.editor.TemplateCellReference
 import org.modelix.model.api.IChildLink
 import org.modelix.model.api.INode
 import org.modelix.parser.ISymbol
 
 interface IGrammarSymbol {
+    /**
+     * The side transforms that wrap [nodeToWrap] into the concept of this notation when the text of this symbol is
+     * typed next to it. [precedence] is the one of the wrapping notation.
+     */
     fun createWrapperAction(
         nodeToWrap: INode,
         wrappingLink: IChildLink,
+        precedence: Precedence?,
+        engine: EditorEngine,
     ): List<ICodeCompletionAction> = emptyList()
 
     fun getSymbolTransformationAction(

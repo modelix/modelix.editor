@@ -9,6 +9,7 @@ import org.modelix.editor.ChildCellTemplateReference
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.ECellLayout
+import org.modelix.editor.EditorEngine
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICellTemplateReference
 import org.modelix.editor.ICodeCompletionAction
@@ -108,8 +109,10 @@ abstract class CellTemplate(
     fun getSideTransformActions(
         before: Boolean,
         nodeToReplace: INode,
+        engine: EditorEngine,
     ): List<ICodeCompletionAction>? {
         val symbols = getGrammarSymbols().toList()
+        val precedence = (this as? NotationRootCellTemplate)?.precedence
         val conceptToReplace = nodeToReplace.concept ?: return null
         return symbols
             .mapIndexedNotNull { index, symbol ->
@@ -121,7 +124,7 @@ abstract class CellTemplate(
                     // no reason to make it `typeof(a)`: nobody typed the `typeof(`.
                     val symbolsInFront = symbols.take(if (before) prevNextIndex else index)
                     if (symbolsInFront.any { it !is IOptionalSymbol }) return@mapIndexedNotNull null
-                    return@mapIndexedNotNull prevNextSymbol.createWrapperAction(nodeToReplace, symbol.link)
+                    return@mapIndexedNotNull prevNextSymbol.createWrapperAction(nodeToReplace, symbol.link, precedence, engine)
                 }
                 return@mapIndexedNotNull null
             }.flatten()

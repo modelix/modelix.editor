@@ -191,6 +191,14 @@ class EditorEngine(
         return template
     }
 
+    /**
+     * The precedence the notation of [concept] declares, if it's the notation of an operator.
+     */
+    fun getPrecedence(concept: IConcept?): Precedence? {
+        if (concept == null) return null
+        return runCatching { createCellModelExcludingDefault(concept) as? NotationRootCellTemplate }.getOrNull()?.precedence
+    }
+
     fun createCellModelExcludingDefault(concept: IConcept): CellTemplate? =
         resolveConceptEditor(concept).minus(defaultConceptEditor).firstOrNull()?.apply(concept)
 
