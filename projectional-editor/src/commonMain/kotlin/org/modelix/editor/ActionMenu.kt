@@ -82,6 +82,17 @@ abstract class ActionMenu(
      */
     protected abstract fun getPosition(anchorBounds: Bounds): Position
 
+    /**
+     * Where the menu goes, given the bounds of the anchor and of the part of the editor that is visible, both relative
+     * to the main layer. A menu can also adapt its size to the visible part here. [visibleBounds] is null where it
+     * can't be measured.
+     */
+    protected open fun place(
+        menuElement: IVirtualDom.HTMLElement,
+        anchorBounds: Bounds,
+        visibleBounds: Bounds?,
+    ): Position = getPosition(anchorBounds)
+
     protected open suspend fun onPatternEdited() = updateEntries()
 
     protected open suspend fun onTextInserted(
@@ -177,8 +188,10 @@ abstract class ActionMenu(
         LOG.trace { "ActionMenu.updateBounds()" }
         val containerElement = editor.getHtmlElement(this) ?: return
         val anchorElement = editor.getHtmlElement(getAnchor()) ?: return
-        val anchorBounds = anchorElement.getOuterBounds().relativeTo(editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO)
-        val position = getPosition(anchorBounds)
+        val mainLayerBounds = editor.getMainLayer()?.getOuterBounds() ?: Bounds.ZERO
+        val anchorBounds = anchorElement.getOuterBounds().relativeTo(mainLayerBounds)
+        val visibleBounds = editor.getVisibleBounds()?.relativeTo(mainLayerBounds)
+        val position = place(containerElement, anchorBounds, visibleBounds)
         containerElement.style.left = "${position.left}px"
         containerElement.style.top = "${position.top}px"
 
@@ -197,7 +210,7 @@ abstract class ActionMenu(
     protected fun getPatternElement(): IVirtualDom.HTMLElement? =
         editor.getHtmlElement(this)?.elementsWithClass(patternClass)?.firstOrNull()
 
-    private fun IVirtualDom.HTMLElement.elementsWithClass(cssClass: String): Sequence<IVirtualDom.HTMLElement> =
+    protected fun IVirtualDom.HTMLElement.elementsWithClass(cssClass: String): Sequence<IVirtualDom.HTMLElement> =
         descendants().filterIsInstance<IVirtualDom.HTMLElement>().filter { it.getClasses().contains(cssClass) }
 
     data class Position(

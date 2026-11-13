@@ -175,7 +175,9 @@
 }
 
 .editor .context-actions-menu .context-actions-entries {
-    max-height: 200px;
+    /* As tall as the window allows, like the intentions popup of MPS. The languages offer many intentions, and only a
+       few of them would fit into a fixed height. */
+    max-height: 60vh;
     overflow-y: auto;
 }
 

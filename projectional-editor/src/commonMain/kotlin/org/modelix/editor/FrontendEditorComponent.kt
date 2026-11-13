@@ -431,6 +431,12 @@ open class FrontendEditorComponent(
 
     open fun scrollIntoView(element: IVirtualDom.HTMLElement) {}
 
+    /**
+     * The part of the editor that can be seen, in the coordinates of [IVirtualDom.Element.getOuterBounds]: the window,
+     * cut down by the elements around the editor that scroll. Null where it can't be measured.
+     */
+    open fun getVisibleBounds(): Bounds? = null
+
     suspend fun <R> serviceCall(call: suspend TextEditorService.() -> R): R {
         val result = call(service)
         when (result) {
