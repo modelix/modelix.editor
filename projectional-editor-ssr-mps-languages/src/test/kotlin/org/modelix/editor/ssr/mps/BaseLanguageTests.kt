@@ -50,6 +50,7 @@ import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
 import org.modelix.model.mpsadapters.MPSArea
 import org.modelix.model.mpsadapters.MPSWritableNode
+import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 import org.modelix.mps.editor.common.IncrementalModelChecker
 
 /**
@@ -1053,6 +1054,49 @@ class BaseLanguageTests : TestBase("SimpleProject") {
 
             assertNull(editor.getActionMenu())
             assertEquals("true", readAction { methodNode.getPropertyValue(IS_FINAL) })
+        }
+
+    fun `test the context actions menu offers the quick fixes of the checker messages`() =
+        kotlinx.coroutines.test.runTest {
+            // The initializer of an int variable can't be a boolean, which MPS can fix by adding a cast.
+            placeCaretIntoPlaceholderOf(methodBodyNode, "statement")
+            typeText("int ")
+            pressKey(KnownKeys.Tab)
+            typeText("abc")
+            typeText("=")
+            typeText("true")
+            assertNotEmpty(awaitErrorMessagesInEditor(present = true))
+
+            openContextActions("true")
+            // The quick fixes of an error are error intentions in MPS, which have the red bulb.
+            val quickFixes = contextActions().filter { it.icon == ActionIcon.ERROR_INTENTION }.map { it.matchingText }
+            assertEquals(listOf("Cast the initializer to int", "Change type of abc to boolean"), quickFixes)
+
+            typeText("Cast the initializer")
+            pressEnter()
+            editor.flush()
+
+            assertNull(editor.getActionMenu())
+            // The quick fix moves the initializer into the cast. It must be the MPS node, not the wrapper the checker
+            // reported the error for.
+            readAction {
+                val variable =
+                    checkNotNull(
+                        methodBodyNode.asLegacyNode().getDescendants(false).firstOrNull {
+                            it.concept?.getShortName() ==
+                                "LocalVariableDeclaration"
+                        }
+                    )
+                val cast = checkNotNull(variable.toMPS()).getChildren().single { it.concept.name == "CastExpression" }
+                assertTrue(cast.getChildren().none { it is ModelixNodeAsMPSNode })
+            }
+            assertFinalEditorText("""
+            public class Class1 {
+              public void method1() {
+                int abc = (int) true;
+              }
+            }
+        """)
         }
 
     fun `test the section of an intention is taken from its description like the menu of MPS-extensions does`() {

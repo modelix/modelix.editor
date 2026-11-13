@@ -3,14 +3,18 @@ package org.modelix.editor.ssr.mps
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import jetbrains.mps.editor.runtime.HeadlessEditorComponent
+import jetbrains.mps.errors.item.NodeReportItem
 import jetbrains.mps.ide.ThreadUtils
 import jetbrains.mps.intentions.IntentionsManager
+import jetbrains.mps.nodeEditor.HighlighterMessage
+import jetbrains.mps.openapi.editor.message.EditorMessageOwner
 import jetbrains.mps.openapi.intentions.IntentionExecutable
 import jetbrains.mps.openapi.intentions.Kind
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory
 import jetbrains.mps.smodel.language.LanguageRegistry
 import kotlinx.coroutines.CoroutineDispatcher
 import org.jetbrains.mps.openapi.model.SNode
+import org.jetbrains.mps.openapi.model.SNodeReference
 import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CodeCompletionParameters
@@ -34,11 +38,14 @@ import kotlin.coroutines.CoroutineContext
  *
  * The intentions are collected on the UI thread (see [EdtDispatcher]), like MPS does for its menu.
  *
- * Quick fixes of the checker messages aren't offered yet. MPS takes them from the messages its editor highlights,
- * which a headless editor has none of.
+ * The quick fixes of the messages the editor shows are offered as well. MPS takes them from the messages its editor
+ * highlights, so the headless editor highlights the [checkerMessages] of the node and its ancestors, and MPS decides
+ * which of their quick fixes apply, like in its own editor.
  */
 class MPSIntentions(
     val repository: SRepository,
+    /** The messages the editor shows for a node, whose quick fixes are offered. */
+    private val checkerMessages: (SNodeReference) -> List<NodeReportItem> = { emptyList() },
 ) : IContextActionsProvider {
     override fun getContextActions(
         node: INode,
@@ -79,6 +86,7 @@ class MPSIntentions(
         val editor = HeadlessEditorComponent(repository)
         try {
             editor.editNode(node.containingRoot)
+            highlightCheckerMessages(editor, node)
             editor.selectNode(node)
             return body(editor)
         } finally {
@@ -91,6 +99,20 @@ class MPSIntentions(
             }
         }
     }
+
+    private fun highlightCheckerMessages(
+        editor: HeadlessEditorComponent,
+        node: SNode,
+    ) {
+        for (highlightedNode in generateSequence(node) { it.parent }) {
+            for (item in checkerMessages(highlightedNode.reference)) {
+                QuickFixArguments.unwrap(item)
+                editor.highlightManager.mark(HighlighterMessage(CheckerMessagesOwner, item, highlightedNode))
+            }
+        }
+    }
+
+    private object CheckerMessagesOwner : EditorMessageOwner
 
     companion object {
         private val SECTIONS_LANGUAGE =

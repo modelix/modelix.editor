@@ -3,11 +3,13 @@ package org.modelix.editor.ssr.mps
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
+import jetbrains.mps.errors.item.NodeReportItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import org.jetbrains.mps.openapi.model.SNodeReference
 import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.checks.CheckMessage
 import org.modelix.checks.IModelChecker
@@ -61,6 +63,12 @@ class AsyncMPSModelChecker(
 
     private val publishedMessages = ConcurrentHashMap<INodeReference, List<CheckMessage>>()
 
+    /**
+     * The MPS messages of the last completed check, which the messages of the editor are made of, by root node. They
+     * carry the quick fixes.
+     */
+    private val publishedReportItems = ConcurrentHashMap<INodeReference, Map<SNodeReference, List<NodeReportItem>>>()
+
     private val modelChangeListener =
         object : IDependencyListener {
             override fun accessed(key: IStateVariableReference<*>) {}
@@ -90,12 +98,19 @@ class AsyncMPSModelChecker(
         return messages.read()
     }
 
+    /**
+     * The MPS messages of [node] from the last completed check, the ones the editor shows. Unlike [getMessages] this
+     * doesn't request a check.
+     */
+    fun getReportItems(node: SNodeReference): List<NodeReportItem> = publishedReportItems.values.flatMap { it[node].orEmpty() }
+
     fun dispose() {
         DependencyTracking.removeListener(modelChangeListener)
         validator.stop()
         coroutineScope.cancel("disposed")
         checkEngine.dispose()
         publishedMessages.clear()
+        publishedReportItems.clear()
     }
 
     private suspend fun checkRequestedRoots() {
@@ -131,17 +146,22 @@ class AsyncMPSModelChecker(
         return if (completed) result else null
     }
 
+    private class CheckResult(
+        val messages: Map<INodeReference, List<CheckMessage>>,
+        val reportItems: Map<SNodeReference, List<NodeReportItem>>,
+    )
+
     /**
      * The messages of the checked root nodes, grouped by root node and node.
      */
-    private fun checkRoots(): Map<INodeReference, Map<INodeReference, List<CheckMessage>>> {
+    private fun checkRoots(): Map<INodeReference, CheckResult> {
         while (true) {
             val node = requestedNodes.poll() ?: break
             if (!node.isValid) continue
             val root = checker.getRootNodeOrNull(node) ?: continue
             checkedRoots[root.reference] = root
         }
-        val result = LinkedHashMap<INodeReference, Map<INodeReference, List<CheckMessage>>>()
+        val result = LinkedHashMap<INodeReference, CheckResult>()
         val iterator = checkedRoots.values.iterator()
         while (iterator.hasNext()) {
             val root = iterator.next()
@@ -152,14 +172,25 @@ class AsyncMPSModelChecker(
                 continue
             }
             result[root.reference] =
-                messages
-                    .mapValues { (_, items) -> items.mapNotNull { it.toCheckMessage() } }
-                    .filterValues { it.isNotEmpty() }
+                CheckResult(
+                    messages =
+                        messages
+                            .mapValues { (_, items) ->
+                                items.mapNotNull { it.toCheckMessage() }
+                            }.filterValues { it.isNotEmpty() },
+                    reportItems = messages.values.flatten().groupBy { it.node },
+                )
         }
         return result
     }
 
-    private fun publish(messagesByRoot: Map<INodeReference, Map<INodeReference, List<CheckMessage>>>) {
+    private fun publish(resultsByRoot: Map<INodeReference, CheckResult>) {
+        publishedReportItems.keys.retainAll(resultsByRoot.keys)
+        for ((root, result) in resultsByRoot) {
+            publishedReportItems[root] = result.reportItems
+        }
+
+        val messagesByRoot = resultsByRoot.mapValues { it.value.messages }
         for (root in publishedNodesByRoot.keys - messagesByRoot.keys) {
             publishedNodesByRoot.remove(root)?.forEach { publish(it, null) }
         }

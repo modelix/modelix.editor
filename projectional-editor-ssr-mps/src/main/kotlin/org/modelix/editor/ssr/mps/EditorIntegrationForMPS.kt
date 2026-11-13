@@ -30,8 +30,9 @@ class EditorIntegrationForMPS(
         ScopeAspect.registerScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.add(MPSConstraints)
         PropertyPresentationAspect.providers.add(MPSPropertyPresentation)
-        modelChecker = AsyncMPSModelChecker(repository).also { ModelCheckAspect.checkers.add(it) }
-        intentions = MPSIntentions(repository).also { ContextActionsAspect.providers.add(it) }
+        val modelChecker = AsyncMPSModelChecker(repository).also { ModelCheckAspect.checkers.add(it) }
+        this.modelChecker = modelChecker
+        intentions = MPSIntentions(repository, modelChecker::getReportItems).also { ContextActionsAspect.providers.add(it) }
         ContextActionsAspect.loadingContext = EdtDispatcher
         editorEngine.addRegistry(aspectsFromMPS!!)
     }
