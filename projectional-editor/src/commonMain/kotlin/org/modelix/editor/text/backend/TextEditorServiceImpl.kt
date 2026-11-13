@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CaretPositionPolicyWithIndex
 import org.modelix.editor.Cell
@@ -14,6 +15,7 @@ import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.CompletionPosition
+import org.modelix.editor.ContextActionsAspect
 import org.modelix.editor.ECellType
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.ICaretPositionPolicy
@@ -285,6 +287,15 @@ class TextEditorServiceImpl(
         cellId: CellInstanceId,
         anchorCellId: CellInstanceId,
     ): EditorUpdateData =
+        withContext(ContextActionsAspect.loadingContext) {
+            loadContextActions(editorId, cellId, anchorCellId)
+        }
+
+    private suspend fun loadContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData =
         runWithCell(editorId, cellId) { updateChannel, cell ->
             updateChannel.createUpdate().copy(
                 menuTrigger = ContextActionsMenuTrigger(anchorCellId),
@@ -416,7 +427,9 @@ class TextEditorServiceImpl(
             CompletionMenuEntryData(
                 id = index,
                 matchingText = entry.getMatchingText(),
-                description = entry.getDescription()
+                description = entry.getDescription(),
+                group = entry.getGroup(),
+                icon = entry.getIcon(),
             )
         }
 

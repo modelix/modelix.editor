@@ -1,5 +1,6 @@
 package org.modelix.editor.ssr.mps
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,15 +11,20 @@ import org.modelix.editor.CaretSelection
 import org.modelix.editor.ChildNodeCellReference
 import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
+import org.modelix.editor.ContextActionsAspect
+import org.modelix.editor.ContextActionsMenu
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.FrontendEditorComponent
+import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
+import org.modelix.editor.IContextActionsProvider
 import org.modelix.editor.JSKeyboardEvent
 import org.modelix.editor.JSKeyboardEventType
 import org.modelix.editor.KnownKeys
 import org.modelix.editor.Modifiers
 import org.modelix.editor.NodeCellReference
+import org.modelix.editor.NodeContextActions
 import org.modelix.editor.ReferencedNodeCellReference
 import org.modelix.editor.ancestors
 import org.modelix.editor.applyShadowing
@@ -31,6 +37,8 @@ import org.modelix.editor.lastLeaf
 import org.modelix.editor.layoutable
 import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.shared.ActionIcon
+import org.modelix.editor.text.shared.CompletionMenuEntryData
 import org.modelix.editor.text.shared.celltree.ICellTree
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.model.api.ConceptReference
@@ -982,6 +990,77 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         """)
         }
 
+    private suspend fun openContextActions(cellText: String) {
+        placeCaretIntoCellWithText(cellText, 0)
+        editor.processKeyEvent(
+            JSKeyboardEvent(JSKeyboardEventType.KEYDOWN, null, KnownKeys.Enter, KnownKeys.Enter.name, Modifiers.ALT),
+        )
+        editor.flush()
+    }
+
+    private fun contextActions(): List<CompletionMenuEntryData> =
+        assertInstanceOf(editor.getActionMenu(), ContextActionsMenu::class.java).getVisibleEntries()
+
+    fun `test the context actions menu offers the intentions of the MPS languages`() =
+        kotlinx.coroutines.test.runTest {
+            openContextActions("method1")
+            val entries = contextActions()
+
+            val makeFinal = entries.single { it.matchingText == "Make 'method1' Final" }
+            assertEquals(ActionIcon.INTENTION, makeFinal.icon)
+            // The intentions of baseLanguage have no section, so they are listed first, without a heading.
+            assertNull(makeFinal.group)
+            val firstAttributeAction = entries.indexOfFirst { it.group == NodeContextActions.NODE_ATTRIBUTES_GROUP }
+            assertTrue(entries.toString(), firstAttributeAction > entries.indexOf(makeFinal))
+            assertTrue(
+                entries.toString(),
+                entries.drop(firstAttributeAction).all { it.group == NodeContextActions.NODE_ATTRIBUTES_GROUP },
+            )
+            assertTrue(entries.toString(), entries.drop(firstAttributeAction).any { it.matchingText.contains("Review") })
+        }
+
+    fun `test the context actions are collected on the UI thread where MPS editors can be created`() =
+        kotlinx.coroutines.test.runTest {
+            // MPS 2024.1 only allows creating an editor component on the UI thread. This platform doesn't check it.
+            val threads = mutableListOf<Boolean>()
+            val provider =
+                object : IContextActionsProvider {
+                    override fun getContextActions(
+                        node: INode,
+                        parameters: CodeCompletionParameters,
+                    ): List<IActionOrProvider> {
+                        threads.add(ApplicationManager.getApplication().isDispatchThread)
+                        return emptyList()
+                    }
+                }
+            ContextActionsAspect.providers.add(provider)
+            try {
+                openContextActions("method1")
+            } finally {
+                ContextActionsAspect.providers.remove(provider)
+            }
+
+            assertEquals(listOf(true), threads)
+            assertTrue(contextActions().toString(), contextActions().any { it.matchingText == "Make 'method1' Final" })
+        }
+
+    fun `test a context action executes an MPS intention`() =
+        kotlinx.coroutines.test.runTest {
+            openContextActions("method1")
+            typeText("final")
+            pressEnter()
+            editor.flush()
+
+            assertNull(editor.getActionMenu())
+            assertEquals("true", readAction { methodNode.getPropertyValue(IS_FINAL) })
+        }
+
+    fun `test the section of an intention is taken from its description like the menu of MPS-extensions does`() {
+        assertEquals("Refactoring" to "Extract Method", MPSIntentions.splitSection("Refactoring: Extract Method"))
+        assertEquals(null to "Make 'method1' Final", MPSIntentions.splitSection("Make 'method1' Final"))
+        assertEquals(null to "Without section", MPSIntentions.splitSection(": Without section"))
+    }
+
     fun `test deleting the text of a node attribute removes it but keeps the node`() =
         kotlinx.coroutines.test.runTest {
             writeAction { methodNode.addNewChild(SMODEL_ATTRIBUTE, -1, REVIEW_MIGRATION) }
@@ -1003,5 +1082,6 @@ class BaseLanguageTests : TestBase("SimpleProject") {
         private val SMODEL_ATTRIBUTE = IChildLinkReference.fromName("smodelAttribute")
         private val REVIEW_MIGRATION = ConceptReference("mps:ceab5195-25ea-4f22-9b92-103b95ca8c0c/8703179436979359238")
         private val TRIM_KIND = IPropertyReference.fromName("trimKind")
+        private val IS_FINAL = IPropertyReference.fromName("isFinal")
     }
 }

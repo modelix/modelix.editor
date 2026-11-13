@@ -6,6 +6,7 @@ import kotlinx.html.table
 import kotlinx.html.td
 import kotlinx.html.tr
 import org.modelix.editor.text.backend.BackendEditorComponent
+import org.modelix.editor.text.shared.ActionIcon
 import org.modelix.editor.text.shared.CompletionMenuEntryData
 
 class CodeCompletionMenu(
@@ -172,6 +173,18 @@ interface ICodeCompletionAction : IActionOrProvider {
     fun getTokens(): ICompletionTokenOrList = ConstantCompletionToken(getMatchingText())
 
     fun getDescription(): String
+
+    /**
+     * The group a menu that groups its entries lists this action under, like the sections of the MPS intentions menu.
+     * Actions without a group come first, without a heading. The code completion menu doesn't group its entries.
+     */
+    fun getGroup(): String? = null
+
+    /**
+     * What a menu that shows icons shows in front of the action. The context actions menu does, the code completion
+     * menu doesn't.
+     */
+    fun getIcon(): ActionIcon? = null
 
     fun execute(editor: BackendEditorComponent): ICaretPositionPolicy?
 

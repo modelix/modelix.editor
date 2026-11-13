@@ -235,6 +235,10 @@ data class CompletionMenuEntryData(
     val id: Int,
     val matchingText: String,
     val description: String,
+    /** See [org.modelix.editor.ICodeCompletionAction.getGroup]. */
+    val group: String? = null,
+    /** See [org.modelix.editor.ICodeCompletionAction.getIcon]. */
+    val icon: ActionIcon? = null,
 ) {
     fun matches(
         pattern: String,
@@ -245,4 +249,24 @@ data class CompletionMenuEntryData(
     }
 
     fun matchesExactly(pattern: String): Boolean = matchingText == pattern
+}
+
+/**
+ * The icons a menu can show for an action, which are the ones of the MPS intentions menu. The client styles them, so an
+ * action can only use one of these.
+ */
+@Serializable
+enum class ActionIcon(
+    val cssClass: String,
+) {
+    /** A normal intention, and a quick fix, which MPS shows the same way. */
+    INTENTION("intention"),
+
+    /** An intention that fixes an error. */
+    ERROR_INTENTION("error-intention"),
+
+    MIGRATION("migration"),
+
+    /** Adds a node attribute. */
+    NODE_ATTRIBUTE("node-attribute"),
 }

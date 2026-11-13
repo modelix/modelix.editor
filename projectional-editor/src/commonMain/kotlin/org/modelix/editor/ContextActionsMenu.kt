@@ -11,6 +11,9 @@ import org.modelix.editor.text.shared.CompletionMenuEntryData
  * opens below the cell, and what is typed only searches the entries, anywhere in their text and ignoring the case. An
  * action is only executed once the user confirmed it. The entries don't depend on the pattern, so they are filtered
  * here instead of being loaded again from the backend.
+ *
+ * The entries are listed under a heading per group (see [org.modelix.editor.ICodeCompletionAction.getGroup]), like the
+ * sections of the MPS intentions menu, and with an icon instead of a description, like the intentions there.
  */
 class ContextActionsMenu(
     editor: FrontendEditorComponent,
@@ -41,12 +44,18 @@ class ContextActionsMenu(
             }
             div("context-actions-entries") {
                 filteredEntries.forEachIndexed { index, entry ->
+                    // The entries arrive ordered by their group, so a group starts where it differs from the previous.
+                    val group = entry.group
+                    if (group != null && group != filteredEntries.getOrNull(index - 1)?.group) {
+                        div("context-actions-group") {
+                            +group
+                        }
+                    }
                     div(if (index == selectedIndex) "context-action $selectedEntryClass" else "context-action") {
+                        // Also without an icon, so that the texts of all entries line up.
+                        div(listOfNotNull("context-action-icon", entry.icon?.let { "icon-${it.cssClass}" }).joinToString(" ")) { }
                         div("context-action-text") {
                             +entry.matchingText
-                        }
-                        div("context-action-description") {
-                            +entry.description
                         }
                     }
                 }

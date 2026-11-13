@@ -58,6 +58,16 @@ class BackendEditorComponent(
 
     fun <R> runRead(body: () -> R): R = rootCall.node.getModel().executeRead(body)
 
+    private companion object {
+        /**
+         * The actions without a group first, then the groups by name, like the sections of the MPS intentions menu.
+         * Within a group by their text.
+         */
+        val menuOrder: Comparator<ICodeCompletionAction> =
+            compareBy<ICodeCompletionAction>({ it.getGroup() != null }, { it.getGroup() })
+                .thenBy { it.getCompletionPattern().lowercase() }
+    }
+
     inner class CompletionMenuBackend(
         val providers: List<ICodeCompletionActionProvider>,
     ) {
@@ -77,7 +87,7 @@ class BackendEditorComponent(
                         val matchingText = it.getCompletionPattern()
                         matchingText.isNotEmpty() && matchingText.startsWith(parameters.pattern)
                     }.applyShadowing()
-                    .sortedBy { it.getCompletionPattern().lowercase() }
+                    .sortedWith(menuOrder)
             }
     }
 }

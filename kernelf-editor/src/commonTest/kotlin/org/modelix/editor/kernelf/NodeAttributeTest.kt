@@ -1,6 +1,7 @@
 package org.modelix.editor.kernelf
 
 import kotlinx.coroutines.test.runTest
+import kotlinx.html.stream.createHTML
 import org.iets3.core.expr.adt.C_NameAnnotation
 import org.iets3.core.expr.base.C_ParensExpression
 import org.iets3.core.expr.doc.C_BookmarkAnnotation
@@ -11,20 +12,30 @@ import org.iets3.core.expr.tests.C_OldNodeAnnotation
 import org.modelix.editor.CaretSelection
 import org.modelix.editor.Cell
 import org.modelix.editor.CellSelection
+import org.modelix.editor.CodeCompletionParameters
+import org.modelix.editor.ContextActionsAspect
 import org.modelix.editor.ContextActionsMenu
 import org.modelix.editor.EditorAspect
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.FrontendEditorComponent
+import org.modelix.editor.IActionOrProvider
+import org.modelix.editor.ICaretPositionPolicy
+import org.modelix.editor.ICodeCompletionAction
+import org.modelix.editor.IContextActionsProvider
 import org.modelix.editor.JSKeyboardEvent
 import org.modelix.editor.JSKeyboardEventType
 import org.modelix.editor.KeyLocation
 import org.modelix.editor.KnownKeys
 import org.modelix.editor.Modifiers
 import org.modelix.editor.NodeCellReference
+import org.modelix.editor.NodeContextActions
 import org.modelix.editor.descendants
 import org.modelix.editor.layoutable
+import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.text.backend.TextEditorServiceImpl
 import org.modelix.editor.text.frontend.getVisibleText
+import org.modelix.editor.text.shared.ActionIcon
+import org.modelix.editor.toHtml
 import org.modelix.incremental.IncrementalEngine
 import org.modelix.kernelf.KernelfLanguages
 import org.modelix.metamodel.untyped
@@ -348,6 +359,100 @@ class NodeAttributeTest {
             assertEquals(listOf("BookmarkAnnotation", "DotDotDot"), attributeConcepts())
         }
 
+    @Test
+    fun theActionsForNodeAttributesAreListedInTheirOwnGroup() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+
+            assertEquals(listOf(NODE_ATTRIBUTES, NODE_ATTRIBUTES, NODE_ATTRIBUTES), contextActionGroups())
+            assertEquals(List(3) { ActionIcon.NODE_ATTRIBUTE }, contextActionIcons())
+            assertEquals(listOf(NODE_ATTRIBUTES), renderedGroupHeadings())
+        }
+
+    @Test
+    fun aContextActionIsShownWithItsIconInsteadOfItsDescription() =
+        runAttributeTest {
+            openContextActions(cellWithText("200"))
+            typeIntoMenu("bookmark")
+
+            val html = renderedMenu()
+            assertTrue(html.contains("""<div class="context-action-icon icon-node-attribute"></div>"""), html)
+            assertTrue(!html.contains("context-action-description"), html)
+            assertTrue(!html.contains("Attribute of"), html)
+        }
+
+    @Test
+    fun contextActionsOfOtherProvidersAreOfferedWithTheirGroups() =
+        runAttributeTest {
+            val executedOn = mutableListOf<INode>()
+            withContextActionsProvider({ node ->
+                listOf(
+                    TestContextAction("Zzz without group", null) { executedOn.add(node) },
+                    TestContextAction("Refactor it", "Refactoring") { executedOn.add(node) },
+                )
+            }) {
+                openContextActions(cellWithText("200"))
+
+                // Without a group first, then the groups by name, like the sections of the MPS intentions menu.
+                assertEquals(listOf("Zzz without group", ADD_BOOKMARK, ADD_TODO, ADD_OLD_NODE, "Refactor it"), contextActions())
+                assertEquals(listOf(null, NODE_ATTRIBUTES, NODE_ATTRIBUTES, NODE_ATTRIBUTES, "Refactoring"), contextActionGroups())
+                assertEquals(listOf(NODE_ATTRIBUTES, "Refactoring"), renderedGroupHeadings())
+
+                typeIntoMenu("refactor")
+                assertEquals(listOf("Refactoring"), renderedGroupHeadings())
+                pressKey(KnownKeys.Enter)
+
+                assertEquals(listOf(literal.reference), executedOn.map { it.reference })
+                assertNull(editor.getActionMenu())
+            }
+        }
+
+    @Test
+    fun aFailingContextActionsProviderDoesNotHideTheOtherActions() =
+        runAttributeTest {
+            withContextActionsProvider({ error("provider failed") }) {
+                openContextActions(cellWithText("200"))
+
+                assertEquals(listOf(ADD_BOOKMARK, ADD_TODO, ADD_OLD_NODE), contextActions())
+            }
+        }
+
+    private suspend fun withContextActionsProvider(
+        actions: (INode) -> List<IActionOrProvider>,
+        body: suspend () -> Unit,
+    ) {
+        val provider =
+            object : IContextActionsProvider {
+                override fun getContextActions(
+                    node: INode,
+                    parameters: CodeCompletionParameters,
+                ): List<IActionOrProvider> = actions(node)
+            }
+        ContextActionsAspect.providers.add(provider)
+        try {
+            body()
+        } finally {
+            ContextActionsAspect.providers.remove(provider)
+        }
+    }
+
+    private class TestContextAction(
+        private val text: String,
+        private val group: String?,
+        private val onExecute: () -> Unit,
+    ) : ICodeCompletionAction {
+        override fun getMatchingText(): String = text
+
+        override fun getDescription(): String = ""
+
+        override fun getGroup(): String? = group
+
+        override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+            onExecute()
+            return null
+        }
+    }
+
     private suspend fun selectText(cell: Cell) {
         editor.flushAndUpdateSelection { CaretSelection(editor, cell.layoutable()!!, 0) }
         editor.flush()
@@ -390,6 +495,25 @@ class NodeAttributeTest {
         assertIs<ContextActionsMenu>(editor.getActionMenu(), "The context actions menu is not open")
             .getVisibleEntries()
             .map { it.matchingText }
+
+    private fun contextActionGroups(): List<String?> =
+        assertIs<ContextActionsMenu>(editor.getActionMenu(), "The context actions menu is not open")
+            .getVisibleEntries()
+            .map { it.group }
+
+    private fun contextActionIcons(): List<ActionIcon?> =
+        assertIs<ContextActionsMenu>(editor.getActionMenu(), "The context actions menu is not open")
+            .getVisibleEntries()
+            .map { it.icon }
+
+    private fun renderedMenu(): String =
+        assertIs<ContextActionsMenu>(editor.getActionMenu(), "The context actions menu is not open")
+            .toHtml(createHTML(prettyPrint = false))
+
+    private fun renderedGroupHeadings(): List<String> {
+        val html = renderedMenu()
+        return Regex("""<div class="context-actions-group">([^<]*)</div>""").findAll(html).map { it.groupValues[1] }.toList()
+    }
 
     private suspend fun addAttribute(
         concept: IConcept,
@@ -485,5 +609,6 @@ class NodeAttributeTest {
         const val ADD_BOOKMARK = "Add BookmarkAnnotation"
         const val ADD_TODO = "Add DotDotDot"
         const val ADD_OLD_NODE = "Add OldNodeAnnotation"
+        const val NODE_ATTRIBUTES = NodeContextActions.NODE_ATTRIBUTES_GROUP
     }
 }
