@@ -97,4 +97,9 @@ class LanguageAspectsFromMPSModules(
         if (needsUpdate) updateDescriptors()
         return conceptEditors[concept] ?: emptyList()
     }
+
+    override fun getAllConceptEditors(): List<ConceptEditor> {
+        if (needsUpdate) updateDescriptors()
+        return conceptEditors.values.flatten()
+    }
 }

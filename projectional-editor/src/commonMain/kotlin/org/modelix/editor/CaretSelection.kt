@@ -154,7 +154,12 @@ class CaretSelection(
             }
 
             KnownKeys.Enter -> {
-                editor.serviceCall { executeInsert(editor.editorId, layoutable.cell.getId()) }
+                val cellId = layoutable.cell.getId()
+                if (event.modifiers == Modifiers.ALT) {
+                    editor.serviceCall { triggerContextActions(editor.editorId, cellId, cellId) }
+                } else {
+                    editor.serviceCall { executeInsert(editor.editorId, cellId) }
+                }
             }
 
             else -> {

@@ -3,12 +3,14 @@ package org.modelix.editor.ssr.mps
 import org.jetbrains.mps.openapi.module.SRepository
 import org.modelix.checks.ModelCheckAspect
 import org.modelix.constraints.ConstraintsAspect
+import org.modelix.editor.ContextActionsAspect
 import org.modelix.editor.EditorEngine
 import org.modelix.model.api.ILanguageRepository
 import org.modelix.model.mpsadapters.MPSChangeTranslator
 import org.modelix.model.mpsadapters.MPSLanguageRepository
 import org.modelix.presentation.PropertyPresentationAspect
 import org.modelix.scopes.ScopeAspect
+import kotlin.coroutines.EmptyCoroutineContext
 
 class EditorIntegrationForMPS(
     val editorEngine: EditorEngine,
@@ -16,6 +18,8 @@ class EditorIntegrationForMPS(
     private var aspectsFromMPS: LanguageAspectsFromMPSModules? = null
     private var mpsChangeTranslator: MPSChangeTranslator? = null
     private var mpsLanguageRepository: MPSLanguageRepository? = null
+    private var modelChecker: AsyncMPSModelChecker? = null
+    private var intentions: MPSIntentions? = null
 
     fun init(repository: SRepository) {
         mpsLanguageRepository = MPSLanguageRepository(repository)
@@ -26,7 +30,10 @@ class EditorIntegrationForMPS(
         ScopeAspect.registerScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.add(MPSConstraints)
         PropertyPresentationAspect.providers.add(MPSPropertyPresentation)
-        ModelCheckAspect.checkers.add(MPSModelChecker)
+        val modelChecker = AsyncMPSModelChecker(repository).also { ModelCheckAspect.checkers.add(it) }
+        this.modelChecker = modelChecker
+        intentions = MPSIntentions(repository, modelChecker::getReportItems).also { ContextActionsAspect.providers.add(it) }
+        ContextActionsAspect.loadingContext = EdtDispatcher
         editorEngine.addRegistry(aspectsFromMPS!!)
     }
 
@@ -37,7 +44,14 @@ class EditorIntegrationForMPS(
         ScopeAspect.unregisterScopeProvider(MPSScopeProvider)
         ConstraintsAspect.checkers.remove(MPSConstraints)
         PropertyPresentationAspect.providers.remove(MPSPropertyPresentation)
-        ModelCheckAspect.checkers.remove(MPSModelChecker)
+        modelChecker?.let {
+            ModelCheckAspect.checkers.remove(it)
+            it.dispose()
+        }
+        modelChecker = null
+        intentions?.let { ContextActionsAspect.providers.remove(it) }
+        if (ContextActionsAspect.loadingContext == EdtDispatcher) ContextActionsAspect.loadingContext = EmptyCoroutineContext
+        intentions = null
 
         // The change translator and the aspects registry attach listeners to MPS. Leaving them registered would keep
         // this plugin's classes referenced from MPS and prevent the plugin from being unloaded.

@@ -7,7 +7,6 @@ import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.EditorEngine
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
-import org.modelix.editor.NodeCellCreationCall
 import org.modelix.editor.Selection
 import org.modelix.editor.applyShadowing
 import org.modelix.editor.getCompletionPattern
@@ -55,15 +54,19 @@ class BackendEditorComponent(
             it.updateActions(pattern)
         }
 
-    fun <R> runWrite(body: () -> R): R =
-        when (rootCall) {
-            is NodeCellCreationCall -> rootCall.node.getModel().executeWrite(body)
-        }
+    fun <R> runWrite(body: () -> R): R = rootCall.node.getModel().executeWrite(body)
 
-    fun <R> runRead(body: () -> R): R =
-        when (rootCall) {
-            is NodeCellCreationCall -> rootCall.node.getModel().executeRead(body)
-        }
+    fun <R> runRead(body: () -> R): R = rootCall.node.getModel().executeRead(body)
+
+    private companion object {
+        /**
+         * The actions without a group first, then the groups by name, like the sections of the MPS intentions menu.
+         * Within a group by their text.
+         */
+        val menuOrder: Comparator<ICodeCompletionAction> =
+            compareBy<ICodeCompletionAction>({ it.getGroup() != null }, { it.getGroup() })
+                .thenBy { it.getCompletionPattern().lowercase() }
+    }
 
     inner class CompletionMenuBackend(
         val providers: List<ICodeCompletionActionProvider>,
@@ -84,7 +87,7 @@ class BackendEditorComponent(
                         val matchingText = it.getCompletionPattern()
                         matchingText.isNotEmpty() && matchingText.startsWith(parameters.pattern)
                     }.applyShadowing()
-                    .sortedBy { it.getCompletionPattern().lowercase() }
+                    .sortedWith(menuOrder)
             }
     }
 }

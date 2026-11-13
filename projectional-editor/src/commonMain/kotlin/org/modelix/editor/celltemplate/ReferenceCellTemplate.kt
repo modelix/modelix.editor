@@ -2,7 +2,6 @@ package org.modelix.editor.celltemplate
 
 import org.modelix.checks.CheckMessageTarget
 import org.modelix.checks.addCheckMessages
-import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
 import org.modelix.editor.CellSpecBase
@@ -10,6 +9,7 @@ import org.modelix.editor.CodeCompletionParameters
 import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.ExistingNode
 import org.modelix.editor.IActionOrProvider
+import org.modelix.editor.ICaretPositionPolicy
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.ICodeCompletionActionProvider
 import org.modelix.editor.ICompletionTokenOrList
@@ -21,6 +21,9 @@ import org.modelix.editor.ReferencedNodeCellReference
 import org.modelix.editor.TemplateCellReference
 import org.modelix.editor.TextCellSpec
 import org.modelix.editor.after
+import org.modelix.editor.caretPolicyAfterCreating
+import org.modelix.editor.nonExistingAncestorCount
+import org.modelix.editor.replacedLocation
 import org.modelix.editor.replacement
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.toNonExisting
@@ -131,10 +134,31 @@ class ReferenceCellTemplate(
 
         override fun getDescription(): String = concept.getShortName()
 
-        override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
+        fun getInstantiatedConcept(): IConcept = concept
+
+        /**
+         * The same target in the same place is written the same way by a concept and by its sub-concepts that don't
+         * have a notation of their own, so the user can't tell them apart. The more general concept is the one that is
+         * meant, the specialized one is for a special purpose, like `InferredClassifierType` of `ClassifierType`.
+         * The same reference in the same place is offered once, without wrappers where none are needed.
+         */
+        override fun shadows(shadowed: ICodeCompletionAction): Boolean {
+            if (shadowed !is ReferenceCellTemplate.WrapReferenceTarget) return false
+            if (shadowed.target != target) return false
+            val otherConcept = shadowed.getInstantiatedConcept()
+            val samePlace = location.replacedLocation() == shadowed.location.replacedLocation()
+            return if (otherConcept == concept) {
+                location.nodeCreationDepth() < shadowed.location.nodeCreationDepth() || samePlace
+            } else {
+                samePlace && otherConcept.isSubConceptOf(concept)
+            }
+        }
+
+        override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+            val createdAncestors = location.nonExistingAncestorCount()
             val sourceNode = location.getOrCreateNode(concept)
             sourceNode.setReferenceTarget(link, target.getOrCreateNode())
-            return CaretPositionPolicy(createCellReference(sourceNode))
+            return caretPolicyAfterCreating(createCellReference(sourceNode), sourceNode, createdAncestors)
         }
     }
 }

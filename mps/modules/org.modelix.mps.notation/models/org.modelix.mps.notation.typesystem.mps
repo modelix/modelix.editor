@@ -32,6 +32,7 @@
         <property id="1070475926801" name="value" index="Xl_RC" />
       </concept>
       <concept id="1070534058343" name="jetbrains.mps.baseLanguage.structure.NullLiteral" flags="nn" index="10Nm6u" />
+      <concept id="1070534370425" name="jetbrains.mps.baseLanguage.structure.IntegerType" flags="in" index="10Oyi0" />
       <concept id="1070534644030" name="jetbrains.mps.baseLanguage.structure.BooleanType" flags="in" index="10P_77" />
       <concept id="1068431474542" name="jetbrains.mps.baseLanguage.structure.VariableDeclaration" flags="ng" index="33uBYm">
         <child id="1068431790190" name="initializer" index="33vP2m" />
@@ -70,6 +71,7 @@
       <concept id="1079359253375" name="jetbrains.mps.baseLanguage.structure.ParenthesizedExpression" flags="nn" index="1eOMI4">
         <child id="1079359253376" name="expression" index="1eOMHV" />
       </concept>
+      <concept id="1081506762703" name="jetbrains.mps.baseLanguage.structure.GreaterThanExpression" flags="nn" index="3eOSWO" />
       <concept id="1081506773034" name="jetbrains.mps.baseLanguage.structure.LessThanExpression" flags="nn" index="3eOVzh" />
       <concept id="1081516740877" name="jetbrains.mps.baseLanguage.structure.NotExpression" flags="nn" index="3fqX7Q">
         <child id="1081516765348" name="expression" index="3fr31v" />
@@ -105,6 +107,9 @@
       </concept>
     </language>
     <language id="7a5dda62-9140-4668-ab76-d5ed1746f2b2" name="jetbrains.mps.lang.typesystem">
+      <concept id="1207055528241" name="jetbrains.mps.lang.typesystem.structure.WarningStatement" flags="nn" index="a7r0C">
+        <child id="1207055552304" name="warningText" index="a7wSD" />
+      </concept>
       <concept id="1185788614172" name="jetbrains.mps.lang.typesystem.structure.NormalTypeClause" flags="ng" index="mw_s8">
         <child id="1185788644032" name="normalType" index="mwGJk" />
       </concept>
@@ -1257,6 +1262,62 @@
           <node concept="3cpWs6" id="3NQOi27IKOs" role="3cqZAp" />
         </node>
       </node>
+      <node concept="2Gpval" id="4djtaRZCh9J" role="3cqZAp">
+        <node concept="2GrKxI" id="4djtaRZCh9N" role="2Gsz3X">
+          <property role="TrG5h" value="parameter" />
+        </node>
+        <node concept="2OqwBi" id="4djtaRZCh9O" role="2GsD0m">
+          <node concept="1YBJjd" id="4djtaRZCh9R" role="2Oq$k0">
+            <ref role="1YBMHb" node="3NQOi27IKPH" resolve="n" />
+          </node>
+          <node concept="2qgKlT" id="4djtaRZCh9S" role="2OqNvi">
+            <ref role="37wK5l" to="wsib:4djtaRZB0cL" resolve="getUnfilledParameters" />
+          </node>
+        </node>
+        <node concept="3clFbS" id="4djtaRZCh9T" role="2LFqv$">
+          <node concept="2MkqsV" id="4djtaRZCh9U" role="3cqZAp">
+            <node concept="3cpWs3" id="4djtaRZCh9X" role="2MkJ7o">
+              <node concept="Xl_RD" id="4djtaRZCha0" role="3uHU7B">
+                <property role="Xl_RC" value="No cell for parameter " />
+              </node>
+              <node concept="2OqwBi" id="4djtaRZCha1" role="3uHU7w">
+                <node concept="2GrUjf" id="4djtaRZCha4" role="2Oq$k0">
+                  <ref role="2Gs0qQ" node="4djtaRZCh9N" resolve="parameter" />
+                </node>
+                <node concept="3TrcHB" id="4djtaRZCha5" role="2OqNvi">
+                  <ref role="3TsBF5" to="tpck:h0TrG11" resolve="name" />
+                </node>
+              </node>
+            </node>
+            <node concept="1YBJjd" id="4djtaRZCha6" role="1urrMF">
+              <ref role="1YBMHb" node="3NQOi27IKPH" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2Gpval" id="4djtaRZCha7" role="3cqZAp">
+        <node concept="2GrKxI" id="4djtaRZChab" role="2Gsz3X">
+          <property role="TrG5h" value="argument" />
+        </node>
+        <node concept="2OqwBi" id="4djtaRZChac" role="2GsD0m">
+          <node concept="1YBJjd" id="4djtaRZChaf" role="2Oq$k0">
+            <ref role="1YBMHb" node="3NQOi27IKPH" resolve="n" />
+          </node>
+          <node concept="2qgKlT" id="4djtaRZChag" role="2OqNvi">
+            <ref role="37wK5l" to="wsib:4djtaRZB0dX" resolve="getSurplusArguments" />
+          </node>
+        </node>
+        <node concept="3clFbS" id="4djtaRZChah" role="2LFqv$">
+          <node concept="2MkqsV" id="4djtaRZChai" role="3cqZAp">
+            <node concept="Xl_RD" id="4djtaRZChal" role="2MkJ7o">
+              <property role="Xl_RC" value="This argument fills no parameter of the component, or one another argument already fills" />
+            </node>
+            <node concept="2GrUjf" id="4djtaRZCham" role="1urrMF">
+              <ref role="2Gs0qQ" node="4djtaRZChab" resolve="argument" />
+            </node>
+          </node>
+        </node>
+      </node>
       <node concept="3cpWs8" id="3NQOi27IKOt" role="3cqZAp">
         <node concept="3cpWsn" id="3NQOi27IKOw" role="3cpWs9">
           <property role="TrG5h" value="container" />
@@ -1363,6 +1424,162 @@
     <node concept="1YaCAy" id="3NQOi27IKPH" role="1YuTPh">
       <property role="TrG5h" value="n" />
       <ref role="1YaFvo" to="f8gn:3NQOi27s2bH" resolve="ComponentCell" />
+    </node>
+  </node>
+  <node concept="18kY7G" id="4djtaRZCpUB">
+    <property role="TrG5h" value="check_CellParameter" />
+    <node concept="3clFbS" id="4djtaRZCpUE" role="18ibNy">
+      <node concept="3cpWs8" id="4djtaRZCpUF" role="3cqZAp">
+        <node concept="3cpWsn" id="4djtaRZCpUI" role="3cpWs9">
+          <property role="TrG5h" value="component" />
+          <node concept="3Tqbb2" id="4djtaRZCpUK" role="1tU5fm">
+            <ref role="ehGHo" to="f8gn:3NQOi27s29T" resolve="NotationComponent" />
+          </node>
+          <node concept="2OqwBi" id="4djtaRZCpUL" role="33vP2m">
+            <node concept="1YBJjd" id="4djtaRZCpUO" role="2Oq$k0">
+              <ref role="1YBMHb" node="4djtaRZCpVH" resolve="n" />
+            </node>
+            <node concept="2Xjw5R" id="4djtaRZCpUP" role="2OqNvi">
+              <node concept="1xMEDy" id="4djtaRZCpUS" role="1xVPHs">
+                <node concept="chp4Y" id="4djtaRZCpUU" role="ri$Ld">
+                  <ref role="cht4Q" to="f8gn:3NQOi27s29T" resolve="NotationComponent" />
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="3clFbJ" id="4djtaRZCpUV" role="3cqZAp">
+        <node concept="3clFbC" id="4djtaRZCpUY" role="3clFbw">
+          <node concept="37vLTw" id="4djtaRZCpV1" role="3uHU7B">
+            <ref role="3cqZAo" node="4djtaRZCpUI" resolve="component" />
+          </node>
+          <node concept="10Nm6u" id="4djtaRZCpV2" role="3uHU7w" />
+        </node>
+        <node concept="3clFbS" id="4djtaRZCpV3" role="3clFbx">
+          <node concept="3cpWs6" id="4djtaRZCpV4" role="3cqZAp" />
+        </node>
+      </node>
+      <node concept="3cpWs8" id="4djtaRZCpV5" role="3cqZAp">
+        <node concept="3cpWsn" id="4djtaRZCpV8" role="3cpWs9">
+          <property role="TrG5h" value="slots" />
+          <node concept="10Oyi0" id="4djtaRZCpVa" role="1tU5fm" />
+          <node concept="2OqwBi" id="4djtaRZCpVb" role="33vP2m">
+            <node concept="37vLTw" id="4djtaRZCpVe" role="2Oq$k0">
+              <ref role="3cqZAo" node="4djtaRZCpUI" resolve="component" />
+            </node>
+            <node concept="2qgKlT" id="4djtaRZCpVf" role="2OqNvi">
+              <ref role="37wK5l" to="wsib:4djtaRZB7eQ" resolve="countSlots" />
+              <node concept="1YBJjd" id="4djtaRZCpVg" role="37wK5m">
+                <ref role="1YBMHb" node="4djtaRZCpVH" resolve="n" />
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="3clFbJ" id="4djtaRZCpVh" role="3cqZAp">
+        <node concept="3clFbC" id="4djtaRZCpVk" role="3clFbw">
+          <node concept="37vLTw" id="4djtaRZCpVn" role="3uHU7B">
+            <ref role="3cqZAo" node="4djtaRZCpV8" resolve="slots" />
+          </node>
+          <node concept="3cmrfG" id="4djtaRZCpVo" role="3uHU7w">
+            <property role="3cmrfH" value="0" />
+          </node>
+        </node>
+        <node concept="3clFbS" id="4djtaRZCpVp" role="3clFbx">
+          <node concept="a7r0C" id="4djtaRZCpVq" role="3cqZAp">
+            <node concept="Xl_RD" id="4djtaRZCpVt" role="a7wSD">
+              <property role="Xl_RC" value="This parameter has no slot in the component, so its argument is not rendered" />
+            </node>
+            <node concept="1YBJjd" id="4djtaRZCpVu" role="1urrMF">
+              <ref role="1YBMHb" node="4djtaRZCpVH" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="3clFbJ" id="4djtaRZCpVv" role="3cqZAp">
+        <node concept="3eOSWO" id="4djtaRZCpVy" role="3clFbw">
+          <node concept="37vLTw" id="4djtaRZCpV_" role="3uHU7B">
+            <ref role="3cqZAo" node="4djtaRZCpV8" resolve="slots" />
+          </node>
+          <node concept="3cmrfG" id="4djtaRZCpVA" role="3uHU7w">
+            <property role="3cmrfH" value="1" />
+          </node>
+        </node>
+        <node concept="3clFbS" id="4djtaRZCpVB" role="3clFbx">
+          <node concept="2MkqsV" id="4djtaRZCpVC" role="3cqZAp">
+            <node concept="Xl_RD" id="4djtaRZCpVF" role="2MkJ7o">
+              <property role="Xl_RC" value="A parameter can have only one slot, because its cell would otherwise be rendered twice" />
+            </node>
+            <node concept="1YBJjd" id="4djtaRZCpVG" role="1urrMF">
+              <ref role="1YBMHb" node="4djtaRZCpVH" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="4djtaRZCpVH" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:4djtaRZALI$" resolve="CellParameter" />
+    </node>
+  </node>
+  <node concept="1YbPZF" id="2qn8IalkYP3">
+    <property role="TrG5h" value="typeof_BL_NotationConceptExpression" />
+    <property role="3GE5qa" value="expressions" />
+    <node concept="3clFbS" id="2qn8IalkYP6" role="18ibNy">
+      <node concept="3cpWs8" id="2qn8IalkYP7" role="3cqZAp">
+        <node concept="3cpWsn" id="2qn8IalkYPa" role="3cpWs9">
+          <property role="TrG5h" value="concept" />
+          <node concept="3Tqbb2" id="2qn8IalkYPc" role="1tU5fm">
+            <ref role="ehGHo" to="tpce:h0PkWnZ" resolve="AbstractConceptDeclaration" />
+          </node>
+          <node concept="2OqwBi" id="2qn8IalkYPd" role="33vP2m">
+            <node concept="2OqwBi" id="2qn8IalkYPg" role="2Oq$k0">
+              <node concept="1YBJjd" id="2qn8IalkYPj" role="2Oq$k0">
+                <ref role="1YBMHb" node="2qn8IalkYPH" resolve="n" />
+              </node>
+              <node concept="2Xjw5R" id="2qn8IalkYPk" role="2OqNvi">
+                <node concept="1xMEDy" id="2qn8IalkYPn" role="1xVPHs">
+                  <node concept="chp4Y" id="2qn8IalkYPp" role="ri$Ld">
+                    <ref role="cht4Q" to="f8gn:3NQOi27s28c" resolve="ICellContainer" />
+                  </node>
+                </node>
+              </node>
+            </node>
+            <node concept="2qgKlT" id="2qn8IalkYPq" role="2OqNvi">
+              <ref role="37wK5l" to="wsib:3NQOi27v8dk" resolve="getContextConcept" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="1Z5TYs" id="2qn8IalkYPr" role="3cqZAp">
+        <node concept="mw_s8" id="2qn8IalkYPu" role="1ZfhKB">
+          <node concept="2pJPEk" id="2qn8IalkYPw" role="mwGJk">
+            <node concept="2pJPED" id="2qn8IalkYPy" role="2pJPEn">
+              <ref role="2pJxaS" to="tp25:5MFgGQnlLNI" resolve="SConceptType" />
+              <node concept="2pIpSj" id="2qn8IalkYPz" role="2pJxcM">
+                <ref role="2pIpSl" to="tp25:5MFgGQnlLNJ" />
+                <node concept="36biLy" id="2qn8IalkYP_" role="28nt2d">
+                  <node concept="37vLTw" id="2qn8IalkYPB" role="36biLW">
+                    <ref role="3cqZAo" node="2qn8IalkYPa" resolve="concept" />
+                  </node>
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="mw_s8" id="2qn8IalkYPC" role="1ZfhK$">
+          <node concept="1Z2H0r" id="2qn8IalkYPE" role="mwGJk">
+            <node concept="1YBJjd" id="2qn8IalkYPG" role="1Z2MuG">
+              <ref role="1YBMHb" node="2qn8IalkYPH" resolve="n" />
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="1YaCAy" id="2qn8IalkYPH" role="1YuTPh">
+      <property role="TrG5h" value="n" />
+      <ref role="1YaFvo" to="f8gn:2qn8IalkT2W" resolve="BL_NotationConceptExpression" />
     </node>
   </node>
 </model>
