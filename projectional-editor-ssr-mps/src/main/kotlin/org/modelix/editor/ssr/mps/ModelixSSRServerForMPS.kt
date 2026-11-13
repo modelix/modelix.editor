@@ -372,10 +372,11 @@ object MPSConstraints : IConstraintsChecker {
     fun checkLanguageImported(node: INonExistingNode): List<IConstraintViolation> {
         val concept = node.expectedConcept() as? MPSConcept ?: return emptyList()
         val language = concept.concept.language
+        // The ancestors come as legacy nodes, which wrap the MPSModelAsNode of the model.
         val model =
             node
                 .ancestors()
-                .map { it.getNode() }
+                .map { it.getNode()?.asWritableNode() }
                 .filterIsInstance<MPSModelAsNode>()
                 .map { it.model }
                 .firstOrNull() ?: return emptyList()
