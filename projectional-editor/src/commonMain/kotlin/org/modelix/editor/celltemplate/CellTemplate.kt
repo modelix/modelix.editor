@@ -116,6 +116,11 @@ abstract class CellTemplate(
                 if (symbol is ChildCellTemplate && conceptToReplace.isSubConceptOf(symbol.link.targetConcept)) {
                     val prevNextIndex = if (before) index - 1 else index + 1
                     val prevNextSymbol = symbols.getOrNull(prevNextIndex) ?: return@mapIndexedNotNull null
+                    // Everything the wrapper writes in front of the typed text has to be there already. Typing `+`
+                    // behind `a` makes `a + <>`, typing `!` in front of it makes `!a`. But typing `)` behind `a` is
+                    // no reason to make it `typeof(a)`: nobody typed the `typeof(`.
+                    val symbolsInFront = symbols.take(if (before) prevNextIndex else index)
+                    if (symbolsInFront.any { it !is IOptionalSymbol }) return@mapIndexedNotNull null
                     return@mapIndexedNotNull prevNextSymbol.createWrapperAction(nodeToReplace, symbol.link)
                 }
                 return@mapIndexedNotNull null

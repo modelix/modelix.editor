@@ -1,11 +1,14 @@
 package org.modelix.editor
 
+import org.modelix.constraints.ConstraintsAspect
 import org.modelix.editor.celltemplate.NotationRootCellTemplate
 import org.modelix.editor.celltemplate.getAttributeSideTransformActions
 import org.modelix.editor.celltemplate.hasSymbolsBesideAttributedCell
 import org.modelix.editor.text.backend.BackendEditorComponent
+import org.modelix.model.api.IChildLink
 import org.modelix.model.api.INode
 import org.modelix.model.api.getInstantiatableSubConcepts
+import org.modelix.model.api.index
 
 interface ICellAction {
     fun isApplicable(): Boolean
@@ -74,7 +77,15 @@ class SideTransformNode(
     fun getWrapperActions(engine: EditorEngine): List<IActionOrProvider> {
         val location = ExistingNode(node)
         val expectedConcept = location.expectedConcept() ?: return emptyList()
-        val allowedConcepts = expectedConcept.getInstantiatableSubConcepts()
+        // The wrapper takes the place of the node, so it has to be allowed there, as for a substitution.
+        val parent = node.parent
+        val link = node.asWritableNode().getContainmentLinkDefinition() as? IChildLink
+        val wrapperLocation = if (parent != null && link != null) NonExistingChild(ExistingNode(parent), link, node.index()) else null
+        val allowedConcepts =
+            expectedConcept.getInstantiatableSubConcepts().filter { concept ->
+                wrapperLocation == null ||
+                    runCatching { ConstraintsAspect.canCreate(wrapperLocation.replacement(concept)) }.getOrElse { true }
+            }
         val cellModels =
             allowedConcepts.map { concept ->
                 engine.createCellModel(concept)

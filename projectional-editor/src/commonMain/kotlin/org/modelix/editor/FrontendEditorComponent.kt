@@ -162,6 +162,12 @@ open class FrontendEditorComponent(
             if (updateData.selectionChange != null) {
                 state.setSelection(updateData.selectionChange)
             }
+            val textToRetype = updateData.textToRetype
+            if (!textToRetype.isNullOrEmpty()) {
+                eventQueue.enqueue(UIEventType.Generic) {
+                    (state.getSelection() as? CaretSelection)?.processTypedText(textToRetype)
+                }
+            }
             return eventQueue.enqueue(UIEventType.Html) {
                 state.updateHtml()
             }

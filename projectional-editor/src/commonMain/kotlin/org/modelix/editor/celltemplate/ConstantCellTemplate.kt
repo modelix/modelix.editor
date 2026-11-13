@@ -1,9 +1,11 @@
 package org.modelix.editor.celltemplate
 
 import org.modelix.editor.CaretPositionPolicy
+import org.modelix.editor.CellActionProperties
 import org.modelix.editor.CellCreationContext
 import org.modelix.editor.ChildNodeCellReference
 import org.modelix.editor.CodeCompletionParameters
+import org.modelix.editor.CommonCellProperties
 import org.modelix.editor.ConstantCompletionToken
 import org.modelix.editor.IActionOrProvider
 import org.modelix.editor.ICodeCompletionAction
@@ -43,7 +45,10 @@ class ConstantCellTemplate(
     override fun createCell(
         context: CellCreationContext,
         node: INode,
-    ) = TextCellSpec(text, "")
+    ) = TextCellSpec(text, "").also {
+        it.properties[CommonCellProperties.constant] = true
+        it.properties[CellActionProperties.substitute] = ReplaceConstantProvider(node, text)
+    }
 
     override fun getInstantiationActions(
         location: INonExistingNode,

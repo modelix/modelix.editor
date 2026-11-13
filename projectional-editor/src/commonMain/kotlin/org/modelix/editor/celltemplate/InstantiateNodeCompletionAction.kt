@@ -1,8 +1,12 @@
 package org.modelix.editor.celltemplate
 
-import org.modelix.editor.CaretPositionPolicy
+import org.modelix.editor.ICaretPositionPolicy
 import org.modelix.editor.ICodeCompletionAction
 import org.modelix.editor.INonExistingNode
+import org.modelix.editor.NodeCellReference
+import org.modelix.editor.addMissingMandatoryChildren
+import org.modelix.editor.caretPolicyAfterCreating
+import org.modelix.editor.nonExistingAncestorCount
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.IConcept
 
@@ -29,12 +33,15 @@ class InstantiateNodeCompletionAction(
 
     override fun getDescription(): String = description
 
-    override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
+    override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+        val createdAncestors = location.nonExistingAncestorCount()
         val newNode =
             location.getExistingAncestor()!!.getArea().executeWrite {
-                location.replaceNode(concept)
+                location.replaceNode(concept).also {
+                    generateSequence(it) { it.parent }.take(createdAncestors + 1).forEach { it.addMissingMandatoryChildren() }
+                }
             }
-        return CaretPositionPolicy(newNode)
+        return caretPolicyAfterCreating(NodeCellReference(newNode.reference), newNode, createdAncestors)
     }
 
     override fun shadowedBy(shadowing: ICodeCompletionAction): Boolean =

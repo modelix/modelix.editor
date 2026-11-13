@@ -207,6 +207,11 @@ data class EditorUpdateData(
     val selectionChange: ICaretPositionPolicy? = null,
     val menuTrigger: ActionMenuTrigger? = null,
     val completionEntries: List<CompletionMenuEntryData>? = null,
+    /**
+     * Text the user typed that the update didn't consume. It completed what was typed before, so it's typed again at
+     * the new caret position: typing `=` behind a variable name first turns the name into a reference.
+     */
+    val textToRetype: String? = null,
 )
 
 /**

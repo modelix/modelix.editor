@@ -27,6 +27,11 @@ class CodeCompletionMenu(
     }
 
     override suspend fun onPatternEdited() {
+        // A menu that typing next to a cell opened shows what can follow the typed text. Without it, it's taken back.
+        if (completionPosition != CompletionPosition.CENTER && patternEditor.pattern.isEmpty()) {
+            editor.closeActionMenu()
+            return
+        }
         updateEntries()
         executeIfSingleAction()
     }
@@ -50,6 +55,30 @@ class CodeCompletionMenu(
             }
         } else {
             onPatternEdited()
+            if (filteredEntries.isEmpty()) applyCompletedText(oldTextBeforeCaret)
+        }
+    }
+
+    /**
+     * Nothing matches anymore after the user went on typing behind a space. What was typed before the space is
+     * complete if one entry is written exactly like it: `else` of `else {`, which can't be told apart from `else if`
+     * before the `{`. That entry is applied, and the rest is typed again behind it.
+     */
+    private suspend fun applyCompletedText(oldTextBeforeCaret: String) {
+        val completedText = oldTextBeforeCaret.trimEnd()
+        if (completedText.isEmpty() || completedText == oldTextBeforeCaret) return
+        val remainingText = patternEditor.pattern.substring(completedText.length).trimStart()
+        editor.updateCodeCompletionActions(getAnchor().cell, completedText)
+        val entry = allEntries.singleOrNull { it.matchesExactly(completedText) }
+        if (entry == null) {
+            updateEntries()
+            return
+        }
+        execute(entry)
+        if (remainingText.isNotEmpty()) {
+            editor.enqueueUpdate {
+                (editor.getSelection() as? CaretSelection)?.processTypedText(remainingText)
+            }
         }
     }
 
@@ -224,8 +253,16 @@ fun List<ICodeCompletionAction>.applyShadowing(): List<ICodeCompletionAction> =
         it.getCompletionPattern()
     }.flatMap { applyShadowingToGroup(it.value) }
 
-private fun applyShadowingToGroup(actions: List<ICodeCompletionAction>): List<ICodeCompletionAction> =
-    actions.filter { a1 ->
-        val isShadowed = actions.any { a2 -> a2 !== a1 && (a2.shadows(a1) || a1.shadowedBy(a2)) }
+/**
+ * Two actions that shadow each other do the same, so only the first one of them is kept.
+ */
+private fun applyShadowingToGroup(actions: List<ICodeCompletionAction>): List<ICodeCompletionAction> {
+    fun ICodeCompletionAction.isShadowedBy(other: ICodeCompletionAction) = other.shadows(this) || shadowedBy(other)
+    return actions.filterIndexed { index, a1 ->
+        val isShadowed =
+            actions.withIndex().any { (otherIndex, a2) ->
+                a2 !== a1 && a1.isShadowedBy(a2) && (otherIndex < index || !a2.isShadowedBy(a1))
+            }
         !isShadowed
     }
+}

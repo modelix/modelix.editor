@@ -200,6 +200,12 @@ object CommonCellProperties {
     val codeCompletionText = StringCellPropertyKey("code-completion-text", null) // empty string hides the entry
     val isForceShown = BooleanCellPropertyKey("force-shown", false)
     val node = BackendCellPropertyKey<INonExistingNode?>("node", null) // set on the root cell of a node
+
+    /**
+     * Set on the cell of a constant of a notation, a keyword or a bracket. Typing its text right in front of it just
+     * moves the caret over it, the way it's typed in a text editor.
+     */
+    val constant = BackendCellPropertyKey<Boolean>("constant", false)
     val cellCall = BackendCellPropertyKey<CellCreationCall?>("cell-call", null) // set on the root cell of a cell call
     val cellReferences = CellReferenceListPropertyKey
 
