@@ -1,7 +1,10 @@
 package org.modelix.model.mpsadapters.tomps
 
 import jetbrains.mps.smodel.SNodeUtil
+import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory
 import jetbrains.mps.smodel.adapter.structure.link.InvalidContainmentLink
+import jetbrains.mps.smodel.adapter.structure.link.SContainmentLinkAdapter
+import jetbrains.mps.smodel.adapter.structure.link.SContainmentLinkAdapterById
 import org.jetbrains.mps.openapi.language.SAbstractConcept
 import org.jetbrains.mps.openapi.language.SConcept
 import org.jetbrains.mps.openapi.language.SContainmentLink
@@ -207,16 +210,22 @@ data class ModelixNodeAsMPSNode(
      * Null if and only if the node has no parent. MPS code relies on every child having a containment link. A role
      * that can't be turned into an MPS link is an [InvalidContainmentLink] with its name, like MPS uses for a role
      * that the concept doesn't declare, which is still good for the code that only compares roles.
+     *
+     * An MPS link is the instance [MetaAdapterFactory] keeps for its id, as on the nodes of MPS, because the code that
+     * MPS generates for `link == link/C : role/` compares them with `==`.
      */
     override fun getContainmentLink(): SContainmentLink? {
         val parent = node.getParent() ?: return null
         val role = node.getContainmentLink()
-        MPSChildLink.tryFromReference(role)?.let { return it.link }
+        MPSChildLink.tryFromReference(role)?.let { return it.link.cached() }
         val parentConcept = parent.getConceptReference()
         val link = role.tryResolve(parentConcept)
-        return ((link as? MPSChildLink) ?: link?.toReference()?.let { MPSChildLink.tryFromReference(it) })?.link
+        return ((link as? MPSChildLink) ?: link?.toReference()?.let { MPSChildLink.tryFromReference(it) })?.link?.cached()
             ?: InvalidContainmentLink(parentConcept.tryResolve()?.getLongName(), role.getNameOrId())
     }
+
+    private fun SContainmentLinkAdapter.cached(): SContainmentLink =
+        if (this is SContainmentLinkAdapterById) MetaAdapterFactory.getContainmentLink(id, name) else this
 
     override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull().wrap()
 

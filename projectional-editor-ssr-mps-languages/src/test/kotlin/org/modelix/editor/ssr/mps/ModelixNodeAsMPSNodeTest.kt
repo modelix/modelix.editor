@@ -1,6 +1,7 @@
 package org.modelix.editor.ssr.mps
 
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations
+import jetbrains.mps.nodeEditor.menus.CanBeChildPredicate
 import jetbrains.mps.scope.Scope
 import jetbrains.mps.smodel.SNodePointer
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory
@@ -44,12 +45,16 @@ class ModelixNodeAsMPSNodeTest : TestBase("SimpleProject") {
 
     private val rawClass: SNode get() = classNode.node
 
+    private fun firstMethodBody(): IWritableNode {
+        val method = classNode.getAllChildren().first { it.getContainmentLink().getSimpleName() == "member" }
+        return method.getAllChildren().first { it.getContainmentLink().getSimpleName() == "body" }
+    }
+
     /**
      * A `Class1 x;` in the body of the first method, whose `ClassifierType` has no target yet.
      */
     private fun newClassifierType(): MPSWritableNode {
-        val method = classNode.getAllChildren().first { it.getContainmentLink().getSimpleName() == "member" }
-        val body = method.getAllChildren().first { it.getContainmentLink().getSimpleName() == "body" }
+        val body = firstMethodBody()
         return body
             .addNewChild(IChildLinkReference.fromName("statement"), -1, ConceptReference(BL + "1068581242864"))
             .addNewChild(IChildLinkReference.fromName("localVariableDeclaration"), -1, ConceptReference(BL + "1068581242863"))
@@ -138,8 +143,7 @@ class ModelixNodeAsMPSNodeTest : TestBase("SimpleProject") {
      * A statement in the body of the first method with a `SuppressErrorsAnnotation` attached to it.
      */
     private fun newAttributedStatement(): Pair<MPSWritableNode, MPSWritableNode> {
-        val method = classNode.getAllChildren().first { it.getContainmentLink().getSimpleName() == "member" }
-        val body = method.getAllChildren().first { it.getContainmentLink().getSimpleName() == "body" }
+        val body = firstMethodBody()
         val statement =
             body.addNewChild(IChildLinkReference.fromName("statement"), -1, ConceptReference(BL + "1068581242864")) as MPSWritableNode
         val attribute =
@@ -154,7 +158,7 @@ class ModelixNodeAsMPSNodeTest : TestBase("SimpleProject") {
     fun `test an attribute is in the attribute role`() {
         writeAction {
             val (_, attribute) = newAttributedStatement()
-            assertEquals(SMODEL_ATTRIBUTE, wrap(attribute).containmentLink)
+            assertSame(SMODEL_ATTRIBUTE, wrap(attribute).containmentLink)
             assertTrue(SNodeOperations.isAttribute(wrap(attribute)))
         }
     }
@@ -175,6 +179,38 @@ class ModelixNodeAsMPSNodeTest : TestBase("SimpleProject") {
         writeAction {
             val (_, attribute) = newAttributedStatement()
             assertEquals(listOf(wrap(attribute)), SNodeOperations.getAllSiblings(wrap(attribute), true))
+        }
+    }
+
+    /**
+     * A `this.<field>` in the body of the first method, whose `FieldReferenceOperation` has no target yet.
+     */
+    private fun newFieldReferenceOperation(): MPSWritableNode {
+        val dot =
+            firstMethodBody()
+                .addNewChild(IChildLinkReference.fromName("statement"), -1, ConceptReference(BL + "1068580123155"))
+                .addNewChild(IChildLinkReference.fromName("expression"), -1, ConceptReference(BL + "1197027756228"))
+        dot.addNewChild(IChildLinkReference.fromName("operand"), -1, ConceptReference(BL + "1070475354124"))
+        return dot.addNewChild(IChildLinkReference.fromName("operation"), -1, ConceptReference(BL + "1197029447546")) as MPSWritableNode
+    }
+
+    /**
+     * The code MPS generates for `link == link/DotExpression : operation/` compares the links with `==`.
+     */
+    fun `test the containment link is the instance MPS uses for it`() {
+        writeAction {
+            val operation = newFieldReferenceOperation()
+            assertSame(operation.node.containmentLink, wrap(operation).containmentLink)
+        }
+    }
+
+    /**
+     * The `can be child` rule of `IOperation` is one of those that compare links with `==`.
+     */
+    fun `test an operation can be a child of a dot expression`() {
+        writeAction {
+            val operation = wrap(newFieldReferenceOperation())
+            assertTrue(CanBeChildPredicate(checkNotNull(operation.parent), operation.containmentLink).test(operation.concept))
         }
     }
 
