@@ -1,6 +1,7 @@
 package org.modelix.model.mpsadapters.tomps
 
 import jetbrains.mps.smodel.SNodeUtil
+import jetbrains.mps.smodel.adapter.structure.link.InvalidContainmentLink
 import org.jetbrains.mps.openapi.language.SAbstractConcept
 import org.jetbrains.mps.openapi.language.SConcept
 import org.jetbrains.mps.openapi.language.SContainmentLink
@@ -21,7 +22,7 @@ import org.modelix.model.api.IReferenceLinkReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.NullChildLinkReference
 import org.modelix.model.api.remove
-import org.modelix.model.api.resolve
+import org.modelix.model.api.tryResolve
 import org.modelix.model.mpsadapters.MPSChildLink
 import org.modelix.model.mpsadapters.MPSConcept
 import org.modelix.model.mpsadapters.MPSNode
@@ -202,9 +203,19 @@ data class ModelixNodeAsMPSNode(
 
     override fun getContainingRoot(): jetbrains.mps.smodel.SNode = treeParent()?.containingRoot ?: this
 
+    /**
+     * Null if and only if the node has no parent. MPS code relies on every child having a containment link. A role
+     * that can't be turned into an MPS link is an [InvalidContainmentLink] with its name, like MPS uses for a role
+     * that the concept doesn't declare, which is still good for the code that only compares roles.
+     */
     override fun getContainmentLink(): SContainmentLink? {
-        val link = node.getContainmentLink().resolve(node.getParent()?.getConceptReference() ?: return null)
-        return (link as? MPSChildLink)?.link
+        val parent = node.getParent() ?: return null
+        val role = node.getContainmentLink()
+        MPSChildLink.tryFromReference(role)?.let { return it.link }
+        val parentConcept = parent.getConceptReference()
+        val link = role.tryResolve(parentConcept)
+        return ((link as? MPSChildLink) ?: link?.toReference()?.let { MPSChildLink.tryFromReference(it) })?.link
+            ?: InvalidContainmentLink(parentConcept.tryResolve()?.getLongName(), role.getNameOrId())
     }
 
     override fun getFirstChild(): SNode? = node.getAllChildren().firstOrNull().wrap()
