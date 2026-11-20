@@ -31,6 +31,7 @@ import org.modelix.model.api.IPropertyReference
 import org.modelix.model.api.IReferenceLinkReference
 import org.modelix.model.api.IWritableNode
 import org.modelix.model.api.getDescendants
+import org.modelix.model.api.remove
 import org.modelix.model.mpsadapters.MPSWritableNode
 import org.modelix.model.mpsadapters.tomps.ModelixNodeAsMPSNode
 import org.modelix.mps.editor.common.IncrementalModelChecker
@@ -505,6 +506,33 @@ class BaseLanguageTests : BaseLanguageTestBase() {
 
             checker.retryCancelledChecks()
             assertNotNull(readAction { checker.runCancellable({ false }) { checkNotNull(checker.getMessagesOfRoot(root)) } })
+        } finally {
+            engine.dispose()
+        }
+    }
+
+    /**
+     * The editor may ask for the messages of a node that is deleted before the check runs. MPS checks a node without
+     * a parent as a root node, which fails without a model.
+     */
+    fun `test a node that was deleted from the model is not checked as a root node`() {
+        val engine = IncrementalEngine()
+        try {
+            val checker = IncrementalModelChecker(engine)
+            val statement =
+                writeAction {
+                    methodBodyNode.addNewChild(
+                        IChildLinkReference.fromName("statement"),
+                        -1,
+                        ConceptReference(BL + "1068580123157")
+                    )
+                }
+            writeAction { statement.remove() }
+            readAction {
+                assertNull(checker.getRootNodeOrNull(statement.asLegacyNode()))
+                assertNull(checker.getMessagesOfRoot(statement.asLegacyNode()))
+                assertNotNull(checker.getRootNodeOrNull(classNode.asLegacyNode()))
+            }
         } finally {
             engine.dispose()
         }

@@ -179,8 +179,13 @@ class IncrementalModelChecker(
 
     private class CheckCancelledException : RuntimeException("Model check cancelled")
 
+    /**
+     * A root node is a child of its model. An MPS node that isn't part of a model, like one that was deleted, has the
+     * role of a root node too, but no parent.
+     */
     private fun INode.isRootNode() =
-        getContainmentLink()?.getUID() ==
+        parent != null &&
+            getContainmentLink()?.getUID() ==
             BuiltinLanguages.MPSRepositoryConcepts.Model.rootNodes
                 .getUID()
 
