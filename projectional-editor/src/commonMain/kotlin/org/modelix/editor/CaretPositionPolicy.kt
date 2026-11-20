@@ -73,6 +73,36 @@ data class CaretPositionPolicy(
     private fun isAvoided(cell: ICellTree.Cell) = cell.cellReferences.intersect(avoidedCellRefs).isNotEmpty()
 }
 
+/**
+ * Where typing continues after the editor created nodes for text that was typed: the first cell from [start] on that
+ * is still waiting for input - an empty tab target - as long as it is inside [container].
+ *
+ * Typing `int ` where a statement is expected creates a whole `int <no name>;` declaration around the type. Nothing is
+ * left to type inside `int`, so the caret goes on to the name, where the next key belongs. Inside a node that has a
+ * slot of its own, like the `<no expression>` of a `return`, the caret goes there.
+ *
+ * Without such a cell, the caret goes to the end of [start], as with a [CaretPositionPolicy] for it.
+ */
+@Serializable
+data class ContinueTypingPolicy(
+    val start: CellReference,
+    val container: CellReference,
+) : ICaretPositionPolicy {
+    override fun getBestSelection(editor: FrontendEditorComponent): CaretSelection? {
+        val startCell = editor.resolveCell(start).firstOrNull()
+        if (startCell != null) {
+            val containerCell = editor.resolveCell(container).firstOrNull { startCell.ancestors(true).contains(it) }
+            val after = if (containerCell == null) emptySequence() else startCell.nextCells().takeWhile { it != containerCell }
+            val target =
+                (startCell.descendantsAndSelf() + after)
+                    .filter { it.isTabTarget() && it.getSelectableText().isNullOrEmpty() }
+                    .firstNotNullOfOrNull { editor.resolveLayoutable(it) }
+            if (target != null) return CaretSelection(editor, target, 0)
+        }
+        return CaretPositionPolicy(start).getBestSelection(editor)
+    }
+}
+
 enum class CaretPositionType {
     START,
     END,

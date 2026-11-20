@@ -51,4 +51,6 @@ class EditorAspect : ILanguageAspect {
 
 interface IConceptEditorRegistry {
     fun getConceptEditors(concept: IConceptReference): List<ConceptEditor>
+
+    fun getAllConceptEditors(): List<ConceptEditor>
 }

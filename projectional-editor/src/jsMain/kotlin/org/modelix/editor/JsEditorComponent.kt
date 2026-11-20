@@ -5,10 +5,13 @@ import kotlinx.browser.window
 import kotlinx.html.div
 import kotlinx.html.tabIndex
 import org.modelix.editor.text.shared.TextEditorService
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
+import kotlin.math.max
+import kotlin.math.min
 
 private val LOG = KotlinLogging.logger {}
 
@@ -82,6 +85,28 @@ class JsEditorComponent(
     override fun scrollIntoView(element: IVirtualDom.HTMLElement) {
         val element = element as? JSDom.HTMLElementWrapper ?: return
         element.unwrap().scrollIntoView(js("""{block: "nearest"}"""))
+    }
+
+    override fun getVisibleBounds(): Bounds {
+        val container = containerElement.unwrap()
+        var left = 0.0
+        var top = 0.0
+        var right = window.innerWidth.toDouble()
+        var bottom = window.innerHeight.toDouble()
+        var element: Element? = container
+        while (element != null) {
+            val style = window.getComputedStyle(element)
+            if (style.getPropertyValue("overflow-x") != "visible" || style.getPropertyValue("overflow-y") != "visible") {
+                val clip = element.getBoundingClientRect()
+                left = max(left, clip.left)
+                top = max(top, clip.top)
+                right = min(right, clip.right)
+                bottom = min(bottom, clip.bottom)
+            }
+            element = element.parentElement
+        }
+        val origin = container.getBoundingClientRect()
+        return Bounds(left - origin.left, top - origin.top, max(0.0, right - left), max(0.0, bottom - top))
     }
 
     companion object {

@@ -78,6 +78,11 @@ data class NodeReplacement(
 
 fun INonExistingNode.replacement(newConcept: IConcept): INonExistingNode = NodeReplacement(this, newConcept)
 
+/**
+ * The place this location is at, independent of the concept a [NodeReplacement] puts there.
+ */
+fun INonExistingNode.replacedLocation(): INonExistingNode = if (this is NodeReplacement) nodeToReplace.replacedLocation() else this
+
 fun INonExistingNode.coerceOutputConcept(subConcept: IConcept?): IConcept? {
     val expectedConcept = expectedConcept()
     return if (subConcept != null) {

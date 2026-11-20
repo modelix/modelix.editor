@@ -150,6 +150,17 @@ open class PropertyCellTemplate(
 
         override fun getDescription(): String = concept.getShortName()
 
+        fun getInstantiatedConcept(): IConcept = concept
+
+        /**
+         * The same value is offered once, without wrappers where none are needed.
+         */
+        override fun shadows(shadowed: ICodeCompletionAction): Boolean =
+            shadowed is PropertyCellTemplate.WrapPropertyValue &&
+                shadowed.getInstantiatedConcept() == concept &&
+                shadowed.value == value &&
+                (location.nodeCreationDepth() < shadowed.location.nodeCreationDepth() || location == shadowed.location)
+
         override fun execute(editor: BackendEditorComponent): CaretPositionPolicy? {
             val node = location.getOrCreateNode(concept)
             node.setPropertyValue(property, storedValue(value))
@@ -160,8 +171,11 @@ open class PropertyCellTemplate(
     inner class ChangePropertyAction(
         val node: INode,
     ) : ITextChangeAction {
+        /**
+         * Deleting all of the text unsets the property, so that the cell shows that it's missing again.
+         */
         override fun isValid(value: String?): Boolean {
-            if (value == null) return true
+            if (value.isNullOrEmpty()) return true
             return validateValue(node.toNonExisting(), presentedValue(value))
         }
 
@@ -172,7 +186,7 @@ open class PropertyCellTemplate(
             newText: String,
         ): Boolean {
             node.getArea().executeWrite {
-                node.setPropertyValue(property, storedValue(newText))
+                node.setPropertyValue(property, if (newText.isEmpty()) null else storedValue(newText))
             }
             return true
         }

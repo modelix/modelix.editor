@@ -55,6 +55,16 @@ interface TextEditorService {
         caretPosition: Int,
     ): EditorUpdateData
 
+    /**
+     * Opens the context actions menu with the actions of [cellId]. [anchorCellId] is the text cell the menu is shown
+     * at. They differ if a whole node is selected, which has no text cell of its own.
+     */
+    suspend fun triggerContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData
+
     suspend fun updateCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
@@ -136,6 +146,14 @@ class NullTextEditorService : TextEditorService {
         TODO("Not yet implemented")
     }
 
+    override suspend fun triggerContextActions(
+        editorId: Int,
+        cellId: CellInstanceId,
+        anchorCellId: CellInstanceId,
+    ): EditorUpdateData {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateCodeCompletionActions(
         editorId: Int,
         cellId: CellInstanceId,
@@ -187,28 +205,73 @@ data class ServiceCallResult<E>(
 data class EditorUpdateData(
     val cellTreeChanges: List<CellTreeOp> = emptyList(),
     val selectionChange: ICaretPositionPolicy? = null,
-    val completionMenuTrigger: CompletionMenuTrigger? = null,
+    val menuTrigger: ActionMenuTrigger? = null,
     val completionEntries: List<CompletionMenuEntryData>? = null,
+    /**
+     * Text the user typed that the update didn't consume. It completed what was typed before, so it's typed again at
+     * the new caret position: typing `=` behind a variable name first turns the name into a reference.
+     */
+    val textToRetype: String? = null,
 )
+
+/**
+ * Opens an [org.modelix.editor.ActionMenu] at the cell [anchor].
+ */
+@Serializable
+sealed interface ActionMenuTrigger {
+    val anchor: CellInstanceId
+}
 
 @Serializable
 data class CompletionMenuTrigger(
-    val anchor: CellInstanceId,
+    override val anchor: CellInstanceId,
     val completionPosition: CompletionPosition = CompletionPosition.CENTER,
     val pattern: String = "",
     val caretPosition: Int = 0,
-)
+) : ActionMenuTrigger
+
+@Serializable
+data class ContextActionsMenuTrigger(
+    override val anchor: CellInstanceId,
+) : ActionMenuTrigger
 
 @Serializable
 data class CompletionMenuEntryData(
     val id: Int,
     val matchingText: String,
     val description: String,
+    /** See [org.modelix.editor.ICodeCompletionAction.getGroup]. */
+    val group: String? = null,
+    /** See [org.modelix.editor.ICodeCompletionAction.getIcon]. */
+    val icon: ActionIcon? = null,
 ) {
-    fun matches(pattern: String): Boolean {
+    fun matches(
+        pattern: String,
+        ignoreCase: Boolean = false,
+    ): Boolean {
         // TODO more sophisticated pattern matching
-        return matchingText.contains(pattern)
+        return matchingText.contains(pattern, ignoreCase)
     }
 
     fun matchesExactly(pattern: String): Boolean = matchingText == pattern
+}
+
+/**
+ * The icons a menu can show for an action, which are the ones of the MPS intentions menu. The client styles them, so an
+ * action can only use one of these.
+ */
+@Serializable
+enum class ActionIcon(
+    val cssClass: String,
+) {
+    /** A normal intention, and a quick fix, which MPS shows the same way. */
+    INTENTION("intention"),
+
+    /** An intention that fixes an error. */
+    ERROR_INTENTION("error-intention"),
+
+    MIGRATION("migration"),
+
+    /** Adds a node attribute. */
+    NODE_ATTRIBUTE("node-attribute"),
 }

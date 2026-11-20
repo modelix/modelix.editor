@@ -1,6 +1,7 @@
 package org.modelix.editor
 
 import org.modelix.editor.text.backend.BackendEditorComponent
+import org.modelix.editor.text.shared.ActionIcon
 
 open class CodeCompletionActionWrapper(
     val wrappedAction: ICodeCompletionAction,
@@ -59,6 +60,24 @@ class CodeCompletionActionWithDescription(
 ) : CodeCompletionActionWrapper(action) {
     override fun getDescription(): String = overridingDescription
 }
+
+class CodeCompletionActionWithGroup(
+    action: ICodeCompletionAction,
+    val overridingGroup: String?,
+) : CodeCompletionActionWrapper(action) {
+    override fun getGroup(): String? = overridingGroup
+}
+
+fun ICodeCompletionAction.inGroup(group: String?): CodeCompletionActionWithGroup = CodeCompletionActionWithGroup(this, group)
+
+class CodeCompletionActionWithIcon(
+    action: ICodeCompletionAction,
+    val overridingIcon: ActionIcon?,
+) : CodeCompletionActionWrapper(action) {
+    override fun getIcon(): ActionIcon? = overridingIcon
+}
+
+fun ICodeCompletionAction.withIcon(icon: ActionIcon?): CodeCompletionActionWithIcon = CodeCompletionActionWithIcon(this, icon)
 
 class CodeCompletionActionWithTokens(
     action: ICodeCompletionAction,

@@ -46,9 +46,15 @@ fun Cell.isVisible() =
 
 sealed interface ILocalOrChildNodeCell
 
+/**
+ * A cell that is created by its own [CellCreationCall], and therefore cached and updated independently of the cell
+ * that embeds it. That is a child node, or the node an attribute is attached to.
+ */
 class ChildSpecReference(
-    val childNode: INode,
-) : ILocalOrChildNodeCell
+    val call: CellCreationCall,
+) : ILocalOrChildNodeCell {
+    constructor(childNode: INode) : this(NodeCellCreationCall(childNode.asWritableNode()))
+}
 
 class CellSpec : CellSpecBase()
 

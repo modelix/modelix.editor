@@ -41,6 +41,8 @@ import org.modelix.model.api.INode
 import org.modelix.model.api.runSynchronized
 import org.modelix.model.mpsadapters.MPSChangeTranslator
 import org.modelix.model.mpsadapters.MPSRepositoryAsNode
+import org.modelix.mps.editor.common.stopBeforeDisposal
+import org.modelix.mps.editor.common.stopBounded
 import org.modelix.react.ApiGenLanguages
 import org.modelix.react.ssr.server.ReactSSRServer
 import java.awt.image.BufferedImage
@@ -76,8 +78,15 @@ class ReactSSRServerForMPS : Disposable {
     companion object {
         private const val SHUTDOWN_GRACE_PERIOD_MS = 1_000L
         private const val SHUTDOWN_TIMEOUT_MS = 5_000L
+        private const val SHUTDOWN_MAX_WAIT_MS = 10_000L
 
         fun getInstance() = ApplicationManager.getApplication().getService(ReactSSRServerForMPS::class.java)
+    }
+
+    init {
+        // Stopping the server in dispose() is only the fallback. dispose() is called inside a write action, where
+        // request handlers that wait for a read action can't finish.
+        stopBeforeDisposal(this, javaClass) { ensureStopped() }
     }
 
     private var ssrServer: ReactSSRServer? = null
@@ -191,9 +200,9 @@ class ReactSSRServerForMPS : Disposable {
             if (ktorServer == null) return
             println("stopping react SSR server")
             MPSModuleRepository.getInstance().modelAccess.removeCommandListener(commandLister)
-            // A bounded timeout is required. An unbounded stop() can block forever, which would block the plugin
+            // A bounded wait is required. An unbounded stop() can block forever, which would block the plugin
             // unloading and the MPS shutdown.
-            ktorServer?.stop(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS)
+            ktorServer?.stopBounded(SHUTDOWN_GRACE_PERIOD_MS, SHUTDOWN_TIMEOUT_MS, SHUTDOWN_MAX_WAIT_MS)
             ktorServer = null
             ssrServer?.dispose()
             ssrServer = null

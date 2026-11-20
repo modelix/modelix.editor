@@ -30,12 +30,15 @@ import org.modelix.editor.TextCellSpec
 import org.modelix.editor.after
 import org.modelix.editor.ancestors
 import org.modelix.editor.asProvider
+import org.modelix.editor.getContainmentLinkDefinition
+import org.modelix.editor.isSmodelAttribute
 import org.modelix.editor.replacement
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.editor.toNonExisting
 import org.modelix.model.api.IChildLink
 import org.modelix.model.api.IConcept
 import org.modelix.model.api.INode
+import org.modelix.model.api.index
 import org.modelix.model.api.remove
 import org.modelix.parser.AmbiguousNode
 import org.modelix.parser.ExactConceptSymbol
@@ -163,13 +166,17 @@ class ChildCellTemplate(
             }
             placeholder.properties[CommonCellProperties.tabTarget] = true
             placeholder.properties[CellActionProperties.delete] =
-                object : ICellAction {
-                    override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
-                        context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
-                        return null // Position is updated by the frontend
-                    }
+                if (isDefaultPlaceholder && !link.isMultiple) {
+                    EmptySlotDeleteAction(node)
+                } else {
+                    object : ICellAction {
+                        override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+                            context.cellTreeState.substitutionPlaceholderPositions.remove(createCellReference(node))
+                            return null // Position is updated by the frontend
+                        }
 
-                    override fun isApplicable(): Boolean = true
+                        override fun isApplicable(): Boolean = true
+                    }
                 }
             cell.addChild(placeholder)
         }
@@ -283,6 +290,54 @@ class ChildCellTemplate(
         node: INode,
         optionalCell: TemplateCellReference,
     ): IActionOrProvider? = ReplaceNodeActionProvider(NonExistingChild(node.toNonExisting(), link))
+
+    /**
+     * Deleting where a single child is still missing takes back what made the slot appear.
+     *
+     * A node that holds just one other child that fits where the node is, was most likely made by wrapping that child,
+     * like `a + <>` by typing `+` behind `a`. It's replaced by that child again, as MPS does for an empty operand of a
+     * binary operation. A node that holds nothing else, like `return <>` or `!<>`, is deleted.
+     *
+     * Otherwise nothing is deleted here - a node with more content would lose it. The editor then clears the optional
+     * part of the notation around the slot, if there is one: the `= <>` of `int x = <>`.
+     */
+    inner class EmptySlotDeleteAction(
+        val node: INode,
+    ) : ICellAction {
+        override fun isApplicable(): Boolean = true
+
+        private fun otherContent(): List<INode> = node.allChildren.filterNot { it.getContainmentLink()?.isSmodelAttribute() == true }
+
+        private fun childToKeep(): INode? {
+            val expectedConcept = node.asWritableNode().getContainmentLinkDefinition()?.targetConcept ?: return null
+            val child = otherContent().singleOrNull() ?: return null
+            return child.takeIf { child.concept?.isSubConceptOf(expectedConcept) == true }
+        }
+
+        private fun isEmpty(): Boolean =
+            otherContent().isEmpty() &&
+                node.getReferenceLinks().none { node.getReferenceTargetRef(it) != null } &&
+                node.getPropertyLinks().none { node.getPropertyValue(it) != null }
+
+        /**
+         * Whether deleting here changes anything. If not, the editor looks for something around it to delete.
+         */
+        fun hasEffect(): Boolean = node.parent != null && (childToKeep() != null || isEmpty())
+
+        override fun execute(editor: BackendEditorComponent): ICaretPositionPolicy? {
+            editor.runWrite<Unit> {
+                val parent = node.parent ?: return@runWrite
+                val childToKeep = childToKeep()
+                if (childToKeep != null) {
+                    parent.moveChild(node.getContainmentLink()!!, node.index(), childToKeep)
+                    node.remove()
+                } else if (isEmpty()) {
+                    node.remove()
+                }
+            }
+            return null // The frontend updates the caret position using SavedCaretPosition
+        }
+    }
 
     inner class InsertSubstitutionPlaceholderCompletionAction(
         val index: Int,

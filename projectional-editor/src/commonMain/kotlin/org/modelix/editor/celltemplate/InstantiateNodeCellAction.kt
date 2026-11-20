@@ -3,6 +3,7 @@ package org.modelix.editor.celltemplate
 import org.modelix.editor.CaretPositionPolicy
 import org.modelix.editor.ICellAction
 import org.modelix.editor.INonExistingNode
+import org.modelix.editor.addMissingMandatoryChildren
 import org.modelix.editor.text.backend.BackendEditorComponent
 import org.modelix.model.api.IConcept
 
@@ -15,7 +16,7 @@ class InstantiateNodeCellAction(
     override fun execute(editor: BackendEditorComponent): CaretPositionPolicy {
         val newNode =
             location.getExistingAncestor()!!.getArea().executeWrite {
-                location.replaceNode(concept)
+                location.replaceNode(concept).also { it.addMissingMandatoryChildren() }
             }
         return CaretPositionPolicy(newNode)
     }
